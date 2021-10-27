@@ -149,6 +149,62 @@ def shop(v):
 				"owned": 0,
 				"price": 40000
 			},
+			"haunt": {
+				"kind": "haunt",
+				"title": "Haunt",
+				"description": "???",
+				"icon": "fas fa-book-dead",
+				"color": "text-warning",
+				"price": 500
+			},
+			"upsidedown": {
+				"kind": "upsidedown",
+				"title": "The Upside Down",
+				"description": "???",
+				"icon": "fad fa-lights-holiday",
+				"color": "",
+				"price": 400
+			},
+			"stab": {
+				"kind": "stab",
+				"title": "Stab",
+				"description": "???",
+				"icon": "fas fa-knife-kitchen",
+				"color": "text-red",
+				"price": 300
+			},
+			"ghosts": {
+				"kind": "ghosts",
+				"title": "Ghosts",
+				"description": "???",
+				"icon": "fas fa-ghost",
+				"color": "text-white",
+				"price": 200
+			},
+			"bats": {
+				"kind": "bats",
+				"title": "Bats",
+				"description": "???",
+				"icon": "fas fa-bat",
+				"color": "text-black",
+				"price": 200
+			},
+			"spiders": {
+				"kind": "spiders",
+				"title": "Spiders",
+				"description": "???",
+				"icon": "fas fa-spider",
+				"color": "text-black",
+				"price": 200
+			},
+			"fog": {
+				"kind": "fog",
+				"title": "Fog",
+				"description": "???",
+				"icon": "fas fa-smoke",
+				"color": "text-gray",
+				"price": 200
+			},
 		}
 	else:
 		AWARDS = {
@@ -336,6 +392,62 @@ def buy(v, award):
 				"icon": "fas fa-volume",
 				"color": "text-success",
 				"price": 40000
+			},
+			"haunt": {
+				"kind": "haunt",
+				"title": "Haunt",
+				"description": "???",
+				"icon": "fas fa-book-dead",
+				"color": "text-warning",
+				"price": 500
+			},
+			"upsidedown": {
+				"kind": "upsidedown",
+				"title": "The Upside Down",
+				"description": "???",
+				"icon": "fad fa-lights-holiday",
+				"color": "",
+				"price": 400
+			},
+			"stab": {
+				"kind": "stab",
+				"title": "Stab",
+				"description": "???",
+				"icon": "fas fa-knife-kitchen",
+				"color": "text-red",
+				"price": 300
+			},
+			"ghosts": {
+				"kind": "ghosts",
+				"title": "Ghosts",
+				"description": "???",
+				"icon": "fas fa-ghost",
+				"color": "text-white",
+				"price": 200
+			},
+			"bats": {
+				"kind": "bats",
+				"title": "Bats",
+				"description": "???",
+				"icon": "fas fa-bat",
+				"color": "text-black",
+				"price": 200
+			},
+			"spiders": {
+				"kind": "spiders",
+				"title": "Spiders",
+				"description": "???",
+				"icon": "fas fa-spider",
+				"color": "text-black",
+				"price": 200
+			},
+			"fog": {
+				"kind": "fog",
+				"title": "Fog",
+				"description": "???",
+				"icon": "fas fa-smoke",
+				"color": "text-gray",
+				"price": 200
 			},
 		}
 	else:
@@ -863,6 +975,62 @@ def items(v):
 			"color": "text-success",
 			"owned": 0,
 			"price": 40000
+		},
+		"haunt": {
+			"kind": "haunt",
+			"title": "Haunt",
+			"description": "???",
+			"icon": "fas fa-book-dead",
+			"color": "text-warning",
+			"price": 500
+		},
+		"upsidedown": {
+			"kind": "upsidedown",
+			"title": "The Upside Down",
+			"description": "???",
+			"icon": "fad fa-lights-holiday",
+			"color": "",
+			"price": 400
+		},
+		"stab": {
+			"kind": "stab",
+			"title": "Stab",
+			"description": "???",
+			"icon": "fas fa-knife-kitchen",
+			"color": "text-red",
+			"price": 300
+		},
+		"ghosts": {
+			"kind": "ghosts",
+			"title": "Ghosts",
+			"description": "???",
+			"icon": "fas fa-ghost",
+			"color": "text-white",
+			"price": 200
+		},
+		"bats": {
+			"kind": "bats",
+			"title": "Bats",
+			"description": "???",
+			"icon": "fas fa-bat",
+			"color": "text-black",
+			"price": 200
+		},
+		"spiders": {
+			"kind": "spiders",
+			"title": "Spiders",
+			"description": "???",
+			"icon": "fas fa-spider",
+			"color": "text-black",
+			"price": 200
+		},
+		"fog": {
+			"kind": "fog",
+			"title": "Fog",
+			"description": "???",
+			"icon": "fas fa-smoke",
+			"color": "text-gray",
+			"price": 200
 		},
 	}
 
