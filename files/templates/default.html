@@ -274,7 +274,8 @@
 
 {% block Banner %}
 	{% if '@' not in request.path %}
-		<style>
+		<!-- Comment out for Halloween -->
+		<!-- <style>
 			.banner {
 				margin-top: -3px;
 			}
@@ -287,7 +288,9 @@
 		
 		<a  rel="nofollow noopener noreferrer" href="{% if 'rama' in request.host %}https://secure.transequality.org/site/Donation2?df_id=1480{% else %}/{% endif %}">
 			<img loading="lazy" class="banner" src="/assets/images/{{'SITE_NAME' | app_config}}/{% if v %}banner.gif{% else %}cached.gif{% endif %}" width="100%">
-		</a>
+		</a> -->
+		<!-- Halloween -->
+		{% include "halloween/banner.html" %}
 	{% endif %}
 {% endblock %}
 
