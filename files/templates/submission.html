@@ -24,31 +24,44 @@
 {% if p.award_count("upsidedown") %}
 <canvas id="canvas" class="particles"></canvas>
 <link href="/assets/css/upsidedown.css" rel="stylesheet">
-<script src="/assets/js/halloween/upsidedown.js"></script>
 <img id="demogorgon" class="demogorgon" src="https://i.ibb.co/XXzfhzG/Demogorgon-Stranger-Things-v1.png" alt="demogorgon"/>
+
+{% block scripts %}
+	<script src="/assets/js/halloween/upsidedown.js"></script>
+{% endblock %}
+
 {% endif %}
 
 {% if p.award_count("stab") <= 5 %}
-<script src="/assets/js/halloween/blood.js"></script>
 <style>
 	canvas.sketch {
 		opacity: calc(0.1*{{ p.award_count("stab") }});
 	}
 </style>
+{% block scripts %}
+	<script src="/assets/js/halloween/blood.js"></script>
+{% endblock %}
+
 {% elif p.award_count("stab") %}
-<script src="/assets/js/halloween/blood.js"></script>
 <style>
 	canvas.sketch {
 		opacity: 0.5;
 	}
 </style>
+
+{% block scripts %}
+	<script src="/assets/js/halloween/blood.js"></script>
+{% endblock %}
 {% endif %}
 
 {% if p.award_count("ghosts") %}
 <div class="container-ghosts">
 	<svg id="svg" class="ghost"></svg>
 </div>
-<script src="/assets/js/halloween/ghosts.js"></script>
+
+{% block scripts %}
+	<script src="/assets/js/halloween/ghosts.js"></script>
+{% endblock %}
 {% endif %}
 
 <!-- {% if p.award_count("bats") %}
