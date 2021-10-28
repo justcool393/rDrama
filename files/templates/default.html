@@ -367,7 +367,7 @@
 	}
 </style>
 
-{% if '/post/' in request.path %}
+{% if '@' not in request.path or if '/post/' not in request.path %}
 <script src="/assets/js/halloween/banner.js"></script>
 {% endif %}
 
