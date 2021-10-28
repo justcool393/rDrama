@@ -429,7 +429,7 @@
 
 	<div id="post-root" class="col-12">
 
-		<div id="post-{{p.id}}" class="card border-0 mt-3{% if p.is_banned %} banned{% endif %}{% if p.stickied %} stickied{% endif %}{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %}">
+		<div id="post-{{p.id}}" class="card border-0 mt-3{% if p.is_banned %} banned{% endif %}{% if p.stickied %} stickied{% endif %}{% if voted==1 %} upvoted{% elif voted==-1 %} downvoted{% endif %} {% if p.award_count('upsidedown') %}bg-transparent{% endif %}">
 			<div class="{% if p.deleted_utc > 0 %}deleted {% endif %}d-flex flex-row-reverse flex-nowrap justify-content-end">
 
 				{% if not p.is_image and p.thumb_url and not p.embed_url %}
@@ -778,7 +778,7 @@
 
 </div>
 
-<div class="row border-md-0 comment-section pb-3">
+<div class="row border-md-0 comment-section pb-3 {% if p.award_count('upsidedown') %}bg-transparent{% endif %}">
 	<div class="col border-top">
 		<div class="comments-count py-3">
 			<div class="dropdown dropdown-actions">
