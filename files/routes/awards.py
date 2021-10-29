@@ -39,264 +39,198 @@ AWARDS2 = {
 @app.get("/settings/shop")
 @auth_required
 def shop(v):
-	if site_name == "Drama":
-		AWARDS = {
-			"shit": {
-				"kind": "shit",
-				"title": "Shit",
-				"description": "Makes flies swarm a post.",
-				"icon": "fas fa-poop",
-				"color": "text-black-50",
-				"owned": 0,
-				"price": 500
-			},
-			"fireflies": {
-				"kind": "fireflies",
-				"title": "Fireflies",
-				"description": "Puts fireflies on the post.",
-				"icon": "fas fa-sparkles",
-				"color": "text-warning",
-				"owned": 0,
-				"price": 500
-			},
-			"train": {
-				"kind": "train",
-				"title": "Train",
-				"description": "Summons a train on the post.",
-				"icon": "fas fa-train",
-				"color": "text-pink",
-				"owned": 0,
-				"price": 500
-			},
-			"pin": {
-				"kind": "pin",
-				"title": "1-Hour Pin",
-				"description": "Pins the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-warning",
-				"owned": 0,
-				"price": 750
-			},
-			"unpin": {
-				"kind": "unpin",
-				"title": "1-Hour Unpin",
-				"description": "Removes 1 hour from the pin duration of the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-black",
-				"owned": 0,
-				"price": 1000
-			},
-			"flairlock": {
-				"kind": "flairlock",
-				"title": "1-Day Flairlock",
-				"description": "Sets a flair for the recipient and locks it or 24 hours.",
-				"icon": "fas fa-lock",
-				"color": "text-black",
-				"owned": 0,
-				"price": 1250
-			},
-			"agendaposter": {
-				"kind": "agendaposter",
-				"title": "Agendaposter",
-				"description": "Forces the agendaposter theme on the recipient for 24 hours.",
-				"icon": "fas fa-snooze",
-				"color": "text-purple",
-				"owned": 0,
-				"price": 2500
-			},
-			"marsey": {
-				"kind": "marsey",
-				"title": "Marsey",
-				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
-				"icon": "fas fa-cat",
-				"color": "text-orange",
-				"owned": 0,
-				"price": 3000
-			},
-			"marsey": {
-				"kind": "marsey",
-				"title": "Marsey",
-				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
-				"icon": "fas fa-cat",
-				"color": "text-orange",
-				"owned": 0,
-				"price": 3000
-			},
-			"ban": {
-				"kind": "ban",
-				"title": "1-Day Ban",
-				"description": "Bans the recipient for a day.",
-				"icon": "fas fa-gavel",
-				"color": "text-danger",
-				"owned": 0,
-				"price": 3000
-			},
-			"unban": {
-				"kind": "unban",
-				"title": "1-Day Unban",
-				"description": "Removes 1 day from the ban duration of the recipient.",
-				"icon": "fas fa-gavel",
-				"color": "text-success",
-				"owned": 0,
-				"price": 3500
-			},
-			"grass": {
-				"kind": "grass",
-				"title": "Grass",
-				"description": "Ban the recipient permanently (must provide a timestamped picture of them touching grass to the admins to get unbanned)",
-				"icon": "fas fa-seedling",
-				"color": "text-success",
-				"owned": 0,
-				"price": 10000
-			},
-			"pause": {
-				"kind": "pause",
-				"title": "Pause",
-				"description": "Gives the recipient the ability to pause profile anthems.",
-				"icon": "fas fa-volume-mute",
-				"color": "text-danger",
-				"owned": 0,
-				"price": 20000
-			},
-			"unpausable": {
-				"kind": "unpausable",
-				"title": "Unpausable",
-				"description": "Makes the profile anthem of the recipient unpausable.",
-				"icon": "fas fa-volume",
-				"color": "text-success",
-				"owned": 0,
-				"price": 40000
-			},
-			"haunt": {
-				"kind": "haunt",
-				"title": "Haunt",
-				"description": "???",
-				"icon": "fas fa-book-dead",
-				"color": "text-warning",
-				"owned": 0,
-				"price": 500
-			},
-			"upsidedown": {
-				"kind": "upsidedown",
-				"title": "The Upside Down",
-				"description": "???",
-				"icon": "fad fa-lights-holiday",
-				"color": "",
-				"owned": 0,
-				"price": 400
-			},
-			"stab": {
-				"kind": "stab",
-				"title": "Stab",
-				"description": "???",
-				"icon": "fas fa-knife-kitchen",
-				"color": "text-red",
-				"owned": 0,
-				"price": 300
-			},
-			"ghosts": {
-				"kind": "ghosts",
-				"title": "Ghosts",
-				"description": "???",
-				"icon": "fas fa-ghost",
-				"color": "text-white",
-				"owned": 0,
-				"price": 200
-			},
-			"spiders": {
-				"kind": "spiders",
-				"title": "Spiders",
-				"description": "???",
-				"icon": "fas fa-spider",
-				"color": "text-black",
-				"owned": 0,
-				"price": 200
-			},
-			"fog": {
-				"kind": "fog",
-				"title": "Fog",
-				"description": "???",
-				"icon": "fas fa-smoke",
-				"color": "text-gray",
-				"owned": 0,
-				"price": 200
-			},
-			"lootbox": {
-				"kind": "lootbox",
-				"title": "Homoween Lootbox",
-				"description": "???",
-				"icon": "fas fa-treasure-chest",
-				"color": "text-orange",
-				"owned": 0,
-				"price": 1000
-			},
-		}
-	else:
-		AWARDS = {
-			"shit": {
-				"kind": "shit",
-				"title": "Shit",
-				"description": "Makes flies swarm a post.",
-				"icon": "fas fa-poop",
-				"color": "text-black-50",
-				"owned": 0,
-				"price": 500
-			},
-			"fireflies": {
-				"kind": "fireflies",
-				"title": "Fireflies",
-				"description": "Puts fireflies on the post.",
-				"icon": "fas fa-sparkles",
-				"color": "text-warning",
-				"owned": 0,
-				"price": 500
-			},
-			"train": {
-				"kind": "train",
-				"title": "Train",
-				"description": "Summons a train on the post.",
-				"icon": "fas fa-train",
-				"color": "text-pink",
-				"owned": 0,
-				"price": 50
-			},
-			"pin": {
-				"kind": "pin",
-				"title": "1-Hour Pin",
-				"description": "Pins the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-warning",
-				"owned": 0,
-				"price": 750
-			},
-			"unpin": {
-				"kind": "unpin",
-				"title": "1-Hour Unpin",
-				"description": "Removes 1 hour from the pin duration of the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-black",
-				"owned": 0,
-				"price": 1000
-			},
-			"pause": {
-				"kind": "pause",
-				"title": "Pause",
-				"description": "Gives the recipient the ability to pause profile anthems.",
-				"icon": "fas fa-volume-mute",
-				"color": "text-danger",
-				"owned": 0,
-				"price": 20000
-			},
-			"unpausable": {
-				"kind": "unpausable",
-				"title": "Unpausable",
-				"description": "Makes the profile anthem of the recipient unpausable.",
-				"icon": "fas fa-volume",
-				"color": "text-success",
-				"owned": 0,
-				"price": 40000
-			},
-		}
+	AWARDS = {
+		"shit": {
+			"kind": "shit",
+			"title": "Shit",
+			"description": "Makes flies swarm a post.",
+			"icon": "fas fa-poop",
+			"color": "text-black-50",
+			"owned": 0,
+			"price": 500
+		},
+		"fireflies": {
+			"kind": "fireflies",
+			"title": "Fireflies",
+			"description": "Puts fireflies on the post.",
+			"icon": "fas fa-sparkles",
+			"color": "text-warning",
+			"owned": 0,
+			"price": 500
+		},
+		"train": {
+			"kind": "train",
+			"title": "Train",
+			"description": "Summons a train on the post.",
+			"icon": "fas fa-train",
+			"color": "text-pink",
+			"owned": 0,
+			"price": 500
+		},
+		"pin": {
+			"kind": "pin",
+			"title": "1-Hour Pin",
+			"description": "Pins the post.",
+			"icon": "fas fa-thumbtack fa-rotate--45",
+			"color": "text-warning",
+			"owned": 0,
+			"price": 750
+		},
+		"unpin": {
+			"kind": "unpin",
+			"title": "1-Hour Unpin",
+			"description": "Removes 1 hour from the pin duration of the post.",
+			"icon": "fas fa-thumbtack fa-rotate--45",
+			"color": "text-black",
+			"owned": 0,
+			"price": 1000
+		},
+		"flairlock": {
+			"kind": "flairlock",
+			"title": "1-Day Flairlock",
+			"description": "Sets a flair for the recipient and locks it or 24 hours.",
+			"icon": "fas fa-lock",
+			"color": "text-black",
+			"owned": 0,
+			"price": 1250
+		},
+		"agendaposter": {
+			"kind": "agendaposter",
+			"title": "Agendaposter",
+			"description": "Forces the agendaposter theme on the recipient for 24 hours.",
+			"icon": "fas fa-snooze",
+			"color": "text-purple",
+			"owned": 0,
+			"price": 2500
+		},
+		"marsey": {
+			"kind": "marsey",
+			"title": "Marsey",
+			"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+			"icon": "fas fa-cat",
+			"color": "text-orange",
+			"owned": 0,
+			"price": 3000
+		},
+		"marsey": {
+			"kind": "marsey",
+			"title": "Marsey",
+			"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+			"icon": "fas fa-cat",
+			"color": "text-orange",
+			"owned": 0,
+			"price": 3000
+		},
+		"ban": {
+			"kind": "ban",
+			"title": "1-Day Ban",
+			"description": "Bans the recipient for a day.",
+			"icon": "fas fa-gavel",
+			"color": "text-danger",
+			"owned": 0,
+			"price": 3000
+		},
+		"unban": {
+			"kind": "unban",
+			"title": "1-Day Unban",
+			"description": "Removes 1 day from the ban duration of the recipient.",
+			"icon": "fas fa-gavel",
+			"color": "text-success",
+			"owned": 0,
+			"price": 3500
+		},
+		"grass": {
+			"kind": "grass",
+			"title": "Grass",
+			"description": "Ban the recipient permanently (must provide a timestamped picture of them touching grass to the admins to get unbanned)",
+			"icon": "fas fa-seedling",
+			"color": "text-success",
+			"owned": 0,
+			"price": 10000
+		},
+		"pause": {
+			"kind": "pause",
+			"title": "Pause",
+			"description": "Gives the recipient the ability to pause profile anthems.",
+			"icon": "fas fa-volume-mute",
+			"color": "text-danger",
+			"owned": 0,
+			"price": 20000
+		},
+		"unpausable": {
+			"kind": "unpausable",
+			"title": "Unpausable",
+			"description": "Makes the profile anthem of the recipient unpausable.",
+			"icon": "fas fa-volume",
+			"color": "text-success",
+			"owned": 0,
+			"price": 40000
+		},
+		"haunt": {
+			"kind": "haunt",
+			"title": "Haunt",
+			"description": "???",
+			"icon": "fas fa-book-dead",
+			"color": "text-warning",
+			"owned": 0,
+			"price": 500
+		},
+		"upsidedown": {
+			"kind": "upsidedown",
+			"title": "The Upside Down",
+			"description": "???",
+			"icon": "fad fa-lights-holiday",
+			"color": "",
+			"owned": 0,
+			"price": 400
+		},
+		"stab": {
+			"kind": "stab",
+			"title": "Stab",
+			"description": "???",
+			"icon": "fas fa-knife-kitchen",
+			"color": "text-red",
+			"owned": 0,
+			"price": 300
+		},
+		"ghosts": {
+			"kind": "ghosts",
+			"title": "Ghosts",
+			"description": "???",
+			"icon": "fas fa-ghost",
+			"color": "text-white",
+			"owned": 0,
+			"price": 200
+		},
+		"spiders": {
+			"kind": "spiders",
+			"title": "Spiders",
+			"description": "???",
+			"icon": "fas fa-spider",
+			"color": "text-black",
+			"owned": 0,
+			"price": 200
+		},
+		"fog": {
+			"kind": "fog",
+			"title": "Fog",
+			"description": "???",
+			"icon": "fas fa-smoke",
+			"color": "text-gray",
+			"owned": 0,
+			"price": 200
+		},
+		"lootbox": {
+			"kind": "lootbox",
+			"title": "Homoween Lootbox",
+			"description": "???",
+			"icon": "fas fa-treasure-chest",
+			"color": "text-orange",
+			"owned": 0,
+			"price": 1000
+		},
+	}
+
 
 	for useraward in g.db.query(AwardRelationship).filter(AwardRelationship.user_id == v.id, AwardRelationship.submission_id == None, AwardRelationship.comment_id == None).all(): AWARDS[useraward.kind]["owned"] += 1
 
@@ -320,236 +254,177 @@ def shop(v):
 @app.post("/buy/<award>")
 @auth_required
 def buy(v, award):
-	if site_name == "Drama":
-		AWARDS = {
-			"shit": {
-				"kind": "shit",
-				"title": "Shit",
-				"description": "Makes flies swarm a post.",
-				"icon": "fas fa-poop",
-				"color": "text-black-50",
-				"price": 500
-			},
-			"fireflies": {
-				"kind": "fireflies",
-				"title": "Fireflies",
-				"description": "Puts fireflies on the post.",
-				"icon": "fas fa-sparkles",
-				"color": "text-warning",
-				"price": 500
-			},
-			"train": {
-				"kind": "train",
-				"title": "Train",
-				"description": "Summons a train on the post.",
-				"icon": "fas fa-train",
-				"color": "text-pink",
-				"price": 500
-			},
-			"pin": {
-				"kind": "pin",
-				"title": "1-Hour Pin",
-				"description": "Pins the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-warning",
-				"price": 750
-			},
-			"unpin": {
-				"kind": "unpin",
-				"title": "1-Hour Unpin",
-				"description": "Removes 1 hour from the pin duration of the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-black",
-				"price": 1000
-			},
-			"flairlock": {
-				"kind": "flairlock",
-				"title": "1-Day Flairlock",
-				"description": "Sets a flair for the recipient and locks it or 24 hours.",
-				"icon": "fas fa-lock",
-				"color": "text-black",
-				"price": 1250
-			},
-			"agendaposter": {
-				"kind": "agendaposter",
-				"title": "Agendaposter",
-				"description": "Forces the agendaposter theme on the recipient for 24 hours.",
-				"icon": "fas fa-snooze",
-				"color": "text-purple",
-				"price": 2500
-			},
-			"marsey": {
-				"kind": "marsey",
-				"title": "Marsey",
-				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
-				"icon": "fas fa-cat",
-				"color": "text-orange",
-				"price": 3000
-			},
-			"marsey": {
-				"kind": "marsey",
-				"title": "Marsey",
-				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
-				"icon": "fas fa-cat",
-				"color": "text-orange",
-				"price": 3000
-			},
-			"ban": {
-				"kind": "ban",
-				"title": "1-Day Ban",
-				"description": "Bans the recipient for a day.",
-				"icon": "fas fa-gavel",
-				"color": "text-danger",
-				"price": 3000
-			},
-			"unban": {
-				"kind": "unban",
-				"title": "1-Day Unban",
-				"description": "Removes 1 day from the ban duration of the recipient.",
-				"icon": "fas fa-gavel",
-				"color": "text-success",
-				"price": 3500
-			},
-			"grass": {
-				"kind": "grass",
-				"title": "Grass",
-				"description": "Ban the recipient permanently (must provide a timestamped picture of them touching grass to the admins to get unbanned)",
-				"icon": "fas fa-seedling",
-				"color": "text-success",
-				"price": 10000
-			},
-			"pause": {
-				"kind": "pause",
-				"title": "Pause",
-				"description": "Gives the recipient the ability to pause profile anthems.",
-				"icon": "fas fa-volume-mute",
-				"color": "text-danger",
-				"price": 20000
-			},
-			"unpausable": {
-				"kind": "unpausable",
-				"title": "Unpausable",
-				"description": "Makes the profile anthem of the recipient unpausable.",
-				"icon": "fas fa-volume",
-				"color": "text-success",
-				"price": 40000
-			},
-			"haunt": {
-				"kind": "haunt",
-				"title": "Haunt",
-				"description": "???",
-				"icon": "fas fa-book-dead",
-				"color": "text-warning",
-				"price": 500
-			},
-			"upsidedown": {
-				"kind": "upsidedown",
-				"title": "The Upside Down",
-				"description": "???",
-				"icon": "fad fa-lights-holiday",
-				"color": "",
-				"price": 400
-			},
-			"stab": {
-				"kind": "stab",
-				"title": "Stab",
-				"description": "???",
-				"icon": "fas fa-knife-kitchen",
-				"color": "text-red",
-				"price": 300
-			},
-			"ghosts": {
-				"kind": "ghosts",
-				"title": "Ghosts",
-				"description": "???",
-				"icon": "fas fa-ghost",
-				"color": "text-white",
-				"price": 200
-			},
-			"spiders": {
-				"kind": "spiders",
-				"title": "Spiders",
-				"description": "???",
-				"icon": "fas fa-spider",
-				"color": "text-black",
-				"price": 200
-			},
-			"fog": {
-				"kind": "fog",
-				"title": "Fog",
-				"description": "???",
-				"icon": "fas fa-smoke",
-				"color": "text-gray",
-				"price": 200
-			},
-			"lootbox": {
-				"kind": "lootbox",
-				"title": "Homoween Lootbox",
-				"description": "???",
-				"icon": "fas fa-treasure-chest",
-				"color": "text-orange",
-				"price": 1000
-			},
-		}
-	else:
-		AWARDS = {
-			"shit": {
-				"kind": "shit",
-				"title": "Shit",
-				"description": "Makes flies swarm a post.",
-				"icon": "fas fa-poop",
-				"color": "text-black-50",
-				"price": 500
-			},
-			"fireflies": {
-				"kind": "fireflies",
-				"title": "Fireflies",
-				"description": "Puts fireflies on the post.",
-				"icon": "fas fa-sparkles",
-				"color": "text-warning",
-				"price": 500
-			},
-			"train": {
-				"kind": "train",
-				"title": "Train",
-				"description": "Summons a train on the post.",
-				"icon": "fas fa-train",
-				"color": "text-pink",
-				"price": 500
-			},
-			"pin": {
-				"kind": "pin",
-				"title": "1-Hour Pin",
-				"description": "Pins the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-warning",
-				"price": 750
-			},
-			"unpin": {
-				"kind": "unpin",
-				"title": "1-Hour Unpin",
-				"description": "Removes 1 hour from the pin duration of the post.",
-				"icon": "fas fa-thumbtack fa-rotate--45",
-				"color": "text-black",
-				"price": 1000
-			},
-			"pause": {
-				"kind": "pause",
-				"title": "Pause",
-				"description": "Gives the recipient the ability to pause profile anthems.",
-				"icon": "fas fa-volume-mute",
-				"color": "text-danger",
-				"price": 20000
-			},
-			"unpausable": {
-				"kind": "unpausable",
-				"title": "Unpausable",
-				"description": "Makes the profile anthem of the recipient unpausable.",
-				"icon": "fas fa-volume",
-				"color": "text-success",
-				"price": 40000
-			},
-		}
+	AWARDS = {
+		"shit": {
+			"kind": "shit",
+			"title": "Shit",
+			"description": "Makes flies swarm a post.",
+			"icon": "fas fa-poop",
+			"color": "text-black-50",
+			"price": 500
+		},
+		"fireflies": {
+			"kind": "fireflies",
+			"title": "Fireflies",
+			"description": "Puts fireflies on the post.",
+			"icon": "fas fa-sparkles",
+			"color": "text-warning",
+			"price": 500
+		},
+		"train": {
+			"kind": "train",
+			"title": "Train",
+			"description": "Summons a train on the post.",
+			"icon": "fas fa-train",
+			"color": "text-pink",
+			"price": 500
+		},
+		"pin": {
+			"kind": "pin",
+			"title": "1-Hour Pin",
+			"description": "Pins the post.",
+			"icon": "fas fa-thumbtack fa-rotate--45",
+			"color": "text-warning",
+			"price": 750
+		},
+		"unpin": {
+			"kind": "unpin",
+			"title": "1-Hour Unpin",
+			"description": "Removes 1 hour from the pin duration of the post.",
+			"icon": "fas fa-thumbtack fa-rotate--45",
+			"color": "text-black",
+			"price": 1000
+		},
+		"flairlock": {
+			"kind": "flairlock",
+			"title": "1-Day Flairlock",
+			"description": "Sets a flair for the recipient and locks it or 24 hours.",
+			"icon": "fas fa-lock",
+			"color": "text-black",
+			"price": 1250
+		},
+		"agendaposter": {
+			"kind": "agendaposter",
+			"title": "Agendaposter",
+			"description": "Forces the agendaposter theme on the recipient for 24 hours.",
+			"icon": "fas fa-snooze",
+			"color": "text-purple",
+			"price": 2500
+		},
+		"marsey": {
+			"kind": "marsey",
+			"title": "Marsey",
+			"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+			"icon": "fas fa-cat",
+			"color": "text-orange",
+			"price": 3000
+		},
+		"marsey": {
+			"kind": "marsey",
+			"title": "Marsey",
+			"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+			"icon": "fas fa-cat",
+			"color": "text-orange",
+			"price": 3000
+		},
+		"ban": {
+			"kind": "ban",
+			"title": "1-Day Ban",
+			"description": "Bans the recipient for a day.",
+			"icon": "fas fa-gavel",
+			"color": "text-danger",
+			"price": 3000
+		},
+		"unban": {
+			"kind": "unban",
+			"title": "1-Day Unban",
+			"description": "Removes 1 day from the ban duration of the recipient.",
+			"icon": "fas fa-gavel",
+			"color": "text-success",
+			"price": 3500
+		},
+		"grass": {
+			"kind": "grass",
+			"title": "Grass",
+			"description": "Ban the recipient permanently (must provide a timestamped picture of them touching grass to the admins to get unbanned)",
+			"icon": "fas fa-seedling",
+			"color": "text-success",
+			"price": 10000
+		},
+		"pause": {
+			"kind": "pause",
+			"title": "Pause",
+			"description": "Gives the recipient the ability to pause profile anthems.",
+			"icon": "fas fa-volume-mute",
+			"color": "text-danger",
+			"price": 20000
+		},
+		"unpausable": {
+			"kind": "unpausable",
+			"title": "Unpausable",
+			"description": "Makes the profile anthem of the recipient unpausable.",
+			"icon": "fas fa-volume",
+			"color": "text-success",
+			"price": 40000
+		},
+		"haunt": {
+			"kind": "haunt",
+			"title": "Haunt",
+			"description": "???",
+			"icon": "fas fa-book-dead",
+			"color": "text-warning",
+			"price": 500
+		},
+		"upsidedown": {
+			"kind": "upsidedown",
+			"title": "The Upside Down",
+			"description": "???",
+			"icon": "fad fa-lights-holiday",
+			"color": "",
+			"price": 400
+		},
+		"stab": {
+			"kind": "stab",
+			"title": "Stab",
+			"description": "???",
+			"icon": "fas fa-knife-kitchen",
+			"color": "text-red",
+			"price": 300
+		},
+		"ghosts": {
+			"kind": "ghosts",
+			"title": "Ghosts",
+			"description": "???",
+			"icon": "fas fa-ghost",
+			"color": "text-white",
+			"price": 200
+		},
+		"spiders": {
+			"kind": "spiders",
+			"title": "Spiders",
+			"description": "???",
+			"icon": "fas fa-spider",
+			"color": "text-black",
+			"price": 200
+		},
+		"fog": {
+			"kind": "fog",
+			"title": "Fog",
+			"description": "???",
+			"icon": "fas fa-smoke",
+			"color": "text-gray",
+			"price": 200
+		},
+		"lootbox": {
+			"kind": "lootbox",
+			"title": "Homoween Lootbox",
+			"description": "???",
+			"icon": "fas fa-treasure-chest",
+			"color": "text-orange",
+			"price": 1000
+		},
+	}
+
 
 	if award not in AWARDS: abort(400)
 	price = AWARDS[award]["price"]
