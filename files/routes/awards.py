@@ -194,15 +194,6 @@ def shop(v):
 				"owned": 0,
 				"price": 200
 			},
-			"bats": {
-				"kind": "bats",
-				"title": "Bats",
-				"description": "???",
-				"icon": "fas fa-bat",
-				"color": "text-black",
-				"owned": 0,
-				"price": 200
-			},
 			"spiders": {
 				"kind": "spiders",
 				"title": "Spiders",
@@ -458,14 +449,6 @@ def buy(v, award):
 				"color": "text-white",
 				"price": 200
 			},
-			"bats": {
-				"kind": "bats",
-				"title": "Bats",
-				"description": "???",
-				"icon": "fas fa-bat",
-				"color": "text-black",
-				"price": 200
-			},
 			"spiders": {
 				"kind": "spiders",
 				"title": "Spiders",
@@ -606,7 +589,7 @@ def buy(v, award):
 		for i in [1,2,3,4,5]:
 			thing = g.db.query(AwardRelationship).order_by(AwardRelationship.id.desc()).first().id
 			thing += 1
-			award = random.choice(["haunt", "upsidedown", "stab", "ghosts", "bats", "spiders", "fog"])
+			award = random.choice(["haunt", "upsidedown", "stab", "ghosts", "spiders", "fog"])
 			award = AwardRelationship(id=thing, user_id=v.id, kind=award)
 			g.db.add(award)
 			g.db.flush()
@@ -1069,15 +1052,6 @@ def items(v):
 			"description": "???",
 			"icon": "fas fa-ghost",
 			"color": "text-white",
-			"owned": 0,
-			"price": 200
-		},
-		"bats": {
-			"kind": "bats",
-			"title": "Bats",
-			"description": "???",
-			"icon": "fas fa-bat",
-			"color": "text-black",
 			"owned": 0,
 			"price": 200
 		},
