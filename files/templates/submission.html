@@ -61,11 +61,11 @@
 	{% endfor %}
 {% endif %}
 
-{% if p.award_count("fog") <= 10 %}
+{% if p.award_count("fog") <= 2 %}
 <canvas id="fog" class="fog"></canvas>
 <style>
 	canvas.fog {
-		opacity: calc(0.1*{{ p.award_count("fog") }});
+		opacity: calc(0.5*{{ p.award_count("fog") }});
 	}
 </style>
 <script src="/assets/js/halloween/fog.js"></script>
