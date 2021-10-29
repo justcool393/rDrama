@@ -70,7 +70,7 @@ def shop(v):
 		"pin": {
 			"kind": "pin",
 			"title": "1-Hour Pin",
-			"description": "Pins the post.",
+			"description": "Pins the post/comment.",
 			"icon": "fas fa-thumbtack fa-rotate--45",
 			"color": "text-warning",
 			"owned": 0,
@@ -79,7 +79,7 @@ def shop(v):
 		"unpin": {
 			"kind": "unpin",
 			"title": "1-Hour Unpin",
-			"description": "Removes 1 hour from the pin duration of the post.",
+			"description": "Removes 1 hour from the pin duration of the post/comment.",
 			"icon": "fas fa-thumbtack fa-rotate--45",
 			"color": "text-black",
 			"owned": 0,
@@ -282,7 +282,7 @@ def buy(v, award):
 		"pin": {
 			"kind": "pin",
 			"title": "1-Hour Pin",
-			"description": "Pins the post.",
+			"description": "Pins the post/comment.",
 			"icon": "fas fa-thumbtack fa-rotate--45",
 			"color": "text-warning",
 			"price": 750
@@ -290,7 +290,7 @@ def buy(v, award):
 		"unpin": {
 			"kind": "unpin",
 			"title": "1-Hour Unpin",
-			"description": "Removes 1 hour from the pin duration of the post.",
+			"description": "Removes 1 hour from the pin duration of the post/comment.",
 			"icon": "fas fa-thumbtack fa-rotate--45",
 			"color": "text-black",
 			"price": 1000
@@ -825,7 +825,7 @@ def items(v):
 		"pin": {
 			"kind": "pin",
 			"title": "1-Hour Pin",
-			"description": "Pins the post.",
+			"description": "Pins the post/comment.",
 			"icon": "fas fa-thumbtack fa-rotate--45",
 			"color": "text-warning",
 			"owned": 0,
@@ -834,7 +834,7 @@ def items(v):
 		"unpin": {
 			"kind": "unpin",
 			"title": "1-Hour Unpin",
-			"description": "Removes 1 hour from the pin duration of the post.",
+			"description": "Removes 1 hour from the pin duration of the post/comment.",
 			"icon": "fas fa-thumbtack fa-rotate--45",
 			"color": "text-black",
 			"owned": 0,
