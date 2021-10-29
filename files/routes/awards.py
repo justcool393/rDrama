@@ -20,7 +20,7 @@ AWARDS2 = {
 	"fireflies": {
 		"kind": "fireflies",
 		"title": "Fireflies",
-		"description": "Puts fireflies on the post.",
+		"description": "Makes fireflies swarm the post.",
 		"icon": "fas fa-sparkles",
 		"color": "text-warning",
 		"price": 500
@@ -28,7 +28,7 @@ AWARDS2 = {
 	"shit": {
 		"kind": "shit",
 		"title": "Shit",
-		"description": "Makes flies swarm a post.",
+		"description": "Makes flies swarm the post.",
 		"icon": "fas fa-poop",
 		"color": "text-black-50",
 		"price": 500
@@ -43,7 +43,7 @@ def shop(v):
 		"shit": {
 			"kind": "shit",
 			"title": "Shit",
-			"description": "Makes flies swarm a post.",
+			"description": "Makes flies swarm the post.",
 			"icon": "fas fa-poop",
 			"color": "text-black-50",
 			"owned": 0,
@@ -52,7 +52,7 @@ def shop(v):
 		"fireflies": {
 			"kind": "fireflies",
 			"title": "Fireflies",
-			"description": "Puts fireflies on the post.",
+			"description": "Makes fireflies swarm the post.",
 			"icon": "fas fa-sparkles",
 			"color": "text-warning",
 			"owned": 0,
@@ -258,7 +258,7 @@ def buy(v, award):
 		"shit": {
 			"kind": "shit",
 			"title": "Shit",
-			"description": "Makes flies swarm a post.",
+			"description": "Makes flies swarm the post.",
 			"icon": "fas fa-poop",
 			"color": "text-black-50",
 			"price": 500
@@ -266,7 +266,7 @@ def buy(v, award):
 		"fireflies": {
 			"kind": "fireflies",
 			"title": "Fireflies",
-			"description": "Puts fireflies on the post.",
+			"description": "Makes fireflies swarm the post.",
 			"icon": "fas fa-sparkles",
 			"color": "text-warning",
 			"price": 500
@@ -798,7 +798,7 @@ def items(v):
 		"shit": {
 			"kind": "shit",
 			"title": "Shit",
-			"description": "Makes flies swarm a post.",
+			"description": "Makes flies swarm the post.",
 			"icon": "fas fa-poop",
 			"color": "text-black-50",
 			"owned": 0,
@@ -807,7 +807,7 @@ def items(v):
 		"fireflies": {
 			"kind": "fireflies",
 			"title": "Fireflies",
-			"description": "Puts fireflies on the post.",
+			"description": "Makes fireflies swarm the post.",
 			"icon": "fas fa-sparkles",
 			"color": "text-warning",
 			"owned": 0,

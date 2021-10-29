@@ -150,7 +150,7 @@ AWARDS = {
 	"shit": {
 		"kind": "shit",
 		"title": "Shit",
-		"description": "Makes flies swarm a post.",
+		"description": "Makes flies swarm the post.",
 		"icon": "fas fa-poop",
 		"color": "text-black-50",
 		"price": 500
@@ -158,7 +158,7 @@ AWARDS = {
 	"fireflies": {
 		"kind": "fireflies",
 		"title": "Fireflies",
-		"description": "Puts fireflies on the post.",
+		"description": "Makes fireflies swarm the post.",
 		"icon": "fas fa-sparkles",
 		"color": "text-warning",
 		"price": 500
