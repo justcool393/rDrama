@@ -1,8 +1,8 @@
 {% if '/post/' in request.path %}
-  <!-- Static -->
-  <a  rel="nofollow noopener noreferrer" href="{% if 'rama' in request.host %}https://youtu.be/3l7X94GLqSQ?t=16{% else %}/{% endif %}">
-    <img loading="lazy" class="banner" src="/assets/images/halloween/banner.png" width="100%">
-  </a>
+<!-- Static -->
+<a  rel="nofollow noopener noreferrer" href="{% if 'rama' in request.host %}https://youtu.be/3l7X94GLqSQ?t=16{% else %}/{% endif %}">
+  <img loading="lazy" class="banner" src="/assets/images/halloween/banner.png" width="100%">
+</a>
 {% else %}
 <!-- Animated -->
 <div class="banner-halloween">
@@ -34,4 +34,8 @@
     <div class="shooting-stars"></div>
   </div>
 </div>
+
+{% block scripts %}
+<script src="/assets/css/halloweenbanner.css"></script>
+{% endblock %}
 {% endif %}
