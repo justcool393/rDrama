@@ -35,7 +35,7 @@
 <script src="/assets/js/halloween/upsidedown.js"></script>
 {% endif %}
 
-{% if not p.award_count("upsidedown") and if p.award_count("stab") and p.award_count("stab") <= 5 %}
+{% if not p.award_count("upsidedown") and p.award_count("stab") and p.award_count("stab") <= 5 %}
 <style>
 	canvas.sketch {
 		opacity: calc(0.1*{{ p.award_count("stab") }});
