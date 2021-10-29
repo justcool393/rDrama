@@ -550,7 +550,7 @@ def buy(v, award):
 	price = int(price*discount)
 
 	if request.values.get("mb"):
-		if award in ["grass","pause","unpausable"]: abort(403)
+		if award in ["grass","pause","unpausable","haunt", "upsidedown", "stab", "ghosts", "spiders", "fog","lootbox"]: abort(403)
 		if v.procoins < price: return {"error": "Not enough marseybux."}, 400
 		v.procoins -= price
 	else:
