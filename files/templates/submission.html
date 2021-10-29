@@ -47,13 +47,13 @@
 
 {% if p.award_count("ghosts") %}
 <style>
-	.user-name span, .user-name img, .user-name-reply span {
+	#main-content-row .user-name *, .user-name-reply * {
 		display: none;
 	}
-	.user-name:after, .user-name-reply:after {
+	#main-content-row .user-name:after, .user-name-reply:after {
 		content: '👻';
 	}
-	a.user-name {
+	#main-content-row a.user-name {
 		pointer-events: none;
 	}
 </style>
