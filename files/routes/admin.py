@@ -889,7 +889,7 @@ def ban_post(post_id, v):
 
 	cache.delete_memoized(frontlist)
 
-	v.coins += 1
+	v.coins += 2
 	g.db.add(v)
 
 	g.db.commit()
@@ -923,7 +923,7 @@ def unban_post(post_id, v):
 
 	cache.delete_memoized(frontlist)
 
-	v.coins -= 1
+	v.coins -= 2
 	g.db.add(v)
 
 	g.db.commit()

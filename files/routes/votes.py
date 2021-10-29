@@ -74,13 +74,13 @@ def api_vote_post(post_id, new, v):
 
 	if existing:
 		if existing.vote_type == 0 and new != 0:
-			post.author.coins += 1
+			post.author.coins += 2
 			post.author.truecoins += 1
 			g.db.add(post.author)
 			existing.vote_type = new
 			g.db.add(existing)
 		elif existing.vote_type != 0 and new == 0:
-			post.author.coins -= 1
+			post.author.coins -= 2
 			post.author.truecoins -= 1
 			g.db.add(post.author)
 			g.db.delete(existing)
@@ -88,7 +88,7 @@ def api_vote_post(post_id, new, v):
 			existing.vote_type = new
 			g.db.add(existing)
 	elif new != 0:
-		post.author.coins += 1
+		post.author.coins += 2
 		post.author.truecoins += 1
 		g.db.add(post.author)
 		vote = Vote(user_id=v.id,
@@ -147,13 +147,13 @@ def api_vote_comment(comment_id, new, v):
 
 	if existing:
 		if existing.vote_type == 0 and new != 0:
-			comment.author.coins += 1
+			comment.author.coins += 2
 			comment.author.truecoins += 1
 			g.db.add(comment.author)
 			existing.vote_type = new
 			g.db.add(existing)
 		elif existing.vote_type != 0 and new == 0:
-			comment.author.coins -= 1
+			comment.author.coins -= 2
 			comment.author.truecoins -= 1
 			g.db.add(comment.author)
 			g.db.delete(existing)
@@ -161,7 +161,7 @@ def api_vote_comment(comment_id, new, v):
 			existing.vote_type = new
 			g.db.add(existing)
 	elif new != 0:
-		comment.author.coins += 1
+		comment.author.coins += 2
 		comment.author.truecoins += 1
 		g.db.add(comment.author)
 		vote = CommentVote(user_id=v.id,

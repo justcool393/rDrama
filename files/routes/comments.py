@@ -390,7 +390,7 @@ def api_comment(v):
 	if v.id == PIZZA_SHILL_ID:
 		cratvote = CommentVote(user_id=TAX_RECEIVER_ID, comment_id=c.id, vote_type=1)
 		g.db.add(cratvote)
-		v.coins += 1
+		v.coins += 2
 		v.truecoins += 1
 		g.db.add(v)
 		c.upvotes += 1

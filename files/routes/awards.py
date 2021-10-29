@@ -113,6 +113,15 @@ def shop(v):
 				"owned": 0,
 				"price": 3000
 			},
+			"marsey": {
+				"kind": "marsey",
+				"title": "Marsey",
+				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+				"icon": "fas fa-cat",
+				"color": "text-orange",
+				"owned": 0,
+				"price": 3000
+			},
 			"ban": {
 				"kind": "ban",
 				"title": "1-Day Ban",
@@ -157,6 +166,69 @@ def shop(v):
 				"color": "text-success",
 				"owned": 0,
 				"price": 40000
+			},
+			"haunt": {
+				"kind": "haunt",
+				"title": "Haunt",
+				"description": "???",
+				"icon": "fas fa-book-dead",
+				"color": "text-warning",
+				"owned": 0,
+				"price": 500
+			},
+			"upsidedown": {
+				"kind": "upsidedown",
+				"title": "The Upside Down",
+				"description": "???",
+				"icon": "fad fa-lights-holiday",
+				"color": "",
+				"owned": 0,
+				"price": 400
+			},
+			"stab": {
+				"kind": "stab",
+				"title": "Stab",
+				"description": "???",
+				"icon": "fas fa-knife-kitchen",
+				"color": "text-red",
+				"owned": 0,
+				"price": 300
+			},
+			"ghosts": {
+				"kind": "ghosts",
+				"title": "Ghosts",
+				"description": "???",
+				"icon": "fas fa-ghost",
+				"color": "text-white",
+				"owned": 0,
+				"price": 200
+			},
+			"spiders": {
+				"kind": "spiders",
+				"title": "Spiders",
+				"description": "???",
+				"icon": "fas fa-spider",
+				"color": "text-black",
+				"owned": 0,
+				"price": 200
+			},
+			"fog": {
+				"kind": "fog",
+				"title": "Fog",
+				"description": "???",
+				"icon": "fas fa-smoke",
+				"color": "text-gray",
+				"owned": 0,
+				"price": 200
+			},
+			"lootbox": {
+				"kind": "lootbox",
+				"title": "Homoween Lootbox",
+				"description": "???",
+				"icon": "fas fa-treasure-chest",
+				"color": "text-orange",
+				"owned": 0,
+				"price": 1000
 			},
 		}
 	else:
@@ -314,6 +386,14 @@ def buy(v, award):
 				"color": "text-orange",
 				"price": 3000
 			},
+			"marsey": {
+				"kind": "marsey",
+				"title": "Marsey",
+				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+				"icon": "fas fa-cat",
+				"color": "text-orange",
+				"price": 3000
+			},
 			"ban": {
 				"kind": "ban",
 				"title": "1-Day Ban",
@@ -353,6 +433,62 @@ def buy(v, award):
 				"icon": "fas fa-volume",
 				"color": "text-success",
 				"price": 40000
+			},
+			"haunt": {
+				"kind": "haunt",
+				"title": "Haunt",
+				"description": "???",
+				"icon": "fas fa-book-dead",
+				"color": "text-warning",
+				"price": 500
+			},
+			"upsidedown": {
+				"kind": "upsidedown",
+				"title": "The Upside Down",
+				"description": "???",
+				"icon": "fad fa-lights-holiday",
+				"color": "",
+				"price": 400
+			},
+			"stab": {
+				"kind": "stab",
+				"title": "Stab",
+				"description": "???",
+				"icon": "fas fa-knife-kitchen",
+				"color": "text-red",
+				"price": 300
+			},
+			"ghosts": {
+				"kind": "ghosts",
+				"title": "Ghosts",
+				"description": "???",
+				"icon": "fas fa-ghost",
+				"color": "text-white",
+				"price": 200
+			},
+			"spiders": {
+				"kind": "spiders",
+				"title": "Spiders",
+				"description": "???",
+				"icon": "fas fa-spider",
+				"color": "text-black",
+				"price": 200
+			},
+			"fog": {
+				"kind": "fog",
+				"title": "Fog",
+				"description": "???",
+				"icon": "fas fa-smoke",
+				"color": "text-gray",
+				"price": 200
+			},
+			"lootbox": {
+				"kind": "lootbox",
+				"title": "Homoween Lootbox",
+				"description": "???",
+				"icon": "fas fa-treasure-chest",
+				"color": "text-orange",
+				"price": 1000
 			},
 		}
 	else:
@@ -431,6 +567,7 @@ def buy(v, award):
 	price = int(price*discount)
 
 	if request.values.get("mb"):
+		if award in ["grass","pause","unpausable","haunt", "upsidedown", "stab", "ghosts", "spiders", "fog","lootbox"]: abort(403)
 		if v.procoins < price: return {"error": "Not enough marseybux."}, 400
 		v.procoins -= price
 	else:
@@ -460,15 +597,24 @@ def buy(v, award):
 		elif v.coins_spent >= 10000 and not v.has_badge(69):
 			new_badge = Badge(badge_id=69, user_id=v.id)
 			g.db.add(new_badge)
-		g.db.add(v)
 
 	g.db.add(v)
 	g.db.flush()
-	thing = g.db.query(AwardRelationship).order_by(AwardRelationship.id.desc()).first().id
-	thing += 1
 
-	award = AwardRelationship(id=thing, user_id=v.id, kind=award)
-	g.db.add(award)
+	if award == "lootbox":
+		send_notification(995, f"@{v.username} bought a lootbox!")
+		for i in [1,2,3,4,5]:
+			thing = g.db.query(AwardRelationship).order_by(AwardRelationship.id.desc()).first().id
+			thing += 1
+			award = random.choice(["haunt", "upsidedown", "stab", "ghosts", "spiders", "fog"])
+			award = AwardRelationship(id=thing, user_id=v.id, kind=award)
+			g.db.add(award)
+			g.db.flush()
+	else:
+		thing = g.db.query(AwardRelationship).order_by(AwardRelationship.id.desc()).first().id
+		thing += 1
+		award = AwardRelationship(id=thing, user_id=v.id, kind=award)
+		g.db.add(award)
 
 	g.db.commit()
 
@@ -846,6 +992,15 @@ def items(v):
 			"owned": 0,
 			"price": 3000
 		},
+		"marsey": {
+			"kind": "marsey",
+			"title": "Marsey",
+			"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+			"icon": "fas fa-cat",
+			"color": "text-orange",
+			"owned": 0,
+			"price": 3000
+		},
 		"ban": {
 			"kind": "ban",
 			"title": "1-Day Ban",
@@ -890,6 +1045,69 @@ def items(v):
 			"color": "text-success",
 			"owned": 0,
 			"price": 40000
+		},
+		"haunt": {
+			"kind": "haunt",
+			"title": "Haunt",
+			"description": "???",
+			"icon": "fas fa-book-dead",
+			"color": "text-warning",
+			"owned": 0,
+			"price": 500
+		},
+		"upsidedown": {
+			"kind": "upsidedown",
+			"title": "The Upside Down",
+			"description": "???",
+			"icon": "fad fa-lights-holiday",
+			"color": "",
+			"owned": 0,
+			"price": 400
+		},
+		"stab": {
+			"kind": "stab",
+			"title": "Stab",
+			"description": "???",
+			"icon": "fas fa-knife-kitchen",
+			"color": "text-red",
+			"owned": 0,
+			"price": 300
+		},
+		"ghosts": {
+			"kind": "ghosts",
+			"title": "Ghosts",
+			"description": "???",
+			"icon": "fas fa-ghost",
+			"color": "text-white",
+			"owned": 0,
+			"price": 200
+		},
+		"spiders": {
+			"kind": "spiders",
+			"title": "Spiders",
+			"description": "???",
+			"icon": "fas fa-spider",
+			"color": "text-black",
+			"owned": 0,
+			"price": 200
+		},
+		"fog": {
+			"kind": "fog",
+			"title": "Fog",
+			"description": "???",
+			"icon": "fas fa-smoke",
+			"color": "text-gray",
+			"owned": 0,
+			"price": 200
+		},
+		"lootbox": {
+			"kind": "lootbox",
+			"title": "Homoween Lootbox",
+			"description": "???",
+			"icon": "fas fa-treasure-chest",
+			"color": "text-orange",
+			"owned": 0,
+			"price": 1000
 		},
 	}
 
