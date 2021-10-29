@@ -981,11 +981,10 @@
 <!-- Audio -->
 
 {% if not p.award_count("upsidedown") %}
-<!-- <script>
-
-	const trackList = ['ghostbusters','thriller','mostermash','strangerthings','skeletons'],
-
-	const audio = trackList[Math.floor(Math.random() * trackList.length)];
+<script>
+	const trackList = ['burton','headsroll','mostermash','owo','scooby','strangerintro'],
+	const selected = trackList[Math.floor(Math.random() * trackList.length)];
+	const audio = `/assets/halloween_songs/${selected}.mp3`
 
 	audio.loop=true;
 
@@ -996,7 +995,7 @@
 		}, {once : true});
 
 	});
-</script> -->
+</script>
 {% endif %}
 
 {% endblock %}
