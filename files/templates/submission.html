@@ -982,7 +982,18 @@
 
 {% if not p.award_count("upsidedown") %}
 <script>
-	const trackList = ['burton','headsroll','monstermash','owo','scooby','strangerintro'];
+	const trackList = [
+	'burton',
+	'headsroll',
+	'monstermash',
+	'owo',
+	'scooby',
+	'strangerintro',
+	'halloween',
+	'twilightzone',
+	'pscyho',
+	'exorcist'
+	];
 	const selected = trackList[Math.floor(Math.random() * trackList.length)];
 
 	const audio = new Audio(`/assets/halloween_songs/${selected}.mp3`);
