@@ -56,19 +56,10 @@
 {% endif %}
 
 {% if p.award_count("spiders") %}
-	{% for i in range(10) %}
-	<div class='spider_{{ i }}'>
-		<div class='eye left'></div>
-		<div class='eye right'></div>
-		<span class='leg left'></span>
-		<span class='leg left'></span>
-		<span class='leg left'></span>
-		<span class='leg left'></span>
-		<span class='leg right'></span>
-		<span class='leg right'></span>
-		<span class='leg right'></span>
-		<span class='leg right'></span>
-	</div>
+	{% set spiders = p.award_count("spiders") %}
+
+	{% for i in range(spiders) %}
+		{% include "halloween/spider.html" %}
 	{% endfor %}
 {% endif %}
 
