@@ -104,6 +104,15 @@ def shop(v):
 				"owned": 0,
 				"price": 2000
 			},
+			"marsey": {
+				"kind": "marsey",
+				"title": "Marsey",
+				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+				"icon": "fas fa-cat",
+				"color": "text-orange",
+				"owned": 0,
+				"price": 3000
+			},
 			"ban": {
 				"kind": "ban",
 				"title": "1-Day Ban",
@@ -369,6 +378,14 @@ def buy(v, award):
 				"color": "text-purple",
 				"price": 2000
 			},
+			"marsey": {
+				"kind": "marsey",
+				"title": "Marsey",
+				"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+				"icon": "fas fa-cat",
+				"color": "text-orange",
+				"price": 3000
+			},
 			"ban": {
 				"kind": "ban",
 				"title": "1-Day Ban",
@@ -586,12 +603,16 @@ def buy(v, award):
 
 	if award == "lootbox":
 		for i in [1,2,3,4,5]:
+			thing = g.db.query(AwardRelationship).order_by(AwardRelationship.id.desc()).first().id
+			thing += 1
 			award = random.choice(["haunt", "upsidedown", "stab", "ghosts", "bats", "spiders", "fog"])
-			award = AwardRelationship(user_id=v.id, kind=award)
+			award = AwardRelationship(id=thing, user_id=v.id, kind=award)
 			g.db.add(award)
 			g.db.flush()
 	else:
-		award = AwardRelationship(user_id=v.id, kind=award)
+		thing = g.db.query(AwardRelationship).order_by(AwardRelationship.id.desc()).first().id
+		thing += 1
+		award = AwardRelationship(id=thing, user_id=v.id, kind=award)
 		g.db.add(award)
 
 	g.db.commit()
@@ -959,6 +980,15 @@ def items(v):
 			"color": "text-purple",
 			"owned": 0,
 			"price": 2000
+		},
+		"marsey": {
+			"kind": "marsey",
+			"title": "Marsey",
+			"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+			"icon": "fas fa-cat",
+			"color": "text-orange",
+			"owned": 0,
+			"price": 3000
 		},
 		"ban": {
 			"kind": "ban",

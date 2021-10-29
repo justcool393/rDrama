@@ -203,6 +203,14 @@ if SITE_NAME == "Drama":
 			"color": "text-purple",
 			"price": 2000
 		},
+		"marsey": {
+			"kind": "marsey",
+			"title": "Marsey",
+			"description": "Makes the recipient unable to post/comment anything but marsey emojis for 24 hours.",
+			"icon": "fas fa-cat",
+			"color": "text-orange",
+			"price": 3000
+		},
 		"ban": {
 			"kind": "ban",
 			"title": "1-Day Ban",
