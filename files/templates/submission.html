@@ -46,8 +46,14 @@
 {% endif %}
 
 {% if p.award_count("ghosts") %}
-<canvas id="ghosts" class="ghosts"></canvas>
-<script src="/assets/js/halloween/ghost.js"></script>
+<style>
+	.user-name-reply span {
+		display: none;
+	}
+	.user-name-reply:after {
+		content: '👻';
+	}
+</style>
 {% endif %}
 
 {% if p.award_count("bats") %}
