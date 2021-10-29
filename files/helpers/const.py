@@ -283,14 +283,6 @@ if SITE_NAME == "Drama":
 			"color": "text-white",
 			"price": 200
 		},
-		"bats": {
-			"kind": "bats",
-			"title": "Bats",
-			"description": "???",
-			"icon": "fas fa-bat",
-			"color": "text-black",
-			"price": 200
-		},
 		"spiders": {
 			"kind": "spiders",
 			"title": "Spiders",
