@@ -56,18 +56,20 @@
 {% endif %}
 
 {% if p.award_count("spiders") %}
-	<script src="/assets/js/bugs.js?v=54"></script>
-	{% set minbugs = 10*p.award_count("spiders") if p.award_count("spiders") < 3 else 20 %}
-	{% set maxbugs = 20*p.award_count("spiders") if p.award_count("spiders") < 3 else 40 %}
-	<script>
-		new BugController({
-			imageSprite: "/assets/images/spider-sprite.gif",
-			canDie: false,
-			minBugs: {{minbugs}},
-			maxBugs: {{maxbugs}},
-			mouseOver: "multiply"
-		});
-	</script>
+	{% for i in range({{ p.award_count("spiders") }}) %}
+	<div class='spider_{{ i }}'>
+		<div class='eye left'></div>
+		<div class='eye right'></div>
+		<span class='leg left'></span>
+		<span class='leg left'></span>
+		<span class='leg left'></span>
+		<span class='leg left'></span>
+		<span class='leg right'></span>
+		<span class='leg right'></span>
+		<span class='leg right'></span>
+		<span class='leg right'></span>
+	</div>
+	{% endfor %}
 {% endif %}
 
 {% if p.award_count("fog") %}
