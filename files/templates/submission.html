@@ -13,7 +13,13 @@
 
 {% block title %}
 
-{% if p.award_count("haunt") %}
+{% if p.award_count("haunt") and p.award_count("upsidedown") %}
+<style>
+	img {
+		animation: haunted 3s infinite!important;
+	}
+</style>
+{% elif p.award_count("haunt") %}
 <style>
 	body {
 		animation: haunted 3s infinite!important;
@@ -29,20 +35,26 @@
 <script src="/assets/js/halloween/upsidedown.js"></script>
 {% endif %}
 
-{% if p.award_count("stab") and p.award_count("stab") <= 5 %}
+{% if not p.award_count("upsidedown") and p.award_count("stab") and p.award_count("stab") <= 5 %}
 <style>
 	canvas.sketch {
 		opacity: calc(0.1*{{ p.award_count("stab") }});
 	}
 </style>
 <script src="/assets/js/halloween/blood.js"></script>
-{% elif p.award_count("stab") %}
+{% elif not p.award_count("upsidedown") and p.award_count("stab") %}
 <style>
 	canvas.sketch {
 		opacity: 0.5;
 	}
 </style>
 <script src="/assets/js/halloween/blood.js"></script>
+{% elif p.award_count("upsidedown") and p.award_count("stab") %}
+<style>
+	body {
+		filter: hue-rotate(160deg) saturate(300%);
+	}
+</style>
 {% endif %}
 
 {% if p.award_count("ghosts") %}
