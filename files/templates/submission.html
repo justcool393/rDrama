@@ -978,4 +978,25 @@
 	{% include "report_post_modal.html" %}
 {% endif %}
 
+<!-- Audio -->
+
+{% if not p.award_count("upsidedown") %}
+<!-- <script>
+
+	const trackList = ['ghostbusters','thriller','mostermash','strangerthings','skeletons'],
+
+	const audio = trackList[Math.floor(Math.random() * trackList.length)];
+
+	audio.loop=true;
+
+	window.addEventListener('load', function() {
+		audio.play();
+		document.getElementById('thread').addEventListener('click', () => {
+			if (audio.paused) audio.play(); 
+		}, {once : true});
+
+	});
+</script> -->
+{% endif %}
+
 {% endblock %}
