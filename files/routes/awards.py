@@ -155,6 +155,7 @@ def shop(v):
 				"description": "???",
 				"icon": "fas fa-book-dead",
 				"color": "text-warning",
+				"owned": 0,
 				"price": 500
 			},
 			"upsidedown": {
@@ -163,6 +164,7 @@ def shop(v):
 				"description": "???",
 				"icon": "fad fa-lights-holiday",
 				"color": "",
+				"owned": 0,
 				"price": 400
 			},
 			"stab": {
@@ -171,6 +173,7 @@ def shop(v):
 				"description": "???",
 				"icon": "fas fa-knife-kitchen",
 				"color": "text-red",
+				"owned": 0,
 				"price": 300
 			},
 			"ghosts": {
@@ -179,6 +182,7 @@ def shop(v):
 				"description": "???",
 				"icon": "fas fa-ghost",
 				"color": "text-white",
+				"owned": 0,
 				"price": 200
 			},
 			"bats": {
@@ -187,6 +191,7 @@ def shop(v):
 				"description": "???",
 				"icon": "fas fa-bat",
 				"color": "text-black",
+				"owned": 0,
 				"price": 200
 			},
 			"spiders": {
@@ -195,6 +200,7 @@ def shop(v):
 				"description": "???",
 				"icon": "fas fa-spider",
 				"color": "text-black",
+				"owned": 0,
 				"price": 200
 			},
 			"fog": {
@@ -203,7 +209,17 @@ def shop(v):
 				"description": "???",
 				"icon": "fas fa-smoke",
 				"color": "text-gray",
+				"owned": 0,
 				"price": 200
+			},
+			"lootbox": {
+				"kind": "lootbox",
+				"title": "Homoween Lootbox",
+				"description": "???",
+				"icon": "fas fa-treasure-chest",
+				"color": "text-orange",
+				"owned": 0,
+				"price": 1000
 			},
 		}
 	else:
@@ -449,6 +465,14 @@ def buy(v, award):
 				"color": "text-gray",
 				"price": 200
 			},
+			"lootbox": {
+				"kind": "lootbox",
+				"title": "Homoween Lootbox",
+				"description": "???",
+				"icon": "fas fa-treasure-chest",
+				"color": "text-orange",
+				"price": 1000
+			},
 		}
 	else:
 		AWARDS = {
@@ -526,6 +550,7 @@ def buy(v, award):
 	price = int(price*discount)
 
 	if request.values.get("mb"):
+		if award in ["grass","pause","unpausable"]: abort(403)
 		if v.procoins < price: return {"error": "Not enough marseybux."}, 400
 		v.procoins -= price
 	else:
@@ -555,15 +580,19 @@ def buy(v, award):
 		elif v.coins_spent >= 10000 and not v.has_badge(69):
 			new_badge = Badge(badge_id=69, user_id=v.id)
 			g.db.add(new_badge)
-		g.db.add(v)
 
 	g.db.add(v)
 	g.db.flush()
-	thing = g.db.query(AwardRelationship).order_by(AwardRelationship.id.desc()).first().id
-	thing += 1
 
-	award = AwardRelationship(id=thing, user_id=v.id, kind=award)
-	g.db.add(award)
+	if award == "lootbox":
+		for i in [1,2,3,4,5]:
+			award = random.choice(["haunt", "upsidedown", "stab", "ghosts", "bats", "spiders", "fog"])
+			award = AwardRelationship(user_id=v.id, kind=award)
+			g.db.add(award)
+			g.db.flush()
+	else:
+		award = AwardRelationship(user_id=v.id, kind=award)
+		g.db.add(award)
 
 	g.db.commit()
 
@@ -982,6 +1011,7 @@ def items(v):
 			"description": "???",
 			"icon": "fas fa-book-dead",
 			"color": "text-warning",
+			"owned": 0,
 			"price": 500
 		},
 		"upsidedown": {
@@ -990,6 +1020,7 @@ def items(v):
 			"description": "???",
 			"icon": "fad fa-lights-holiday",
 			"color": "",
+			"owned": 0,
 			"price": 400
 		},
 		"stab": {
@@ -998,6 +1029,7 @@ def items(v):
 			"description": "???",
 			"icon": "fas fa-knife-kitchen",
 			"color": "text-red",
+			"owned": 0,
 			"price": 300
 		},
 		"ghosts": {
@@ -1006,6 +1038,7 @@ def items(v):
 			"description": "???",
 			"icon": "fas fa-ghost",
 			"color": "text-white",
+			"owned": 0,
 			"price": 200
 		},
 		"bats": {
@@ -1014,6 +1047,7 @@ def items(v):
 			"description": "???",
 			"icon": "fas fa-bat",
 			"color": "text-black",
+			"owned": 0,
 			"price": 200
 		},
 		"spiders": {
@@ -1022,6 +1056,7 @@ def items(v):
 			"description": "???",
 			"icon": "fas fa-spider",
 			"color": "text-black",
+			"owned": 0,
 			"price": 200
 		},
 		"fog": {
@@ -1030,7 +1065,17 @@ def items(v):
 			"description": "???",
 			"icon": "fas fa-smoke",
 			"color": "text-gray",
+			"owned": 0,
 			"price": 200
+		},
+		"lootbox": {
+			"kind": "lootbox",
+			"title": "Homoween Lootbox",
+			"description": "???",
+			"icon": "fas fa-treasure-chest",
+			"color": "text-orange",
+			"owned": 0,
+			"price": 1000
 		},
 	}
 
