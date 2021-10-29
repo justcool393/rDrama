@@ -70,11 +70,7 @@
 	{% endfor %}
 {% endif %}
 
-{% if p.award_count("fog") %}
-<canvas id="fog" class="fog"></canvas>
-<script src="/assets/js/halloween/fog.js"></script>
-{% elif p.award_count("fog") and p.award_count("upsidedown") %}
-
+{% if p.award_count("fog") and p.award_count("upsidedown") %}
 {% set puffs = 10/p.award_count("fog") if p.award_count("fog") < 2 else 5 %}
 
 <style>
@@ -105,6 +101,9 @@
 		}
 	}
 </style>
+{% elif p.award_count("fog") %}
+<canvas id="fog" class="fog"></canvas>
+<script src="/assets/js/halloween/fog.js"></script>
 {% endif %}
 
 {% if p.award_count("train") %}
