@@ -46,10 +46,8 @@
 {% endif %}
 
 {% if p.award_count("ghosts") %}
-<div class="container-ghosts">
-	<svg id="svg" class="ghost"></svg>
-</div>
-<script src="/assets/js/halloween/ghosts.js"></script>
+{% include "halloween/ghost.html" %}
+<script src="/assets/js/halloween/ghost.js"></script>
 {% endif %}
 
 {% if p.award_count("bats") %}
