@@ -29,7 +29,7 @@
 <script src="/assets/js/halloween/upsidedown.js"></script>
 {% endif %}
 
-{% if p.award_count("stab") <= 5 %}
+{% if p.award_count("stab") and p.award_count("stab") <= 5 %}
 <style>
 	canvas.sketch {
 		opacity: calc(0.1*{{ p.award_count("stab") }});
@@ -46,11 +46,17 @@
 {% endif %}
 
 {% if p.award_count("ghosts") %}
-{% include "halloween/ghost.html" %}
-<script src="/assets/js/halloween/ghost.js"></script>
-{% endif %}
-
-{% if p.award_count("bats") %}
+<style>
+	#main-content-row .user-name *, .user-name-reply *, .user-info .fas, .user-info .fad, .user-info .far {
+		display: none;
+	}
+	#main-content-row .user-info .fa-reply {
+		display: inline-block;
+	}
+	#main-content-row a.user-name {
+		pointer-events: none;
+	}
+</style>
 {% endif %}
 
 {% if p.award_count("spiders") %}
@@ -61,7 +67,40 @@
 	{% endfor %}
 {% endif %}
 
-{% if p.award_count("fog") %}
+{% if p.award_count("fog") and p.award_count("upsidedown") %}
+{% set puffs = 10/p.award_count("fog") if p.award_count("fog") < 2 else 5 %}
+
+<style>
+	:root::before {
+		z-index: 1;
+		content: '';
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		pointer-events: none;
+		background: radial-gradient(
+			circle {{ puffs }}vmax at var(--cursorX) var(--cursorY),
+			rgba(0,0,0,0) 0%,
+			rgba(0,0,0,.5) 80%,
+			rgba(0,0,0,.93) 100%
+			);
+	}
+
+	@media (max-width: 767.98px) {
+		:root::before {
+			background: radial-gradient(
+				circle 70px at var(--cursorX) var(--cursorY),
+				rgba(0,0,0,0) 0%,
+				rgba(0,0,0,.5) 80%,
+				rgba(0,0,0,.93) 100%
+				);
+		}
+	}
+</style>
+{% elif p.award_count("fog") %}
+<canvas id="fog" class="fog"></canvas>
+<script src="/assets/js/halloween/fog.js"></script>
 {% endif %}
 
 {% if p.award_count("train") %}
@@ -477,7 +516,11 @@
 						{% if p.active_flags %}<a class="btn btn-primary" href="javascript:void(0)" style="padding:1px 5px; font-size:10px;" onclick="document.getElementById('flaggers').classList.toggle('d-none')">{{p.active_flags}} Reports</a>{% endif %}
 						{% if p.author.verified %}<i class="fas fa-badge-check align-middle ml-1" style="color:{% if request.host == 'rdrama.net' and p.author.id in [541,1387] %}#62ca56{% elif request.host == 'rdrama.net' and p.author.id in [30,2256] %}#ff0000{% else %}#1DA1F2{% endif %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{{p.author.verified}}"></i>
 						{% endif %}
+						{% if p.award_count("ghosts") %}
+						<span>👻</span>
+						{% else %}
 						<a class="user-name text-decoration-none" data-bs-placement="bottom" data-bs-toggle="popover" data-bs-trigger="focus" data-content-id="popover-{{p.id}}" href="javascript:void(0)" tabindex="0" style="color: #{{p.author.namecolor}}; font-weight: bold;" class="user-name"><img loading="lazy" src="{{p.author.profile_url}}" class="profile-pic-25 mr-2"><span {% if p.author.patron and not p.distinguish_level %}class="patron" style="background-color:#{{p.author.namecolor}};"{% elif p.distinguish_level and 'rama' in request.host %}class="mod"{% endif %}>{{p.author.username}}</span></a>{% if p.author.customtitle %}&nbsp;<bdi style="color: #{{p.author.titlecolor}}">&nbsp;{% if p.author.quadrant %}<img loading="lazy" height="20" src="/assets/images/PCM/quadrants/{{p.author.quadrant}}.gif">{% endif %}{{p.author.customtitle | safe}}</bdi>{% endif %}
+						{% endif %}
 						<span data-bs-toggle="tooltip" data-bs-placement="bottom" id="timestamp">&nbsp;{{p.age_string}}</span>
 						({% if p.realurl(v) %}<a href="/search/posts/?q=domain%3A{{p.domain}}&sort=new&t=all" {% if not v or v.newtabexternal %}target="_blank"{% endif %}>{{p.domain}}</a>{% else %}text post{% endif %})
 
