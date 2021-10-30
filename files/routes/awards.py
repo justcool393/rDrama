@@ -474,7 +474,10 @@ def buy(v, award):
 			g.db.add(new_badge)
 
 	g.db.add(v)
-	g.db.flush()
+	try: g.db.flush()
+	except:
+		g.db.rollback()
+		return {"error": "Error. Please try again!"}
 
 	if award == "lootbox":
 		send_notification(995, f"@{v.username} bought a lootbox!")
