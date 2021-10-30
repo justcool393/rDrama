@@ -7,51 +7,51 @@ from files.__main__ import app, limiter, cache
 from sqlalchemy.orm import joinedload
 from .front import frontlist
 
-@app.get("/votes")
-@auth_desired
-def admin_vote_info_get(v):
+# @app.get("/votes")
+# @auth_desired
+# def admin_vote_info_get(v):
 
 
-	link = request.values.get("link")
-	if not link: return render_template("votes.html", v=v)
+# 	link = request.values.get("link")
+# 	if not link: return render_template("votes.html", v=v)
 
-	try:
-		if "t2_" in link: thing = get_post(int(link.split("t2_")[1]), v=v)
-		elif "t3_" in link: thing = get_comment(int(link.split("t3_")[1]), v=v)
-		else: abort(400)
-	except: abort(400)
+# 	try:
+# 		if "t2_" in link: thing = get_post(int(link.split("t2_")[1]), v=v)
+# 		elif "t3_" in link: thing = get_comment(int(link.split("t3_")[1]), v=v)
+# 		else: abort(400)
+# 	except: abort(400)
 
-	if isinstance(thing, Submission):
+# 	if isinstance(thing, Submission):
 
-		ups = g.db.query(Vote
-						 ).options(joinedload(Vote.user)
-								   ).filter_by(submission_id=thing.id, vote_type=1
-											   ).order_by(Vote.id).all()
+# 		ups = g.db.query(Vote
+# 						 ).options(joinedload(Vote.user)
+# 								   ).filter_by(submission_id=thing.id, vote_type=1
+# 											   ).order_by(Vote.id).all()
 
-		downs = g.db.query(Vote
-						   ).options(joinedload(Vote.user)
-									 ).filter_by(submission_id=thing.id, vote_type=-1
-												 ).order_by(Vote.id).all()
+# 		downs = g.db.query(Vote
+# 						   ).options(joinedload(Vote.user)
+# 									 ).filter_by(submission_id=thing.id, vote_type=-1
+# 												 ).order_by(Vote.id).all()
 
-	elif isinstance(thing, Comment):
+# 	elif isinstance(thing, Comment):
 
-		ups = g.db.query(CommentVote
-						 ).options(joinedload(CommentVote.user)
-								   ).filter_by(comment_id=thing.id, vote_type=1
-											   ).order_by(CommentVote.id).all()
+# 		ups = g.db.query(CommentVote
+# 						 ).options(joinedload(CommentVote.user)
+# 								   ).filter_by(comment_id=thing.id, vote_type=1
+# 											   ).order_by(CommentVote.id).all()
 
-		downs = g.db.query(CommentVote
-						   ).options(joinedload(CommentVote.user)
-									 ).filter_by(comment_id=thing.id, vote_type=-1
-												 ).order_by(CommentVote.id).all()
+# 		downs = g.db.query(CommentVote
+# 						   ).options(joinedload(CommentVote.user)
+# 									 ).filter_by(comment_id=thing.id, vote_type=-1
+# 												 ).order_by(CommentVote.id).all()
 
-	else: abort(400)
+# 	else: abort(400)
 
-	return render_template("votes.html",
-						   v=v,
-						   thing=thing,
-						   ups=ups,
-						   downs=downs,)
+# 	return render_template("votes.html",
+# 						   v=v,
+# 						   thing=thing,
+# 						   ups=ups,
+# 						   downs=downs,)
 
 
 
