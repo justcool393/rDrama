@@ -24,7 +24,13 @@
 </style>
 {% endif %}
 
-{% if p.award_count("upsidedown") %}
+{% if p.award_count("upsidedown") and p.comment_count >= 10 %}
+<canvas id="canvas" class="particles"></canvas>
+<link href="/assets/css/upsidedown.css" rel="stylesheet">
+<img id="demogorgon-1" class="demogorgon" src="/assets/images/halloween/demogorgon.png" alt="demogorgon"/>
+<img id="demogorgon-2" class="demogorgon" src="/assets/images/halloween/demogorgon.png" alt="demogorgon"/>
+<script src="/assets/js/halloween/upsidedown-nerf.js"></script>
+{% elif p.award_count("upsidedown") %}
 <canvas id="canvas" class="particles"></canvas>
 <link href="/assets/css/upsidedown.css" rel="stylesheet">
 <img id="demogorgon-1" class="demogorgon" src="/assets/images/halloween/demogorgon.png" alt="demogorgon"/>
