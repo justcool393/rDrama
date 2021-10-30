@@ -13,15 +13,9 @@
 
 {% block title %}
 
-{% if p.award_count("haunt") and p.award_count("upsidedown") %}
+{% if p.award_count("haunt") %}
 <style>
 	img {
-		animation: haunted 5s infinite!important;
-	}
-</style>
-{% elif p.award_count("haunt") %}
-<style>
-	body {
 		animation: haunted 5s infinite!important;
 	}
 </style>
