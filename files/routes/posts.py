@@ -335,7 +335,7 @@ def edit_post(pid, v):
 			if not existing: send_notification(x, message)
 
 
-	if title != p.title or body != p.body:
+	if (title != p.title or body != p.body) and v.id == p.author_id:
 		if int(time.time()) - p.created_utc > 60 * 3: p.edited_utc = int(time.time())
 		g.db.add(p)
 
