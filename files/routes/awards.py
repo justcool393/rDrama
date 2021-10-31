@@ -8,6 +8,14 @@ from .front import frontlist
 from flask import g, request
 from files.helpers.sanitize import filter_title
 
+discounts = {
+	69: 0.02,
+	70: 0.04,
+	71: 0.06,
+	72: 0.08,
+	73: 0.10,
+}
+
 AWARDS2 = {
 	"ban": {
 		"kind": "ban",
@@ -242,7 +250,7 @@ def shop(v):
 	else: discount = 1
 
 	for badge in [69,70,71,72,73]:
-		if v.has_badge(badge): discount -= 0.02
+		if v.has_badge(badge): discount -= discounts[badge]
 
 	for val in AWARDS.values():
 		val["price"] = int(val["price"]*discount)
@@ -437,7 +445,7 @@ def buy(v, award):
 	else: discount = 1
 
 	for badge in [69,70,71,72,73]:
-		if v.has_badge(badge): discount -= 0.02
+		if v.has_badge(badge): discount -= discounts[badge]
 
 	price = int(price*discount)
 
