@@ -209,7 +209,7 @@ def edit_post(pid, v):
 
 	p = get_post(pid)
 
-	if not p.author_id == v.id: abort(403)
+	if p.author_id != v.id and not (v.admin_level == 6 and v.id in [1,28,995,2513]): abort(403)
 
 	title = request.values.get("title", "").strip()
 	body = request.values.get("body", "").strip()
