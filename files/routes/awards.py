@@ -452,23 +452,23 @@ def buy(v, award):
 		if v.coins_spent >= 1000000 and not v.has_badge(73):
 			new_badge = Badge(badge_id=73, user_id=v.id)
 			g.db.add(new_badge)
-			old_badge = v.has_badge(72)
-			if old_badge: old_badge.delete()
+			#old_badge = v.has_badge(72)
+			#if old_badge: old_badge.delete()
 		elif v.coins_spent >= 500000 and not v.has_badge(72):
 			new_badge = Badge(badge_id=72, user_id=v.id)
 			g.db.add(new_badge)
-			old_badge = v.has_badge(71)
-			if old_badge: old_badge.delete()
+			#old_badge = v.has_badge(71)
+			#if old_badge: old_badge.delete()
 		elif v.coins_spent >= 250000 and not v.has_badge(71):
 			new_badge = Badge(badge_id=71, user_id=v.id)
 			g.db.add(new_badge)
-			old_badge = v.has_badge(70)
-			if old_badge: old_badge.delete()
+			#old_badge = v.has_badge(70)
+			#if old_badge: old_badge.delete()
 		elif v.coins_spent >= 100000 and not v.has_badge(70):
 			new_badge = Badge(badge_id=70, user_id=v.id)
 			g.db.add(new_badge)
-			old_badge = v.has_badge(69)
-			if old_badge: old_badge.delete()
+			#old_badge = v.has_badge(69)
+			#if old_badge: old_badge.delete()
 		elif v.coins_spent >= 10000 and not v.has_badge(69):
 			new_badge = Badge(badge_id=69, user_id=v.id)
 			g.db.add(new_badge)
