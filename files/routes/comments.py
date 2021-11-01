@@ -152,8 +152,7 @@ def api_comment(v):
 		level = parent.level + 1
 	else: abort(400)
 
-	body = request.values.get("body", "").strip()[:10000]
-	body = body.strip()
+	body = request.values.get("body", "").strip()[:10000].strip()
 
 	if v.marseyawarded:
 		if time.time() > v.marseyawarded:

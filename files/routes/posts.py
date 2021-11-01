@@ -698,7 +698,7 @@ def submit_post(v):
 		app_id=v.client.application.id if v.client else None,
 		is_bot = request.headers.get("Authorization"),
 		url=url,
-		body=body,
+		body=body[:10000],
 		body_html=body_html,
 		embed_url=embed,
 		title=title,
