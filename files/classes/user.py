@@ -638,7 +638,7 @@ class User(Base):
 			return f"{SITE_FULL}/assets/images/pfps/agendaposter/{random.randint(1, 57)}.webp?v=1"
 		if self.bite:
 			return f"{SITE_FULL}/e/marseyvampire.webp"
-		if self.profileurl and SITE != 'devrama.net': 
+		if self.profileurl: 
 			if self.profileurl.startswith('/'): return SITE_FULL + self.profileurl
 			return self.profileurl
 		return f"{SITE_FULL}/assets/images/default-profile-pic.webp?v=1008"

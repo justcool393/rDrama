@@ -107,7 +107,7 @@ def discord_redirect(v):
 			time.sleep(0.1)
 			add_role(v, str(v.patron))
 
-		if SITE in ('rdrama.net','devrama.net') and v.id == AEVANN_ID:
+		if SITE == 'rdrama.net' and v.id == AEVANN_ID:
 			time.sleep(0.1)
 			add_role(v, "admin")
 

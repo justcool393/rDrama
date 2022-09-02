@@ -218,7 +218,7 @@ SNAPPY_THREAD = 0
 MARSEY_THREAD = 0
 HAT_THREAD = 0
 
-if SITE in ('rdrama.net', 'devrama.net'):
+if SITE == 'rdrama.net':
 	FEATURES['PRONOUNS'] = True
 	FEATURES['HATS'] = True
 	FEATURES['HOUSES'] = True
@@ -879,7 +879,7 @@ if len(SITE_NAME) > 5:
 if SITE != 'localhost':
 	REDDIT_NOTIFS_SITE.add(SITE)
 
-if SITE in ('rdrama.net','devrama.net'):
+if SITE == 'rdrama.net':
 	REDDIT_NOTIFS_SITE.add('marsey')
 	REDDIT_NOTIFS_USERS = {
 		'idio3': IDIO_ID,
@@ -954,7 +954,6 @@ approved_embed_hosts = {
 	'rdrama.net',
 	'pcmemes.net',
 	'watchpeopledie.co',
-	'devrama.net',
 	'imgur.com',
 	'lain.la',
 	'pngfind.com',
