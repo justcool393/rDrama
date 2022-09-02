@@ -58,7 +58,7 @@ def speak(data, v):
 
 	global messages, total
 
-	if SITE == 'rdrama.net': text = data[:200].strip()
+	if SITE in ('rdrama.net','devrama.net'): text = data[:200].strip()
 	else: text = data[:1000].strip()
 
 	if not text: return '', 403

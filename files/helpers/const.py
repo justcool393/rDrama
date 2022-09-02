@@ -216,7 +216,7 @@ BANNER_THREAD = 0
 BADGE_THREAD = 0
 SNAPPY_THREAD = 0
 MARSEY_THREAD = 0
-GAMBLING_THREAD = 0
+HAT_THREAD = 0
 
 if SITE in ('rdrama.net', 'devrama.net'):
 	FEATURES['PRONOUNS'] = True
@@ -228,8 +228,8 @@ if SITE in ('rdrama.net', 'devrama.net'):
 	BADGE_THREAD = 37833
 	SNAPPY_THREAD = 37749
 	MARSEY_THREAD = 37838
-	GAMBLING_THREAD = 39413
-if SITE in {'rdrama.net', 'devrama.net'}:
+	HAT_THREAD = 100210
+
 	HOLE_COST = 50000
 	HOLE_INACTIVITY_DELETION = True
 
@@ -879,7 +879,7 @@ if len(SITE_NAME) > 5:
 if SITE != 'localhost':
 	REDDIT_NOTIFS_SITE.add(SITE)
 
-if SITE == 'rdrama.net':
+if SITE in ('rdrama.net','devrama.net'):
 	REDDIT_NOTIFS_SITE.add('marsey')
 	REDDIT_NOTIFS_USERS = {
 		'idio3': IDIO_ID,
@@ -943,7 +943,7 @@ if path.isfile(f'snappy_{SITE_NAME}.txt'):
 
 YOUTUBE_KEY = environ.get("YOUTUBE_KEY", "").strip()
 
-ADMIGGERS = {SIDEBAR_THREAD,BANNER_THREAD,BADGE_THREAD,SNAPPY_THREAD,MARSEY_THREAD,GAMBLING_THREAD}
+ADMIGGERS = {SIDEBAR_THREAD,BANNER_THREAD,BADGE_THREAD,SNAPPY_THREAD,MARSEY_THREAD,HAT_THREAD}
 
 proxies = {"http":"http://127.0.0.1:18080","https":"http://127.0.0.1:18080"}
 
