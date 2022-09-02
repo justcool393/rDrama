@@ -1648,7 +1648,7 @@ insert into hat_defs (name, description, author_id, price) values
 ('Surgeon', 'Lobotomize me daddy', 1, 500),
 ('Mouseketeer', 'please don''t sue please don''t sue please don''t sue please don''t sue please don''t sue', 1, 500),
 ('Karen', 'Let me speak to your manager', 1, 500),
-('Badass Fighter Ace', ' Top Gun™ Maverick® Now Showing In Theaters!', 1, 500),
+('Badass Fighter Ace', 'Top Gun™ Maverick® Now Showing In Theaters!', 1, 500),
 ('Taqiyah', 'It''s not a yarmulke I swear', 1, 500),
 ('Cock', 'DM me yours!', 1, 500),
 ('Nervous, Sweating', '>mfw', 1, 500),
