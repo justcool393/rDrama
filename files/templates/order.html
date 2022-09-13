@@ -23,45 +23,48 @@
         text-align: center;
     }
 
-    .order-form--heading {
+    .order-form--heading,
+    .form-check {
         text-transform: uppercase;
         letter-spacing: 2px;
     }
-
 </style>
 
-<form class="order-form" id="orderForm">
-    <h2 class="order-form--heading"><hr /><span>Place an order</span><hr /></h2>
+<form class="order-form" id="orderForm" action="/order" method="POST">
+    <h2 class="order-form--heading">
+        <hr /><span>Place an order</span>
+        <hr />
+    </h2>
 
     <!-- Platforms -->
     <div class="mb-3">
         <label class="order-form--heading">Platforms to target</label>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" value="twitter">
+            <input name="platform" class="form-check-input" type="checkbox" id="defaultCheck1" value="twitter">
             <label class="form-check-label" for="defaultCheck1">
-                <i class="fa fa-twitter"></i> Twitter
+                Twitter
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="defaultCheck2" value="instagram">
+            <input name="platform" class="form-check-input" type="checkbox" id="defaultCheck2" value="instagram">
             <label class="form-check-label" for="defaultCheck2">
                 Instagram
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="defaultCheck3" value="tiktok">
+            <input name="platform" class="form-check-input" type="checkbox" id="defaultCheck3" value="tiktok">
             <label class="form-check-label" for="defaultCheck3">
                 TikTok
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="defaultCheck3" value="facebook">
+            <input name="platform" class="form-check-input" type="checkbox" id="defaultCheck3" value="facebook">
             <label class="form-check-label" for="defaultCheck4">
                 Facebook
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="defaultCheck5" value="reddit">
+            <input name="platform" class="form-check-input" type="checkbox" id="defaultCheck5" value="reddit">
             <label class="form-check-label" for="defaultCheck5">
                 Reddit
             </label>
@@ -99,6 +102,21 @@
     </div>
 
     <!-- Actions -->
-    <button type="submit" class="btn btn-primary" style="text-align: right">Request Quote</button>
+    <button type="submit" class="btn btn-primary">Request Quote</button>
 </form>
+
+<script>
+    if (
+        document.readyState === "complete" ||
+        (document.readyState !== "loading" && !document.documentElement.doScroll)
+    ) {
+        initializeOrder();
+    } else {
+        document.addEventListener("DOMContentLoaded", initializeOrder);
+    }
+
+    function initializeOrder() {
+        const form = document.getElementById('orderForm');
+    }
+</script>
 {% endblock %}
