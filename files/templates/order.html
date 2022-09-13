@@ -1,0 +1,104 @@
+{% extends "default.html" %}
+
+{% block content %}
+<style>
+    .order-form {
+        margin: 0 auto;
+        margin-top: 2rem;
+        max-width: 500px;
+    }
+
+    .order-form h2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .order-form h2 hr {
+        flex: 1;
+    }
+
+    .order-form h2 span {
+        flex: 3;
+        text-align: center;
+    }
+
+    .order-form--heading {
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+</style>
+
+<form class="order-form" id="orderForm">
+    <h2 class="order-form--heading"><hr /><span>Place an order</span><hr /></h2>
+
+    <!-- Platforms -->
+    <div class="mb-3">
+        <label class="order-form--heading">Platforms to target</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" value="twitter">
+            <label class="form-check-label" for="defaultCheck1">
+                <i class="fa fa-twitter"></i> Twitter
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="defaultCheck2" value="instagram">
+            <label class="form-check-label" for="defaultCheck2">
+                Instagram
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="defaultCheck3" value="tiktok">
+            <label class="form-check-label" for="defaultCheck3">
+                TikTok
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="defaultCheck3" value="facebook">
+            <label class="form-check-label" for="defaultCheck4">
+                Facebook
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="defaultCheck5" value="reddit">
+            <label class="form-check-label" for="defaultCheck5">
+                Reddit
+            </label>
+        </div>
+    </div>
+
+    <!-- Specific Individuals -->
+    <div class="mb-3">
+        <label class="order-form--heading">Individuals to target <br /> <small class="order-form--heading">(Enter one
+                (1) name per line)</small></label> <br />
+        <textarea form="orderForm" class="textarea form-control" id="individualsToTarget" name="individuals"
+            rows="5"></textarea>
+    </div>
+
+    <!-- Narrative -->
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="order-form--heading">Narrative to push</label>
+        <textarea form="orderForm" class="textarea form-control" id="narrativeToPush" name="narrative"
+            rows="5"></textarea>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="order-form--heading">Additional information</label>
+        <textarea form="orderForm" class="textarea form-control" id="additionalInformation" name="info"
+            rows="5"></textarea>
+    </div>
+
+    <!-- Customer Email -->
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="order-form--heading">Your Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <div id="emailHelp" class="form-text"><small>We respect your privacy. <a href="https://wikipedia.org/">Learn
+                    more.</a></small></div>
+    </div>
+
+    <!-- Actions -->
+    <button type="submit" class="btn btn-primary" style="text-align: right">Request Quote</button>
+</form>
+{% endblock %}
