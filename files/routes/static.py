@@ -196,7 +196,7 @@ def submit_order():
 	body = request.values.get("message")
 	if not body: abort(400)
 
-	body = f'This message has been sent automatically to all admins via [/order](/order)\n\nMessage:\n\n' + body
+	body = 'This message has been sent automatically to all admins via [/order](/order)\n\nMessage:\n\n' + body
 	body = body.strip()
 	body_html = sanitize(body)
 	new_comment = Comment(author_id=AUTOJANNY_ID, parent_submission=None, level=1, body_html=body_html, sentto=2)
