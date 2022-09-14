@@ -1,5 +1,12 @@
 (() => {
-    const socket = io("ws://localhost/marsey-racing");
+  const MarseyRacingEvent = {
+    CONNECT: "connect",
+    UPDATE_STATE: "update-state",
+  };
 
-    console.log({socket})
+  const socket = io();
+  
+  socket.on(MarseyRacingEvent.UPDATE_STATE, (...args) => {
+    console.log({ args });
+  });
 })();

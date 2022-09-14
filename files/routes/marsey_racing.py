@@ -1,3 +1,4 @@
+from enum import Enum
 from files.helpers.wrappers import *
 from files.__main__ import app, limiter, cache
 from flask_socketio import SocketIO, emit
@@ -34,11 +35,15 @@ def marsey_racing_js():
     resp = make_response(send_from_directory('assets', 'js/marsey_racing.js'))
     return resp
 
-@socketio.on('connect')
+# ===
+class MarseyRacingEvent(str, Enum):
+    CONNECT = 'connect'
+    UPDATE_STATE = 'update-state'
+
+
+@socketio.on(MarseyRacingEvent.CONNECT)
 @auth_required
 def connect(v):
-    print('\n\n\n')
-    print('Hello')
-    print('\n\n\n')
+    emit(MarseyRacingEvent.UPDATE_STATE, { "foo": "bar" })
 
     return '', 204

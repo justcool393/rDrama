@@ -1,13 +1,44 @@
 {%- from 'util/assetcache.html' import asset, asset_siteimg with context -%}
 {%- import 'util/helpers.html' as help -%}
-<html>
+<html lang="en">
     <head>
+        <script defer src="{{asset('js/bootstrap.js')}}"></script>
+        <meta name="description" content="{{DESCRIPTION}}">
         <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; object-src 'none';">
+    	<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    	<meta name="author" content="">
+    	<link id="favicon" rel="icon" type="image/webp" href="{{asset_siteimg('icon.webp')}}">
+        <title>Marsey Racing</title>
+	    <style>:root{--primary:#{{v.themecolor}}}</style>
+        <link rel="stylesheet" href="{{asset('css/main.css')}}">
+        <link rel="stylesheet" href="{{asset('css/' + v.theme + '.css')}}">
+        {% if v.css %}
+            <style>
+                {{v.css | safe}}
+            </style>
+        {% endif %}
 
-    </head>
+        <!-- Game Styles -->
+        <style>
+
+        </style>
+</head>
     <body>
-        <div>Hi</div>
+	    {% include "header.html" %}
         
+        <div class="container pb-4">
+
+        </div>
+        
+        <input id="vid" type="hidden" value="{{v.id}}">
+        <input id="vusername" type="hidden" value="{{v.username}}">
+        <input id="site_name" type="hidden" value="{{SITE_NAME}}">
+        <input id="slurreplacer" type="hidden" value="{{v.slurreplacer}}">
+
+        {% include "emoji_modal.html" %}
+        {% include "expanded_image_modal.html" %}
+
         <script defer src="/socketio.min.js?h=5"></script>
         <script defer src="/marsey_racing.js?h=5"></script>
     </body>
