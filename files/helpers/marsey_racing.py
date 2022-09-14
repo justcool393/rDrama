@@ -1,8 +1,7 @@
 import uuid
 from enum import Enum
-from math import floor
+from math import floor, comb, factorial
 from copy import copy
-import time
 import random
 from files.classes.casino_game import Casino_Game
 from files.classes.marsey import Marsey
@@ -53,8 +52,20 @@ class MarseyRacingSpirit(str, Enum):
     SOREN = 'SOREN'
 
 
-HOW_MANY_MARSEYS_PER_RACE = 1
+HOW_MANY_MARSEYS_PER_RACE = 14
+
 BASELINE_RACE_COMPLETION_SPEED_IN_MS = 5000
+
+PAYOUT_MULITPLIERS = {
+    MarseyRacingBet.WIN: HOW_MANY_MARSEYS_PER_RACE,
+    MarseyRacingBet.PLACE: floor(HOW_MANY_MARSEYS_PER_RACE / 2),
+    MarseyRacingBet.SHOW: floor(HOW_MANY_MARSEYS_PER_RACE / 3),
+    MarseyRacingBet.QUINELLA: comb(HOW_MANY_MARSEYS_PER_RACE, 2),
+    MarseyRacingBet.TRIFECTA_BOX: comb(HOW_MANY_MARSEYS_PER_RACE, 3),
+    MarseyRacingBet.TRIFECTA: int(factorial(HOW_MANY_MARSEYS_PER_RACE) / factorial(HOW_MANY_MARSEYS_PER_RACE - 3)),
+    MarseyRacingBet.SUPERFECTA_BOX: comb(HOW_MANY_MARSEYS_PER_RACE, 4),
+    MarseyRacingBet.SUPERFECTA: int(factorial(HOW_MANY_MARSEYS_PER_RACE) / factorial(HOW_MANY_MARSEYS_PER_RACE - 4)),
+}
 
 HEALTH_STATUSES = (
     MarseyRacingHealth.EXCELLENT,
@@ -95,6 +106,7 @@ SPIRIT_RANGES = {
     MarseyRacingSpirit.NONEXISTENT: (0.9, 1.3),
     MarseyRacingSpirit.SOREN: (1.0, 1.4),
 }
+
 
 # Utilities
 
@@ -138,6 +150,7 @@ def create_initial_state():
         'marseys': marseys,
         'betting_open': True,
         'podium': [None, None, None, None],
+        'odds': PAYOUT_MULITPLIERS,
         'bets': {
             'all': [],
             'by_id': {}
@@ -153,11 +166,8 @@ def create_initial_state():
     }
 
 
-def determine_payout_multiplier():
-    return 2
-
-
 def create_id(): return str(uuid.uuid4())
+
 
 # Selectors
 
@@ -179,6 +189,7 @@ def select_all_bets(state):
 
 
 # Handlers
+
 
 def handle_place_bet(state, user_id, bet, selections, amount, currency):
     next_state = copy(state)
@@ -263,15 +274,20 @@ def handle_determine_payouts(state):
         bet_succeeded = did_bet_succeed(state, bet)
 
         if bet_succeeded:
-            next_state['bets']['by_id'][bet['id']]['succeeded'] = True
+            bet_id = bet['id']
+            next_state['bets']['by_id'][bet_id]['succeeded'] = True
 
             payout_id = create_id()
-            payout_multiplier = determine_payout_multiplier()
+            refund = bet['amount']
+            reward = bet['amount'] * PAYOUT_MULITPLIERS[bet['bet']]
             payout_data = {
                 'id': payout_id,
+                'bet_id': bet_id,
+                'user_id': bet['user_id'],
                 'currency': bet['currency'],
-                'refund': bet['amount'],
-                'reward': bet['amount'] * payout_multiplier,
+                'refund': refund,
+                'reward': reward,
+                'total': refund + reward,
                 'paid': False
             }
 
@@ -285,7 +301,7 @@ def handle_determine_payouts(state):
 
 def do_the_thing():
     state = create_initial_state()
-    next_state = handle_place_bet(state, 5, MarseyRacingBet.WIN, [
+    next_state = handle_place_bet(state, 5, MarseyRacingBet.SUPERFECTA_BOX, [
                                   state['marseys']['by_id'][state['marseys']['all'][0]]['name']], 5, MarseyRacingCurrency.COINS)
     next_state = handle_determine_outcome(state)
     next_state = handle_determine_payouts(state)
@@ -294,6 +310,7 @@ def do_the_thing():
 
 
 # Bet Checkers
+
 
 def check_for_win(state, bet):
     selections = bet['selections']
@@ -341,24 +358,21 @@ def check_for_trifecta(state, bet):
 def check_for_trifecta_box(state, bet):
     selections = bet['selections']
     podium = state['podium']
-    collection = (podium[0], podium[1], podium[2])
-
-    return selections[0] in collection and selections[1] in collection and selections[2] in collection
+    collection = podium[:3]
+    return all(selection in collection for selection in selections)
 
 
 def check_for_superfecta(state, bet):
     selections = bet['selections']
     podium = state['podium']
-
-    return selections[0] == podium[0] and selections[1] == podium[1] and selections[2] == podium[2] and selections[3] == podium[3]
+    return all(selections[index] == podium[index] for index in range(len(podium)))
 
 
 def check_for_superfecta_box(state, bet):
     selections = bet['selections']
     podium = state['podium']
-    collection = (podium[0], podium[1], podium[2], podium[3])
-
-    return selections[0] in collection and selections[1] in collection and selections[2] in collection and selections[3] in collection
+    collection = podium[:4]
+    return all(selection in collection for selection in selections)
 
 
 BETS_TO_BET_CHECKERS = {
