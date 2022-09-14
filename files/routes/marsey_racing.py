@@ -1,5 +1,5 @@
-from enum import Enum
 from files.helpers.wrappers import *
+from files.helpers.marsey_racing import *
 from files.__main__ import app, limiter, cache
 from flask_socketio import SocketIO, emit
 
@@ -21,7 +21,9 @@ def marsey_racing(v):
     if v.rehab:
         return render_template("casino/rehab.html", v=v)
 
-    return render_template("casino/marsey_racing_screen.html", v=v)
+    state = do_the_thing()
+
+    return render_template("casino/marsey_racing_screen.html", v=v, state=json.dumps(state))
 
 
 @app.get("/socketio.min.js")
@@ -34,12 +36,6 @@ def socketio_min_js():
 def marsey_racing_js():
     resp = make_response(send_from_directory('assets', 'js/marsey_racing.js'))
     return resp
-
-# ===
-class MarseyRacingEvent(str, Enum):
-    CONNECT = 'connect'
-    UPDATE_STATE = 'update-state'
-
 
 @socketio.on(MarseyRacingEvent.CONNECT)
 @auth_required

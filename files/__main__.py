@@ -132,7 +132,7 @@ def teardown_request(error):
 if app.config["SERVER_NAME"] == 'localhost':
 	from files.routes import *
 	# from files.routes.chat import *
-	# from files.routes.marsey_racing import *
+	from files.routes.marsey_racing import *
 elif "load_chat" in argv:
 	from files.routes.chat import *
 elif "load_marsey_racing" in argv:
