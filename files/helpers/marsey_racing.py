@@ -25,6 +25,7 @@ class MarseyRacingBet(str, Enum):
     WIN = 'WIN'
     PLACE = 'PLACE'
     SHOW = 'SHOW'
+    QUINELLA = 'QUINELLA'
     EXACTA = 'EXACTA'
     TRIFECTA = 'TRIFECTA'
     TRIFECTA_BOX = 'TRIFECTA_BOX'
@@ -52,7 +53,7 @@ class MarseyRacingSpirit(str, Enum):
     SOREN = 'SOREN'
 
 
-HOW_MANY_MARSEYS_PER_RACE = 6
+HOW_MANY_MARSEYS_PER_RACE = 1
 BASELINE_RACE_COMPLETION_SPEED_IN_MS = 5000
 
 HEALTH_STATUSES = (
@@ -154,10 +155,6 @@ def create_initial_state():
 
 def determine_payout_multiplier():
     return 2
-
-
-def did_bet_succeed(state, bet):
-    return True
 
 
 def create_id(): return str(uuid.uuid4())
@@ -278,7 +275,8 @@ def handle_determine_payouts(state):
                 'paid': False
             }
 
-            next_state['users']['by_id'][bet['user_id']]['payouts'].append(payout_id)
+            next_state['users']['by_id'][bet['user_id']
+                                         ]['payouts'].append(payout_id)
             next_state['payouts']['all'].append(payout_id)
             next_state['payouts']['by_id'][payout_id] = payout_data
 
@@ -293,3 +291,89 @@ def do_the_thing():
     next_state = handle_determine_payouts(state)
 
     return next_state
+
+
+# Bet Checkers
+
+def check_for_win(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+
+    return selections[0] == podium[0]
+
+
+def check_for_place(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+
+    return selections[0] in (podium[0], podium[1])
+
+
+def check_for_show(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+
+    return selections[0] in (podium[0], podium[1], podium[2])
+
+
+def check_for_quinella(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+    collection = (podium[0], podium[1])
+
+    return selections[0] in collection and selections[1] in collection
+
+
+def check_for_exacta(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+
+    return selections[0] == podium[0] and selections[1] == podium[1]
+
+
+def check_for_trifecta(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+
+    return selections[0] == podium[0] and selections[1] == podium[1] and selections[2] == podium[2]
+
+
+def check_for_trifecta_box(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+    collection = (podium[0], podium[1], podium[2])
+
+    return selections[0] in collection and selections[1] in collection and selections[2] in collection
+
+
+def check_for_superfecta(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+
+    return selections[0] == podium[0] and selections[1] == podium[1] and selections[2] == podium[2] and selections[3] == podium[3]
+
+
+def check_for_superfecta_box(state, bet):
+    selections = bet['selections']
+    podium = state['podium']
+    collection = (podium[0], podium[1], podium[2], podium[3])
+
+    return selections[0] in collection and selections[1] in collection and selections[2] in collection and selections[3] in collection
+
+
+BETS_TO_BET_CHECKERS = {
+    MarseyRacingBet.WIN: check_for_win,
+    MarseyRacingBet.PLACE: check_for_place,
+    MarseyRacingBet.SHOW: check_for_show,
+    MarseyRacingBet.QUINELLA: check_for_quinella,
+    MarseyRacingBet.EXACTA: check_for_exacta,
+    MarseyRacingBet.TRIFECTA: check_for_trifecta,
+    MarseyRacingBet.TRIFECTA_BOX: check_for_trifecta_box,
+    MarseyRacingBet.SUPERFECTA: check_for_superfecta,
+    MarseyRacingBet.SUPERFECTA_BOX: check_for_superfecta_box,
+}
+
+
+def did_bet_succeed(state, bet):
+    checker = BETS_TO_BET_CHECKERS[bet['bet']]
+    return checker(state, bet)
