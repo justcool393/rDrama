@@ -184,14 +184,14 @@ def api(v):
 @app.get("/order")
 @auth_desired
 def order(v):
-	if not FEATURES['ORDER']: return(404)
+	if not FEATURES['ORDER']: abort(404)
 	if v: return redirect("/")
 	return render_template("order.html", v=v)
 
 @app.post("/order")
 @limiter.limit("1/hour;2/day")
 def submit_order():
-	if not FEATURES['ORDER']: return(404)
+	if not FEATURES['ORDER']: abort(404)
 	
 	body = request.values.get("message")
 	if not body: abort(400)
