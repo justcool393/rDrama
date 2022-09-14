@@ -24,8 +24,19 @@ def marseys(v):
 	if SITE == 'rdrama.net':
 		marseys = g.db.query(Marsey, User).join(User, Marsey.author_id == User.id).filter(Marsey.submitter_id==None)
 		sort = request.values.get("sort", "usage")
-		if sort == "usage": marseys = marseys.order_by(Marsey.count.desc(), User.username)
-		else: marseys = marseys.order_by(User.username, Marsey.count.desc())
+		if sort == "usage": marseys = marseys.order_by(Marsey.count.desc(), User.username).all()
+		else: marseys = marseys.order_by(User.username, Marsey.count.desc()).all()
+
+		original = listdir("/asset_submissions/marseys/original")
+		for marsey, user in marseys:
+			if f'{marsey.name}.png' in original:
+				marsey.og = f'{marsey.name}.png'
+			elif f'{marsey.name}.webp' in original:
+				marsey.og = f'{marsey.name}.webp'
+			elif f'{marsey.name}.gif' in original:
+				marsey.og = f'{marsey.name}.gif'
+			elif f'{marsey.name}.jpeg' in original:
+				marsey.og = f'{marsey.name}.jpeg'
 	else:
 		marseys = g.db.query(Marsey).filter(Marsey.submitter_id==None).order_by(Marsey.count.desc())
 
@@ -179,6 +190,37 @@ def static_megathread_index(v):
 @auth_required
 def api(v):
 	return render_template("api.html", v=v)
+
+
+@app.get("/order")
+@auth_desired
+def order(v):
+	if not FEATURES['ORDER']: abort(404)
+	if v: return redirect("/")
+	return render_template("order.html", v=v)
+
+@app.post("/order")
+@limiter.limit("1/hour;2/day")
+def submit_order():
+	if not FEATURES['ORDER']: abort(404)
+	
+	body = request.values.get("message")
+	if not body: abort(400)
+
+	body = 'This message has been sent automatically to all admins via [/order](/order)\n\nMessage:\n\n' + body
+	body = body.strip()
+	body_html = sanitize(body)
+	new_comment = Comment(author_id=AUTOJANNY_ID, parent_submission=None, level=1, body_html=body_html, sentto=2)
+	g.db.add(new_comment)
+	g.db.flush()
+
+	new_comment.top_comment_id = new_comment.id
+	
+	for admin in g.db.query(User).filter(User.admin_level > 2, User.id != AEVANN_ID).all():
+		notif = Notification(comment_id=new_comment.id, user_id=admin.id)
+		g.db.add(notif)
+
+	return {"success": True}
 
 @app.get("/contact")
 @app.get("/contactus")

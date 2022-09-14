@@ -252,7 +252,7 @@ def comment(v):
 
 	torture = (v.agendaposter and not v.marseyawarded and parent_post.sub != 'chudrama' and parent_post.id not in ADMIGGERS)
 
-	body_html = sanitize(body_for_sanitize, limit_pings=5, marsified=True, torture=torture)
+	body_html = sanitize(body_for_sanitize, limit_pings=5, marsified=v.marsify, torture=torture)
 
 
 	if parent_post.id not in ADMIGGERS and '!wordle' not in body.lower() and AGENDAPOSTER_PHRASE not in body.lower():
@@ -261,7 +261,7 @@ def comment(v):
 																	Comment.parent_comment_id == parent_comment_id,
 																	Comment.parent_submission == parent_submission,
 																	Comment.body_html == body_html
-																	).one_or_none()
+																	).first()
 		if existing: return {"error": f"You already made that comment: /comment/{existing.id}"}, 409
 
 	if parent.author.any_block_exists(v) and v.admin_level < 2:
@@ -677,7 +677,7 @@ def edit_comment(cid, v):
 
 		torture = (v.agendaposter and not v.marseyawarded and c.post.sub != 'chudrama')
 
-		body_html = sanitize(body_for_sanitize, edit=True, limit_pings=5, marsified=True, torture=torture)
+		body_html = sanitize(body_for_sanitize, edit=True, limit_pings=5, marsified=v.marsify, torture=torture)
 
 		if len(body_html) > 20000: abort(400)
 
