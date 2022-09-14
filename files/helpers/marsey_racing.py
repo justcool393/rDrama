@@ -1,4 +1,4 @@
-import json
+import uuid
 from enum import Enum
 from math import floor
 from copy import copy
@@ -26,9 +26,10 @@ class MarseyRacingBet(str, Enum):
     PLACE = 'PLACE'
     SHOW = 'SHOW'
     EXACTA = 'EXACTA'
-    QUINELLA = 'QUINELLA'
     TRIFECTA = 'TRIFECTA'
+    TRIFECTA_BOX = 'TRIFECTA_BOX'
     SUPERFECTA = 'SUPERFECTA'
+    SUPERFECTA_BOX = 'SUPERFECTA_BOX'
 
 
 class MarseyRacingHealth(str, Enum):
@@ -51,7 +52,7 @@ class MarseyRacingSpirit(str, Enum):
     SOREN = 'SOREN'
 
 
-HOW_MANY_MARSEYS_PER_RACE = 14
+HOW_MANY_MARSEYS_PER_RACE = 6
 BASELINE_RACE_COMPLETION_SPEED_IN_MS = 5000
 
 HEALTH_STATUSES = (
@@ -65,13 +66,13 @@ HEALTH_STATUSES = (
 )
 
 HEALTH_RANGES = {
-    MarseyRacingHealth.EXCELLENT: (1, 1.4),
-    MarseyRacingHealth.GREAT: (0.9, 1.3),
-    MarseyRacingHealth.GOOD: (0.8, 1.2),
+    MarseyRacingHealth.EXCELLENT: (0.4, 0.8),
+    MarseyRacingHealth.GREAT: (0.5, 0.9),
+    MarseyRacingHealth.GOOD: (0.6, 1.0),
     MarseyRacingHealth.AVERAGE: (0.7, 1.1),
-    MarseyRacingHealth.POOR: (0.6, 1.0),
-    MarseyRacingHealth.DEVASTATING: (0.5, 0.9),
-    MarseyRacingHealth.CATASTROPHIC: (0.4, 0.8),
+    MarseyRacingHealth.POOR: (0.8, 1.2),
+    MarseyRacingHealth.DEVASTATING: (0.9, 1.3),
+    MarseyRacingHealth.CATASTROPHIC: (1.0, 1.4),
 }
 
 SPIRIT_STATUSES = (
@@ -85,17 +86,19 @@ SPIRIT_STATUSES = (
 )
 
 SPIRIT_RANGES = {
-    MarseyRacingSpirit.EMANATING: (1, 1.4),
-    MarseyRacingSpirit.PULSING: (0.9, 1.3),
-    MarseyRacingSpirit.THROBBING: (0.8, 1.2),
+    MarseyRacingSpirit.EMANATING: (0.4, 0.8),
+    MarseyRacingSpirit.PULSING: (0.5, 0.9),
+    MarseyRacingSpirit.THROBBING: (0.6, 1.0),
     MarseyRacingSpirit.TWITCHING: (0.7, 1.1),
-    MarseyRacingSpirit.FLICKERING: (0.6, 1.0),
-    MarseyRacingSpirit.NONEXISTENT: (0.5, 0.9),
-    MarseyRacingSpirit.SOREN: (0.4, 0.8),
+    MarseyRacingSpirit.FLICKERING: (0.8, 1.2),
+    MarseyRacingSpirit.NONEXISTENT: (0.9, 1.3),
+    MarseyRacingSpirit.SOREN: (1.0, 1.4),
 }
 
+# Utilities
 
-def select_marsey_set():
+
+def select_random_marsey_set():
     return g.db.query(Marsey).order_by(func.random()).limit(HOW_MANY_MARSEYS_PER_RACE).all()
 
 
@@ -104,36 +107,36 @@ def format_marsey_model(model):
         'name': model.name,
         'health': random.choice(HEALTH_STATUSES),
         'spirit': random.choice(SPIRIT_STATUSES),
-        'speed': BASELINE_RACE_COMPLETION_SPEED_IN_MS
+        'speed': BASELINE_RACE_COMPLETION_SPEED_IN_MS,
+        'placement': -1
     }
 
 
 def decide_marsey_speed(formatted_model):
     health_minimum, health_maximum = HEALTH_RANGES[formatted_model['health']]
-    health_modifier = random.randint(health_minimum, health_maximum)
+    health_modifier = random.uniform(health_minimum, health_maximum)
     spirit_minimum, spirit_maximum = SPIRIT_RANGES[formatted_model['spirit']]
-    spirit_modifier = random.randint(spirit_minimum, spirit_maximum)
-    speed = BASELINE_RACE_COMPLETION_SPEED_IN_MS * health_modifier * spirit_modifier
+    spirit_modifier = random.uniform(spirit_minimum, spirit_maximum)
 
-    decided_model = copy(formatted_model)
-    decided_model['speed'] = speed
-
-    return decided_model
+    return int(BASELINE_RACE_COMPLETION_SPEED_IN_MS * health_modifier * spirit_modifier)
 
 
 def create_initial_state():
-    formatted_marseys = list(map(format_marsey_model, select_marsey_set()))
+    formatted_marseys = list(
+        map(format_marsey_model, select_random_marsey_set()))
     marseys = {
         'all': [],
-        'by_name': {}
+        'by_id': {}
     }
 
     for marsey in formatted_marseys:
         marseys['all'].append(marsey['name'])
-        marseys['by_name'][marsey['name']] = marsey
+        marseys['by_id'][marsey['name']] = marsey
 
     return {
         'marseys': marseys,
+        'betting_open': True,
+        'podium': [None, None, None, None],
         'bets': {
             'all': [],
             'by_id': {}
@@ -141,13 +144,53 @@ def create_initial_state():
         'users': {
             'all': [],
             'by_id': {}
+        },
+        'payouts': {
+            'all': [],
+            'by_id': {}
         }
     }
 
 
+def determine_payout_multiplier():
+    return 2
+
+
+def did_bet_succeed(state, bet):
+    return True
+
+
+def create_id(): return str(uuid.uuid4())
+
+# Selectors
+
+
+def select_all_entities(state, entity):
+    return [state[entity]['by_id'][user_id] for user_id in state[entity]['all']]
+
+
+def select_all_marseys(state):
+    return select_all_entities(state, 'marseys')
+
+
+def select_all_users(state):
+    return select_all_entities(state, 'users')
+
+
+def select_all_bets(state):
+    return select_all_entities(state, 'bets')
+
+
+# Handlers
+
 def handle_place_bet(state, user_id, bet, selections, amount, currency):
     next_state = copy(state)
-    bet_id = int(time.time())
+    user_id = str(user_id)
+
+    if not state['betting_open']:
+        return next_state
+
+    bet_id = create_id()
     bet_data = {
         'id': bet_id,
         'user_id': user_id,
@@ -155,6 +198,7 @@ def handle_place_bet(state, user_id, bet, selections, amount, currency):
         'selections': selections,
         'amount': amount,
         'currency': currency,
+        'succeeded': False
     }
 
     next_state['bets']['all'].append(bet_id)
@@ -162,15 +206,81 @@ def handle_place_bet(state, user_id, bet, selections, amount, currency):
 
     if not next_state['users']['by_id'].get(user_id):
         user = get_account(user_id)
-
-        next_state['users']['all'].append(user_id)
-        next_state['users']['by_id'][user_id] = {
+        user_data = {
             'id': user_id,
             'username': user.username,
-            'bets': []
+            'bets': [],
+            'payouts': []
         }
 
+        next_state['users']['all'].append(user_id)
+        next_state['users']['by_id'][user_id] = user_data
+
     next_state['users']['by_id'][user_id]['bets'].append(bet_id)
+
+    return next_state
+
+
+def handle_freeze_betting(state):
+    next_state = copy(state)
+    next_state['betting_open'] = False
+    return next_state
+
+
+def handle_unfreeze_betting(state):
+    next_state = copy(state)
+    next_state['betting_open'] = True
+    return next_state
+
+
+def handle_determine_outcome(state):
+    next_state = copy(state)
+    next_state = handle_freeze_betting(next_state)
+    marseys = select_all_marseys(next_state)
+
+    def update_local_and_state(marsey, property, value):
+        marsey[property] = value
+        next_state['marseys']['by_id'][marsey['name']][property] = value
+
+    for marsey in marseys:
+        speed = decide_marsey_speed(marsey)
+        update_local_and_state(marsey, 'speed', speed)
+
+    placements = sorted(marseys, key=lambda x: x['speed'])
+
+    for index, placed_marsey in enumerate(placements):
+        if index < 4:
+            next_state['podium'][index] = placed_marsey['name']
+
+        placement = index + 1
+        update_local_and_state(placed_marsey, 'placement', placement)
+
+    return next_state
+
+
+def handle_determine_payouts(state):
+    next_state = copy(state)
+    bets = select_all_bets(state)
+
+    for bet in bets:
+        bet_succeeded = did_bet_succeed(state, bet)
+
+        if bet_succeeded:
+            next_state['bets']['by_id'][bet['id']]['succeeded'] = True
+
+            payout_id = create_id()
+            payout_multiplier = determine_payout_multiplier()
+            payout_data = {
+                'id': payout_id,
+                'currency': bet['currency'],
+                'refund': bet['amount'],
+                'reward': bet['amount'] * payout_multiplier,
+                'paid': False
+            }
+
+            next_state['users']['by_id'][bet['user_id']]['payouts'].append(payout_id)
+            next_state['payouts']['all'].append(payout_id)
+            next_state['payouts']['by_id'][payout_id] = payout_data
 
     return next_state
 
@@ -178,5 +288,8 @@ def handle_place_bet(state, user_id, bet, selections, amount, currency):
 def do_the_thing():
     state = create_initial_state()
     next_state = handle_place_bet(state, 5, MarseyRacingBet.WIN, [
-                                  state['marseys']['by_name'][state['marseys']['all'][0]]['name']], 5, MarseyRacingCurrency.COINS)
+                                  state['marseys']['by_id'][state['marseys']['all'][0]]['name']], 5, MarseyRacingCurrency.COINS)
+    next_state = handle_determine_outcome(state)
+    next_state = handle_determine_payouts(state)
+
     return next_state
