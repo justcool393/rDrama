@@ -3,6 +3,7 @@ from enum import Enum
 from math import floor, comb, factorial
 from copy import copy
 import random
+from files.__main__ import app
 from files.classes.casino_game import Casino_Game
 from files.classes.marsey import Marsey
 from files.helpers.get import *
@@ -391,3 +392,12 @@ BETS_TO_BET_CHECKERS = {
 def did_bet_succeed(state, bet):
     checker = BETS_TO_BET_CHECKERS[bet['bet']]
     return checker(state, bet)
+
+
+# Manager
+
+class MarseyRacingManager():
+    state = None
+
+    def __init__(self, *args, **kwargs):
+        self.state = create_initial_state()

@@ -14,6 +14,8 @@ if SITE == 'localhost':
 else:
     socketio = SocketIO(app, async_mode='gevent')
 
+manager = None
+
 
 @app.get("/marsey-racing")
 @auth_required
@@ -21,9 +23,12 @@ def marsey_racing(v):
     if v.rehab:
         return render_template("casino/rehab.html", v=v)
 
-    state = do_the_thing()
+    global manager
+    
+    if not manager:
+        manager = MarseyRacingManager()
 
-    return render_template("casino/marsey_racing_screen.html", v=v, state=json.dumps(state))
+    return render_template("casino/marsey_racing_screen.html", v=v, state=json.dumps(manager.state))
 
 
 @app.get("/socketio.min.js")
@@ -37,9 +42,12 @@ def marsey_racing_js():
     resp = make_response(send_from_directory('assets', 'js/marsey_racing.js'))
     return resp
 
+
 @socketio.on(MarseyRacingEvent.CONNECT)
 @auth_required
 def connect(v):
-    emit(MarseyRacingEvent.UPDATE_STATE, { "foo": "bar" })
+    global manager
 
-    return '', 204
+    if manager:
+        emit(MarseyRacingEvent.UPDATE_STATE, manager.state)
+        return '', 204

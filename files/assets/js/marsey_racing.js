@@ -6,7 +6,9 @@
 
   const socket = io();
   
-  socket.on(MarseyRacingEvent.UPDATE_STATE, (...args) => {
-    console.log({ args });
-  });
+  socket.on(MarseyRacingEvent.UPDATE_STATE, updateView);
+
+  function updateView(state) {
+    console.log(state);
+  }
 })();
