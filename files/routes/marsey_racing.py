@@ -24,11 +24,11 @@ def marsey_racing(v):
         return render_template("casino/rehab.html", v=v)
 
     global manager
-    
+
     if not manager:
         manager = MarseyRacingManager()
 
-    return render_template("casino/marsey_racing_screen.html", v=v, state=json.dumps(manager.state))
+    return render_template("casino/marsey_racing_screen.html", v=v, state=manager.state)
 
 
 @app.get("/socketio.min.js")
@@ -49,5 +49,16 @@ def connect(v):
     global manager
 
     if manager:
+        emit(MarseyRacingEvent.UPDATE_STATE, manager.state)
+        return '', 204
+
+
+@socketio.on(MarseyRacingEvent.START_RACE)
+@auth_required
+def start_race(v):
+    global manager
+
+    if manager:
+        manager.startRace()
         emit(MarseyRacingEvent.UPDATE_STATE, manager.state)
         return '', 204

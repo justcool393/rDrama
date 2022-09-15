@@ -14,6 +14,7 @@ from sqlalchemy.sql.expression import func
 class MarseyRacingEvent(str, Enum):
     CONNECT = 'connect'
     UPDATE_STATE = 'update-state'
+    START_RACE = 'start-race'
 
 
 class MarseyRacingCurrency(str, Enum):
@@ -150,6 +151,7 @@ def create_initial_state():
     return {
         'marseys': marseys,
         'betting_open': True,
+        'race_started': False,
         'podium': [None, None, None, None],
         'odds': PAYOUT_MULITPLIERS,
         'bets': {
@@ -300,6 +302,18 @@ def handle_determine_payouts(state):
     return next_state
 
 
+def handle_start_race(state):
+    next_state = copy(state)
+    next_state['race_started'] = True
+    return next_state
+
+
+def handle_stop_race(state):
+    next_state = copy(state)
+    next_state['race_started'] = False
+    return next_state
+
+
 def do_the_thing():
     state = create_initial_state()
     next_state = handle_place_bet(state, 5, MarseyRacingBet.SUPERFECTA_BOX, [
@@ -397,7 +411,13 @@ def did_bet_succeed(state, bet):
 # Manager
 
 class MarseyRacingManager():
-    state = None
-
     def __init__(self, *args, **kwargs):
         self.state = create_initial_state()
+        self.history = []
+
+    def replaceState(self, next_state):
+        self.history.append(copy(self.state))
+        self.state = next_state
+
+    def startRace(self):
+        self.replaceState(handle_start_race(self.state))
