@@ -1,10 +1,7 @@
 import uuid
 from enum import Enum
-from math import floor, comb, factorial
 from copy import copy
 import random
-from files.__main__ import app
-from files.classes.casino_game import Casino_Game
 from files.classes.marsey import Marsey
 from files.helpers.get import *
 from flask import g
@@ -59,14 +56,14 @@ HOW_MANY_MARSEYS_PER_RACE = 14
 BASELINE_RACE_COMPLETION_SPEED_IN_MS = 5000
 
 PAYOUT_MULITPLIERS = {
-    MarseyRacingBet.WIN: HOW_MANY_MARSEYS_PER_RACE,
-    MarseyRacingBet.PLACE: floor(HOW_MANY_MARSEYS_PER_RACE / 2),
-    MarseyRacingBet.SHOW: floor(HOW_MANY_MARSEYS_PER_RACE / 3),
-    MarseyRacingBet.QUINELLA: comb(HOW_MANY_MARSEYS_PER_RACE, 2),
-    MarseyRacingBet.TRIFECTA_BOX: comb(HOW_MANY_MARSEYS_PER_RACE, 3),
-    MarseyRacingBet.TRIFECTA: int(factorial(HOW_MANY_MARSEYS_PER_RACE) / factorial(HOW_MANY_MARSEYS_PER_RACE - 3)),
-    MarseyRacingBet.SUPERFECTA_BOX: comb(HOW_MANY_MARSEYS_PER_RACE, 4),
-    MarseyRacingBet.SUPERFECTA: int(factorial(HOW_MANY_MARSEYS_PER_RACE) / factorial(HOW_MANY_MARSEYS_PER_RACE - 4)),
+    MarseyRacingBet.WIN: 14,
+    MarseyRacingBet.PLACE: 7,
+    MarseyRacingBet.SHOW: 4,
+    MarseyRacingBet.QUINELLA: 91,
+    MarseyRacingBet.TRIFECTA_BOX: 364,
+    MarseyRacingBet.TRIFECTA: 2184,
+    MarseyRacingBet.SUPERFECTA_BOX: 1001,
+    MarseyRacingBet.SUPERFECTA: 24024,
 }
 
 HEALTH_STATUSES = (
