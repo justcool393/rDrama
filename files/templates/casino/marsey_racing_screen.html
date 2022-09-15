@@ -21,6 +21,13 @@
 
         <!-- Game Styles -->
         <style>
+            #gameScreen {
+                width: 400px;
+                height: 400px;
+                overflow: auto;
+                margin-bottom: 3rem;
+            }
+
             .field {
                 position: relative;
                 display: flex;
@@ -28,13 +35,6 @@
                 background-color: green;
                 height: 400px;
                 overflow: auto;
-            }
-
-            .track {
-                margin: 0.25rem;
-                padding: 0.25rem;
-                background-color: #5C4033;
-                position: relative;
             }
 
             .starting-line {
@@ -73,30 +73,50 @@
                 position: relative;
                 animation: racing 3s ease-in-out forwards;
             }
+
+            .mr-button {
+                text-align: center;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+                width: 100%;
+            }
         </style>
 </head>
     <body>
 	    {% include "header.html" %}
-        <div id="racingContainer" class="container pb-4">
-            <div class="field">
-                <div class="starting-line"></div>
-                {% for marsey in state['marseys']['all'] %}
-                <img
-                id="RACER#{{marsey}}"
-                class="marsey-racer"
-                loading="lazy"
-                data-bs-toggle="tooltip"
-                alt=":{{marsey}}:"
-                title="{{marsey}}"
-                src="/e/{{marsey}}.webp"
-                data-bs-original-title=":{{marsey}}:"
-                aria-label=":{{marsey}}:">
-                {% endfor %}
-                <div class="finish-line"></div>
+        
+        <div
+            style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 2rem auto;
+                width: 400px;
+            ">
+            <div id="gameScreen">
+                <div class="field">
+                    <div class="starting-line"></div>
+                    {% for marsey in state['marseys']['all'] %}
+                    <img
+                    id="RACER#{{marsey}}"
+                    class="marsey-racer"
+                    loading="lazy"
+                    data-bs-toggle="tooltip"
+                    alt=":{{marsey}}:"
+                    title="{{marsey}}"
+                    src="/e/{{marsey}}.webp"
+                    data-bs-original-title=":{{marsey}}:"
+                    aria-label=":{{marsey}}:">
+                    {% endfor %}
+                    <div class="finish-line"></div>
+                </div>
             </div>
+                <button class="btn btn-primary mr-button" style="margin-bottom: 1.2rem;" onclick="startRace()">Start</button>
+                <button class="btn btn-primary mr-button" style="margin-bottom: 1.2rem;" onclick="startBetFlow()">Place a bet</button>
+                <h4 style="text-transform: uppercase; letter-spacing: 3px; align-self: flex-end;">
+                    Your Bets
+                </h4>
         </div>
-
-        <button class="btn btn-primary" onclick="startRace()"></button>
         
         <input id="vid" type="hidden" value="{{v.id}}">
         <input id="vusername" type="hidden" value="{{v.username}}">
