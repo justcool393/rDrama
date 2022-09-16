@@ -8,15 +8,15 @@
       currency: "coins",
     },
   };
-  
+
   window.BET_IN_PROGRESS = BET_IN_PROGRESS;
 
   window.pickBet = function pickBet(bet) {
     BET_IN_PROGRESS.kind = bet;
 
-    const buttons = Array.from(document.querySelectorAll('.mr-bet-button'));
+    const buttons = Array.from(document.querySelectorAll(".mr-bet-button"));
 
-    buttons.forEach(button => {
+    buttons.forEach((button) => {
       button.classList.add("btn-primary");
       button.classList.remove("btn-success");
 
@@ -28,20 +28,24 @@
 
     BET_IN_PROGRESS.selection = [];
     selectMarsey();
-  }
+  };
 
   window.selectMarsey = function selectMarsey(marsey) {
     if (marsey) {
       if (BET_IN_PROGRESS.selection.includes(marsey)) {
-        BET_IN_PROGRESS.selection = BET_IN_PROGRESS.selection.filter(m => m !== marsey);
+        BET_IN_PROGRESS.selection = BET_IN_PROGRESS.selection.filter(
+          (m) => m !== marsey
+        );
       } else {
         BET_IN_PROGRESS.selection.push(marsey);
       }
     }
 
-    const selectables = Array.from(document.querySelectorAll('.mr-selectable-marsey'));
+    const selectables = Array.from(
+      document.querySelectorAll(".mr-selectable-marsey")
+    );
 
-    selectables.forEach(m => {
+    selectables.forEach((m) => {
       m.innerHTML = "";
     });
 
@@ -67,11 +71,11 @@
         b="">
       `;
     }
-  }
+  };
 
   window.pickAmount = function pickAmount(amount) {
     BET_IN_PROGRESS.wager.amount = amount;
-  }
+  };
 
   window.pickCurrency = function pickCurrency(currency) {
     BET_IN_PROGRESS.wager.currency = currency;
@@ -80,25 +84,81 @@
     const procoinsButton = document.getElementById("WAGER#PROCOINS");
     const lookup = {
       coins: coinsButton,
-      procoins: procoinsButton
+      procoins: procoinsButton,
     };
 
-    [coinsButton, procoinsButton].forEach(button => {
+    [coinsButton, procoinsButton].forEach((button) => {
       button.classList.remove("btn-success");
       button.classList.add("btn-secondary");
     });
 
     lookup[currency].classList.remove("btn-secondary");
     lookup[currency].classList.add("btn-success");
-  }
+  };
 
   window.placeBet = function placeBet() {
-    BET_IN_PROGRESS.wager.amount = parseInt(document.getElementById('wager_amount').value);
-    console.log("Placing bet with ", BET_IN_PROGRESS);
+    BET_IN_PROGRESS.wager.amount = parseInt(
+      document.getElementById("wager_amount").value
+    );
+
+    if (!BET_IN_PROGRESS.kind) {
+      return showErrorMessage("You must select a bet.");
+    }
+
+    const correctMarseyCount = {
+      WIN: 1,
+      PLACE: 1,
+      SHOW: 1,
+      QUINELLA: 2,
+      TRIFECTA_BOX: 3,
+      TRIFECTA: 3,
+      SUPERFECTA_BOX: 4,
+      SUPERFECTA: 4,
+    }[BET_IN_PROGRESS.kind];
+    const actualMarseyCount = BET_IN_PROGRESS.selection.length;
+
+    if (actualMarseyCount !== correctMarseyCount) {
+      return showErrorMessage(
+        `You must select exactly ${correctMarseyCount} Marseys.`
+      );
+    }
+
+    if (BET_IN_PROGRESS.wager.amount < 5) {
+      return showErrorMessage(
+        `You must wager at least 5 ${BET_IN_PROGRESS.wager.currency}.`
+      );
+    }
 
     // Place
 
     // Reset
+    BET_IN_PROGRESS.kind = "";
+    BET_IN_PROGRESS.selection = [];
+
+    const buttons = Array.from(document.querySelectorAll(".mr-bet-button"));
+
+    buttons.forEach((button) => {
+      button.classList.add("btn-primary");
+      button.classList.remove("btn-success");
+    });
+
+    for (let i = 1; i < 5; i++) {
+      document.getElementById(`SELECT_${i}`).innerHTML = "";
+    }
+  };
+
+  function showErrorMessage(message) {
+    const toast = document.getElementById("racing-post-error");
+    const toastMessage = document.getElementById("racing-post-error-text");
+    toastMessage.innerText = message;
+    bootstrap.Toast.getOrCreateInstance(toast).show();
+  }
+
+  function showSuccessMessage(message) {
+    const toast = document.getElementById("racing-post-success");
+    const toastMessage = document.getElementById("racing-post-success-text");
+    toastMessage.innerText = message;
+    bootstrap.Toast.getOrCreateInstance(toast).show();
   }
   // #endregion
 

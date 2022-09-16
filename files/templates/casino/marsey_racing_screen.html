@@ -83,7 +83,7 @@
 
             .mr-segment {
                 width: 100%;
-                margin-bottom: 5rem;
+                margin-bottom: 2.5rem;
             }
             
             .mr-segment h4 {
@@ -326,10 +326,63 @@
                 <button
                     type="button"
                     class="btn btn-success"
-                    style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 36px;"
+                    style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px;"
                     onclick="placeBet()">Place Bet</button>
             </div>
+        </div>
 
+        <!-- Success -->
+        <div
+            class="toast"
+            id="racing-post-success"
+            style="
+                position: fixed;
+                bottom: 1.5rem;
+                margin: 0 auto;
+                left: 0;
+                right: 0;
+                width: unset;
+                z-index: 1000;
+                height: auto !important;
+            "
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-animation="true"
+            data-bs-autohide="true"
+            data-bs-delay="5000"
+        >
+            <div class="toast-body bg-success text-center text-white">
+            <i class="fas fa-comment-alt-smile mr-2"></i
+            ><span id="racing-post-success-text"></span>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div
+            class="toast"
+            id="racing-post-error"
+            style="
+                position: fixed;
+                bottom: 1.5rem;
+                margin: 0 auto;
+                left: 0;
+                right: 0;
+                width: unset;
+                z-index: 1000;
+                height: auto !important;
+            "
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-animation="true"
+            data-bs-autohide="true"
+            data-bs-delay="5000"
+        >
+            <div class="toast-body bg-danger text-center text-white">
+            <i class="fas fa-exclamation-circle mr-2"></i
+            ><span id="racing-post-error-text"></span>
+            </div>
         </div>
         
         <input id="vid" type="hidden" value="{{v.id}}">
