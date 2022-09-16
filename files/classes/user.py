@@ -931,4 +931,6 @@ class User(Base):
 	@lazy
 	def winnings(self):
 		from_casino = g.db.query(func.sum(Casino_Game.winnings)).filter(Casino_Game.user_id == self.id).one()[0]
-		return from_casino + self.total_lottery_winnings
+		from_casino_value = 0 if from_casino is None else from_casino
+
+		return from_casino_value + self.total_lottery_winnings
