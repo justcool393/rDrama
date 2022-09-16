@@ -180,6 +180,8 @@
   let currentState;
   function updateView(state) {
     currentState = state;
+
+    console.log("State updated!", state);
     
     if (currentState.race_started) {
       const marseys = Array.from(document.querySelectorAll(".marsey-racer"));

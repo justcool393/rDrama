@@ -58,6 +58,17 @@ HOW_MANY_MARSEYS_PER_RACE = 14
 
 BASELINE_RACE_COMPLETION_SPEED_IN_MS = 5000
 
+SELECTIONS_IN_BET = {
+    MarseyRacingBet.WIN: 1,
+    MarseyRacingBet.PLACE: 1,
+    MarseyRacingBet.SHOW: 1,
+    MarseyRacingBet.QUINELLA: 2,
+    MarseyRacingBet.TRIFECTA_BOX: 3,
+    MarseyRacingBet.TRIFECTA: 3,
+    MarseyRacingBet.SUPERFECTA_BOX: 4,
+    MarseyRacingBet.SUPERFECTA: 4,
+}
+
 PAYOUT_MULITPLIERS = {
     MarseyRacingBet.WIN: 14,
     MarseyRacingBet.PLACE: 7,
@@ -194,7 +205,7 @@ def select_all_bets(state):
 # Handlers
 
 
-def handle_place_bet(state, user_id, bet, selections, amount, currency):
+def handle_place_bet(state, user_id, bet, selection, amount, currency):
     next_state = copy(state)
     user_id = str(user_id)
 
@@ -206,7 +217,7 @@ def handle_place_bet(state, user_id, bet, selections, amount, currency):
         'id': bet_id,
         'user_id': user_id,
         'bet': bet,
-        'selections': selections,
+        'selections': selection,
         'amount': amount,
         'currency': currency,
         'succeeded': False
@@ -415,14 +426,69 @@ class MarseyRacingManager():
         self.state = create_initial_state()
         self.history = []
 
-    def replaceState(self, next_state):
+    def replace_state(self, next_state):
         self.history.append(copy(self.state))
         self.state = next_state
 
-    def startRace(self):
-        self.replaceState(handle_start_race(self.state))
+    def start_race(self):
+        self.replace_state(handle_start_race(self.state))
 
-    def handlePlayerBet(self, data, user):
+    def validate_bet(self, kind, selection, wager):
+        valid_kinds = (
+            MarseyRacingBet.WIN,
+            MarseyRacingBet.PLACE,
+            MarseyRacingBet.SHOW,
+            MarseyRacingBet.QUINELLA,
+            MarseyRacingBet.TRIFECTA_BOX,
+            MarseyRacingBet.TRIFECTA,
+            MarseyRacingBet.SUPERFECTA_BOX,
+            MarseyRacingBet.SUPERFECTA,
+        )
 
+        # Not a real bet.
+        if not kind in valid_kinds:
+            return False
+
+        # Wrong number of <arseys picked.
+        if len(selection) != SELECTIONS_IN_BET[kind]:
+            return False
+
+        # Picked a Marsey not in the race.
+        for selected in selection:
+            if not selected in self.state['marseys']['all']:
+                return False
+
+        # Supplied an invalid currency.
+        if not wager['currency'] in (MarseyRacingCurrency.COINS, MarseyRacingCurrency.PROCOINS):
+            return False
+
+        # Bet was too low.
+        if wager['amount'] < 5:
+            return False
 
         return True
+
+    def handle_player_bet(self, data, user):
+        kind = data['kind']
+        selection = data['selection']
+        wager = data['wager']
+        valid = self.validate_bet(kind, selection, wager)
+
+        if valid:
+            charged = user.charge_account(wager['currency'], wager['amount'])
+
+            if charged:
+                self.replace_state(handle_place_bet(
+                    state=self.state,
+                    user_id=user.id,
+                    bet=kind,
+                    selection=selection,
+                    amount=wager['amount'],
+                    currency=wager['currency']
+                ))
+
+                return True
+            else:
+                return False
+        else:
+            return False

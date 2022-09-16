@@ -59,7 +59,7 @@ def start_race(data, v):
     global manager
 
     if manager:
-        manager.startRace()
+        manager.start_race()
         emit(MarseyRacingEvent.UPDATE_STATE, manager.state)
         return '', 204
 
@@ -70,7 +70,7 @@ def user_placed_bet(data, v):
     global manager
 
     if manager:
-        successful = manager.handlePlayerBet(data, v)
+        successful = manager.handle_player_bet(data, v)
 
         if successful:
             emit(event=MarseyRacingEvent.BET_SUCCEEDED, broadcast=False)
