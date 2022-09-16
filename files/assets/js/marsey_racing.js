@@ -11,6 +11,27 @@
 
   window.BET_IN_PROGRESS = BET_IN_PROGRESS;
 
+  let isBetFormOpen = false;
+  window.toggleBetForm = function toggleBetForm() {
+    const betForm = document.getElementById("betForm");
+    const betFormOpenButton = document.getElementById("betFormOpen")
+    const betFormCloseButton = document.getElementById("betFormClose")
+
+    isBetFormOpen = !isBetFormOpen;
+
+    if (isBetFormOpen) {
+      betForm.style.display = "block";
+      betFormOpenButton.style.display = "none";
+      betFormCloseButton.style.display = "unset";
+    } else {
+      resetBet();
+
+      betForm.style.display = "none";
+      betFormOpenButton.style.display = "unset";
+      betFormCloseButton.style.display = "none";
+    }
+  }
+
   window.pickBet = function pickBet(bet) {
     BET_IN_PROGRESS.kind = bet;
 
@@ -97,12 +118,23 @@
   };
 
   window.placeBet = function placeBet() {
+    const isValid = validateBet();
+
+    if (isValid) {
+      submitBet();
+      resetBet();
+    }
+  };
+
+  function validateBet() {
     BET_IN_PROGRESS.wager.amount = parseInt(
       document.getElementById("wager_amount").value
     );
 
     if (!BET_IN_PROGRESS.kind) {
-      return showErrorMessage("You must select a bet.");
+      showErrorMessage("You must select a bet.");
+
+      return false;
     }
 
     const correctMarseyCount = {
@@ -118,21 +150,25 @@
     const actualMarseyCount = BET_IN_PROGRESS.selection.length;
 
     if (actualMarseyCount !== correctMarseyCount) {
-      return showErrorMessage(
+      showErrorMessage(
         `You must select exactly ${correctMarseyCount} Marseys.`
       );
+
+      return false;
     }
 
     if (BET_IN_PROGRESS.wager.amount < 5) {
-      return showErrorMessage(
+      showErrorMessage(
         `You must wager at least 5 ${BET_IN_PROGRESS.wager.currency}.`
       );
+
+      return false;
     }
 
-    // Place
-    submitBet();
+    return true;
+  }
 
-    // Reset
+  function resetBet() {
     BET_IN_PROGRESS.kind = "";
     BET_IN_PROGRESS.selection = [];
 
@@ -146,7 +182,7 @@
     for (let i = 1; i < 5; i++) {
       document.getElementById(`SELECT_${i}`).innerHTML = "";
     }
-  };
+  }
 
   function showErrorMessage(message) {
     const toast = document.getElementById("racing-post-error");
@@ -192,6 +228,7 @@
 
   function receiveBetSuccess() {
     showSuccessMessage("Successfully placed a bet.");
+    toggleBetForm();
   }
   socket.on(MarseyRacingEvent.BET_SUCCEEDED, receiveBetSuccess);
 
