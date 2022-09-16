@@ -47,13 +47,17 @@ def buy_hat(v, hat_id):
 	if existing: return {"error": "You already own this hat!"}, 400
 
 	if request.values.get("mb"):
-		if v.procoins < hat.price: return {"error": "Not enough marseybux."}, 400
-		v.procoins -= hat.price
+		charged = v.charge_account('procoins', hat.price)
+		if not charged:
+			return {"error": "Not enough marseybux."}, 400
+
 		hat.author.procoins += hat.price * 0.1
 		currency = "marseybux"
 	else:
-		if v.coins < hat.price: return {"error": "Not enough coins."}, 400
-		v.coins -= hat.price
+		charged = v.charge_account('coins', hat.price)
+		if not charged:
+			return {"error": "Not enough coins."}, 400
+
 		v.coins_spent_on_hats += hat.price
 		hat.author.coins += hat.price * 0.1
 		currency = "coins"
@@ -69,11 +73,11 @@ def buy_hat(v, hat_id):
 		f":marseycapitalistmanlet: @{v.username} has just bought `{hat.name}`, you have received your 10% cut ({int(hat.price * 0.1)} {currency}) :!marseycapitalistmanlet:"
 	)
 
-	if v.num_of_owned_hats >= 250:
+	if v.num_of_owned_hats >= 249:
 		badge_grant(user=v, badge_id=154)
-	elif v.num_of_owned_hats >= 100:
+	elif v.num_of_owned_hats >= 99:
 		badge_grant(user=v, badge_id=153)
-	elif v.num_of_owned_hats >= 25:
+	elif v.num_of_owned_hats >= 24:
 		badge_grant(user=v, badge_id=152)
 
 	return {"message": f"'{hat.name}' bought!"}

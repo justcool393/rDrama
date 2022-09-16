@@ -65,19 +65,23 @@ def buy(v, award):
 	price = int(og_price * v.discount)
 
 	if request.values.get("mb"):
-		if v.procoins < price: return {"error": "Not enough marseybux."}, 400
-		if award == "grass": return {"error": "You can't buy the grass award with marseybux."}, 403
-		v.procoins -= price
+		if award == "grass":
+			return {"error": "You can't buy the grass award with marseybux."}, 403
+
+		charged = v.charge_account('procoins', price)
+		if not charged:
+			return {"error": "Not enough marseybux."}, 400
 	else:
-		if v.coins < price: return {"error": "Not enough coins."}, 400
-		v.coins -= price
+		charged = v.charge_account('coins', price)
+		if not charged:
+			return {"error": "Not enough coins."}, 400
+
 		v.coins_spent += price
 		if v.coins_spent >= 1000000:
 			badge_grant(badge_id=73, user=v)
 		elif v.coins_spent >= 500000:
 			badge_grant(badge_id=72, user=v)
 		elif v.coins_spent >= 250000:
-			
 			badge_grant(badge_id=71, user=v)
 		elif v.coins_spent >= 100000:
 			badge_grant(badge_id=70, user=v)
@@ -172,7 +176,7 @@ def award_thing(v, thing_type, id):
 		return {"error": "User is already permenantly marsified!"}, 403
 
 	if v.id != author.id:
-		if author.deflector and v.id != AEVANN_ID and (AWARDS[kind]['price'] > 500 or kind.istitle()) and kind not in ('pin','unpin','benefactor'):
+		if author.deflector and v.id != AEVANN_ID and (AWARDS[kind]['price'] > 500 or kind == 'marsify' or kind.istitle()) and kind not in ('pin','unpin','benefactor'):
 			msg = f"@{v.username} has tried to give your [{thing_type}]({thing.shortlink}) the {AWARDS[kind]['title']} Award but it was deflected and applied to them :marseytroll:"
 			send_repeatable_notification(author.id, msg)
 			msg = f"@{author.username} is under the effect of a deflector award; your {AWARDS[kind]['title']} Award has been deflected back to you :marseytroll:"
@@ -354,7 +358,7 @@ def award_thing(v, thing_type, id):
 			body = thing.body
 			if author.owoify: body = owoify(body)
 			body = marsify(body)
-			thing.body_html = sanitize(body, limit_pings=5, marsified=True)
+			thing.body_html = sanitize(body, limit_pings=5)
 			g.db.add(thing)
 	elif "Vampire" in kind and kind == v.house:
 		if author.bite: author.bite += 86400 * 3
@@ -380,7 +384,7 @@ def award_thing(v, thing_type, id):
 			body = thing.body
 			body = owoify(body)
 			if author.marsify: body = marsify(body)
-			thing.body_html = sanitize(body, limit_pings=5, marsified=True)
+			thing.body_html = sanitize(body, limit_pings=5)
 			g.db.add(thing)
 	elif ("Femboy" in kind and kind == v.house):
 		if author.rainbow: author.rainbow += 86400
@@ -419,6 +423,8 @@ def admin_userawards_post(v):
 		abort(404)
 	
 	if SITE == 'pcmemes.net' and v.admin_level < 3: abort(403)
+
+	if SITE == 'watchpeopledie.co' and v.id not in (AEVANN_ID, CARP_ID, SNAKES_ID): abort(403)
 
 	try: u = request.values.get("username").strip()
 	except: abort(404)
