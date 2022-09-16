@@ -130,6 +130,7 @@
     }
 
     // Place
+    submitBet();
 
     // Reset
     BET_IN_PROGRESS.kind = "";
@@ -167,28 +168,43 @@
     CONNECT: "connect",
     UPDATE_STATE: "update-state",
     START_RACE: "start-race",
+    USER_PLACED_BET: "user-placed-bet",
+    BET_SUCCEEDED: "bet-succeeded",
+    BET_FAILED: "bet-failed"
   };
 
   const socket = io();
-
-  socket.on(MarseyRacingEvent.UPDATE_STATE, updateView);
-
+  
+  // === Incoming
   // The view updates when the state is received from the server.
   let currentState;
   function updateView(state) {
     currentState = state;
-
+    
     if (currentState.race_started) {
       const marseys = Array.from(document.querySelectorAll(".marsey-racer"));
       marseys.forEach((marsey) => marsey.classList.add("racing"));
     }
   }
+  socket.on(MarseyRacingEvent.UPDATE_STATE, updateView);
 
-  // Socket events
+  function receiveBetSuccess() {
+    showSuccessMessage("Successfully placed a bet.");
+  }
+  socket.on(MarseyRacingEvent.BET_SUCCEEDED, receiveBetSuccess);
+
+  function receiveBetError() {
+    showErrorMessage("Unable to place that bet.");
+  }
+  socket.on(MarseyRacingEvent.BET_FAILED, receiveBetError);
+  
+  // === Outgoing
   function startRace() {
     socket.emit(MarseyRacingEvent.START_RACE);
   }
 
-  window.startRace = startRace;
+  function submitBet() {
+    socket.emit(MarseyRacingEvent.USER_PLACED_BET, BET_IN_PROGRESS);
+  }
   // #endregion
 })();

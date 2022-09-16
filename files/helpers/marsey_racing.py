@@ -12,6 +12,9 @@ class MarseyRacingEvent(str, Enum):
     CONNECT = 'connect'
     UPDATE_STATE = 'update-state'
     START_RACE = 'start-race'
+    USER_PLACED_BET = 'user-placed-bet'
+    BET_SUCCEEDED = 'bet-succeeded'
+    BET_FAILED = 'bet-failed'
 
 
 class MarseyRacingCurrency(str, Enum):
@@ -418,3 +421,8 @@ class MarseyRacingManager():
 
     def startRace(self):
         self.replaceState(handle_start_race(self.state))
+
+    def handlePlayerBet(self, data, user):
+
+
+        return True

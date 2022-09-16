@@ -55,10 +55,27 @@ def connect(v):
 
 @socketio.on(MarseyRacingEvent.START_RACE)
 @auth_required
-def start_race(v):
+def start_race(data, v):
     global manager
 
     if manager:
         manager.startRace()
         emit(MarseyRacingEvent.UPDATE_STATE, manager.state)
         return '', 204
+
+
+@socketio.on(MarseyRacingEvent.USER_PLACED_BET)
+@auth_required
+def user_placed_bet(data, v):
+    global manager
+
+    if manager:
+        successful = manager.handlePlayerBet(data, v)
+
+        if successful:
+            emit(event=MarseyRacingEvent.BET_SUCCEEDED, broadcast=False)
+            emit(MarseyRacingEvent.UPDATE_STATE, manager.state)
+            return '', 204
+        else:
+            emit(event=MarseyRacingEvent.BET_FAILED, broadcast=False)
+            return '', 400
