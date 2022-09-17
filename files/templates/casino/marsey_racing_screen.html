@@ -127,6 +127,61 @@
                 top: 0;
                 left: 4px;
             }
+
+            #podium {
+                background: lightblue;
+                display: flex;
+                align-items: flex-end;
+                justify-content: flex-end;
+                width: 100%;
+                padding: 6rem 4rem 0 4rem;
+            }
+
+            #podium > div {
+                flex: 1;
+                background: #999;
+                border: 2px solid black;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: black;
+                position: relative;
+            }
+
+            @keyframes bouncing {
+                from {
+                    top: -64px;
+                }
+                50% {
+                    top: -86px;
+                }
+                to {
+                    top: -64px;
+                }
+            }
+
+            #podium > div > img {
+                animation: bouncing 3s ease-in-out infinite;
+                position: absolute;
+                top: -64px;
+            }
+
+            #PODIUM\#1 {
+                height: 80px;
+            }
+
+            #PODIUM\#2 {
+                height: 64px;
+            }
+
+            #PODIUM\#3 {
+                height: 48px;
+            }
+
+            #PODIUM\#4 {
+                height: 32px;
+            }
         </style>
 </head>
     <body>
@@ -158,6 +213,22 @@
                     <div class="finish-line"></div>
                 </div>
             </div>
+
+            <div id="podium">
+                <div id="PODIUM#1">
+                    1
+                </div>
+                <div id="PODIUM#2">
+                    2
+                </div>
+                <div id="PODIUM#3">
+                    3
+                </div>
+                <div id="PODIUM#4">
+                    4
+                </div>
+            </div>
+
             <button class="btn btn-primary mr-button" style="margin-bottom: 1.2rem;" onclick="startRace()">Start</button>
 
                 <div class="mr-segment">

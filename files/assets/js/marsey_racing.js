@@ -258,6 +258,18 @@
 
     console.log("State updated!", currentState);
 
+    // Update the podium
+    for (let i = 0; i < 4; i++) {
+      const whichPodium = document.getElementById(`PODIUM#${i + 1}`);
+      let html = `${i + 1}`;
+
+      if (state.podium[i]) {
+        html += generateMarseyImg(state.podium[i], "PODIUM", true);
+      }
+
+      whichPodium.innerHTML = html;
+    }
+
     // Update the bets
     const playerId = document.getElementById("vid").value;
     const playerBetList = document.getElementById("playerBetList");
