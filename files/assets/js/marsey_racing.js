@@ -247,9 +247,15 @@
     BET_SUCCEEDED: "bet-succeeded",
     BET_FAILED: "bet-failed",
   };
-
+  const ChatEvent = {
+    CHAT_STATE_UPDATED: 'chat-state-updated',
+    USER_TYPED: 'user-typed',
+    USER_SPOKE: 'user-spoke',
+    MESSAGE_FAILED: 'message-failed',
+  };
   const socket = io();
 
+  // #region Marsey Racing
   // === Incoming
   // The view updates when the state is received from the server.
   let currentState;
@@ -271,26 +277,39 @@
     }
 
     if (state.biggest_loser) {
-      document.getElementById('podium').innerHTML += generateMarseyImg(state.biggest_loser, "BIGGEST_LOSER", true);
-      const biggestLoser = document.getElementById(`BIGGEST_LOSER#${state.biggest_loser}`);
+      document.getElementById("podium").innerHTML += generateMarseyImg(
+        state.biggest_loser,
+        "BIGGEST_LOSER",
+        true
+      );
+      const biggestLoser = document.getElementById(
+        `BIGGEST_LOSER#${state.biggest_loser}`
+      );
       biggestLoser.classList.add("mr-biggest-loser");
     }
-
 
     // Update the bets
     const playerId = document.getElementById("vid").value;
     const playerBetList = document.getElementById("playerBetList");
     const otherBetList = document.getElementById("otherBetList");
     const bets = currentState.bets.all.map((id) => currentState.bets.by_id[id]);
-    const playerBets = bets.filter(bet => bet.user_id === playerId);
-    const otherBets = bets.filter(bet => bet.user_id !== playerId);
-    
-    playerBetList.innerHTML = transformBetsForView(playerBets, "You have not place any bets.");
-    otherBetList.innerHTML = transformBetsForView(otherBets, "No one else has placed any bets.");
+    const playerBets = bets.filter((bet) => bet.user_id === playerId);
+    const otherBets = bets.filter((bet) => bet.user_id !== playerId);
+
+    playerBetList.innerHTML = transformBetsForView(
+      playerBets,
+      "You have not place any bets."
+    );
+    otherBetList.innerHTML = transformBetsForView(
+      otherBets,
+      "No one else has placed any bets."
+    );
 
     // Start the race?
     if (currentState.race_started) {
-      const marseys = currentState.marseys.all.map(id => currentState.marseys.by_id[id]);
+      const marseys = currentState.marseys.all.map(
+        (id) => currentState.marseys.by_id[id]
+      );
 
       for (const marsey of marseys) {
         const racer = document.getElementById(`RACER#${marsey.name}`);
@@ -314,10 +333,32 @@
   // === Outgoing
   window.startRace = function startRace() {
     socket.emit(MarseyRacingEvent.START_RACE);
-  }
+  };
 
   window.submitBet = function submitBet() {
     socket.emit(MarseyRacingEvent.USER_PLACED_BET, BET_IN_PROGRESS);
+  };
+  // #endregion
+
+  // #region Chatting
+  // == Incoming
+  function handleChatUpdate(data) {
+    console.log("Chat Updated", data);
   }
+  socket.on(ChatEvent.CHAT_STATE_UPDATED, handleChatUpdate);
+
+  // == Outgoing
+  window.handleType = function handleType(data) {
+    // 
+    socket.emit(ChatEvent.USER_TYPED, data);
+  }
+
+
+  window.handleSpeak = function handlSpeak(data) {
+    // 
+    socket.emit(ChatEvent.USER_SPOKE, data);
+  }
+
+  // #endregion
   // #endregion
 })();

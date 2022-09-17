@@ -196,6 +196,26 @@
 </head>
     <body>
 	    {% include "header.html" %}
+
+        <div>
+            <h2>DEBUG</h2>
+            <button
+                class="btn btn-primary mr-button"
+                style="margin-bottom: 1.2rem;"
+                onclick="startRace()">Start</button>
+            <button
+                class="btn btn-primary mr-button"
+                style="margin-bottom: 1.2rem;"
+                onclick="handleType('')">Type Nothing</button>
+            <button
+                class="btn btn-primary mr-button"
+                style="margin-bottom: 1.2rem;"
+                onclick="handleType('hey mom')">Type Something</button>
+            <button
+                class="btn btn-primary mr-button"
+                style="margin-bottom: 1.2rem;"
+                onclick="handleSpeak('hey mom!!!')">Say Something</button>
+        </div>
         
         <div
             style="
@@ -238,9 +258,6 @@
                     4
                 </div>
             </div>
-
-            <button class="btn btn-primary mr-button" style="margin-bottom: 1.2rem;" onclick="startRace()">Start</button>
-
                 <div class="mr-segment">
                     <h4>Your Bets</h4>
                     <div id="playerBetList"></div>
@@ -429,7 +446,7 @@
             </div>
         </div>
 
-        <!-- Success -->
+        <!-- Success Toast -->
         <div
             class="toast"
             id="racing-post-success"
@@ -456,7 +473,7 @@
             </div>
         </div>
 
-        <!-- Error -->
+        <!-- Error Toast -->
         <div
             class="toast"
             id="racing-post-error"

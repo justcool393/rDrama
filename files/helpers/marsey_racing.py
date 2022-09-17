@@ -10,6 +10,7 @@ from sqlalchemy.sql.expression import func
 
 class MarseyRacingEvent(str, Enum):
     CONNECT = 'connect'
+    DISCONNECT = 'disconnect'
     UPDATE_STATE = 'update-state'
     START_RACE = 'start-race'
     USER_PLACED_BET = 'user-placed-bet'
@@ -329,15 +330,6 @@ def handle_stop_race(state):
     next_state['race_started'] = False
     return next_state
 
-
-def do_the_thing():
-    state = create_initial_state()
-    next_state = handle_place_bet(state, 5, MarseyRacingBet.SUPERFECTA_BOX, [
-                                  state['marseys']['by_id'][state['marseys']['all'][0]]['name']], 5, MarseyRacingCurrency.COINS)
-    next_state = handle_determine_outcome(state)
-    next_state = handle_determine_payouts(state)
-
-    return next_state
 
 
 # Bet Checkers
