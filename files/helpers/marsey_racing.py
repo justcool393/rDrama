@@ -445,11 +445,19 @@ class MarseyRacingManager():
             MarseyRacingBet.SUPERFECTA,
         )
 
+        # Betting isn't open.
+        if not self.state['betting_open']:
+            return False
+
+        # Race is underway.
+        if self.state['race_started']:
+            return False
+
         # Not a real bet.
         if not kind in valid_kinds:
             return False
 
-        # Wrong number of <arseys picked.
+        # Wrong number of Marseys picked.
         if len(selection) != SELECTIONS_IN_BET[kind]:
             return False
 

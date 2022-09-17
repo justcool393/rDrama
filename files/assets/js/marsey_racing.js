@@ -14,8 +14,8 @@
   let isBetFormOpen = false;
   window.toggleBetForm = function toggleBetForm() {
     const betForm = document.getElementById("betForm");
-    const betFormOpenButton = document.getElementById("betFormOpen")
-    const betFormCloseButton = document.getElementById("betFormClose")
+    const betFormOpenButton = document.getElementById("betFormOpen");
+    const betFormCloseButton = document.getElementById("betFormClose");
 
     isBetFormOpen = !isBetFormOpen;
 
@@ -30,7 +30,7 @@
       betFormOpenButton.style.display = "unset";
       betFormCloseButton.style.display = "none";
     }
-  }
+  };
 
   window.pickBet = function pickBet(bet) {
     BET_IN_PROGRESS.kind = bet;
@@ -79,17 +79,7 @@
 
       document.getElementById(`SELECT_${i + 1}`).innerHTML = `
       <span>${i + 1}.</span>
-      <img
-        id="SELECTED#${selected}"
-        loading="lazy"
-        data-bs-toggle="tooltip"
-        alt=":${selected}:"
-        title="${selected}"
-        src="/e/${selected}.webp"
-        data-bs-original-title=":${selected}:"
-        aria-label=":${selected}:"
-        onclick="selectMarsey('${selected}')"
-        b="">
+      ${generateMarseyImg(selected, "SELECTED", true)}
       `;
     }
   };
@@ -125,6 +115,22 @@
       resetBet();
     }
   };
+
+  function generateMarseyImg(marsey, id, large = false) {
+    return `
+      <img
+        id="${id}#${marsey}"
+        loading="lazy"
+        data-bs-toggle="tooltip"
+        alt=":${marsey}:"
+        title="${marsey}"
+        src="/e/${marsey}.webp"
+        data-bs-original-title=":${marsey}:"
+        aria-label=":${marsey}:"
+        onclick="selectMarsey('${marsey}')"
+        ${large ? `b=""` : ""}>
+    `;
+  }
 
   function validateBet() {
     BET_IN_PROGRESS.wager.amount = parseInt(
@@ -197,6 +203,39 @@
     toastMessage.innerText = message;
     bootstrap.Toast.getOrCreateInstance(toast).show();
   }
+
+  function transformBetsForView(bets, whenEmpty) {
+    if (bets.length === 0) {
+      return whenEmpty;
+    }
+
+    return bets
+      .map(({ amount, bet, currency, selections, user_id }) => {
+        const { username } = currentState.users.by_id[user_id];
+        const wager = `${amount} ${currency}`;
+        const singleChoice = generateMarseyImg(selections[0], "CHOICE");
+        const hyphenatedChoices = selections
+          .map((selection) => generateMarseyImg(selection, "CHOICE"))
+          .join("");
+        const betPhrase = {
+          WIN: `${wager} to win on ${singleChoice}`,
+          PLACE: `${wager} to place on ${singleChoice}`,
+          SHOW: `${wager} to show on ${singleChoice}`,
+          QUINELLA: `${wager}, quinella, ${hyphenatedChoices}`,
+          TRIFECTA_BOX: `${wager}, boxed trifecta, ${hyphenatedChoices}`,
+          TRIFECTA: `${wager}, trifecta, ${hyphenatedChoices}`,
+          SUPERFECTA_BOX: `${wager}, boxed superfecta, ${hyphenatedChoices}`,
+          SUPERFECTA: `${wager}, superfecta, ${hyphenatedChoices}`,
+        }[bet];
+
+        return `<div class="mr-bet-log" style="margin-bottom: 1rem;">
+          <a href="/@${username}">${username}</a> bet ${betPhrase}
+        </div>`;
+      })
+      .reverse()
+      .join("");
+  }
+
   // #endregion
 
   // #region Sockets
@@ -206,19 +245,32 @@
     START_RACE: "start-race",
     USER_PLACED_BET: "user-placed-bet",
     BET_SUCCEEDED: "bet-succeeded",
-    BET_FAILED: "bet-failed"
+    BET_FAILED: "bet-failed",
   };
 
   const socket = io();
-  
+
   // === Incoming
   // The view updates when the state is received from the server.
   let currentState;
   function updateView(state) {
     currentState = state;
 
-    console.log("State updated!", state);
+    console.log("State updated!", currentState);
+
+    // Update the bets
+    const playerId = document.getElementById("vid").value;
+    const playerBetList = document.getElementById("playerBetList");
+    const otherBetList = document.getElementById("otherBetList");
+    const bets = currentState.bets.all.map((id) => currentState.bets.by_id[id]);
+    const playerBets = bets.filter(bet => bet.user_id === playerId);
+    const otherBets = bets.filter(bet => bet.user_id !== playerId);
     
+    playerBetList.innerHTML = transformBetsForView(playerBets, "You have not place any bets.");
+    otherBetList.innerHTML = transformBetsForView(otherBets, "No one else has placed any bets.");
+    
+
+    // Start the race?
     if (currentState.race_started) {
       const marseys = Array.from(document.querySelectorAll(".marsey-racer"));
       marseys.forEach((marsey) => marsey.classList.add("racing"));
@@ -236,7 +288,7 @@
     showErrorMessage("Unable to place that bet.");
   }
   socket.on(MarseyRacingEvent.BET_FAILED, receiveBetError);
-  
+
   // === Outgoing
   function startRace() {
     socket.emit(MarseyRacingEvent.START_RACE);

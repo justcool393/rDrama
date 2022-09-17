@@ -74,7 +74,7 @@ def user_placed_bet(data, v):
 
         if successful:
             emit(event=MarseyRacingEvent.BET_SUCCEEDED, broadcast=False)
-            emit(MarseyRacingEvent.UPDATE_STATE, manager.state)
+            emit(MarseyRacingEvent.UPDATE_STATE, manager.state, broadcast=True)
             return '', 204
         else:
             emit(event=MarseyRacingEvent.BET_FAILED, broadcast=False)

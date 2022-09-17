@@ -166,7 +166,12 @@
 
                 <div class="mr-segment">
                     <h4>Your Bets</h4>
-                    <div>You haven't placed any bets. </div>
+                    <div id="playerBetList"></div>
+                </div>
+
+                <div class="mr-segment">
+                    <h4>Other Bets</h4>
+                    <div id="otherBetList"></div>
                 </div>
 
                 <button
@@ -180,7 +185,7 @@
                     id="betFormClose"
                     type="button"
                     class="btn btn-danger"
-                    style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px; display: none;"
+                    style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px; display: none; margin-bottom: 1.5rem;"
                     onclick="toggleBetForm()">Cancel Bet</button>
 
                 <div id="betForm" style="display: none;">
