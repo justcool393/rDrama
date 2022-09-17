@@ -54,11 +54,11 @@ def connect(v):
     global racing_manager, chat_manager
 
     if racing_manager:
-        emit(MarseyRacingEvent.UPDATE_STATE, racing_manager.state)
+        emit(MarseyRacingEvent.UPDATE_STATE, racing_manager.state, broadcast=True)
 
     if chat_manager:
         chat_manager.handle_user_connected(v)
-        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state)
+        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state, broadcast=True)
 
     return '', 204
 
@@ -70,7 +70,7 @@ def disconnect(v):
 
     if chat_manager:
         chat_manager.handle_user_disconnected(v)
-        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state)
+        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state, broadcast=True)
         return '', 204
     else:
         return '', 400
@@ -83,7 +83,7 @@ def start_race(v):
 
     if racing_manager:
         racing_manager.start_race()
-        emit(MarseyRacingEvent.UPDATE_STATE, racing_manager.state)
+        emit(MarseyRacingEvent.UPDATE_STATE, racing_manager.state, broadcast=True)
         return '', 204
     else:
         return '', 400
@@ -115,7 +115,7 @@ def user_typed(data, v):
 
     if chat_manager:
         chat_manager.handle_user_typing(v, data)
-        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state)
+        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state, broadcast=True)
         return '', 204
     else:
         return '', 400
@@ -132,7 +132,7 @@ def user_spoke(data, v):
         succeeded, _ = chat_manager.handle_user_spoke(v, data)
 
         if succeeded:
-            emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state)
+            emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state, broadcast=True)
             return '', 204
         else:
             emit(event=ChatEvent.MESSAGE_FAILED, broadcast=False)
@@ -148,7 +148,7 @@ def message_deleted(deleted_text, _):
 
     if chat_manager:
         chat_manager.handle_message_deleted(deleted_text)
-        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state)
+        emit(ChatEvent.CHAT_STATE_UPDATED, chat_manager.state, broadcast=True)
         return '', 204
     else:
         return '', 400

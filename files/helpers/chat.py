@@ -1,5 +1,6 @@
 import time
 from enum import Enum
+from files.helpers.jinja2 import timestamp
 from files.helpers.lazy import lazy
 from files.helpers.wrappers import *
 from files.helpers.const import blackjack, CHAT_MESSAGE_LENGTH_MAXIMUM
@@ -25,7 +26,6 @@ class ChatManager():
     total = 0
 
     @property
-    @lazy
     def state(self):
         return {
             'online': self.online,
@@ -84,6 +84,7 @@ class ChatManager():
             return bad_message
 
         text_html = sanitize(text, count_marseys=True)
+        time_number = int(time.time())
         data = {
             'avatar': user.profile_url,
             'hat': user.hat_active,
@@ -92,7 +93,8 @@ class ChatManager():
             'text': text,
             'text_html': text_html,
             'text_censored': censor_slurs(text_html, 'chat'),
-            'time': int(time.time()),
+            'time': time_number,
+            'timestamp': timestamp(time_number)
         }
         
         if user.shadowbanned:
@@ -105,7 +107,7 @@ class ChatManager():
         else:
             self.messages.append(data)
             self.messages = self.messages[-MESSAGE_LIMIT:]
-        
+
         self.total += 1
 
         if user.admin_level > 1:

@@ -198,8 +198,28 @@
                 opacity: 0.3;
                 transform: scale(1.5) rotateZ(-30deg);
             }
+
+            .mr-chat-window {
+                height: 320px;
+                overflow: auto;
+            }
+
+            .mr-chat-message {
+                display: flex;
+                align-items: center;
+            }
+
+            .mr-chat-message-metadata {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
         
             .mr-chat-input-wrapper {
+                width: 100%;
+            }
+
+            .mr-chat-input-wrapper form {
                 display: flex;
                 align-items: center;
                 position: relative;
@@ -224,7 +244,7 @@
                 width: 30px;
             }
         </style>
-</head>
+    </head>
     <body>
 	    {% include "header.html" %}
 
@@ -274,12 +294,14 @@
         
             <!-- Chat -->
             <div class="mr-segment" style="margin-bottom: 0">
-                <h4>Chat</h4>
-                <div id="chatMessageList"></div>
+                <h4 id="chatHeader">0 users online</h4>
+                <div id="chatMessageList" class="mr-chat-window"></div>
             </div>
             <div class="mr-chat-input-wrapper">
-                <input type="text" id="newChatMessage" placeholder="Say something..." class="mr-chat-input">
-                <button type="button" class="btn btn-secondary">Send</button>
+                <form id="chatForm">
+                    <input type="text" placeholder="Say something..." class="mr-chat-input">
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
             </div>
         
             <!-- Your Bets -->
@@ -434,7 +456,6 @@
                     style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px;"
                     onclick="emitUserPlacedBet()">Finalize</button>
             </div>
-        </div>
         </div>
         
         <!-- Success Toast -->

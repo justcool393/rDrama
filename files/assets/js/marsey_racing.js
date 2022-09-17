@@ -1,3 +1,12 @@
+if (
+  document.readyState === "complete" ||
+  (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  initializeChatForm();
+} else {
+  document.addEventListener("DOMContentLoaded", initializeChatForm);
+}
+
 // #region Betting Functionality
 
 /**
@@ -34,7 +43,8 @@ function clearBetInProgress() {
   // Cleanup selection
   Array.from(
     { length: 4 },
-    (_, index) => (document.getElementById(`SELECT_${index + 1}`).innerHTML = "")
+    (_, index) =>
+      (document.getElementById(`SELECT_${index + 1}`).innerHTML = "")
   );
 }
 
@@ -183,6 +193,24 @@ function selectBetCurrency(currency) {
 
 // ===
 
+// #region Chat Functionality
+/**
+ * @desc
+ * On page load, pre-emptively intercept chat form submissions.
+ */
+function initializeChatForm() {
+  const chatForm = document.getElementById("chatForm");
+  const input = chatForm.querySelector("input");
+
+  chatForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    emitUserSpoke(input.value);
+    input.value = "";
+  });
+}
+
+// ===
+
 // #region Toast Functionality
 
 /**
@@ -280,6 +308,51 @@ function buildBetsView(state, bets, whenEmpty) {
       .join("");
   }
 }
+
+/**
+ *
+ * @param {ChatMessage} message
+ * @desc
+ * Given a message from the server, build out a view.
+ * @returns {string}
+ */
+function buildChatMessageView(message) {
+  return `
+     <div>
+        <!-- Metadata -->
+        <div class="mr-chat-message-metadata">
+          <!-- Avatar/Name -->
+          <div>
+            <div class="profile-pic-20-wrapper">
+              <img src="${message.avatar}" class="pp20 mr-1">
+              ${
+                message.hat
+                  ? `<img src="${message.hat}" class="profile-pic-20-hat hat">`
+                  : ""
+              }
+            </div>
+
+            <a
+              href="/@${message.username}"
+              target="_blank" 
+              class="font-weight-bold text-black userlink"
+              style="color: #${message.namecolor};">
+              ${message.username}
+            </a>
+          </div>
+          
+          <!-- Timestamp -->
+          <small>
+            ${message.timestamp}
+          </small>
+        </div>
+        <!-- Content -->
+        <div>
+          ${message.text_html}
+        </div>
+     </div>
+  `;
+}
 // #endregion
 
 // ===
@@ -317,9 +390,6 @@ const ChatEvent = {
  * When a new racing state is received from the server, update all relevant elements.
  */
 function handleUpdateRacingView(state) {
-  console.info("Racing State Updated");
-  console.table(state);
-
   // Podium
   const podium = document.getElementById("podium");
 
@@ -385,6 +455,7 @@ function handleUpdateRacingView(state) {
  *        text_html: string;
  *        text_censored: string;
  *        time: number;
+ *        timestamp: string;
  *      }>,
  *      online: string[],
  *      total: number,
@@ -394,8 +465,12 @@ function handleUpdateRacingView(state) {
  * When a new chat state is received from the server, update all relevant elements.
  */
 function handleUpdateChatView(state) {
-  console.info("Chat State Updated");
-  console.table(state);
+  const chatHeader = document.getElementById("chatHeader");
+  chatHeader.innerHTML = `${state.online.length} users online`;
+
+  const chatMessageList = document.getElementById("chatMessageList");
+  chatMessageList.innerHTML = state.messages.map(buildChatMessageView).join("");
+  chatMessageList.scrollTop = chatMessageList.scrollHeight;
 }
 
 /**
@@ -412,7 +487,7 @@ function handleBetError() {
  */
 function handleBetSuccess() {
   showSuccessMessage("Successfully placed a bet.");
-  clearBetInProgress();
+  toggleBetForm();
 }
 
 const socket = io();
