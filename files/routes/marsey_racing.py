@@ -99,8 +99,7 @@ def user_placed_bet(data, v):
 
         if successful:
             emit(event=MarseyRacingEvent.BET_SUCCEEDED, broadcast=False)
-            emit(MarseyRacingEvent.UPDATE_STATE,
-                 racing_manager.state, broadcast=True)
+            emit(MarseyRacingEvent.UPDATE_STATE, racing_manager.state, broadcast=True)
             return '', 204
         else:
             emit(event=MarseyRacingEvent.BET_FAILED, broadcast=False)
@@ -110,7 +109,7 @@ def user_placed_bet(data, v):
 
 
 @socketio.on(ChatEvent.USER_TYPED)
-@auth_required
+@is_not_permabanned
 def user_typed(data, v):
     global chat_manager
 

@@ -1,17 +1,18 @@
 import time
 from enum import Enum
 from files.helpers.lazy import lazy
-from files.helpers.const import CHAT_MESSAGE_LENGTH_MAXIMUM
+from files.helpers.wrappers import *
+from files.helpers.const import blackjack, CHAT_MESSAGE_LENGTH_MAXIMUM
 from files.helpers.regex import censor_slurs, mute_regex
 from files.helpers.sanitize import sanitize
 
 MESSAGE_LIMIT = 100
 
 class ChatEvent(str, Enum):
-    USER_CONNECTED = 'connect',
-    USER_DISCONNECTED = 'disconnect',
-    USER_TYPED = 'user-typed',
-    USER_SPOKE = 'user-spoke',
+    USER_CONNECTED = 'connect'
+    USER_DISCONNECTED = 'disconnect'
+    USER_TYPED = 'user-typed'
+    USER_SPOKE = 'user-spoke'
     MESSAGE_FAILED = 'message-failed'
     MESSAGE_DELETED = 'message-deleted'
     CHAT_STATE_UPDATED = 'chat-state-updated'
@@ -95,6 +96,11 @@ class ChatManager():
         }
         
         if user.shadowbanned:
+            return True, False
+        elif blackjack and any(i in text.lower() for i in blackjack.split()):
+            user.shadowbanned = 'AutoJanny'
+            g.db.add(user)
+            send_repeatable_notification(CARP_ID, f"{user.username} has been shadowbanned because of a chat message.")
             return True, False
         else:
             self.messages.append(data)
