@@ -55,7 +55,7 @@ def connect(v):
 
 @socketio.on(MarseyRacingEvent.START_RACE)
 @auth_required
-def start_race(data, v):
+def start_race(v):
     global manager
 
     if manager:

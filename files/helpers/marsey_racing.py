@@ -316,6 +316,7 @@ def handle_determine_payouts(state):
 def handle_start_race(state):
     next_state = copy(state)
     next_state['race_started'] = True
+    next_state = handle_determine_outcome(next_state)
     return next_state
 
 

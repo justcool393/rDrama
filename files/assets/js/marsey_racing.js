@@ -272,8 +272,12 @@
 
     // Start the race?
     if (currentState.race_started) {
-      const marseys = Array.from(document.querySelectorAll(".marsey-racer"));
-      marseys.forEach((marsey) => marsey.classList.add("racing"));
+      const marseys = currentState.marseys.all.map(id => currentState.marseys.by_id[id]);
+
+      for (const marsey of marseys) {
+        const racer = document.getElementById(`RACER#${marsey.name}`);
+        racer.style.animation = `racing ${marsey.speed}ms ease-in-out forwards`;
+      }
     }
   }
   socket.on(MarseyRacingEvent.UPDATE_STATE, updateView);
@@ -290,11 +294,11 @@
   socket.on(MarseyRacingEvent.BET_FAILED, receiveBetError);
 
   // === Outgoing
-  function startRace() {
+  window.startRace = function startRace() {
     socket.emit(MarseyRacingEvent.START_RACE);
   }
 
-  function submitBet() {
+  window.submitBet = function submitBet() {
     socket.emit(MarseyRacingEvent.USER_PLACED_BET, BET_IN_PROGRESS);
   }
   // #endregion
