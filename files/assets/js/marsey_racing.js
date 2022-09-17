@@ -270,6 +270,13 @@
       whichPodium.innerHTML = html;
     }
 
+    if (state.biggest_loser) {
+      document.getElementById('podium').innerHTML += generateMarseyImg(state.biggest_loser, "BIGGEST_LOSER", true);
+      const biggestLoser = document.getElementById(`BIGGEST_LOSER#${state.biggest_loser}`);
+      biggestLoser.classList.add("mr-biggest-loser");
+    }
+
+
     // Update the bets
     const playerId = document.getElementById("vid").value;
     const playerBetList = document.getElementById("playerBetList");
@@ -280,7 +287,6 @@
     
     playerBetList.innerHTML = transformBetsForView(playerBets, "You have not place any bets.");
     otherBetList.innerHTML = transformBetsForView(otherBets, "No one else has placed any bets.");
-    
 
     // Start the race?
     if (currentState.race_started) {

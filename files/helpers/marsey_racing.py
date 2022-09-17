@@ -164,6 +164,7 @@ def create_initial_state():
         'betting_open': True,
         'race_started': False,
         'podium': [None, None, None, None],
+        'biggest_loser': None,
         'odds': PAYOUT_MULITPLIERS,
         'bets': {
             'all': [],
@@ -273,6 +274,9 @@ def handle_determine_outcome(state):
     for index, placed_marsey in enumerate(placements):
         if index < 4:
             next_state['podium'][index] = placed_marsey['name']
+
+        if index == len(placements) - 1:
+            next_state['biggest_loser'] = placed_marsey['name']
 
         placement = index + 1
         update_local_and_state(placed_marsey, 'placement', placement)
