@@ -1,4 +1,20 @@
 /* src/components/Chat.css */
 .Chat {
+  width: 100%;
   max-width: max(76%, 1500px);
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 20rem;
+}
+.UserInput {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.UserInput > textarea {
+  flex: 3;
+  font-size: 16px;
+  margin: 0 0.5rem;
 }

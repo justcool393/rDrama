@@ -1,0 +1,11 @@
+.UserInput {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.UserInput > textarea {
+  flex: 3;
+  font-size: 16px;
+  margin: 0 0.5rem;
+}

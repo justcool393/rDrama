@@ -1,5 +1,7 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { Chat } from './components'
+import { createRoot } from "react-dom/client";
+import { Chat } from "./components";
 
-ReactDOM.render(<Chat />, document.getElementById('root'));
+const root = createRoot(document.getElementById("root"))
+
+root.render(<Chat />);

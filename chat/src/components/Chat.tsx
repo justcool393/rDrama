@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import "./Chat.css";
+import { UserInput } from "./UserInput";
 
 export function Chat() {
   const socket = useRef<null | Socket>(null);
@@ -15,5 +16,9 @@ export function Chat() {
     }
   });
 
-  return <section className="Chat">Chat</section>;
+  return (
+    <section className="Chat">
+      <UserInput />
+    </section>
+  );
 }
