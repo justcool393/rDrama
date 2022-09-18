@@ -44,6 +44,12 @@ def chatjs():
 	return resp
 
 
+@app.get('/chat_built.js')
+def chatbuiltjs():
+	resp = make_response(send_from_directory('assets', 'js/chat_built.js'))
+	return resp
+
+
 @socketio.on('speak')
 @limiter.limit("3/second;10/minute")
 @limiter.limit("3/second;10/minute", key_func=lambda:f'{SITE}-{session.get("lo_user")}')

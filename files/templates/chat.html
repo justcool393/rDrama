@@ -127,6 +127,8 @@
 
 <body>
 	{% include "header.html" %}
+
+	<div id="root"></div>
 	
 	<div class="container pb-4">
 		<div class="row justify-content-around" id="main-content-row">
@@ -244,6 +246,7 @@
 <script defer src="{{asset('js/lozad.js')}}"></script>
 <script defer src="/assets/js/lite-youtube.js?v=4000"></script>
 <script defer src="/chat.js?h=5"></script>
+<script defer src="/chat_built.js?h=5"></script>
 
 {% if v.admin_level > 1 %}
 	<script>
