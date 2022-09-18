@@ -1,5 +1,6 @@
 import React from "react";
 import { Username } from "./Username";
+import { useLoggedInUser } from "../hooks";
 import "./ChatMessage.css";
 
 interface ChatMessageProps extends ChatSpeakResponse {
@@ -14,9 +15,12 @@ export function ChatMessage({
   username,
   hat,
   text_html,
+  text_censored,
   timestamp,
-  onDelete
+  onDelete,
 }: ChatMessageProps) {
+  const { admin, censored } = useLoggedInUser();
+
   return (
     <div className="ChatMessage">
       {showUser && (
@@ -34,15 +38,22 @@ export function ChatMessage({
         <div>
           <span
             className="ChatMessage-content"
-            dangerouslySetInnerHTML={{ __html: text_html }}
+            dangerouslySetInnerHTML={{
+              __html: censored ? text_censored : text_html,
+            }}
           />
           <button className="ChatMessage-button quote btn">
             <i className="fas fa-reply"></i>
           </button>
         </div>
-        <button className="ChatMessage-button ChatMessage-delete quote btn del" onClick={onDelete}>
-          <i className="fas fa-trash-alt"></i>
-        </button>
+        {admin && (
+          <button
+            className="ChatMessage-button ChatMessage-delete quote btn del"
+            onClick={onDelete}
+          >
+            <i className="fas fa-trash-alt"></i>
+          </button>
+        )}
       </div>
     </div>
   );

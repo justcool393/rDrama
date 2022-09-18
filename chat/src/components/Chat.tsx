@@ -33,8 +33,8 @@ export function Chat() {
     []
   );
   const sendMessage = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
+    (event?: FormEvent<HTMLFormElement>) => {
+      event?.preventDefault();
       socket.current?.emit(ChatHandlers.SPEAK, draft);
       setDraft("");
     },
