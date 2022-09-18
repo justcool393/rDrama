@@ -1,0 +1,18 @@
+.ChatMessage-top {
+  display: flex;
+  align-items: center;
+}
+
+.ChatMessage-timestamp {
+  margin-left: 0.5rem;
+}
+
+.ChatMessage-bottom {
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.ChatMessage-content {
+  margin-right: 0.5rem;
+}

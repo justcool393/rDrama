@@ -1,24 +1,28 @@
-/* src/components/Chat.css */
-.Chat {
+/* src/components/Username.css */
+.Username {
   display: flex;
   align-items: center;
-  width: 100%;
-  max-width: max(76%, 1500px);
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  margin-bottom: 20rem;
 }
-.Chat-left {
-  flex: 1;
-  margin-right: 2rem;
-  display: flex;
-  flex-direction: column;
+.Username > a {
+  font-weight: bold;
+  margin-left: 8px;
 }
-.Chat-typing {
+
+/* src/components/ChatMessage.css */
+.ChatMessage-top {
   display: flex;
   align-items: center;
+}
+.ChatMessage-timestamp {
+  margin-left: 0.5rem;
+}
+.ChatMessage-bottom {
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+.ChatMessage-content {
+  margin-right: 0.5rem;
 }
 
 /* src/components/UserInput.css */
@@ -26,7 +30,6 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  height: 40px;
 }
 .UserInput > textarea {
   flex: 3;
@@ -40,4 +43,33 @@
 }
 .UserList li {
   font-size: 1.25rem;
+}
+
+/* src/components/Chat.css */
+.Chat {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: max(76%, 1500px);
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 20rem;
+}
+.Chat-online {
+  margin-bottom: 1rem;
+}
+.Chat-online i {
+  margin-right: 4px;
+}
+.Chat-left {
+  flex: 1;
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+.Chat-typing {
+  display: flex;
+  align-items: center;
 }

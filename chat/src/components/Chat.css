@@ -10,6 +10,14 @@
   margin-bottom: 20rem;
 }
 
+.Chat-online {
+  margin-bottom: 1rem;
+}
+
+.Chat-online i {
+  margin-right: 4px;
+}
+
 .Chat-left {
   flex: 1;
   margin-right: 2rem;

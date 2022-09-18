@@ -1,3 +1,5 @@
 export { Chat } from './Chat'
+export { ChatMessage } from './ChatMessage'
 export { EmojiPickerButton } from './EmojiPickerButton'
 export { UserInput } from './UserInput'
+export { UserList } from './UserList'
