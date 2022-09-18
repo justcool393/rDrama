@@ -9,11 +9,13 @@
     "esbuild": "^0.15.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "run-when-changed": "^2.1.0",
     "socket.io-client": "^4.5.2",
     "typescript": "^4.8.3"
   },
   "scripts": {
     "chat": "yarn check && yarn build && yarn css:move",
+    "chat:watch": "run-when-changed --watch \"**/*.*\" --exec \"yarn chat\"",
     "check": "tsc",
     "build": "esbuild ./src --outfile=../files/assets/js/chat_built.js --bundle",
     "css:move": "mv ../files/assets/js/chat_built.css ../files/assets/css/chat_built.css"
