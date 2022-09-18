@@ -1,4 +1,5 @@
 import React, {
+  FormEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -25,11 +26,17 @@ export function Chat() {
   const [online, setOnline] = useState<string[]>([]);
   const [typing, setTyping] = useState<string[]>([]);
   const [messages, setMessages] = useState<ChatSpeakResponse[]>([]);
+  const [draft, setDraft] = useState("");
   const usersTyping = useMemo(() => formatTypingString(typing), [typing]);
   const addMessage = useCallback(
     (message: ChatSpeakResponse) => setMessages((prev) => prev.concat(message)),
     []
   );
+  const sendMessage = useCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    socket.current?.emit(ChatHandlers.SPEAK, draft);
+    setDraft("");
+  }, [draft]);
 
   useEffect(() => {
     if (!socket.current) {
@@ -54,7 +61,11 @@ export function Chat() {
             <ChatMessage key={message.time} {...message} />
           ))}
         </div>
-        <UserInput />
+        <UserInput
+          value={draft}
+          onChange={setDraft}
+          onSubmit={sendMessage}
+        />
         {usersTyping && <small className="Chat-typing">{usersTyping}</small>}
       </div>
       <UserList users={online} />

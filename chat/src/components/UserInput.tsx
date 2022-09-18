@@ -3,28 +3,25 @@ import React, {
   FormEvent,
   useCallback,
   useRef,
-  useState,
 } from "react";
 import { EmojiPickerButton } from "./EmojiPickerButton";
 import "./UserInput.css";
 
-export function UserInput() {
+interface UserInputProps {
+  value: string;
+  onChange(newValue: string): void;
+  onSubmit(event: FormEvent<HTMLFormElement>): void;
+}
+
+export function UserInput({ value, onChange, onSubmit }: UserInputProps) {
   const form = useRef<HTMLFormElement>(null);
-  const [text, setText] = useState("");
-  const handleType = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
-    setText(event.target.value);
-  }, []);
-  const handleSubmit = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      console.log("Said", text);
-      setText("");
-    },
-    [text]
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLTextAreaElement>) => onChange(event.target.value),
+    []
   );
 
   return (
-    <form ref={form} className="UserInput" onSubmit={handleSubmit}>
+    <form ref={form} className="UserInput" onSubmit={onSubmit}>
       <EmojiPickerButton />
       <textarea
         id="builtChatInput"
@@ -32,11 +29,11 @@ export function UserInput() {
         minLength={1}
         maxLength={1000}
         rows={1}
-        onChange={handleType}
+        onChange={handleChange}
         placeholder="Message"
         autoComplete="off"
         autoFocus={true}
-        value={text}
+        value={value}
       ></textarea>
       <button type="submit" className="btn btn-primary">
         Send
