@@ -32,11 +32,24 @@ export function Chat() {
     (message: ChatSpeakResponse) => setMessages((prev) => prev.concat(message)),
     []
   );
-  const sendMessage = useCallback((event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    socket.current?.emit(ChatHandlers.SPEAK, draft);
-    setDraft("");
-  }, [draft]);
+  const sendMessage = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      socket.current?.emit(ChatHandlers.SPEAK, draft);
+      setDraft("");
+    },
+    [draft]
+  );
+  const requestDeleteMessage = useCallback((withText: string) => {
+    socket.current?.emit(ChatHandlers.DELETE, withText);
+  }, []);
+  const deleteMessage = useCallback(
+    (withText: string) =>
+      setMessages((prev) =>
+        prev.filter((prevMessage) => prevMessage.text !== withText)
+      ),
+    []
+  );
 
   useEffect(() => {
     if (!socket.current) {
@@ -46,9 +59,14 @@ export function Chat() {
         .on(ChatHandlers.CATCHUP, setMessages)
         .on(ChatHandlers.ONLINE, setOnline)
         .on(ChatHandlers.TYPING, setTyping)
-        .on(ChatHandlers.SPEAK, addMessage);
+        .on(ChatHandlers.SPEAK, addMessage)
+        .on(ChatHandlers.DELETE, deleteMessage);
     }
   });
+
+  useEffect(() => {
+    socket.current?.emit(ChatHandlers.TYPING, draft);
+  }, [draft]);
 
   return (
     <section className="Chat">
@@ -57,16 +75,18 @@ export function Chat() {
           <i className="far fa-user fa-sm" /> {online.length}
         </div>
         <div>
-          {messages.map((message) => (
-            <ChatMessage key={message.time} {...message} />
+          {messages.map((message, index) => (
+            <ChatMessage
+              key={message.time}
+              {...message}
+              showUser={message.username !== messages[index - 1]?.username}
+              onDelete={() => requestDeleteMessage(message.text)}
+            />
           ))}
         </div>
-        <UserInput
-          value={draft}
-          onChange={setDraft}
-          onSubmit={sendMessage}
-        />
-        {usersTyping && <small className="Chat-typing">{usersTyping}</small>}
+        <UserInput value={draft} onChange={setDraft} onSubmit={sendMessage}>
+          {usersTyping && <small className="Chat-typing">{usersTyping}</small>}
+        </UserInput>
       </div>
       <UserList users={online} />
     </section>

@@ -1,3 +1,12 @@
+.ChatMessage {
+  padding: 1rem;
+  position: relative;
+}
+
+.ChatMessage:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
 .ChatMessage-top {
   display: flex;
   align-items: center;
@@ -10,9 +19,20 @@
 .ChatMessage-bottom {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding-left: 30px;
 }
 
 .ChatMessage-content {
   margin-right: 0.5rem;
+}
+
+.ChatMessage-button {
+  background: transparent !important;
+}
+
+.ChatMessage-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
 }
