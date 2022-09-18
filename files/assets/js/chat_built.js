@@ -1004,7 +1004,7 @@
             }
             return dispatcher.useContext(Context);
           }
-          function useState2(initialState) {
+          function useState3(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1012,7 +1012,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef2(initialValue) {
+          function useRef3(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
@@ -1803,8 +1803,8 @@
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
-          exports.useRef = useRef2;
-          exports.useState = useState2;
+          exports.useRef = useRef3;
+          exports.useState = useState3;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2300,9 +2300,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React3 = require_react();
+          var React6 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React3.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React6.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3823,7 +3823,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React3.Children.forEach(props.children, function(child) {
+                  React6.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -11984,7 +11984,7 @@
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React3.Component().refs;
+          var emptyRefsObject = new React6.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22901,11 +22901,11 @@
   });
 
   // src/index.tsx
-  var import_react2 = __toESM(require_react());
+  var import_react5 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // src/components/Chat.tsx
-  var import_react = __toESM(require_react());
+  var import_react4 = __toESM(require_react());
 
   // node_modules/engine.io-parser/build/esm/commons.js
   var PACKET_TYPES = /* @__PURE__ */ Object.create(null);
@@ -25127,21 +25127,11 @@
     connect: lookup2
   });
 
-  // src/components/Chat.tsx
-  function Chat() {
-    const socket = (0, import_react.useRef)(null);
-    (0, import_react.useEffect)(() => {
-      if (!socket.current) {
-        socket.current = lookup2();
-        socket.current.on("speak", (stuff) => {
-          console.log(stuff);
-        });
-      }
-    });
-    return /* @__PURE__ */ import_react.default.createElement("section", {
-      className: "Chat"
-    }, /* @__PURE__ */ import_react.default.createElement(UserInput, null));
-  }
+  // src/components/UserInput.tsx
+  var import_react2 = __toESM(require_react());
+
+  // src/components/EmojiPickerButton.tsx
+  var import_react = __toESM(require_react());
   function EmojiPickerButton() {
     return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement("button", {
       type: "button",
@@ -25151,16 +25141,15 @@
       className: "fas fa-smile-beam"
     })));
   }
+
+  // src/components/UserInput.tsx
   function UserInput() {
-    const form = (0, import_react.useRef)(null);
-    const [text, setText] = (0, import_react.useState)("");
-    const handleType = (0, import_react.useCallback)(
-      (event) => {
-        setText(event.target.value);
-      },
-      []
-    );
-    const handleSubmit = (0, import_react.useCallback)(
+    const form = (0, import_react2.useRef)(null);
+    const [text, setText] = (0, import_react2.useState)("");
+    const handleType = (0, import_react2.useCallback)((event) => {
+      setText(event.target.value);
+    }, []);
+    const handleSubmit = (0, import_react2.useCallback)(
       (event) => {
         event.preventDefault();
         console.log("Said", text);
@@ -25168,11 +25157,11 @@
       },
       [text]
     );
-    return /* @__PURE__ */ import_react.default.createElement("form", {
+    return /* @__PURE__ */ import_react2.default.createElement("form", {
       ref: form,
       className: "UserInput",
       onSubmit: handleSubmit
-    }, /* @__PURE__ */ import_react.default.createElement(EmojiPickerButton, null), /* @__PURE__ */ import_react.default.createElement("textarea", {
+    }, /* @__PURE__ */ import_react2.default.createElement(EmojiPickerButton, null), /* @__PURE__ */ import_react2.default.createElement("textarea", {
       id: "builtChatInput",
       className: "form-control",
       minLength: 1,
@@ -25183,15 +25172,53 @@
       autoComplete: "off",
       autoFocus: true,
       value: text
-    }), /* @__PURE__ */ import_react.default.createElement("button", {
+    }), /* @__PURE__ */ import_react2.default.createElement("button", {
       type: "submit",
       className: "btn btn-primary"
     }, "Send"));
   }
 
+  // src/components/UserList.tsx
+  var import_react3 = __toESM(require_react());
+  function UserList({ users }) {
+    return /* @__PURE__ */ import_react3.default.createElement("div", {
+      className: "UserList"
+    }, /* @__PURE__ */ import_react3.default.createElement("h4", null, "Users in chat right now"), /* @__PURE__ */ import_react3.default.createElement("ul", null, users.map((user) => /* @__PURE__ */ import_react3.default.createElement("li", {
+      key: user
+    }, /* @__PURE__ */ import_react3.default.createElement("a", {
+      href: `/@${user}`
+    }, "@", user)))));
+  }
+
+  // src/components/Chat.tsx
+  function Chat() {
+    const socket = (0, import_react4.useRef)(null);
+    const [online, setOnline] = (0, import_react4.useState)([]);
+    const [typing, setTyping] = (0, import_react4.useState)([]);
+    (0, import_react4.useEffect)(() => {
+      if (!socket.current) {
+        socket.current = lookup2();
+        socket.current.on("online" /* ONLINE */, setOnline);
+        socket.current.on("typing" /* TYPING */, setTyping);
+        socket.current.on("speak" /* SPEAK */, (stuff) => {
+          console.log(stuff);
+        });
+      }
+    });
+    return /* @__PURE__ */ import_react4.default.createElement("section", {
+      className: "Chat"
+    }, /* @__PURE__ */ import_react4.default.createElement("div", {
+      className: "Chat-left"
+    }, /* @__PURE__ */ import_react4.default.createElement("div", null, "(Chat)"), /* @__PURE__ */ import_react4.default.createElement(UserInput, null), typing.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", {
+      className: "Chat-typing"
+    }, typing.map((who) => /* @__PURE__ */ import_react4.default.createElement("span", null, who)))), /* @__PURE__ */ import_react4.default.createElement(UserList, {
+      users: online
+    }));
+  }
+
   // src/index.tsx
   var root = (0, import_client.createRoot)(document.getElementById("root"));
-  root.render(/* @__PURE__ */ import_react2.default.createElement(Chat, null));
+  root.render(/* @__PURE__ */ import_react5.default.createElement(Chat, null));
 })();
 /**
  * @license React

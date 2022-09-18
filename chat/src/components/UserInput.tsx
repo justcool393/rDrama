@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { EmojiPickerButton } from "./EmojiPickerButton";
+import "./UserInput.css";
 
 export function UserInput() {
   const form = useRef<HTMLFormElement>(null);

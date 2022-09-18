@@ -1,5 +1,7 @@
 /* src/components/Chat.css */
 .Chat {
+  display: flex;
+  align-items: center;
   width: 100%;
   max-width: max(76%, 1500px);
   padding-right: 15px;
@@ -8,13 +10,34 @@
   margin-left: auto;
   margin-bottom: 20rem;
 }
+.Chat-left {
+  flex: 1;
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+.Chat-typing {
+  display: flex;
+  align-items: center;
+}
+
+/* src/components/UserInput.css */
 .UserInput {
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  height: 40px;
 }
 .UserInput > textarea {
   flex: 3;
   font-size: 16px;
   margin: 0 0.5rem;
+}
+
+/* src/components/UserList.css */
+.UserList ul {
+  padding-left: 16px;
+}
+.UserList li {
+  font-size: 1.25rem;
 }

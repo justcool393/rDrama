@@ -1,4 +1,6 @@
 .Chat {
+  display: flex;
+  align-items: center;
   width: 100%;
   max-width: max(76%, 1500px);
   padding-right: 15px;
@@ -6,4 +8,16 @@
   margin-right: auto;
   margin-left: auto;
   margin-bottom: 20rem;
+}
+
+.Chat-left {
+  flex: 1;
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.Chat-typing {
+  display: flex;
+  align-items: center;
 }
