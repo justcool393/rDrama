@@ -1004,7 +1004,7 @@
             }
             return dispatcher.useContext(Context);
           }
-          function useState3(initialState) {
+          function useState2(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1804,7 +1804,7 @@
           exports.useMemo = useMemo2;
           exports.useReducer = useReducer;
           exports.useRef = useRef3;
-          exports.useState = useState3;
+          exports.useState = useState2;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -25156,15 +25156,17 @@
   // src/components/ChatMessage.tsx
   function ChatMessage({
     avatar,
+    showUser = true,
     namecolor,
     username,
     hat,
     text_html,
-    timestamp
+    timestamp,
+    onDelete
   }) {
     return /* @__PURE__ */ import_react2.default.createElement("div", {
       className: "ChatMessage"
-    }, /* @__PURE__ */ import_react2.default.createElement("div", {
+    }, showUser && /* @__PURE__ */ import_react2.default.createElement("div", {
       className: "ChatMessage-top"
     }, /* @__PURE__ */ import_react2.default.createElement(Username, {
       avatar,
@@ -25175,13 +25177,18 @@
       className: "ChatMessage-timestamp"
     }, timestamp)), /* @__PURE__ */ import_react2.default.createElement("div", {
       className: "ChatMessage-bottom"
-    }, /* @__PURE__ */ import_react2.default.createElement("span", {
+    }, /* @__PURE__ */ import_react2.default.createElement("div", null, /* @__PURE__ */ import_react2.default.createElement("span", {
       className: "ChatMessage-content",
       dangerouslySetInnerHTML: { __html: text_html }
     }), /* @__PURE__ */ import_react2.default.createElement("button", {
-      className: "quote btn"
+      className: "ChatMessage-button quote btn"
     }, /* @__PURE__ */ import_react2.default.createElement("i", {
       className: "fas fa-reply"
+    }))), /* @__PURE__ */ import_react2.default.createElement("button", {
+      className: "ChatMessage-button ChatMessage-delete quote btn del",
+      onClick: onDelete
+    }, /* @__PURE__ */ import_react2.default.createElement("i", {
+      className: "fas fa-trash-alt"
     }))));
   }
 
@@ -25201,36 +25208,33 @@
   }
 
   // src/components/UserInput.tsx
-  function UserInput() {
+  function UserInput({
+    value: value2,
+    children = null,
+    onChange,
+    onSubmit
+  }) {
     const form = (0, import_react4.useRef)(null);
-    const [text, setText] = (0, import_react4.useState)("");
-    const handleType = (0, import_react4.useCallback)((event) => {
-      setText(event.target.value);
-    }, []);
-    const handleSubmit = (0, import_react4.useCallback)(
-      (event) => {
-        event.preventDefault();
-        console.log("Said", text);
-        setText("");
-      },
-      [text]
+    const handleChange = (0, import_react4.useCallback)(
+      (event) => onChange(event.target.value),
+      []
     );
     return /* @__PURE__ */ import_react4.default.createElement("form", {
       ref: form,
       className: "UserInput",
-      onSubmit: handleSubmit
-    }, /* @__PURE__ */ import_react4.default.createElement(EmojiPickerButton, null), /* @__PURE__ */ import_react4.default.createElement("textarea", {
+      onSubmit
+    }, /* @__PURE__ */ import_react4.default.createElement(EmojiPickerButton, null), /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("textarea", {
       id: "builtChatInput",
       className: "form-control",
       minLength: 1,
       maxLength: 1e3,
       rows: 1,
-      onChange: handleType,
+      onChange: handleChange,
       placeholder: "Message",
       autoComplete: "off",
       autoFocus: true,
-      value: text
-    }), /* @__PURE__ */ import_react4.default.createElement("button", {
+      value: value2
+    }), children), /* @__PURE__ */ import_react4.default.createElement("button", {
       type: "submit",
       className: "btn btn-primary"
     }, "Send"));
@@ -25254,17 +25258,38 @@
     const [online, setOnline] = (0, import_react6.useState)([]);
     const [typing, setTyping] = (0, import_react6.useState)([]);
     const [messages, setMessages] = (0, import_react6.useState)([]);
+    const [draft, setDraft] = (0, import_react6.useState)("");
     const usersTyping = (0, import_react6.useMemo)(() => formatTypingString(typing), [typing]);
     const addMessage = (0, import_react6.useCallback)(
       (message) => setMessages((prev2) => prev2.concat(message)),
       []
     );
+    const sendMessage = (0, import_react6.useCallback)(
+      (event) => {
+        event.preventDefault();
+        socket.current?.emit("speak" /* SPEAK */, draft);
+        setDraft("");
+      },
+      [draft]
+    );
+    const requestDeleteMessage = (0, import_react6.useCallback)((withText) => {
+      socket.current?.emit("delete" /* DELETE */, withText);
+    }, []);
+    const deleteMessage = (0, import_react6.useCallback)(
+      (withText) => setMessages(
+        (prev2) => prev2.filter((prevMessage) => prevMessage.text !== withText)
+      ),
+      []
+    );
     (0, import_react6.useEffect)(() => {
       if (!socket.current) {
         socket.current = lookup2();
-        socket.current.on("catchup" /* CATCHUP */, setMessages).on("online" /* ONLINE */, setOnline).on("typing" /* TYPING */, setTyping).on("speak" /* SPEAK */, addMessage);
+        socket.current.on("catchup" /* CATCHUP */, setMessages).on("online" /* ONLINE */, setOnline).on("typing" /* TYPING */, setTyping).on("speak" /* SPEAK */, addMessage).on("delete" /* DELETE */, deleteMessage);
       }
     });
+    (0, import_react6.useEffect)(() => {
+      socket.current?.emit("typing" /* TYPING */, draft);
+    }, [draft]);
     return /* @__PURE__ */ import_react6.default.createElement("section", {
       className: "Chat"
     }, /* @__PURE__ */ import_react6.default.createElement("div", {
@@ -25273,12 +25298,18 @@
       className: "Chat-online"
     }, /* @__PURE__ */ import_react6.default.createElement("i", {
       className: "far fa-user fa-sm"
-    }), " ", online.length), /* @__PURE__ */ import_react6.default.createElement("div", null, messages.map((message) => /* @__PURE__ */ import_react6.default.createElement(ChatMessage, {
+    }), " ", online.length), /* @__PURE__ */ import_react6.default.createElement("div", null, messages.map((message, index) => /* @__PURE__ */ import_react6.default.createElement(ChatMessage, {
       key: message.time,
-      ...message
-    }))), /* @__PURE__ */ import_react6.default.createElement(UserInput, null), usersTyping && /* @__PURE__ */ import_react6.default.createElement("small", {
+      ...message,
+      showUser: message.username !== messages[index - 1]?.username,
+      onDelete: () => requestDeleteMessage(message.text)
+    }))), /* @__PURE__ */ import_react6.default.createElement(UserInput, {
+      value: draft,
+      onChange: setDraft,
+      onSubmit: sendMessage
+    }, usersTyping && /* @__PURE__ */ import_react6.default.createElement("small", {
       className: "Chat-typing"
-    }, usersTyping)), /* @__PURE__ */ import_react6.default.createElement(UserList, {
+    }, usersTyping))), /* @__PURE__ */ import_react6.default.createElement(UserList, {
       users: online
     }));
   }

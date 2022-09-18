@@ -116,6 +116,7 @@ def connect(v):
 		emit("online", online, broadcast=True)
 		cache.set(ONLINE_STR, len(online), timeout=0)
 
+	emit('online', online)
 	emit('catchup', messages)
 	emit('typing', typing)
 	return '', 204
