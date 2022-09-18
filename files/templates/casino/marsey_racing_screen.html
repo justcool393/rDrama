@@ -17,7 +17,6 @@
         <!-- Game Styles -->
         <style>
             #gameScreen {
-                width: 400px;
                 height: 400px;
                 overflow: auto;
                 margin-bottom: 3rem;
@@ -27,6 +26,7 @@
                 position: relative;
                 display: flex;
                 align-items: flex-start;
+                justify-content: space-evenly;
                 background-color: green;
                 height: 400px;
                 overflow: auto;
@@ -53,7 +53,8 @@
             .marsey-racer {
                 position: relative;
                 z-index: 5;
-                margin-right: -13px;
+                scale: 0.6;
+                margin-right: -16px;
             }
         
             @keyframes racing {
@@ -62,16 +63,29 @@
                 }
         
                 to {
-                    top: calc(100% - 64px);
+                    top: calc(62%);
                 }
             }
         
             .mr-content {
                 display: flex;
                 flex-direction: column;
-                align-items: center;
-                margin: 2rem auto;
-                width: 400px;
+                /* margin: 2rem auto; */
+                /* width: 400px; */
+            }
+
+            @media screen and (max-width: 675px) {
+                .field {
+                    justify-content: flex-start;
+                }
+                .marsey-racer {
+                    margin-right: -14px;
+                }
+            }
+
+            .mr-content > div {
+                flex: 1;
+                padding: 2rem;
             }
         
             .mr-button {
@@ -98,9 +112,9 @@
                 -moz-box-shadow: inset 0 0 10px #000000;
                 -webkit-box-shadow: inset 0 0 10px #000000;
                 box-shadow: inset 0 0 10px #000000;
-                min-height: 8rem;
                 overflow: auto;
                 padding: 1rem;
+                min-height: 8rem;
                 max-height: 24rem;
             }
         
@@ -132,29 +146,6 @@
                 left: 4px;
             }
         
-            #podium {
-                background: lightblue;
-                display: flex;
-                align-items: flex-end;
-                justify-content: flex-end;
-                width: 100%;
-                padding: 6rem 4rem 0 4rem;
-                position: relative;
-                overflow: hidden;
-            }
-        
-            #podium>div {
-                flex: 1;
-                background: #999;
-                border: 2px solid black;
-                border-radius: 3px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: black;
-                position: relative;
-            }
-        
             @keyframes bouncing {
                 from {
                     top: -64px;
@@ -175,38 +166,30 @@
                 top: -64px;
             }
         
-            #PODIUM\#1 {
-                height: 80px;
-            }
-        
-            #PODIUM\#2 {
-                height: 64px;
-            }
-        
-            #PODIUM\#3 {
-                height: 48px;
-            }
-        
-            #PODIUM\#4 {
-                height: 32px;
-            }
-        
             .mr-biggest-loser {
                 position: absolute;
-                top: -6px;
+                top: 72%;
                 right: -6px;
                 opacity: 0.3;
-                transform: scale(1.5) rotateZ(-30deg);
+                transform: scale(2) rotateZ(-30deg);
             }
 
             .mr-chat-window {
-                height: 320px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: calc(100% - 50px);
+                width: 100%;
                 overflow: auto;
             }
 
             .mr-chat-message {
                 display: flex;
                 align-items: center;
+            }
+
+            #chatMessageLast > div:nth-child(odd) {
+                background: rgba(60, 60, 60, 0.6);
             }
 
             .mr-chat-message-metadata {
@@ -239,7 +222,6 @@
                 color: #DDD;
                 background: rgba(60, 60, 60, 0.6);
                 border: none;
-                text-align: right;
                 flex: 4;
                 width: 30px;
             }
@@ -247,6 +229,142 @@
     </head>
     <body>
 	    {% include "header.html" %}
+        <div style="
+            display: flex;
+            align-items: center;
+        ">
+            <div style="
+                position: relative;
+                width: 400px;
+                height: 600px;
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-evenly;
+                overflow: hidden;
+                margin-right: 2rem;
+            ">
+                <img
+                    src="/i/marsey_racing.webp"
+                    alt="field"
+                    style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                    ">
+                {% for marsey in state['marseys']['all'] %}
+                    <img
+                        src="/e/{{marsey}}.webp"
+                        id="RACER#{{marsey}}"
+                        class="marsey-racer"
+                        loading="lazy"
+                        data-bs-toggle="tooltip"
+                        alt=":{{marsey}}:"
+                        title="{{marsey}}"
+                        data-bs-original-title=":{{marsey}}:"
+                        aria-label=":{{marsey}}:">
+                {% endfor %}
+
+                <div id="podium">
+                    <div id="PODIUM#1" style="
+                        position: absolute;
+                        width: 64px;
+                        height: 64px;
+                        left: 26px;
+                        top: 527px;
+                    ">
+                    </div>
+                    <div id="PODIUM#2" style="
+                        position: absolute;
+                        width: 64px;
+                        height: 64px;
+                        left: 132px;
+                        top: 541px;
+                    ">
+                    </div>
+                    <div id="PODIUM#3" style="
+                        position: absolute;
+                        width: 64px;
+                        height: 64px;
+                        left: 226px;
+                        top: 568px;
+                    ">
+                    </div>
+                    <div id="PODIUM#4" style="
+                        position: absolute;
+                        width: 64px;
+                        height: 64px;
+                        left: 308px;
+                        top: 599px;
+                    ">
+                    </div>
+                </div>
+            </div>
+
+            <div style="
+                width: 400px;
+                height: 600px;
+                position: relative;
+                background: rgba(177, 177, 177, 0.33);
+                -moz-box-shadow: inset 0 0 10px #000000;
+                -webkit-box-shadow: inset 0 0 10px #000000;
+                box-shadow: inset 0 0 10px #000000;
+                overflow: auto;
+                margin-right: 2rem;
+            ">
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    background: rgba(30, 30, 30, 0.9);
+                    border: 2px solid #333;
+                    border-radius: 4px;
+                    padding-right: 1rem;
+                    text-transform: uppercase;
+                    letter-spacing: 3px;
+                    z-index: 1;
+                ">
+                    <h5 id="chatHeader" style="text-align: right;">0 users online</h5>
+                </div>
+                <div id="chatMessageList" class="mr-chat-window"></div>
+                <div style="
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 50px;
+                    background: rgba(60, 60, 60, 0.9);
+                    border: 2px solid #333;
+                    border-radius: 4px;
+                ">
+                    <form id="chatForm">
+                        <input type="text" placeholder="Say something..." style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: calc(100% - 120px);
+                            height: 100%;
+                            background: none;
+                            border: none;
+                            font-size: 20px;
+                            padding-left: 1rem;
+                            color: #ccc;
+                        ">
+                        <button type="submit" class="btn btn-primary" style="
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            width: 120px;
+                            height: 100%;
+                            text-transform: uppercase;
+                            letter-spacing: 3px;
+                        ">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div>
             <h2>DEBUG</h2>
@@ -263,198 +381,170 @@
         </div>
         
         <div class="mr-content">
-            <!-- Screen -->
-            <div id="gameScreen">
-                <div class="field">
-                    <div class="starting-line"></div>
-                    {% for marsey in state['marseys']['all'] %}
-                    <img id="RACER#{{marsey}}" class="marsey-racer" loading="lazy" data-bs-toggle="tooltip" alt=":{{marsey}}:"
-                        title="{{marsey}}" src="/e/{{marsey}}.webp" data-bs-original-title=":{{marsey}}:"
-                        aria-label=":{{marsey}}:">
-                    {% endfor %}
-                    <div class="finish-line"></div>
+            <div>
+                <!-- Chat -->
+                <!-- <div class="mr-segment" style="margin-bottom: 0">
+                    <h4 id="chatHeader">0 users online</h4>
+                    <div id="chatMessageList" class="mr-chat-window"></div>
+                </div> -->
+                <div class="mr-chat-input-wrapper">
+                    
                 </div>
-            </div>
-        
-            <!-- Podium -->
-            <div id="podium">
-                <div id="PODIUM#1">
-                    1
-                </div>
-                <div id="PODIUM#2">
-                    2
-                </div>
-                <div id="PODIUM#3">
-                    3
-                </div>
-                <div id="PODIUM#4">
-                    4
-                </div>
-            </div>
-        
-            <!-- Chat -->
-            <div class="mr-segment" style="margin-bottom: 0">
-                <h4 id="chatHeader">0 users online</h4>
-                <div id="chatMessageList" class="mr-chat-window"></div>
-            </div>
-            <div class="mr-chat-input-wrapper">
-                <form id="chatForm">
-                    <input type="text" placeholder="Say something..." class="mr-chat-input">
-                    <button type="submit" class="btn btn-primary">Send</button>
-                </form>
-            </div>
-        
-            <!-- Your Bets -->
-            <div class="mr-segment">
-                <h4>Your Bets</h4>
-                <div id="playerBetList"></div>
-            </div>
-        
-            <!-- Other Bets -->
-            <div class="mr-segment">
-                <h4>Other Bets</h4>
-                <div id="otherBetList"></div>
-            </div>
-        
-            <button id="betFormOpen" type="button" class="btn btn-success"
-                style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px;"
-                onclick="toggleBetForm()">Place a Bet</button>
-        
-            <button id="betFormClose" type="button" class="btn btn-danger"
-                style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px; display: none; margin-bottom: 1.5rem;"
-                onclick="toggleBetForm()">Cancel Bet</button>
-        
-            <div id="betForm" style="display: none;">
+            
+                <!-- Your Bets -->
                 <div class="mr-segment">
-                    <h4>Pick a Bet</h4>
-                    <div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Bet</th>
-                                    <th>Description</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Win</td>
-                                    <td>Pick 1 Marsey to win it all.<br /><span class="text-success">Pays
-                                            {{state['odds']['WIN']}}:1</span></td>
-                                    <td>
-                                        <button type="button" style="width: 100%" class="btn btn-primary mr-bet-button"
-                                            data-bet="WIN" onclick="selectBetKind('WIN')">Bet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Place</td>
-                                    <td>Pick 1 Marsey to come in 1st OR 2nd.<br /><span class="text-success">Pays
-                                            {{state['odds']['PLACE']}}:1</span></td>
-                                    <td>
-                                        <button type="button" style="width: 100%" class="btn btn-primary mr-bet-button"
-                                            data-bet="PLACE" onclick="selectBetKind('PLACE')">Bet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Show</td>
-                                    <td>Pick 1 Marsey to come in 1st OR 2nd OR 3rd.<br /><span class="text-success">Pays
-                                            {{state['odds']['SHOW']}}:1</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary mr-bet-button" data-bet="SHOW"
-                                            onclick="selectBetKind('SHOW')">Bet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Quinella</td>
-                                    <td>Pick 2 Marseys to come in 1st AND 2nd in either order.<br /><span
-                                            class="text-success">Pays {{state['odds']['QUINELLA']}}:1</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary mr-bet-button" data-bet="QUINELLA"
-                                            onclick="selectBetKind('QUINELLA')">Bet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Boxed Trifecta</td>
-                                    <td>Pick 3 Marseys to come in 1st AND 2nd AND 3rd in any order.<br /><span
-                                            class="text-success">Pays {{state['odds']['TRIFECTA_BOX']}}:1</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary mr-bet-button" data-bet="TRIFECTA_BOX"
-                                            onclick="selectBetKind('TRIFECTA_BOX')">Bet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Trifecta</td>
-                                    <td>Pick 3 Marseys to come in 1st AND 2nd AND 3rd in that order.<br /><span
-                                            class="text-success">Pays {{state['odds']['TRIFECTA']}}:1</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary mr-bet-button" data-bet="TRIFECTA"
-                                            onclick="selectBetKind('TRIFECTA')">Bet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Boxed Superfecta</td>
-                                    <td>Pick 4 Marseys to come in 1st AND 2nd AND 3rd AND 4th in any order.<br /><span
-                                            class="text-success">Pays {{state['odds']['SUPERFECTA_BOX']}}:1</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary mr-bet-button" data-bet="SUPERFECTA_BOX"
-                                            onclick="selectBetKind('SUPERFECTA_BOX')">Bet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Superfecta</td>
-                                    <td>Pick 4 Marseys to come in 1st AND 2nd AND 3rd AND 4th in that order.<br /><span
-                                            class="text-success">Pays {{state['odds']['SUPERFECTA']}}:1</span></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary mr-bet-button" data-bet="SUPERFECTA"
-                                            onclick="selectBetKind('SUPERFECTA')">Bet</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <h4>Your Bets</h4>
+                    <div id="playerBetList"></div>
                 </div>
-        
+            
+                <!-- Other Bets -->
                 <div class="mr-segment">
-                    <h4>Pick your Marseys</h4>
-                    <div>
-                        {% for marsey in state['marseys']['all'] %}
-                        <img id="BET#{{marsey}}" class="marsey-racer" loading="lazy" data-bs-toggle="tooltip" alt=":{{marsey}}:"
-                            title="{{marsey}}" src="/e/{{marsey}}.webp" data-bs-original-title=":{{marsey}}:"
-                            aria-label=":{{marsey}}:" onclick="selectMarseyForBet('{{marsey}}')" b="">
-                        {% endfor %}
-                    </div>
-                    <div style="display: flex; align-items: center;">
-                        <div class="mr-selectable-marsey" id="SELECT_1"></div>
-                        <div class="mr-selectable-marsey" id="SELECT_2"></div>
-                        <div class="mr-selectable-marsey" id="SELECT_3"></div>
-                        <div class="mr-selectable-marsey" id="SELECT_4"></div>
-                    </div>
+                    <h4>Other Bets</h4>
+                    <div id="otherBetList"></div>
                 </div>
-        
-                <div class="mr-segment">
-                    <h4>Pick your Wager</h4>
-        
-                    <div style="display: flex;">
-                        <input value="5"
-                            class="mr-wager-amount-input"
-                            type="number" min="5" step="1" id="wager_amount" />
-                        <button id="WAGER#COINS" type="button" class="btn btn-success" style="flex: 1"
-                            onclick="selectBetCurrency('coins')">
-                            <img alt="coins" class="mr-1 ml-1" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                src="/i/rDrama/coins.webp?v=3009" title="" aria-label="coins" data-bs-original-title="coins">
-                        </button>
-                        <button id="WAGER#PROCOINS" type="button" class="btn btn-secondary" style="flex: 1"
-                            onclick="selectBetCurrency('procoins')">
-                            <img style="width: 50px" alt="marseybux" class="mr-1 ml-1" data-bs-toggle="tooltip"
-                                data-bs-placement="bottom" src="/i/marseybux.webp?v=2000" title="" aria-label="Marseybux"
-                                data-bs-original-title="Marseybux">
-                        </button>
-                    </div>
-                </div>
-        
-                <button type="button" class="btn btn-success"
+            </div>
+
+            <div>
+                <button id="betFormOpen" type="button" class="btn btn-success"
                     style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px;"
-                    onclick="emitUserPlacedBet()">Finalize</button>
+                    onclick="toggleBetForm()">Place a Bet</button>
+            
+                <button id="betFormClose" type="button" class="btn btn-danger"
+                    style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px; display: none; margin-bottom: 1.5rem;"
+                    onclick="toggleBetForm()">Cancel Bet</button>
+            
+                <div id="betForm" style="display: none;">
+                    <div class="mr-segment">
+                        <h4>Pick a Bet</h4>
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Bet</th>
+                                        <th>Description</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Win</td>
+                                        <td>Pick 1 Marsey to win it all.<br /><span class="text-success">Pays
+                                                {{state['odds']['WIN']}}:1</span></td>
+                                        <td>
+                                            <button type="button" style="width: 100%" class="btn btn-primary mr-bet-button"
+                                                data-bet="WIN" onclick="selectBetKind('WIN')">Bet</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Place</td>
+                                        <td>Pick 1 Marsey to come in 1st OR 2nd.<br /><span class="text-success">Pays
+                                                {{state['odds']['PLACE']}}:1</span></td>
+                                        <td>
+                                            <button type="button" style="width: 100%" class="btn btn-primary mr-bet-button"
+                                                data-bet="PLACE" onclick="selectBetKind('PLACE')">Bet</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Show</td>
+                                        <td>Pick 1 Marsey to come in 1st OR 2nd OR 3rd.<br /><span class="text-success">Pays
+                                                {{state['odds']['SHOW']}}:1</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary mr-bet-button" data-bet="SHOW"
+                                                onclick="selectBetKind('SHOW')">Bet</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quinella</td>
+                                        <td>Pick 2 Marseys to come in 1st AND 2nd in either order.<br /><span
+                                                class="text-success">Pays {{state['odds']['QUINELLA']}}:1</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary mr-bet-button" data-bet="QUINELLA"
+                                                onclick="selectBetKind('QUINELLA')">Bet</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Boxed Trifecta</td>
+                                        <td>Pick 3 Marseys to come in 1st AND 2nd AND 3rd in any order.<br /><span
+                                                class="text-success">Pays {{state['odds']['TRIFECTA_BOX']}}:1</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary mr-bet-button" data-bet="TRIFECTA_BOX"
+                                                onclick="selectBetKind('TRIFECTA_BOX')">Bet</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Trifecta</td>
+                                        <td>Pick 3 Marseys to come in 1st AND 2nd AND 3rd in that order.<br /><span
+                                                class="text-success">Pays {{state['odds']['TRIFECTA']}}:1</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary mr-bet-button" data-bet="TRIFECTA"
+                                                onclick="selectBetKind('TRIFECTA')">Bet</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Boxed Superfecta</td>
+                                        <td>Pick 4 Marseys to come in 1st AND 2nd AND 3rd AND 4th in any order.<br /><span
+                                                class="text-success">Pays {{state['odds']['SUPERFECTA_BOX']}}:1</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary mr-bet-button" data-bet="SUPERFECTA_BOX"
+                                                onclick="selectBetKind('SUPERFECTA_BOX')">Bet</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Superfecta</td>
+                                        <td>Pick 4 Marseys to come in 1st AND 2nd AND 3rd AND 4th in that order.<br /><span
+                                                class="text-success">Pays {{state['odds']['SUPERFECTA']}}:1</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary mr-bet-button" data-bet="SUPERFECTA"
+                                                onclick="selectBetKind('SUPERFECTA')">Bet</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            
+                    <div class="mr-segment">
+                        <h4>Pick your Marseys</h4>
+                        <div>
+                            {% for marsey in state['marseys']['all'] %}
+                            <img id="BET#{{marsey}}" class="marsey-racer" loading="lazy" data-bs-toggle="tooltip" alt=":{{marsey}}:"
+                                title="{{marsey}}" src="/e/{{marsey}}.webp" data-bs-original-title=":{{marsey}}:"
+                                aria-label=":{{marsey}}:" onclick="selectMarseyForBet('{{marsey}}')" b="">
+                            {% endfor %}
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div class="mr-selectable-marsey" id="SELECT_1"></div>
+                            <div class="mr-selectable-marsey" id="SELECT_2"></div>
+                            <div class="mr-selectable-marsey" id="SELECT_3"></div>
+                            <div class="mr-selectable-marsey" id="SELECT_4"></div>
+                        </div>
+                    </div>
+            
+                    <div class="mr-segment">
+                        <h4>Pick your Wager</h4>
+            
+                        <div style="display: flex;">
+                            <input value="5"
+                                class="mr-wager-amount-input"
+                                type="number" min="5" step="1" id="wager_amount" />
+                            <button id="WAGER#COINS" type="button" class="btn btn-success" style="flex: 1"
+                                onclick="selectBetCurrency('coins')">
+                                <img alt="coins" class="mr-1 ml-1" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    src="/i/rDrama/coins.webp?v=3009" title="" aria-label="coins" data-bs-original-title="coins">
+                            </button>
+                            <button id="WAGER#PROCOINS" type="button" class="btn btn-secondary" style="flex: 1"
+                                onclick="selectBetCurrency('procoins')">
+                                <img style="width: 50px" alt="marseybux" class="mr-1 ml-1" data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom" src="/i/marseybux.webp?v=2000" title="" aria-label="Marseybux"
+                                    data-bs-original-title="Marseybux">
+                            </button>
+                        </div>
+                    </div>
+            
+                    <button type="button" class="btn btn-success"
+                        style="width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 24px;"
+                        onclick="emitUserPlacedBet()">Finalize</button>
+                </div>
             </div>
         </div>
         
@@ -497,6 +587,7 @@
         <input id="site_name" type="hidden" value="{{SITE_NAME}}">
         <input id="slurreplacer" type="hidden" value="{{v.slurreplacer}}">
         <input id="initialState" type="hidden" value="{{state}}"></div>
+        <input id="adminLevel" type="hidden" value="{{v.admin_level}}"></div>
 
         {% include "emoji_modal.html" %}
         {% include "expanded_image_modal.html" %}

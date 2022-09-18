@@ -142,8 +142,8 @@ def user_spoke(data, v):
 
 
 @socketio.on(ChatEvent.MESSAGE_DELETED)
-@admin_level_required(2)
-def message_deleted(deleted_text, _):
+@is_not_permabanned
+def message_deleted(deleted_text, v):
     global chat_manager
 
     if chat_manager:

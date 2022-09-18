@@ -208,6 +208,7 @@ function initializeChatForm() {
     input.value = "";
   });
 }
+// #endregion
 
 // ===
 
@@ -316,9 +317,13 @@ function buildBetsView(state, bets, whenEmpty) {
  * Given a message from the server, build out a view.
  * @returns {string}
  */
-function buildChatMessageView(message) {
+function buildChatMessageView(message, index) {
+  const isAdmin = parseInt(document.getElementById("adminLevel").value) >= 2;
+
   return `
-     <div>
+     <div style="padding: 1rem; background-color: ${
+       index % 2 === 0 ? "unsert" : "rgba(60, 60, 60, 0.6)"
+     };">
         <!-- Metadata -->
         <div class="mr-chat-message-metadata">
           <!-- Avatar/Name -->
@@ -343,8 +348,13 @@ function buildChatMessageView(message) {
           
           <!-- Timestamp -->
           <small>
+            <span style="margin-right: 1rem">
             ${message.timestamp}
+            </span>
+
+            ${isAdmin ? `<i class="fas fa-trash-alt" style="cursor: pointer" onclick="emitMessageDeleted('${message.text}')"></i>` : ""}
           </small>
+
         </div>
         <!-- Content -->
         <div>
@@ -371,6 +381,7 @@ const ChatEvent = {
   USER_TYPED: "user-typed",
   USER_SPOKE: "user-spoke",
   MESSAGE_FAILED: "message-failed",
+  MESSAGE_DELETED: "message-deleted",
 };
 
 /**
@@ -399,18 +410,17 @@ function handleUpdateRacingView(state) {
     const podiumSquare = document.getElementById(`PODIUM#${place}`);
 
     podiumSquare.innerHTML = `
-      ${place}
       ${onPodium ? buildMarseyImg(onPodium, "PODIUM", true) : ""}
     `;
   });
 
   // Biggest Loser
   if (state.biggest_loser) {
-    podium.innerHTML += buildMarseyImg(
-      state.biggest_loser,
-      "BIGGEST_LOSER",
-      true
-    );
+    podium.innerHTML += `
+      <section class="mr-biggest-loser">
+      ${buildMarseyImg(state.biggest_loser, "BIGGEST_LOSER", true)}
+    </section>
+    `;
   }
 
   // Bet Lists
@@ -513,5 +523,9 @@ function emitUserTyped(text) {
 
 function emitUserSpoke(text) {
   socket.emit(ChatEvent.USER_SPOKE, text);
+}
+
+function emitMessageDeleted(text) {
+  socket.emit(ChatEvent.MESSAGE_DELETED, text);
 }
 // #endregion
