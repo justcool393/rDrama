@@ -13,3 +13,5 @@ flask_session/
 site_settings.json
 /files/test.py
 tags
+chat/node_modules
+chat/build
