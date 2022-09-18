@@ -4,12 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@types/react": "^18.0.20",
+    "@types/react-dom": "^18.0.6",
     "esbuild": "^0.15.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.8.3"
   },
   "scripts": {
-    "build": "tsc -p . && ./node_modules/.bin/esbuild ./src --bundle --outfile=./build/out.js"
+    "build": "tsc -p . && ./node_modules/.bin/esbuild ./src --bundle --outfile=../files/assets/js/chat_built.js"
   }
 }
