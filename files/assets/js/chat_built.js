@@ -2296,9 +2296,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React2 = require_react();
+          var React3 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React2.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React3.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3819,7 +3819,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React2.Children.forEach(props.children, function(child) {
+                  React3.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -11980,7 +11980,7 @@
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React2.Component().refs;
+          var emptyRefsObject = new React3.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22866,10 +22866,17 @@
   });
 
   // src/index.tsx
-  var import_react = __toESM(require_react());
+  var import_react2 = __toESM(require_react());
   var import_react_dom = __toESM(require_react_dom());
-  var Greet = () => /* @__PURE__ */ import_react.default.createElement("h1", null, "Hello, world!");
-  import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(Greet, null), document.getElementById("root"));
+
+  // src/components/Chat.tsx
+  var import_react = __toESM(require_react());
+  function Chat() {
+    return /* @__PURE__ */ import_react.default.createElement("div", null, "Chat??");
+  }
+
+  // src/index.tsx
+  import_react_dom.default.render(/* @__PURE__ */ import_react2.default.createElement(Chat, null), document.getElementById("root"));
 })();
 /**
  * @license React

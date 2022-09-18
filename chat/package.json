@@ -12,6 +12,6 @@
     "typescript": "^4.8.3"
   },
   "scripts": {
-    "build": "tsc -p . && ./node_modules/.bin/esbuild ./src --bundle --outfile=../files/assets/js/chat_built.js"
+    "build": "tsc && esbuild ./src --outfile=../files/assets/js/chat_built.js --bundle"
   }
 }
