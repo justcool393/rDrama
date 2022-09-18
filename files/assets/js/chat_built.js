@@ -8,6 +8,10 @@
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
   var __copyProps = (to, from, except, desc) => {
     if (from && typeof from === "object" || typeof from === "function") {
       for (let key of __getOwnPropNames(from))
@@ -239,31 +243,31 @@
           function isArray(a) {
             return isArrayImpl(a);
           }
-          function typeName(value) {
+          function typeName(value2) {
             {
               var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
-              var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+              var type = hasToStringTag && value2[Symbol.toStringTag] || value2.constructor.name || "Object";
               return type;
             }
           }
-          function willCoercionThrow(value) {
+          function willCoercionThrow(value2) {
             {
               try {
-                testStringCoercion(value);
+                testStringCoercion(value2);
                 return false;
               } catch (e) {
                 return true;
               }
             }
           }
-          function testStringCoercion(value) {
-            return "" + value;
+          function testStringCoercion(value2) {
+            return "" + value2;
           }
-          function checkKeyStringCoercion(value) {
+          function checkKeyStringCoercion(value2) {
             {
-              if (willCoercionThrow(value)) {
-                error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
-                return testStringCoercion(value);
+              if (willCoercionThrow(value2)) {
+                error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value2));
+                return testStringCoercion(value2);
               }
             }
           }
@@ -411,7 +415,7 @@
               }
             }
           }
-          var ReactElement = function(type, key, ref, self, source, owner, props) {
+          var ReactElement = function(type, key, ref, self2, source, owner, props) {
             var element = {
               $$typeof: REACT_ELEMENT_TYPE,
               type,
@@ -432,7 +436,7 @@
                 configurable: false,
                 enumerable: false,
                 writable: false,
-                value: self
+                value: self2
               });
               Object.defineProperty(element, "_source", {
                 configurable: false,
@@ -452,7 +456,7 @@
             var props = {};
             var key = null;
             var ref = null;
-            var self = null;
+            var self2 = null;
             var source = null;
             if (config != null) {
               if (hasValidRef(config)) {
@@ -467,7 +471,7 @@
                 }
                 key = "" + config.key;
               }
-              self = config.__self === void 0 ? null : config.__self;
+              self2 = config.__self === void 0 ? null : config.__self;
               source = config.__source === void 0 ? null : config.__source;
               for (propName in config) {
                 if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
@@ -480,8 +484,8 @@
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i = 0; i < childrenLength; i++) {
-                childArray[i] = arguments[i + 2];
+              for (var i2 = 0; i2 < childrenLength; i2++) {
+                childArray[i2] = arguments[i2 + 2];
               }
               {
                 if (Object.freeze) {
@@ -509,7 +513,7 @@
                 }
               }
             }
-            return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
+            return ReactElement(type, key, ref, self2, source, ReactCurrentOwner.current, props);
           }
           function cloneAndReplaceKey(oldElement, newKey) {
             var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
@@ -523,7 +527,7 @@
             var props = assign({}, element.props);
             var key = element.key;
             var ref = element.ref;
-            var self = element._self;
+            var self2 = element._self;
             var source = element._source;
             var owner = element._owner;
             if (config != null) {
@@ -556,17 +560,17 @@
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i = 0; i < childrenLength; i++) {
-                childArray[i] = arguments[i + 2];
+              for (var i2 = 0; i2 < childrenLength; i2++) {
+                childArray[i2] = arguments[i2 + 2];
               }
               props.children = childArray;
             }
-            return ReactElement(element.type, key, ref, self, source, owner, props);
+            return ReactElement(element.type, key, ref, self2, source, owner, props);
           }
           function isValidElement(object) {
             return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
           }
-          var SEPARATOR = ".";
+          var SEPARATOR2 = ".";
           var SUBSEPARATOR = ":";
           function escape(key) {
             var escapeRegex = /[=:]/g;
@@ -618,7 +622,7 @@
             if (invokeCallback) {
               var _child = children;
               var mappedChild = callback(_child);
-              var childKey = nameSoFar === "" ? SEPARATOR + getElementKey(_child, 0) : nameSoFar;
+              var childKey = nameSoFar === "" ? SEPARATOR2 + getElementKey(_child, 0) : nameSoFar;
               if (isArray(mappedChild)) {
                 var escapedChildKey = "";
                 if (childKey != null) {
@@ -646,11 +650,11 @@
             var child;
             var nextName;
             var subtreeCount = 0;
-            var nextNamePrefix = nameSoFar === "" ? SEPARATOR : nameSoFar + SUBSEPARATOR;
+            var nextNamePrefix = nameSoFar === "" ? SEPARATOR2 : nameSoFar + SUBSEPARATOR;
             if (isArray(children)) {
-              for (var i = 0; i < children.length; i++) {
-                child = children[i];
-                nextName = nextNamePrefix + getElementKey(child, i);
+              for (var i2 = 0; i2 < children.length; i2++) {
+                child = children[i2];
+                nextName = nextNamePrefix + getElementKey(child, i2);
                 subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
               }
             } else {
@@ -1008,11 +1012,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef(initialValue) {
+          function useRef2(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect(create, deps) {
+          function useEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1036,19 +1040,19 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useImperativeHandle(ref, create, deps);
           }
-          function useDebugValue(value, formatterFn) {
+          function useDebugValue(value2, formatterFn) {
             {
               var dispatcher = resolveDispatcher();
-              return dispatcher.useDebugValue(value, formatterFn);
+              return dispatcher.useDebugValue(value2, formatterFn);
             }
           }
           function useTransition() {
             var dispatcher = resolveDispatcher();
             return dispatcher.useTransition();
           }
-          function useDeferredValue(value) {
+          function useDeferredValue(value2) {
             var dispatcher = resolveDispatcher();
-            return dispatcher.useDeferredValue(value);
+            return dispatcher.useDeferredValue(value2);
           }
           function useId() {
             var dispatcher = resolveDispatcher();
@@ -1319,7 +1323,7 @@
               }
             }
           }
-          function checkPropTypes(typeSpecs, values, location, componentName, element) {
+          function checkPropTypes(typeSpecs, values, location2, componentName, element) {
             {
               var has = Function.call.bind(hasOwnProperty);
               for (var typeSpecName in typeSpecs) {
@@ -1327,23 +1331,23 @@
                   var error$1 = void 0;
                   try {
                     if (typeof typeSpecs[typeSpecName] !== "function") {
-                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      var err = Error((componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
                       err.name = "Invariant Violation";
                       throw err;
                     }
-                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location2, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
                   } catch (ex) {
                     error$1 = ex;
                   }
                   if (error$1 && !(error$1 instanceof Error)) {
                     setCurrentlyValidatingElement(element);
-                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location2, typeSpecName, typeof error$1);
                     setCurrentlyValidatingElement(null);
                   }
                   if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
                     loggedTypeFailures[error$1.message] = true;
                     setCurrentlyValidatingElement(element);
-                    error("Failed %s type: %s", location, error$1.message);
+                    error("Failed %s type: %s", location2, error$1.message);
                     setCurrentlyValidatingElement(null);
                   }
                 }
@@ -1424,8 +1428,8 @@
               return;
             }
             if (isArray(node)) {
-              for (var i = 0; i < node.length; i++) {
-                var child = node[i];
+              for (var i2 = 0; i2 < node.length; i2++) {
+                var child = node[i2];
                 if (isValidElement(child)) {
                   validateExplicitKey(child, parentType);
                 }
@@ -1479,8 +1483,8 @@
           function validateFragmentProps(fragment) {
             {
               var keys = Object.keys(fragment.props);
-              for (var i = 0; i < keys.length; i++) {
-                var key = keys[i];
+              for (var i2 = 0; i2 < keys.length; i2++) {
+                var key = keys[i2];
                 if (key !== "children" && key !== "key") {
                   setCurrentlyValidatingElement$1(fragment);
                   error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
@@ -1528,8 +1532,8 @@
               return element;
             }
             if (validType) {
-              for (var i = 2; i < arguments.length; i++) {
-                validateChildKeys(arguments[i], type);
+              for (var i2 = 2; i2 < arguments.length; i2++) {
+                validateChildKeys(arguments[i2], type);
               }
             }
             if (type === REACT_FRAGMENT_TYPE) {
@@ -1563,8 +1567,8 @@
           }
           function cloneElementWithValidation(element, props, children) {
             var newElement = cloneElement.apply(this, arguments);
-            for (var i = 2; i < arguments.length; i++) {
-              validateChildKeys(arguments[i], newElement.type);
+            for (var i2 = 2; i2 < arguments.length; i2++) {
+              validateChildKeys(arguments[i2], newElement.type);
             }
             validatePropTypes(newElement);
             return newElement;
@@ -1741,17 +1745,17 @@
             {
               if (!isFlushing) {
                 isFlushing = true;
-                var i = 0;
+                var i2 = 0;
                 try {
-                  for (; i < queue.length; i++) {
-                    var callback = queue[i];
+                  for (; i2 < queue.length; i2++) {
+                    var callback = queue[i2];
                     do {
                       callback = callback(true);
                     } while (callback !== null);
                   }
                   queue.length = 0;
                 } catch (error2) {
-                  queue = queue.slice(i + 1);
+                  queue = queue.slice(i2 + 1);
                   throw error2;
                 } finally {
                   isFlushing = false;
@@ -1792,14 +1796,14 @@
           exports.useContext = useContext;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect;
+          exports.useEffect = useEffect2;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
-          exports.useRef = useRef;
+          exports.useRef = useRef2;
           exports.useState = useState;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
@@ -1857,8 +1861,8 @@
             }
             return first;
           }
-          function siftUp(heap, node, i) {
-            var index = i;
+          function siftUp(heap, node, i2) {
+            var index = i2;
             while (index > 0) {
               var parentIndex = index - 1 >>> 1;
               var parent = heap[parentIndex];
@@ -1871,17 +1875,17 @@
               }
             }
           }
-          function siftDown(heap, node, i) {
-            var index = i;
-            var length = heap.length;
-            var halfLength = length >>> 1;
+          function siftDown(heap, node, i2) {
+            var index = i2;
+            var length2 = heap.length;
+            var halfLength = length2 >>> 1;
             while (index < halfLength) {
               var leftIndex = (index + 1) * 2 - 1;
               var left = heap[leftIndex];
               var rightIndex = leftIndex + 1;
               var right = heap[rightIndex];
               if (compare(left, node) < 0) {
-                if (rightIndex < length && compare(right, left) < 0) {
+                if (rightIndex < length2 && compare(right, left) < 0) {
                   heap[index] = right;
                   heap[rightIndex] = node;
                   index = rightIndex;
@@ -1890,7 +1894,7 @@
                   heap[leftIndex] = node;
                   index = leftIndex;
                 }
-              } else if (rightIndex < length && compare(right, node) < 0) {
+              } else if (rightIndex < length2 && compare(right, node) < 0) {
                 heap[index] = right;
                 heap[rightIndex] = node;
                 index = rightIndex;
@@ -2397,77 +2401,77 @@
                 possibleRegistrationNames.ondblclick = registrationName;
               }
             }
-            for (var i = 0; i < dependencies.length; i++) {
-              allNativeEvents.add(dependencies[i]);
+            for (var i2 = 0; i2 < dependencies.length; i2++) {
+              allNativeEvents.add(dependencies[i2]);
             }
           }
           var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
           var hasOwnProperty = Object.prototype.hasOwnProperty;
-          function typeName(value) {
+          function typeName(value2) {
             {
               var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
-              var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+              var type = hasToStringTag && value2[Symbol.toStringTag] || value2.constructor.name || "Object";
               return type;
             }
           }
-          function willCoercionThrow(value) {
+          function willCoercionThrow(value2) {
             {
               try {
-                testStringCoercion(value);
+                testStringCoercion(value2);
                 return false;
               } catch (e) {
                 return true;
               }
             }
           }
-          function testStringCoercion(value) {
-            return "" + value;
+          function testStringCoercion(value2) {
+            return "" + value2;
           }
-          function checkAttributeStringCoercion(value, attributeName) {
+          function checkAttributeStringCoercion(value2, attributeName) {
             {
-              if (willCoercionThrow(value)) {
-                error("The provided `%s` attribute is an unsupported type %s. This value must be coerced to a string before before using it here.", attributeName, typeName(value));
-                return testStringCoercion(value);
+              if (willCoercionThrow(value2)) {
+                error("The provided `%s` attribute is an unsupported type %s. This value must be coerced to a string before before using it here.", attributeName, typeName(value2));
+                return testStringCoercion(value2);
               }
             }
           }
-          function checkKeyStringCoercion(value) {
+          function checkKeyStringCoercion(value2) {
             {
-              if (willCoercionThrow(value)) {
-                error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
-                return testStringCoercion(value);
+              if (willCoercionThrow(value2)) {
+                error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value2));
+                return testStringCoercion(value2);
               }
             }
           }
-          function checkPropStringCoercion(value, propName) {
+          function checkPropStringCoercion(value2, propName) {
             {
-              if (willCoercionThrow(value)) {
-                error("The provided `%s` prop is an unsupported type %s. This value must be coerced to a string before before using it here.", propName, typeName(value));
-                return testStringCoercion(value);
+              if (willCoercionThrow(value2)) {
+                error("The provided `%s` prop is an unsupported type %s. This value must be coerced to a string before before using it here.", propName, typeName(value2));
+                return testStringCoercion(value2);
               }
             }
           }
-          function checkCSSPropertyStringCoercion(value, propName) {
+          function checkCSSPropertyStringCoercion(value2, propName) {
             {
-              if (willCoercionThrow(value)) {
-                error("The provided `%s` CSS property is an unsupported type %s. This value must be coerced to a string before before using it here.", propName, typeName(value));
-                return testStringCoercion(value);
+              if (willCoercionThrow(value2)) {
+                error("The provided `%s` CSS property is an unsupported type %s. This value must be coerced to a string before before using it here.", propName, typeName(value2));
+                return testStringCoercion(value2);
               }
             }
           }
-          function checkHtmlStringCoercion(value) {
+          function checkHtmlStringCoercion(value2) {
             {
-              if (willCoercionThrow(value)) {
-                error("The provided HTML markup uses a value of unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
-                return testStringCoercion(value);
+              if (willCoercionThrow(value2)) {
+                error("The provided HTML markup uses a value of unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value2));
+                return testStringCoercion(value2);
               }
             }
           }
-          function checkFormFieldValueStringCoercion(value) {
+          function checkFormFieldValueStringCoercion(value2) {
             {
-              if (willCoercionThrow(value)) {
-                error("Form field values (value, checked, defaultValue, or defaultChecked props) must be strings, not %s. This value must be coerced to a string before before using it here.", typeName(value));
-                return testStringCoercion(value);
+              if (willCoercionThrow(value2)) {
+                error("Form field values (value, checked, defaultValue, or defaultChecked props) must be strings, not %s. This value must be coerced to a string before before using it here.", typeName(value2));
+                return testStringCoercion(value2);
               }
             }
           }
@@ -2512,11 +2516,11 @@
             }
             return false;
           }
-          function shouldRemoveAttributeWithWarning(name, value, propertyInfo, isCustomComponentTag) {
+          function shouldRemoveAttributeWithWarning(name, value2, propertyInfo, isCustomComponentTag) {
             if (propertyInfo !== null && propertyInfo.type === RESERVED) {
               return false;
             }
-            switch (typeof value) {
+            switch (typeof value2) {
               case "function":
               case "symbol":
                 return true;
@@ -2535,11 +2539,11 @@
                 return false;
             }
           }
-          function shouldRemoveAttribute(name, value, propertyInfo, isCustomComponentTag) {
-            if (value === null || typeof value === "undefined") {
+          function shouldRemoveAttribute(name, value2, propertyInfo, isCustomComponentTag) {
+            if (value2 === null || typeof value2 === "undefined") {
               return true;
             }
-            if (shouldRemoveAttributeWithWarning(name, value, propertyInfo, isCustomComponentTag)) {
+            if (shouldRemoveAttributeWithWarning(name, value2, propertyInfo, isCustomComponentTag)) {
               return true;
             }
             if (isCustomComponentTag) {
@@ -2548,13 +2552,13 @@
             if (propertyInfo !== null) {
               switch (propertyInfo.type) {
                 case BOOLEAN:
-                  return !value;
+                  return !value2;
                 case OVERLOADED_BOOLEAN:
-                  return value === false;
+                  return value2 === false;
                 case NUMERIC:
-                  return isNaN(value);
+                  return isNaN(value2);
                 case POSITIVE_NUMERIC:
-                  return isNaN(value) || value < 1;
+                  return isNaN(value2) || value2 < 1;
               }
             }
             return false;
@@ -2879,11 +2883,11 @@
           });
           var isJavaScriptProtocol = /^[\u0000-\u001F ]*j[\r\n\t]*a[\r\n\t]*v[\r\n\t]*a[\r\n\t]*s[\r\n\t]*c[\r\n\t]*r[\r\n\t]*i[\r\n\t]*p[\r\n\t]*t[\r\n\t]*\:/i;
           var didWarn = false;
-          function sanitizeURL(url) {
+          function sanitizeURL(url2) {
             {
-              if (!didWarn && isJavaScriptProtocol.test(url)) {
+              if (!didWarn && isJavaScriptProtocol.test(url2)) {
                 didWarn = true;
-                error("A future version of React will block javascript: URLs as a security precaution. Use event handlers instead if you can. If you need to generate unsafe HTML try using dangerouslySetInnerHTML instead. React was passed %s.", JSON.stringify(url));
+                error("A future version of React will block javascript: URLs as a security precaution. Use event handlers instead if you can. If you need to generate unsafe HTML try using dangerouslySetInnerHTML instead. React was passed %s.", JSON.stringify(url2));
               }
             }
           }
@@ -2903,17 +2907,17 @@
                 var stringValue = null;
                 if (propertyInfo.type === OVERLOADED_BOOLEAN) {
                   if (node.hasAttribute(attributeName)) {
-                    var value = node.getAttribute(attributeName);
-                    if (value === "") {
+                    var value2 = node.getAttribute(attributeName);
+                    if (value2 === "") {
                       return true;
                     }
                     if (shouldRemoveAttribute(name, expected, propertyInfo, false)) {
-                      return value;
+                      return value2;
                     }
-                    if (value === "" + expected) {
+                    if (value2 === "" + expected) {
                       return expected;
                     }
-                    return value;
+                    return value2;
                   }
                 } else if (node.hasAttribute(attributeName)) {
                   if (shouldRemoveAttribute(name, expected, propertyInfo, false)) {
@@ -2942,34 +2946,34 @@
               if (!node.hasAttribute(name)) {
                 return expected === void 0 ? void 0 : null;
               }
-              var value = node.getAttribute(name);
+              var value2 = node.getAttribute(name);
               {
                 checkAttributeStringCoercion(expected, name);
               }
-              if (value === "" + expected) {
+              if (value2 === "" + expected) {
                 return expected;
               }
-              return value;
+              return value2;
             }
           }
-          function setValueForProperty(node, name, value, isCustomComponentTag) {
+          function setValueForProperty(node, name, value2, isCustomComponentTag) {
             var propertyInfo = getPropertyInfo(name);
             if (shouldIgnoreAttribute(name, propertyInfo, isCustomComponentTag)) {
               return;
             }
-            if (shouldRemoveAttribute(name, value, propertyInfo, isCustomComponentTag)) {
-              value = null;
+            if (shouldRemoveAttribute(name, value2, propertyInfo, isCustomComponentTag)) {
+              value2 = null;
             }
             if (isCustomComponentTag || propertyInfo === null) {
               if (isAttributeNameSafe(name)) {
                 var _attributeName = name;
-                if (value === null) {
+                if (value2 === null) {
                   node.removeAttribute(_attributeName);
                 } else {
                   {
-                    checkAttributeStringCoercion(value, name);
+                    checkAttributeStringCoercion(value2, name);
                   }
-                  node.setAttribute(_attributeName, "" + value);
+                  node.setAttribute(_attributeName, "" + value2);
                 }
               }
               return;
@@ -2977,28 +2981,28 @@
             var mustUseProperty = propertyInfo.mustUseProperty;
             if (mustUseProperty) {
               var propertyName = propertyInfo.propertyName;
-              if (value === null) {
+              if (value2 === null) {
                 var type = propertyInfo.type;
                 node[propertyName] = type === BOOLEAN ? false : "";
               } else {
-                node[propertyName] = value;
+                node[propertyName] = value2;
               }
               return;
             }
             var attributeName = propertyInfo.attributeName, attributeNamespace = propertyInfo.attributeNamespace;
-            if (value === null) {
+            if (value2 === null) {
               node.removeAttribute(attributeName);
             } else {
               var _type = propertyInfo.type;
               var attributeValue;
-              if (_type === BOOLEAN || _type === OVERLOADED_BOOLEAN && value === true) {
+              if (_type === BOOLEAN || _type === OVERLOADED_BOOLEAN && value2 === true) {
                 attributeValue = "";
               } else {
                 {
                   {
-                    checkAttributeStringCoercion(value, attributeName);
+                    checkAttributeStringCoercion(value2, attributeName);
                   }
-                  attributeValue = "" + value;
+                  attributeValue = "" + value2;
                 }
                 if (propertyInfo.sanitizeURL) {
                   sanitizeURL(attributeValue.toString());
@@ -3516,21 +3520,21 @@
               isRendering = rendering;
             }
           }
-          function toString(value) {
-            return "" + value;
+          function toString2(value2) {
+            return "" + value2;
           }
-          function getToStringValue(value) {
-            switch (typeof value) {
+          function getToStringValue(value2) {
+            switch (typeof value2) {
               case "boolean":
               case "number":
               case "string":
               case "undefined":
-                return value;
+                return value2;
               case "object":
                 {
-                  checkFormFieldValueStringCoercion(value);
+                  checkFormFieldValueStringCoercion(value2);
                 }
-                return value;
+                return value2;
               default:
                 return "";
             }
@@ -3566,16 +3570,16 @@
             node._valueTracker = null;
           }
           function getValueFromNode(node) {
-            var value = "";
+            var value2 = "";
             if (!node) {
-              return value;
+              return value2;
             }
             if (isCheckable(node)) {
-              value = node.checked ? "true" : "false";
+              value2 = node.checked ? "true" : "false";
             } else {
-              value = node.value;
+              value2 = node.value;
             }
-            return value;
+            return value2;
           }
           function trackValueOnNode(node) {
             var valueField = isCheckable(node) ? "checked" : "value";
@@ -3593,12 +3597,12 @@
               get: function() {
                 return get2.call(this);
               },
-              set: function(value) {
+              set: function(value2) {
                 {
-                  checkFormFieldValueStringCoercion(value);
+                  checkFormFieldValueStringCoercion(value2);
                 }
-                currentValue = "" + value;
-                set2.call(this, value);
+                currentValue = "" + value2;
+                set2.call(this, value2);
               }
             });
             Object.defineProperty(node, valueField, {
@@ -3608,11 +3612,11 @@
               getValue: function() {
                 return currentValue;
               },
-              setValue: function(value) {
+              setValue: function(value2) {
                 {
-                  checkFormFieldValueStringCoercion(value);
+                  checkFormFieldValueStringCoercion(value2);
                 }
-                currentValue = "" + value;
+                currentValue = "" + value2;
               },
               stopTracking: function() {
                 detachTracker(node);
@@ -3714,15 +3718,15 @@
               }
             }
             updateChecked(element, props);
-            var value = getToStringValue(props.value);
+            var value2 = getToStringValue(props.value);
             var type = props.type;
-            if (value != null) {
+            if (value2 != null) {
               if (type === "number") {
-                if (value === 0 && node.value === "" || node.value != value) {
-                  node.value = toString(value);
+                if (value2 === 0 && node.value === "" || node.value != value2) {
+                  node.value = toString2(value2);
                 }
-              } else if (node.value !== toString(value)) {
-                node.value = toString(value);
+              } else if (node.value !== toString2(value2)) {
+                node.value = toString2(value2);
               }
             } else if (type === "submit" || type === "reset") {
               node.removeAttribute("value");
@@ -3730,7 +3734,7 @@
             }
             {
               if (props.hasOwnProperty("value")) {
-                setDefaultValue(node, props.type, value);
+                setDefaultValue(node, props.type, value2);
               } else if (props.hasOwnProperty("defaultValue")) {
                 setDefaultValue(node, props.type, getToStringValue(props.defaultValue));
               }
@@ -3749,7 +3753,7 @@
               if (isButton && (props.value === void 0 || props.value === null)) {
                 return;
               }
-              var initialValue = toString(node._wrapperState.initialValue);
+              var initialValue = toString2(node._wrapperState.initialValue);
               if (!isHydrating2) {
                 {
                   if (initialValue !== node.value) {
@@ -3789,8 +3793,8 @@
                 checkAttributeStringCoercion(name, "name");
               }
               var group = queryRoot.querySelectorAll("input[name=" + JSON.stringify("" + name) + '][type="radio"]');
-              for (var i = 0; i < group.length; i++) {
-                var otherNode = group[i];
+              for (var i2 = 0; i2 < group.length; i2++) {
+                var otherNode = group[i2];
                 if (otherNode === rootNode || otherNode.form !== rootNode.form) {
                   continue;
                 }
@@ -3803,12 +3807,12 @@
               }
             }
           }
-          function setDefaultValue(node, type, value) {
+          function setDefaultValue(node, type, value2) {
             if (type !== "number" || getActiveElement(node.ownerDocument) !== node) {
-              if (value == null) {
-                node.defaultValue = toString(node._wrapperState.initialValue);
-              } else if (node.defaultValue !== toString(value)) {
-                node.defaultValue = toString(value);
+              if (value2 == null) {
+                node.defaultValue = toString2(node._wrapperState.initialValue);
+              } else if (node.defaultValue !== toString2(value2)) {
+                node.defaultValue = toString2(value2);
               }
             }
           }
@@ -3846,7 +3850,7 @@
           }
           function postMountWrapper$1(element, props) {
             if (props.value != null) {
-              element.setAttribute("value", toString(getToStringValue(props.value)));
+              element.setAttribute("value", toString2(getToStringValue(props.value)));
             }
           }
           var isArrayImpl = Array.isArray;
@@ -3868,8 +3872,8 @@
           function checkSelectPropTypes(props) {
             {
               checkControlledValueProps("select", props);
-              for (var i = 0; i < valuePropNames.length; i++) {
-                var propName = valuePropNames[i];
+              for (var i2 = 0; i2 < valuePropNames.length; i2++) {
+                var propName = valuePropNames[i2];
                 if (props[propName] == null) {
                   continue;
                 }
@@ -3887,8 +3891,8 @@
             if (multiple) {
               var selectedValues = propValue;
               var selectedValue = {};
-              for (var i = 0; i < selectedValues.length; i++) {
-                selectedValue["$" + selectedValues[i]] = true;
+              for (var i2 = 0; i2 < selectedValues.length; i2++) {
+                selectedValue["$" + selectedValues[i2]] = true;
               }
               for (var _i = 0; _i < options2.length; _i++) {
                 var selected = selectedValue.hasOwnProperty("$" + options2[_i].value);
@@ -3900,7 +3904,7 @@
                 }
               }
             } else {
-              var _selectedValue = toString(getToStringValue(propValue));
+              var _selectedValue = toString2(getToStringValue(propValue));
               var defaultSelected = null;
               for (var _i2 = 0; _i2 < options2.length; _i2++) {
                 if (options2[_i2].value === _selectedValue) {
@@ -3942,9 +3946,9 @@
           function postMountWrapper$2(element, props) {
             var node = element;
             node.multiple = !!props.multiple;
-            var value = props.value;
-            if (value != null) {
-              updateOptions(node, !!props.multiple, value, false);
+            var value2 = props.value;
+            if (value2 != null) {
+              updateOptions(node, !!props.multiple, value2, false);
             } else if (props.defaultValue != null) {
               updateOptions(node, !!props.multiple, props.defaultValue, true);
             }
@@ -3953,9 +3957,9 @@
             var node = element;
             var wasMultiple = node._wrapperState.wasMultiple;
             node._wrapperState.wasMultiple = !!props.multiple;
-            var value = props.value;
-            if (value != null) {
-              updateOptions(node, !!props.multiple, value, false);
+            var value2 = props.value;
+            if (value2 != null) {
+              updateOptions(node, !!props.multiple, value2, false);
             } else if (wasMultiple !== !!props.multiple) {
               if (props.defaultValue != null) {
                 updateOptions(node, !!props.multiple, props.defaultValue, true);
@@ -3966,9 +3970,9 @@
           }
           function restoreControlledState$1(element, props) {
             var node = element;
-            var value = props.value;
-            if (value != null) {
-              updateOptions(node, !!props.multiple, value, false);
+            var value2 = props.value;
+            if (value2 != null) {
+              updateOptions(node, !!props.multiple, value2, false);
             }
           }
           var didWarnValDefaultVal = false;
@@ -3980,7 +3984,7 @@
             var hostProps = assign({}, props, {
               value: void 0,
               defaultValue: void 0,
-              children: toString(node._wrapperState.initialValue)
+              children: toString2(node._wrapperState.initialValue)
             });
             return hostProps;
           }
@@ -4024,10 +4028,10 @@
           }
           function updateWrapper$1(element, props) {
             var node = element;
-            var value = getToStringValue(props.value);
+            var value2 = getToStringValue(props.value);
             var defaultValue = getToStringValue(props.defaultValue);
-            if (value != null) {
-              var newValue = toString(value);
+            if (value2 != null) {
+              var newValue = toString2(value2);
               if (newValue !== node.value) {
                 node.value = newValue;
               }
@@ -4036,7 +4040,7 @@
               }
             }
             if (defaultValue != null) {
-              node.defaultValue = toString(defaultValue);
+              node.defaultValue = toString2(defaultValue);
             }
           }
           function postMountWrapper$3(element, props) {
@@ -4220,18 +4224,18 @@
               isUnitlessNumber[prefixKey(prefix2, prop)] = isUnitlessNumber[prop];
             });
           });
-          function dangerousStyleValue(name, value, isCustomProperty) {
-            var isEmpty = value == null || typeof value === "boolean" || value === "";
+          function dangerousStyleValue(name, value2, isCustomProperty) {
+            var isEmpty = value2 == null || typeof value2 === "boolean" || value2 === "";
             if (isEmpty) {
               return "";
             }
-            if (!isCustomProperty && typeof value === "number" && value !== 0 && !(isUnitlessNumber.hasOwnProperty(name) && isUnitlessNumber[name])) {
-              return value + "px";
+            if (!isCustomProperty && typeof value2 === "number" && value2 !== 0 && !(isUnitlessNumber.hasOwnProperty(name) && isUnitlessNumber[name])) {
+              return value2 + "px";
             }
             {
-              checkCSSPropertyStringCoercion(value, name);
+              checkCSSPropertyStringCoercion(value2, name);
             }
-            return ("" + value).trim();
+            return ("" + value2).trim();
           }
           var uppercasePattern = /([A-Z])/g;
           var msPattern = /^ms-/;
@@ -4272,40 +4276,40 @@
               warnedStyleNames[name] = true;
               error("Unsupported vendor-prefixed style property %s. Did you mean %s?", name, name.charAt(0).toUpperCase() + name.slice(1));
             };
-            var warnStyleValueWithSemicolon = function(name, value) {
-              if (warnedStyleValues.hasOwnProperty(value) && warnedStyleValues[value]) {
+            var warnStyleValueWithSemicolon = function(name, value2) {
+              if (warnedStyleValues.hasOwnProperty(value2) && warnedStyleValues[value2]) {
                 return;
               }
-              warnedStyleValues[value] = true;
-              error(`Style property values shouldn't contain a semicolon. Try "%s: %s" instead.`, name, value.replace(badStyleValueWithSemicolonPattern, ""));
+              warnedStyleValues[value2] = true;
+              error(`Style property values shouldn't contain a semicolon. Try "%s: %s" instead.`, name, value2.replace(badStyleValueWithSemicolonPattern, ""));
             };
-            var warnStyleValueIsNaN = function(name, value) {
+            var warnStyleValueIsNaN = function(name, value2) {
               if (warnedForNaNValue) {
                 return;
               }
               warnedForNaNValue = true;
               error("`NaN` is an invalid value for the `%s` css style property.", name);
             };
-            var warnStyleValueIsInfinity = function(name, value) {
+            var warnStyleValueIsInfinity = function(name, value2) {
               if (warnedForInfinityValue) {
                 return;
               }
               warnedForInfinityValue = true;
               error("`Infinity` is an invalid value for the `%s` css style property.", name);
             };
-            warnValidStyle = function(name, value) {
+            warnValidStyle = function(name, value2) {
               if (name.indexOf("-") > -1) {
                 warnHyphenatedStyleName(name);
               } else if (badVendoredStyleNamePattern.test(name)) {
                 warnBadVendoredStyleName(name);
-              } else if (badStyleValueWithSemicolonPattern.test(value)) {
-                warnStyleValueWithSemicolon(name, value);
+              } else if (badStyleValueWithSemicolonPattern.test(value2)) {
+                warnStyleValueWithSemicolon(name, value2);
               }
-              if (typeof value === "number") {
-                if (isNaN(value)) {
-                  warnStyleValueIsNaN(name, value);
-                } else if (!isFinite(value)) {
-                  warnStyleValueIsInfinity(name, value);
+              if (typeof value2 === "number") {
+                if (isNaN(value2)) {
+                  warnStyleValueIsNaN(name, value2);
+                } else if (!isFinite(value2)) {
+                  warnStyleValueIsInfinity(name, value2);
                 }
               }
             };
@@ -4353,15 +4357,15 @@
               }
             }
           }
-          function isValueEmpty(value) {
-            return value == null || typeof value === "boolean" || value === "";
+          function isValueEmpty(value2) {
+            return value2 == null || typeof value2 === "boolean" || value2 === "";
           }
           function expandShorthandMap(styles) {
             var expanded = {};
             for (var key in styles) {
               var longhands = shorthandToLonghand[key] || [key];
-              for (var i = 0; i < longhands.length; i++) {
-                expanded[longhands[i]] = key;
+              for (var i2 = 0; i2 < longhands.length; i2++) {
+                expanded[longhands[i2]] = key;
               }
             }
             return expanded;
@@ -5078,7 +5082,7 @@
             var INVALID_EVENT_NAME_REGEX = /^on[^A-Z]/;
             var rARIA$1 = new RegExp("^(aria)-[" + ATTRIBUTE_NAME_CHAR + "]*$");
             var rARIACamel$1 = new RegExp("^(aria)[A-Z][" + ATTRIBUTE_NAME_CHAR + "]*$");
-            validateProperty$1 = function(tagName, name, value, eventRegistry) {
+            validateProperty$1 = function(tagName, name, value2, eventRegistry) {
               if (hasOwnProperty.call(warnedProperties$1, name) && warnedProperties$1[name]) {
                 return true;
               }
@@ -5124,12 +5128,12 @@
                 warnedProperties$1[name] = true;
                 return true;
               }
-              if (lowerCasedName === "is" && value !== null && value !== void 0 && typeof value !== "string") {
-                error("Received a `%s` for a string attribute `is`. If this is expected, cast the value to a string.", typeof value);
+              if (lowerCasedName === "is" && value2 !== null && value2 !== void 0 && typeof value2 !== "string") {
+                error("Received a `%s` for a string attribute `is`. If this is expected, cast the value to a string.", typeof value2);
                 warnedProperties$1[name] = true;
                 return true;
               }
-              if (typeof value === "number" && isNaN(value)) {
+              if (typeof value2 === "number" && isNaN(value2)) {
                 error("Received NaN for the `%s` attribute. If this is expected, cast the value to a string.", name);
                 warnedProperties$1[name] = true;
                 return true;
@@ -5148,11 +5152,11 @@
                 warnedProperties$1[name] = true;
                 return true;
               }
-              if (typeof value === "boolean" && shouldRemoveAttributeWithWarning(name, value, propertyInfo, false)) {
-                if (value) {
-                  error('Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s="%s" or %s={value.toString()}.', value, name, name, value, name);
+              if (typeof value2 === "boolean" && shouldRemoveAttributeWithWarning(name, value2, propertyInfo, false)) {
+                if (value2) {
+                  error('Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s="%s" or %s={value.toString()}.', value2, name, name, value2, name);
                 } else {
-                  error('Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s="%s" or %s={value.toString()}.\n\nIf you used to conditionally omit it with %s={condition && value}, pass %s={condition ? value : undefined} instead.', value, name, name, value, name, name, name);
+                  error('Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s="%s" or %s={value.toString()}.\n\nIf you used to conditionally omit it with %s={condition && value}, pass %s={condition ? value : undefined} instead.', value2, name, name, value2, name, name, name);
                 }
                 warnedProperties$1[name] = true;
                 return true;
@@ -5160,12 +5164,12 @@
               if (isReserved) {
                 return true;
               }
-              if (shouldRemoveAttributeWithWarning(name, value, propertyInfo, false)) {
+              if (shouldRemoveAttributeWithWarning(name, value2, propertyInfo, false)) {
                 warnedProperties$1[name] = true;
                 return false;
               }
-              if ((value === "false" || value === "true") && propertyInfo !== null && propertyInfo.type === BOOLEAN) {
-                error("Received the string `%s` for the boolean attribute `%s`. %s Did you mean %s={%s}?", value, name, value === "false" ? "The browser will interpret it as a truthy value." : 'Although this works, it will not work as expected if you pass the string "false".', name, value);
+              if ((value2 === "false" || value2 === "true") && propertyInfo !== null && propertyInfo.type === BOOLEAN) {
+                error("Received the string `%s` for the boolean attribute `%s`. %s Did you mean %s={%s}?", value2, name, value2 === "false" ? "The browser will interpret it as a truthy value." : 'Although this works, it will not work as expected if you pass the string "false".', name, value2);
                 warnedProperties$1[name] = true;
                 return true;
               }
@@ -5272,8 +5276,8 @@
             restoreQueue = null;
             restoreStateOfTarget(target);
             if (queuedTargets) {
-              for (var i = 0; i < queuedTargets.length; i++) {
-                restoreStateOfTarget(queuedTargets[i]);
+              for (var i2 = 0; i2 < queuedTargets.length; i2++) {
+                restoreStateOfTarget(queuedTargets[i2]);
               }
             }
           }
@@ -5489,8 +5493,8 @@
           function has(key) {
             return key._reactInternals !== void 0;
           }
-          function set(key, value) {
-            key._reactInternals = value;
+          function set(key, value2) {
+            key._reactInternals = value2;
           }
           var NoFlags = 0;
           var PerformedWork = 1;
@@ -5882,14 +5886,14 @@
           }
           function getLaneLabelMap() {
             {
-              var map = /* @__PURE__ */ new Map();
+              var map2 = /* @__PURE__ */ new Map();
               var lane = 1;
               for (var index2 = 0; index2 < TotalLanes; index2++) {
                 var label = getLabelForLane(lane);
-                map.set(lane, label);
+                map2.set(lane, label);
                 lane *= 2;
               }
-              return map;
+              return map2;
             }
           }
           function markCommitStarted(lanes) {
@@ -6431,7 +6435,7 @@
           }
           function createLaneMap(initial) {
             var laneMap = [];
-            for (var i = 0; i < TotalLanes; i++) {
+            for (var i2 = 0; i2 < TotalLanes; i2++) {
               laneMap.push(initial);
             }
             return laneMap;
@@ -6810,14 +6814,14 @@
               target,
               priority: updatePriority
             };
-            var i = 0;
-            for (; i < queuedExplicitHydrationTargets.length; i++) {
-              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i].priority)) {
+            var i2 = 0;
+            for (; i2 < queuedExplicitHydrationTargets.length; i2++) {
+              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i2].priority)) {
                 break;
               }
             }
-            queuedExplicitHydrationTargets.splice(i, 0, queuedTarget);
-            if (i === 0) {
+            queuedExplicitHydrationTargets.splice(i2, 0, queuedTarget);
+            if (i2 === 0) {
               attemptExplicitHydrationTarget(queuedTarget);
             }
           }
@@ -6849,9 +6853,9 @@
             }
             return true;
           }
-          function attemptReplayContinuousQueuedEventInMap(queuedEvent, key, map) {
+          function attemptReplayContinuousQueuedEventInMap(queuedEvent, key, map2) {
             if (attemptReplayContinuousQueuedEvent(queuedEvent)) {
-              map.delete(key);
+              map2.delete(key);
             }
           }
           function replayUnblockedEvents() {
@@ -6880,8 +6884,8 @@
           function retryIfBlockedOn(unblocked) {
             if (queuedDiscreteEvents.length > 0) {
               scheduleCallbackIfUnblocked(queuedDiscreteEvents[0], unblocked);
-              for (var i = 1; i < queuedDiscreteEvents.length; i++) {
-                var queuedEvent = queuedDiscreteEvents[i];
+              for (var i2 = 1; i2 < queuedDiscreteEvents.length; i2++) {
+                var queuedEvent = queuedDiscreteEvents[i2];
                 if (queuedEvent.blockedOn === unblocked) {
                   queuedEvent.blockedOn = null;
                 }
@@ -7648,11 +7652,11 @@
                 hasSpaceKeypress = true;
                 return SPACEBAR_CHAR;
               case "textInput":
-                var chars = nativeEvent.data;
-                if (chars === SPACEBAR_CHAR && hasSpaceKeypress) {
+                var chars2 = nativeEvent.data;
+                if (chars2 === SPACEBAR_CHAR && hasSpaceKeypress) {
                   return null;
                 }
-                return chars;
+                return chars2;
               default:
                 return null;
             }
@@ -7660,10 +7664,10 @@
           function getFallbackBeforeInputChars(domEventName, nativeEvent) {
             if (isComposing) {
               if (domEventName === "compositionend" || !canUseCompositionEvent && isFallbackCompositionEnd(domEventName, nativeEvent)) {
-                var chars = getData();
+                var chars2 = getData();
                 reset();
                 isComposing = false;
-                return chars;
+                return chars2;
               }
               return null;
             }
@@ -7686,13 +7690,13 @@
             }
           }
           function extractBeforeInputEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget) {
-            var chars;
+            var chars2;
             if (canUseTextInputEvent) {
-              chars = getNativeBeforeInputChars(domEventName, nativeEvent);
+              chars2 = getNativeBeforeInputChars(domEventName, nativeEvent);
             } else {
-              chars = getFallbackBeforeInputChars(domEventName, nativeEvent);
+              chars2 = getFallbackBeforeInputChars(domEventName, nativeEvent);
             }
-            if (!chars) {
+            if (!chars2) {
               return null;
             }
             var listeners = accumulateTwoPhaseListeners(targetInst, "onBeforeInput");
@@ -7702,7 +7706,7 @@
                 event,
                 listeners
               });
-              event.data = chars;
+              event.data = chars2;
             }
           }
           function extractEvents(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
@@ -7969,8 +7973,8 @@
             if (keysA.length !== keysB.length) {
               return false;
             }
-            for (var i = 0; i < keysA.length; i++) {
-              var currentKey = keysA[i];
+            for (var i2 = 0; i2 < keysA.length; i2++) {
+              var currentKey = keysA[i2];
               if (!hasOwnProperty.call(objB, currentKey) || !objectIs(objA[currentKey], objB[currentKey])) {
                 return false;
               }
@@ -8026,7 +8030,7 @@
             return getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset);
           }
           function getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset) {
-            var length = 0;
+            var length2 = 0;
             var start = -1;
             var end = -1;
             var indexWithinAnchor = 0;
@@ -8038,13 +8042,13 @@
                 var next = null;
                 while (true) {
                   if (node === anchorNode && (anchorOffset === 0 || node.nodeType === TEXT_NODE)) {
-                    start = length + anchorOffset;
+                    start = length2 + anchorOffset;
                   }
                   if (node === focusNode && (focusOffset === 0 || node.nodeType === TEXT_NODE)) {
-                    end = length + focusOffset;
+                    end = length2 + focusOffset;
                   }
                   if (node.nodeType === TEXT_NODE) {
-                    length += node.nodeValue.length;
+                    length2 += node.nodeValue.length;
                   }
                   if ((next = node.firstChild) === null) {
                     break;
@@ -8057,10 +8061,10 @@
                     break outer;
                   }
                   if (parentNode === anchorNode && ++indexWithinAnchor === anchorOffset) {
-                    start = length;
+                    start = length2;
                   }
                   if (parentNode === focusNode && ++indexWithinFocus === focusOffset) {
-                    end = length;
+                    end = length2;
                   }
                   if ((next = node.nextSibling) !== null) {
                     break;
@@ -8085,9 +8089,9 @@
               return;
             }
             var selection = win.getSelection();
-            var length = node.textContent.length;
-            var start = Math.min(offsets.start, length);
-            var end = offsets.end === void 0 ? start : Math.min(offsets.end, length);
+            var length2 = node.textContent.length;
+            var start = Math.min(offsets.start, length2);
+            var end = offsets.end === void 0 ? start : Math.min(offsets.end, length2);
             if (!selection.extend && start > end) {
               var temp = end;
               end = start;
@@ -8187,8 +8191,8 @@
               if (typeof priorFocusedElem.focus === "function") {
                 priorFocusedElem.focus();
               }
-              for (var i = 0; i < ancestors.length; i++) {
-                var info = ancestors[i];
+              for (var i2 = 0; i2 < ancestors.length; i2++) {
+                var info = ancestors[i2];
                 info.element.scrollLeft = info.left;
                 info.element.scrollTop = info.top;
               }
@@ -8353,8 +8357,8 @@
             registerTwoPhaseEvent(reactName, [domEventName]);
           }
           function registerSimpleEvents() {
-            for (var i = 0; i < simpleEventPluginEvents.length; i++) {
-              var eventName = simpleEventPluginEvents[i];
+            for (var i2 = 0; i2 < simpleEventPluginEvents.length; i2++) {
+              var eventName = simpleEventPluginEvents[i2];
               var domEventName = eventName.toLowerCase();
               var capitalizedEvent = eventName[0].toUpperCase() + eventName.slice(1);
               registerSimpleEvent(domEventName, "on" + capitalizedEvent);
@@ -8494,8 +8498,8 @@
           function processDispatchQueueItemsInOrder(event, dispatchListeners, inCapturePhase) {
             var previousInstance;
             if (inCapturePhase) {
-              for (var i = dispatchListeners.length - 1; i >= 0; i--) {
-                var _dispatchListeners$i = dispatchListeners[i], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
+              for (var i2 = dispatchListeners.length - 1; i2 >= 0; i2--) {
+                var _dispatchListeners$i = dispatchListeners[i2], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
                 if (instance !== previousInstance && event.isPropagationStopped()) {
                   return;
                 }
@@ -8515,8 +8519,8 @@
           }
           function processDispatchQueue(dispatchQueue, eventSystemFlags) {
             var inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
-            for (var i = 0; i < dispatchQueue.length; i++) {
-              var _dispatchQueue$i = dispatchQueue[i], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
+            for (var i2 = 0; i2 < dispatchQueue.length; i2++) {
+              var _dispatchQueue$i = dispatchQueue[i2], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
               processDispatchQueueItemsInOrder(event, listeners, inCapturePhase);
             }
             rethrowCaughtError();
@@ -8938,9 +8942,9 @@
             }
           }
           function updateDOMProperties(domElement, updatePayload, wasCustomComponentTag, isCustomComponentTag) {
-            for (var i = 0; i < updatePayload.length; i += 2) {
-              var propKey = updatePayload[i];
-              var propValue = updatePayload[i + 1];
+            for (var i2 = 0; i2 < updatePayload.length; i2 += 2) {
+              var propKey = updatePayload[i2];
+              var propValue = updatePayload[i2 + 1];
               if (propKey === STYLE) {
                 setValueForStyles(domElement, propValue);
               } else if (propKey === DANGEROUSLY_SET_INNER_HTML) {
@@ -9023,8 +9027,8 @@
                 break;
               case "video":
               case "audio":
-                for (var i = 0; i < mediaEventTypes.length; i++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
+                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
                 }
                 props = rawProps;
                 break;
@@ -9275,8 +9279,8 @@
                 break;
               case "video":
               case "audio":
-                for (var i = 0; i < mediaEventTypes.length; i++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
+                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
                 }
                 break;
               case "source":
@@ -10328,7 +10332,7 @@
               }
             }
           }
-          function checkPropTypes(typeSpecs, values, location, componentName, element) {
+          function checkPropTypes(typeSpecs, values, location2, componentName, element) {
             {
               var has2 = Function.call.bind(hasOwnProperty);
               for (var typeSpecName in typeSpecs) {
@@ -10336,23 +10340,23 @@
                   var error$1 = void 0;
                   try {
                     if (typeof typeSpecs[typeSpecName] !== "function") {
-                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      var err = Error((componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
                       err.name = "Invariant Violation";
                       throw err;
                     }
-                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location2, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
                   } catch (ex) {
                     error$1 = ex;
                   }
                   if (error$1 && !(error$1 instanceof Error)) {
                     setCurrentlyValidatingElement(element);
-                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location2, typeSpecName, typeof error$1);
                     setCurrentlyValidatingElement(null);
                   }
                   if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
                     loggedTypeFailures[error$1.message] = true;
                     setCurrentlyValidatingElement(element);
-                    error("Failed %s type: %s", location, error$1.message);
+                    error("Failed %s type: %s", location2, error$1.message);
                     setCurrentlyValidatingElement(null);
                   }
                 }
@@ -10389,13 +10393,13 @@
             }
             index--;
           }
-          function push(cursor, value, fiber) {
+          function push(cursor, value2, fiber) {
             index++;
             valueStack[index] = cursor.current;
             {
               fiberStack[index] = fiber;
             }
-            cursor.current = value;
+            cursor.current = value2;
           }
           var warnedAboutMissingGetChildContext;
           {
@@ -10583,14 +10587,14 @@
           function flushSyncCallbacks() {
             if (!isFlushingSyncQueue && syncQueue !== null) {
               isFlushingSyncQueue = true;
-              var i = 0;
+              var i2 = 0;
               var previousUpdatePriority = getCurrentUpdatePriority();
               try {
                 var isSync = true;
                 var queue = syncQueue;
                 setCurrentUpdatePriority(DiscreteEventPriority);
-                for (; i < queue.length; i++) {
-                  var callback = queue[i];
+                for (; i2 < queue.length; i2++) {
+                  var callback = queue[i2];
                   do {
                     callback = callback(isSync);
                   } while (callback !== null);
@@ -10599,7 +10603,7 @@
                 includesLegacySyncCallbacks = false;
               } catch (error2) {
                 if (syncQueue !== null) {
-                  syncQueue = syncQueue.slice(i + 1);
+                  syncQueue = syncQueue.slice(i2 + 1);
                 }
                 scheduleCallback(ImmediatePriority, flushSyncCallbacks);
                 throw error2;
@@ -10651,8 +10655,8 @@
             var baseLength = getBitLength(baseIdWithLeadingBit) - 1;
             var baseId = baseIdWithLeadingBit & ~(1 << baseLength);
             var slot = index2 + 1;
-            var length = getBitLength(totalChildren) + baseLength;
-            if (length > 30) {
+            var length2 = getBitLength(totalChildren) + baseLength;
+            if (length2 > 30) {
               var numberOfOverflowBits = baseLength - baseLength % 5;
               var newOverflowBits = (1 << numberOfOverflowBits) - 1;
               var newOverflow = (baseId & newOverflowBits).toString(32);
@@ -10668,7 +10672,7 @@
               var newBits = slot << baseLength;
               var _id = newBits | baseId;
               var _overflow = baseOverflow;
-              treeContextId = 1 << length | _id;
+              treeContextId = 1 << length2 | _id;
               treeContextOverflow = _overflow;
             }
           }
@@ -11145,8 +11149,8 @@
             };
             var setToSortedString = function(set2) {
               var array = [];
-              set2.forEach(function(value) {
-                array.push(value);
+              set2.forEach(function(value2) {
+                array.push(value2);
               });
               return array.sort().join(", ");
             };
@@ -11497,13 +11501,13 @@
                 error("Context can only be read while React is rendering. In classes, you can read it in the render method or getDerivedStateFromProps. In function components, you can read it directly in the function body, but not inside Hooks like useReducer() or useMemo().");
               }
             }
-            var value = context._currentValue;
+            var value2 = context._currentValue;
             if (lastFullyObservedContext === context)
               ;
             else {
               var contextItem = {
                 context,
-                memoizedValue: value,
+                memoizedValue: value2,
                 next: null
               };
               if (lastContextDependency === null) {
@@ -11519,7 +11523,7 @@
                 lastContextDependency = lastContextDependency.next = contextItem;
               }
             }
-            return value;
+            return value2;
           }
           var concurrentQueues = null;
           function pushConcurrentUpdateQueue(queue) {
@@ -11531,8 +11535,8 @@
           }
           function finishQueueingConcurrentUpdates() {
             if (concurrentQueues !== null) {
-              for (var i = 0; i < concurrentQueues.length; i++) {
-                var queue = concurrentQueues[i];
+              for (var i2 = 0; i2 < concurrentQueues.length; i2++) {
+                var queue = concurrentQueues[i2];
                 var lastInterleavedUpdate = queue.interleaved;
                 if (lastInterleavedUpdate !== null) {
                   queue.interleaved = null;
@@ -11969,8 +11973,8 @@
             var effects = finishedQueue.effects;
             finishedQueue.effects = null;
             if (effects !== null) {
-              for (var i = 0; i < effects.length; i++) {
-                var effect = effects[i];
+              for (var i2 = 0; i2 < effects.length; i2++) {
+                var effect = effects[i2];
                 var callback = effect.callback;
                 if (callback !== null) {
                   effect.callback = null;
@@ -12632,15 +12636,15 @@
                 if (current2 !== null && current2.ref !== null && typeof current2.ref === "function" && current2.ref._stringRef === stringRef) {
                   return current2.ref;
                 }
-                var ref = function(value) {
+                var ref = function(value2) {
                   var refs = resolvedInst.refs;
                   if (refs === emptyRefsObject) {
                     refs = resolvedInst.refs = {};
                   }
-                  if (value === null) {
+                  if (value2 === null) {
                     delete refs[stringRef];
                   } else {
-                    refs[stringRef] = value;
+                    refs[stringRef] = value2;
                   }
                 };
                 ref._stringRef = stringRef;
@@ -12952,8 +12956,8 @@
             function reconcileChildrenArray(returnFiber, currentFirstChild, newChildren, lanes) {
               {
                 var knownKeys = null;
-                for (var i = 0; i < newChildren.length; i++) {
-                  var child = newChildren[i];
+                for (var i2 = 0; i2 < newChildren.length; i2++) {
+                  var child = newChildren[i2];
                   knownKeys = warnOnInvalidKey(child, knownKeys, returnFiber);
                 }
               }
@@ -13444,8 +13448,8 @@
           var Passive$1 = 8;
           var workInProgressSources = [];
           function resetWorkInProgressVersions() {
-            for (var i = 0; i < workInProgressSources.length; i++) {
-              var mutableSource = workInProgressSources[i];
+            for (var i2 = 0; i2 < workInProgressSources.length; i2++) {
+              var mutableSource = workInProgressSources[i2];
               {
                 mutableSource._workInProgressVersionPrimary = null;
               }
@@ -13516,10 +13520,10 @@
                 if (hookTypesDev !== null) {
                   var table = "";
                   var secondColumnStart = 30;
-                  for (var i = 0; i <= hookTypesUpdateIndexDev; i++) {
-                    var oldHookName = hookTypesDev[i];
-                    var newHookName = i === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
-                    var row = i + 1 + ". " + oldHookName;
+                  for (var i2 = 0; i2 <= hookTypesUpdateIndexDev; i2++) {
+                    var oldHookName = hookTypesDev[i2];
+                    var newHookName = i2 === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
+                    var row = i2 + 1 + ". " + oldHookName;
                     while (row.length < secondColumnStart) {
                       row += " ";
                     }
@@ -13551,8 +13555,8 @@
                 error("The final argument passed to %s changed size between renders. The order and size of this array must remain constant.\n\nPrevious: %s\nIncoming: %s", currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + nextDeps.join(", ") + "]");
               }
             }
-            for (var i = 0; i < prevDeps.length && i < nextDeps.length; i++) {
-              if (objectIs(nextDeps[i], prevDeps[i])) {
+            for (var i2 = 0; i2 < prevDeps.length && i2 < nextDeps.length; i2++) {
+              if (objectIs(nextDeps[i2], prevDeps[i2])) {
                 continue;
               }
               return false;
@@ -14187,7 +14191,7 @@
             var effectDeps = deps !== null && deps !== void 0 ? deps.concat([ref]) : null;
             return updateEffectImpl(Update, Layout, imperativeHandleEffect.bind(null, create, ref), effectDeps);
           }
-          function mountDebugValue(value, formatterFn) {
+          function mountDebugValue(value2, formatterFn) {
           }
           var updateDebugValue = mountDebugValue;
           function mountCallback(callback, deps) {
@@ -14234,31 +14238,31 @@
             hook.memoizedState = [nextValue, nextDeps];
             return nextValue;
           }
-          function mountDeferredValue(value) {
+          function mountDeferredValue(value2) {
             var hook = mountWorkInProgressHook();
-            hook.memoizedState = value;
-            return value;
+            hook.memoizedState = value2;
+            return value2;
           }
-          function updateDeferredValue(value) {
+          function updateDeferredValue(value2) {
             var hook = updateWorkInProgressHook();
             var resolvedCurrentHook = currentHook;
             var prevValue = resolvedCurrentHook.memoizedState;
-            return updateDeferredValueImpl(hook, prevValue, value);
+            return updateDeferredValueImpl(hook, prevValue, value2);
           }
-          function rerenderDeferredValue(value) {
+          function rerenderDeferredValue(value2) {
             var hook = updateWorkInProgressHook();
             if (currentHook === null) {
-              hook.memoizedState = value;
-              return value;
+              hook.memoizedState = value2;
+              return value2;
             } else {
               var prevValue = currentHook.memoizedState;
-              return updateDeferredValueImpl(hook, prevValue, value);
+              return updateDeferredValueImpl(hook, prevValue, value2);
             }
           }
-          function updateDeferredValueImpl(hook, prevValue, value) {
+          function updateDeferredValueImpl(hook, prevValue, value2) {
             var shouldDeferValue = !includesOnlyNonUrgentLanes(renderLanes);
             if (shouldDeferValue) {
-              if (!objectIs(value, prevValue)) {
+              if (!objectIs(value2, prevValue)) {
                 var deferredLane = claimNextTransitionLane();
                 currentlyRenderingFiber$1.lanes = mergeLanes(currentlyRenderingFiber$1.lanes, deferredLane);
                 markSkippedUpdateLanes(deferredLane);
@@ -14270,8 +14274,8 @@
                 hook.baseState = false;
                 markWorkInProgressReceivedUpdate();
               }
-              hook.memoizedState = value;
-              return value;
+              hook.memoizedState = value2;
+              return value2;
             }
           }
           function startTransition(setPending, callback, options2) {
@@ -14570,15 +14574,15 @@
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
               },
-              useDebugValue: function(value, formatterFn) {
+              useDebugValue: function(value2, formatterFn) {
                 currentHookNameInDev = "useDebugValue";
                 mountHookTypesDev();
                 return mountDebugValue();
               },
-              useDeferredValue: function(value) {
+              useDeferredValue: function(value2) {
                 currentHookNameInDev = "useDeferredValue";
                 mountHookTypesDev();
-                return mountDeferredValue(value);
+                return mountDeferredValue(value2);
               },
               useTransition: function() {
                 currentHookNameInDev = "useTransition";
@@ -14674,15 +14678,15 @@
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
               },
-              useDebugValue: function(value, formatterFn) {
+              useDebugValue: function(value2, formatterFn) {
                 currentHookNameInDev = "useDebugValue";
                 updateHookTypesDev();
                 return mountDebugValue();
               },
-              useDeferredValue: function(value) {
+              useDeferredValue: function(value2) {
                 currentHookNameInDev = "useDeferredValue";
                 updateHookTypesDev();
-                return mountDeferredValue(value);
+                return mountDeferredValue(value2);
               },
               useTransition: function() {
                 currentHookNameInDev = "useTransition";
@@ -14778,15 +14782,15 @@
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
               },
-              useDebugValue: function(value, formatterFn) {
+              useDebugValue: function(value2, formatterFn) {
                 currentHookNameInDev = "useDebugValue";
                 updateHookTypesDev();
                 return updateDebugValue();
               },
-              useDeferredValue: function(value) {
+              useDeferredValue: function(value2) {
                 currentHookNameInDev = "useDeferredValue";
                 updateHookTypesDev();
-                return updateDeferredValue(value);
+                return updateDeferredValue(value2);
               },
               useTransition: function() {
                 currentHookNameInDev = "useTransition";
@@ -14882,15 +14886,15 @@
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
               },
-              useDebugValue: function(value, formatterFn) {
+              useDebugValue: function(value2, formatterFn) {
                 currentHookNameInDev = "useDebugValue";
                 updateHookTypesDev();
                 return updateDebugValue();
               },
-              useDeferredValue: function(value) {
+              useDeferredValue: function(value2) {
                 currentHookNameInDev = "useDeferredValue";
                 updateHookTypesDev();
-                return rerenderDeferredValue(value);
+                return rerenderDeferredValue(value2);
               },
               useTransition: function() {
                 currentHookNameInDev = "useTransition";
@@ -14997,17 +15001,17 @@
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
               },
-              useDebugValue: function(value, formatterFn) {
+              useDebugValue: function(value2, formatterFn) {
                 currentHookNameInDev = "useDebugValue";
                 warnInvalidHookAccess();
                 mountHookTypesDev();
                 return mountDebugValue();
               },
-              useDeferredValue: function(value) {
+              useDeferredValue: function(value2) {
                 currentHookNameInDev = "useDeferredValue";
                 warnInvalidHookAccess();
                 mountHookTypesDev();
-                return mountDeferredValue(value);
+                return mountDeferredValue(value2);
               },
               useTransition: function() {
                 currentHookNameInDev = "useTransition";
@@ -15118,17 +15122,17 @@
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
               },
-              useDebugValue: function(value, formatterFn) {
+              useDebugValue: function(value2, formatterFn) {
                 currentHookNameInDev = "useDebugValue";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
                 return updateDebugValue();
               },
-              useDeferredValue: function(value) {
+              useDeferredValue: function(value2) {
                 currentHookNameInDev = "useDeferredValue";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateDeferredValue(value);
+                return updateDeferredValue(value2);
               },
               useTransition: function() {
                 currentHookNameInDev = "useTransition";
@@ -15239,17 +15243,17 @@
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
               },
-              useDebugValue: function(value, formatterFn) {
+              useDebugValue: function(value2, formatterFn) {
                 currentHookNameInDev = "useDebugValue";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
                 return updateDebugValue();
               },
-              useDeferredValue: function(value) {
+              useDeferredValue: function(value2) {
                 currentHookNameInDev = "useDeferredValue";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return rerenderDeferredValue(value);
+                return rerenderDeferredValue(value2);
               },
               useTransition: function() {
                 currentHookNameInDev = "useTransition";
@@ -15387,17 +15391,17 @@
               child = child.sibling;
             }
           }
-          function createCapturedValueAtFiber(value, source) {
+          function createCapturedValueAtFiber(value2, source) {
             return {
-              value,
+              value: value2,
               source,
               stack: getStackByFiberInDevAndProd(source),
               digest: null
             };
           }
-          function createCapturedValue(value, digest, stack) {
+          function createCapturedValue(value2, digest, stack) {
             return {
-              value,
+              value: value2,
               source: null,
               stack: stack != null ? stack : null,
               digest: digest != null ? digest : null
@@ -15584,15 +15588,15 @@
             suspenseBoundary.lanes = rootRenderLanes;
             return suspenseBoundary;
           }
-          function throwException(root2, returnFiber, sourceFiber, value, rootRenderLanes) {
+          function throwException(root2, returnFiber, sourceFiber, value2, rootRenderLanes) {
             sourceFiber.flags |= Incomplete;
             {
               if (isDevToolsPresent) {
                 restorePendingUpdaters(root2, rootRenderLanes);
               }
             }
-            if (value !== null && typeof value === "object" && typeof value.then === "function") {
-              var wakeable = value;
+            if (value2 !== null && typeof value2 === "object" && typeof value2.then === "function") {
+              var wakeable = value2;
               resetSuspendedComponent(sourceFiber);
               {
                 if (getIsHydrating() && sourceFiber.mode & ConcurrentMode) {
@@ -15615,7 +15619,7 @@
                   return;
                 }
                 var uncaughtSuspenseError = new Error("A component suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix, updates that suspend should be wrapped with startTransition.");
-                value = uncaughtSuspenseError;
+                value2 = uncaughtSuspenseError;
               }
             } else {
               if (getIsHydrating() && sourceFiber.mode & ConcurrentMode) {
@@ -15626,18 +15630,18 @@
                     _suspenseBoundary.flags |= ForceClientRender;
                   }
                   markSuspenseBoundaryShouldCapture(_suspenseBoundary, returnFiber, sourceFiber, root2, rootRenderLanes);
-                  queueHydrationError(createCapturedValueAtFiber(value, sourceFiber));
+                  queueHydrationError(createCapturedValueAtFiber(value2, sourceFiber));
                   return;
                 }
               }
             }
-            value = createCapturedValueAtFiber(value, sourceFiber);
-            renderDidError(value);
+            value2 = createCapturedValueAtFiber(value2, sourceFiber);
+            renderDidError(value2);
             var workInProgress2 = returnFiber;
             do {
               switch (workInProgress2.tag) {
                 case HostRoot: {
-                  var _errorInfo = value;
+                  var _errorInfo = value2;
                   workInProgress2.flags |= ShouldCapture;
                   var lane = pickArbitraryLane(rootRenderLanes);
                   workInProgress2.lanes = mergeLanes(workInProgress2.lanes, lane);
@@ -15646,7 +15650,7 @@
                   return;
                 }
                 case ClassComponent:
-                  var errorInfo = value;
+                  var errorInfo = value2;
                   var ctor = workInProgress2.type;
                   var instance = workInProgress2.stateNode;
                   if ((workInProgress2.flags & DidCapture) === NoFlags && (typeof ctor.getDerivedStateFromError === "function" || instance !== null && typeof instance.componentDidCatch === "function" && !isAlreadyFailedLegacyErrorBoundary(instance))) {
@@ -16290,7 +16294,7 @@
               context = getMaskedContext(workInProgress2, unmaskedContext);
             }
             prepareToReadContext(workInProgress2, renderLanes2);
-            var value;
+            var value2;
             var hasId;
             {
               markComponentRenderStarted(workInProgress2);
@@ -16308,7 +16312,7 @@
               }
               setIsRendering(true);
               ReactCurrentOwner$1.current = workInProgress2;
-              value = renderWithHooks(null, workInProgress2, Component, props, context, renderLanes2);
+              value2 = renderWithHooks(null, workInProgress2, Component, props, context, renderLanes2);
               hasId = checkDidRenderIdHook();
               setIsRendering(false);
             }
@@ -16317,7 +16321,7 @@
             }
             workInProgress2.flags |= PerformedWork;
             {
-              if (typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0) {
+              if (typeof value2 === "object" && value2 !== null && typeof value2.render === "function" && value2.$$typeof === void 0) {
                 var _componentName = getComponentNameFromType(Component) || "Unknown";
                 if (!didWarnAboutModulePatternComponent[_componentName]) {
                   error("The <%s /> component appears to be a function component that returns a class instance. Change %s to a class that extends React.Component instead. If you can't use a class try assigning the prototype on the function as a workaround. `%s.prototype = React.Component.prototype`. Don't use an arrow function since it cannot be called with `new` by React.", _componentName, _componentName, _componentName);
@@ -16325,7 +16329,7 @@
                 }
               }
             }
-            if (typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0) {
+            if (typeof value2 === "object" && value2 !== null && typeof value2.render === "function" && value2.$$typeof === void 0) {
               {
                 var _componentName2 = getComponentNameFromType(Component) || "Unknown";
                 if (!didWarnAboutModulePatternComponent[_componentName2]) {
@@ -16343,9 +16347,9 @@
               } else {
                 hasContext = false;
               }
-              workInProgress2.memoizedState = value.state !== null && value.state !== void 0 ? value.state : null;
+              workInProgress2.memoizedState = value2.state !== null && value2.state !== void 0 ? value2.state : null;
               initializeUpdateQueue(workInProgress2);
-              adoptClassInstance(workInProgress2, value);
+              adoptClassInstance(workInProgress2, value2);
               mountClassInstance(workInProgress2, Component, props, renderLanes2);
               return finishClassComponent(null, workInProgress2, Component, true, hasContext, renderLanes2);
             } else {
@@ -16354,7 +16358,7 @@
                 if (workInProgress2.mode & StrictLegacyMode) {
                   setIsStrictModeForDevtools(true);
                   try {
-                    value = renderWithHooks(null, workInProgress2, Component, props, context, renderLanes2);
+                    value2 = renderWithHooks(null, workInProgress2, Component, props, context, renderLanes2);
                     hasId = checkDidRenderIdHook();
                   } finally {
                     setIsStrictModeForDevtools(false);
@@ -16364,7 +16368,7 @@
               if (getIsHydrating() && hasId) {
                 pushMaterializedTreeId(workInProgress2);
               }
-              reconcileChildren(null, workInProgress2, value, renderLanes2);
+              reconcileChildren(null, workInProgress2, value2, renderLanes2);
               {
                 validateFunctionComponentInDev(workInProgress2, Component);
               }
@@ -16842,8 +16846,8 @@
             {
               if ((revealOrder === "forwards" || revealOrder === "backwards") && children !== void 0 && children !== null && children !== false) {
                 if (isArray(children)) {
-                  for (var i = 0; i < children.length; i++) {
-                    if (!validateSuspenseListNestedChild(children[i], i)) {
+                  for (var i2 = 0; i2 < children.length; i2++) {
+                    if (!validateSuspenseListNestedChild(children[i2], i2)) {
                       return;
                     }
                   }
@@ -19014,8 +19018,8 @@
           function recursivelyTraverseMutationEffects(root2, parentFiber, lanes) {
             var deletions = parentFiber.deletions;
             if (deletions !== null) {
-              for (var i = 0; i < deletions.length; i++) {
-                var childToDelete = deletions[i];
+              for (var i2 = 0; i2 < deletions.length; i2++) {
+                var childToDelete = deletions[i2];
                 try {
                   commitDeletionEffects(root2, parentFiber, childToDelete);
                 } catch (error2) {
@@ -19517,8 +19521,8 @@
               if ((nextEffect.flags & ChildDeletion) !== NoFlags) {
                 var deletions = fiber.deletions;
                 if (deletions !== null) {
-                  for (var i = 0; i < deletions.length; i++) {
-                    var fiberToDelete = deletions[i];
+                  for (var i2 = 0; i2 < deletions.length; i2++) {
+                    var fiberToDelete = deletions[i2];
                     nextEffect = fiberToDelete;
                     commitPassiveUnmountEffectsInsideOfDeletedTree_begin(fiberToDelete, fiber);
                   }
@@ -20133,8 +20137,8 @@
                 if (updateQueue !== null) {
                   var checks = updateQueue.stores;
                   if (checks !== null) {
-                    for (var i = 0; i < checks.length; i++) {
-                      var check = checks[i];
+                    for (var i2 = 0; i2 < checks.length; i2++) {
+                      var check = checks[i2];
                       var getSnapshot = check.getSnapshot;
                       var renderedValue = check.value;
                       try {
@@ -20710,8 +20714,8 @@
             ensureRootIsScheduled(root2, now());
             if (recoverableErrors !== null) {
               var onRecoverableError = root2.onRecoverableError;
-              for (var i = 0; i < recoverableErrors.length; i++) {
-                var recoverableError = recoverableErrors[i];
+              for (var i2 = 0; i2 < recoverableErrors.length; i2++) {
+                var recoverableError = recoverableErrors[i2];
                 var componentStack = recoverableError.stack;
                 var digest = recoverableError.digest;
                 onRecoverableError(recoverableError.value, {
@@ -20805,8 +20809,8 @@
             {
               var profilerEffects = pendingPassiveProfilerEffects;
               pendingPassiveProfilerEffects = [];
-              for (var i = 0; i < profilerEffects.length; i++) {
-                var _fiber = profilerEffects[i];
+              for (var i2 = 0; i2 < profilerEffects.length; i2++) {
+                var _fiber = profilerEffects[i2];
                 commitPassiveEffectDurations(root2, _fiber);
               }
             }
@@ -22235,8 +22239,8 @@
                 warn("copyWithRename() expects paths of the same length");
                 return;
               } else {
-                for (var i = 0; i < newPath.length - 1; i++) {
-                  if (oldPath[i] !== newPath[i]) {
+                for (var i2 = 0; i2 < newPath.length - 1; i2++) {
+                  if (oldPath[i2] !== newPath[i2]) {
                     warn("copyWithRename() expects paths to be the same except for the deepest key");
                     return;
                   }
@@ -22244,17 +22248,17 @@
               }
               return copyWithRenameImpl(obj, oldPath, newPath, 0);
             };
-            var copyWithSetImpl = function(obj, path, index2, value) {
+            var copyWithSetImpl = function(obj, path, index2, value2) {
               if (index2 >= path.length) {
-                return value;
+                return value2;
               }
               var key = path[index2];
               var updated = isArray(obj) ? obj.slice() : assign({}, obj);
-              updated[key] = copyWithSetImpl(obj[key], path, index2 + 1, value);
+              updated[key] = copyWithSetImpl(obj[key], path, index2 + 1, value2);
               return updated;
             };
-            var copyWithSet = function(obj, path, value) {
-              return copyWithSetImpl(obj, path, 0, value);
+            var copyWithSet = function(obj, path, value2) {
+              return copyWithSetImpl(obj, path, 0, value2);
             };
             var findHook = function(fiber, id) {
               var currentHook2 = fiber.memoizedState;
@@ -22264,10 +22268,10 @@
               }
               return currentHook2;
             };
-            overrideHookState = function(fiber, id, path, value) {
+            overrideHookState = function(fiber, id, path, value2) {
               var hook = findHook(fiber, id);
               if (hook !== null) {
-                var newState = copyWithSet(hook.memoizedState, path, value);
+                var newState = copyWithSet(hook.memoizedState, path, value2);
                 hook.memoizedState = newState;
                 hook.baseState = newState;
                 fiber.memoizedProps = assign({}, fiber.memoizedProps);
@@ -22303,8 +22307,8 @@
                 }
               }
             };
-            overrideProps = function(fiber, path, value) {
-              fiber.pendingProps = copyWithSet(fiber.memoizedProps, path, value);
+            overrideProps = function(fiber, path, value2) {
+              fiber.pendingProps = copyWithSet(fiber.memoizedProps, path, value2);
               if (fiber.alternate) {
                 fiber.alternate.pendingProps = fiber.pendingProps;
               }
@@ -22518,8 +22522,8 @@
             markContainerAsRoot(root2.current, container);
             listenToAllSupportedEvents(container);
             if (mutableSources) {
-              for (var i = 0; i < mutableSources.length; i++) {
-                var mutableSource = mutableSources[i];
+              for (var i2 = 0; i2 < mutableSources.length; i2++) {
+                var mutableSource = mutableSources[i2];
                 registerMutableSourceForHydration(root2, mutableSource);
               }
             }
@@ -22825,9 +22829,9 @@
           {
             if (!foundDevTools && canUseDOM && window.top === window.self) {
               if (navigator.userAgent.indexOf("Chrome") > -1 && navigator.userAgent.indexOf("Edge") === -1 || navigator.userAgent.indexOf("Firefox") > -1) {
-                var protocol = window.location.protocol;
-                if (/^(https?|file):$/.test(protocol)) {
-                  console.info("%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools" + (protocol === "file:" ? "\nYou might need to use a local HTTP server (instead of file://): https://reactjs.org/link/react-devtools-faq" : ""), "font-weight:bold");
+                var protocol4 = window.location.protocol;
+                if (/^(https?|file):$/.test(protocol4)) {
+                  console.info("%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools" + (protocol4 === "file:" ? "\nYou might need to use a local HTTP server (instead of file://): https://reactjs.org/link/react-devtools-faq" : ""), "font-weight:bold");
                 }
               }
             }
@@ -22871,8 +22875,2241 @@
 
   // src/components/Chat.tsx
   var import_react = __toESM(require_react());
+
+  // node_modules/engine.io-parser/build/esm/commons.js
+  var PACKET_TYPES = /* @__PURE__ */ Object.create(null);
+  PACKET_TYPES["open"] = "0";
+  PACKET_TYPES["close"] = "1";
+  PACKET_TYPES["ping"] = "2";
+  PACKET_TYPES["pong"] = "3";
+  PACKET_TYPES["message"] = "4";
+  PACKET_TYPES["upgrade"] = "5";
+  PACKET_TYPES["noop"] = "6";
+  var PACKET_TYPES_REVERSE = /* @__PURE__ */ Object.create(null);
+  Object.keys(PACKET_TYPES).forEach((key) => {
+    PACKET_TYPES_REVERSE[PACKET_TYPES[key]] = key;
+  });
+  var ERROR_PACKET = { type: "error", data: "parser error" };
+
+  // node_modules/engine.io-parser/build/esm/encodePacket.browser.js
+  var withNativeBlob = typeof Blob === "function" || typeof Blob !== "undefined" && Object.prototype.toString.call(Blob) === "[object BlobConstructor]";
+  var withNativeArrayBuffer = typeof ArrayBuffer === "function";
+  var isView = (obj) => {
+    return typeof ArrayBuffer.isView === "function" ? ArrayBuffer.isView(obj) : obj && obj.buffer instanceof ArrayBuffer;
+  };
+  var encodePacket = ({ type, data }, supportsBinary, callback) => {
+    if (withNativeBlob && data instanceof Blob) {
+      if (supportsBinary) {
+        return callback(data);
+      } else {
+        return encodeBlobAsBase64(data, callback);
+      }
+    } else if (withNativeArrayBuffer && (data instanceof ArrayBuffer || isView(data))) {
+      if (supportsBinary) {
+        return callback(data);
+      } else {
+        return encodeBlobAsBase64(new Blob([data]), callback);
+      }
+    }
+    return callback(PACKET_TYPES[type] + (data || ""));
+  };
+  var encodeBlobAsBase64 = (data, callback) => {
+    const fileReader = new FileReader();
+    fileReader.onload = function() {
+      const content = fileReader.result.split(",")[1];
+      callback("b" + content);
+    };
+    return fileReader.readAsDataURL(data);
+  };
+  var encodePacket_browser_default = encodePacket;
+
+  // node_modules/engine.io-parser/build/esm/contrib/base64-arraybuffer.js
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  var lookup = typeof Uint8Array === "undefined" ? [] : new Uint8Array(256);
+  for (let i2 = 0; i2 < chars.length; i2++) {
+    lookup[chars.charCodeAt(i2)] = i2;
+  }
+  var decode = (base64) => {
+    let bufferLength = base64.length * 0.75, len = base64.length, i2, p = 0, encoded1, encoded2, encoded3, encoded4;
+    if (base64[base64.length - 1] === "=") {
+      bufferLength--;
+      if (base64[base64.length - 2] === "=") {
+        bufferLength--;
+      }
+    }
+    const arraybuffer = new ArrayBuffer(bufferLength), bytes = new Uint8Array(arraybuffer);
+    for (i2 = 0; i2 < len; i2 += 4) {
+      encoded1 = lookup[base64.charCodeAt(i2)];
+      encoded2 = lookup[base64.charCodeAt(i2 + 1)];
+      encoded3 = lookup[base64.charCodeAt(i2 + 2)];
+      encoded4 = lookup[base64.charCodeAt(i2 + 3)];
+      bytes[p++] = encoded1 << 2 | encoded2 >> 4;
+      bytes[p++] = (encoded2 & 15) << 4 | encoded3 >> 2;
+      bytes[p++] = (encoded3 & 3) << 6 | encoded4 & 63;
+    }
+    return arraybuffer;
+  };
+
+  // node_modules/engine.io-parser/build/esm/decodePacket.browser.js
+  var withNativeArrayBuffer2 = typeof ArrayBuffer === "function";
+  var decodePacket = (encodedPacket, binaryType) => {
+    if (typeof encodedPacket !== "string") {
+      return {
+        type: "message",
+        data: mapBinary(encodedPacket, binaryType)
+      };
+    }
+    const type = encodedPacket.charAt(0);
+    if (type === "b") {
+      return {
+        type: "message",
+        data: decodeBase64Packet(encodedPacket.substring(1), binaryType)
+      };
+    }
+    const packetType = PACKET_TYPES_REVERSE[type];
+    if (!packetType) {
+      return ERROR_PACKET;
+    }
+    return encodedPacket.length > 1 ? {
+      type: PACKET_TYPES_REVERSE[type],
+      data: encodedPacket.substring(1)
+    } : {
+      type: PACKET_TYPES_REVERSE[type]
+    };
+  };
+  var decodeBase64Packet = (data, binaryType) => {
+    if (withNativeArrayBuffer2) {
+      const decoded = decode(data);
+      return mapBinary(decoded, binaryType);
+    } else {
+      return { base64: true, data };
+    }
+  };
+  var mapBinary = (data, binaryType) => {
+    switch (binaryType) {
+      case "blob":
+        return data instanceof ArrayBuffer ? new Blob([data]) : data;
+      case "arraybuffer":
+      default:
+        return data;
+    }
+  };
+  var decodePacket_browser_default = decodePacket;
+
+  // node_modules/engine.io-parser/build/esm/index.js
+  var SEPARATOR = String.fromCharCode(30);
+  var encodePayload = (packets, callback) => {
+    const length2 = packets.length;
+    const encodedPackets = new Array(length2);
+    let count = 0;
+    packets.forEach((packet, i2) => {
+      encodePacket_browser_default(packet, false, (encodedPacket) => {
+        encodedPackets[i2] = encodedPacket;
+        if (++count === length2) {
+          callback(encodedPackets.join(SEPARATOR));
+        }
+      });
+    });
+  };
+  var decodePayload = (encodedPayload, binaryType) => {
+    const encodedPackets = encodedPayload.split(SEPARATOR);
+    const packets = [];
+    for (let i2 = 0; i2 < encodedPackets.length; i2++) {
+      const decodedPacket = decodePacket_browser_default(encodedPackets[i2], binaryType);
+      packets.push(decodedPacket);
+      if (decodedPacket.type === "error") {
+        break;
+      }
+    }
+    return packets;
+  };
+  var protocol = 4;
+
+  // node_modules/@socket.io/component-emitter/index.mjs
+  function Emitter(obj) {
+    if (obj)
+      return mixin(obj);
+  }
+  function mixin(obj) {
+    for (var key in Emitter.prototype) {
+      obj[key] = Emitter.prototype[key];
+    }
+    return obj;
+  }
+  Emitter.prototype.on = Emitter.prototype.addEventListener = function(event, fn) {
+    this._callbacks = this._callbacks || {};
+    (this._callbacks["$" + event] = this._callbacks["$" + event] || []).push(fn);
+    return this;
+  };
+  Emitter.prototype.once = function(event, fn) {
+    function on2() {
+      this.off(event, on2);
+      fn.apply(this, arguments);
+    }
+    on2.fn = fn;
+    this.on(event, on2);
+    return this;
+  };
+  Emitter.prototype.off = Emitter.prototype.removeListener = Emitter.prototype.removeAllListeners = Emitter.prototype.removeEventListener = function(event, fn) {
+    this._callbacks = this._callbacks || {};
+    if (0 == arguments.length) {
+      this._callbacks = {};
+      return this;
+    }
+    var callbacks = this._callbacks["$" + event];
+    if (!callbacks)
+      return this;
+    if (1 == arguments.length) {
+      delete this._callbacks["$" + event];
+      return this;
+    }
+    var cb;
+    for (var i2 = 0; i2 < callbacks.length; i2++) {
+      cb = callbacks[i2];
+      if (cb === fn || cb.fn === fn) {
+        callbacks.splice(i2, 1);
+        break;
+      }
+    }
+    if (callbacks.length === 0) {
+      delete this._callbacks["$" + event];
+    }
+    return this;
+  };
+  Emitter.prototype.emit = function(event) {
+    this._callbacks = this._callbacks || {};
+    var args = new Array(arguments.length - 1), callbacks = this._callbacks["$" + event];
+    for (var i2 = 1; i2 < arguments.length; i2++) {
+      args[i2 - 1] = arguments[i2];
+    }
+    if (callbacks) {
+      callbacks = callbacks.slice(0);
+      for (var i2 = 0, len = callbacks.length; i2 < len; ++i2) {
+        callbacks[i2].apply(this, args);
+      }
+    }
+    return this;
+  };
+  Emitter.prototype.emitReserved = Emitter.prototype.emit;
+  Emitter.prototype.listeners = function(event) {
+    this._callbacks = this._callbacks || {};
+    return this._callbacks["$" + event] || [];
+  };
+  Emitter.prototype.hasListeners = function(event) {
+    return !!this.listeners(event).length;
+  };
+
+  // node_modules/engine.io-client/build/esm/globalThis.browser.js
+  var globalThisShim = (() => {
+    if (typeof self !== "undefined") {
+      return self;
+    } else if (typeof window !== "undefined") {
+      return window;
+    } else {
+      return Function("return this")();
+    }
+  })();
+
+  // node_modules/engine.io-client/build/esm/util.js
+  function pick(obj, ...attr) {
+    return attr.reduce((acc, k) => {
+      if (obj.hasOwnProperty(k)) {
+        acc[k] = obj[k];
+      }
+      return acc;
+    }, {});
+  }
+  var NATIVE_SET_TIMEOUT = setTimeout;
+  var NATIVE_CLEAR_TIMEOUT = clearTimeout;
+  function installTimerFunctions(obj, opts) {
+    if (opts.useNativeTimers) {
+      obj.setTimeoutFn = NATIVE_SET_TIMEOUT.bind(globalThisShim);
+      obj.clearTimeoutFn = NATIVE_CLEAR_TIMEOUT.bind(globalThisShim);
+    } else {
+      obj.setTimeoutFn = setTimeout.bind(globalThisShim);
+      obj.clearTimeoutFn = clearTimeout.bind(globalThisShim);
+    }
+  }
+  var BASE64_OVERHEAD = 1.33;
+  function byteLength(obj) {
+    if (typeof obj === "string") {
+      return utf8Length(obj);
+    }
+    return Math.ceil((obj.byteLength || obj.size) * BASE64_OVERHEAD);
+  }
+  function utf8Length(str) {
+    let c = 0, length2 = 0;
+    for (let i2 = 0, l = str.length; i2 < l; i2++) {
+      c = str.charCodeAt(i2);
+      if (c < 128) {
+        length2 += 1;
+      } else if (c < 2048) {
+        length2 += 2;
+      } else if (c < 55296 || c >= 57344) {
+        length2 += 3;
+      } else {
+        i2++;
+        length2 += 4;
+      }
+    }
+    return length2;
+  }
+
+  // node_modules/engine.io-client/build/esm/transport.js
+  var TransportError = class extends Error {
+    constructor(reason, description, context) {
+      super(reason);
+      this.description = description;
+      this.context = context;
+      this.type = "TransportError";
+    }
+  };
+  var Transport = class extends Emitter {
+    constructor(opts) {
+      super();
+      this.writable = false;
+      installTimerFunctions(this, opts);
+      this.opts = opts;
+      this.query = opts.query;
+      this.readyState = "";
+      this.socket = opts.socket;
+    }
+    onError(reason, description, context) {
+      super.emitReserved("error", new TransportError(reason, description, context));
+      return this;
+    }
+    open() {
+      if ("closed" === this.readyState || "" === this.readyState) {
+        this.readyState = "opening";
+        this.doOpen();
+      }
+      return this;
+    }
+    close() {
+      if ("opening" === this.readyState || "open" === this.readyState) {
+        this.doClose();
+        this.onClose();
+      }
+      return this;
+    }
+    send(packets) {
+      if ("open" === this.readyState) {
+        this.write(packets);
+      } else {
+      }
+    }
+    onOpen() {
+      this.readyState = "open";
+      this.writable = true;
+      super.emitReserved("open");
+    }
+    onData(data) {
+      const packet = decodePacket_browser_default(data, this.socket.binaryType);
+      this.onPacket(packet);
+    }
+    onPacket(packet) {
+      super.emitReserved("packet", packet);
+    }
+    onClose(details) {
+      this.readyState = "closed";
+      super.emitReserved("close", details);
+    }
+  };
+
+  // node_modules/engine.io-client/build/esm/contrib/yeast.js
+  var alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_".split("");
+  var length = 64;
+  var map = {};
+  var seed = 0;
+  var i = 0;
+  var prev;
+  function encode(num) {
+    let encoded = "";
+    do {
+      encoded = alphabet[num % length] + encoded;
+      num = Math.floor(num / length);
+    } while (num > 0);
+    return encoded;
+  }
+  function yeast() {
+    const now = encode(+new Date());
+    if (now !== prev)
+      return seed = 0, prev = now;
+    return now + "." + encode(seed++);
+  }
+  for (; i < length; i++)
+    map[alphabet[i]] = i;
+
+  // node_modules/engine.io-client/build/esm/contrib/parseqs.js
+  function encode2(obj) {
+    let str = "";
+    for (let i2 in obj) {
+      if (obj.hasOwnProperty(i2)) {
+        if (str.length)
+          str += "&";
+        str += encodeURIComponent(i2) + "=" + encodeURIComponent(obj[i2]);
+      }
+    }
+    return str;
+  }
+  function decode2(qs) {
+    let qry = {};
+    let pairs = qs.split("&");
+    for (let i2 = 0, l = pairs.length; i2 < l; i2++) {
+      let pair = pairs[i2].split("=");
+      qry[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+    }
+    return qry;
+  }
+
+  // node_modules/engine.io-client/build/esm/contrib/has-cors.js
+  var value = false;
+  try {
+    value = typeof XMLHttpRequest !== "undefined" && "withCredentials" in new XMLHttpRequest();
+  } catch (err) {
+  }
+  var hasCORS = value;
+
+  // node_modules/engine.io-client/build/esm/transports/xmlhttprequest.browser.js
+  function XHR(opts) {
+    const xdomain = opts.xdomain;
+    try {
+      if ("undefined" !== typeof XMLHttpRequest && (!xdomain || hasCORS)) {
+        return new XMLHttpRequest();
+      }
+    } catch (e) {
+    }
+    if (!xdomain) {
+      try {
+        return new globalThisShim[["Active"].concat("Object").join("X")]("Microsoft.XMLHTTP");
+      } catch (e) {
+      }
+    }
+  }
+
+  // node_modules/engine.io-client/build/esm/transports/polling.js
+  function empty() {
+  }
+  var hasXHR2 = function() {
+    const xhr = new XHR({
+      xdomain: false
+    });
+    return null != xhr.responseType;
+  }();
+  var Polling = class extends Transport {
+    constructor(opts) {
+      super(opts);
+      this.polling = false;
+      if (typeof location !== "undefined") {
+        const isSSL = "https:" === location.protocol;
+        let port = location.port;
+        if (!port) {
+          port = isSSL ? "443" : "80";
+        }
+        this.xd = typeof location !== "undefined" && opts.hostname !== location.hostname || port !== opts.port;
+        this.xs = opts.secure !== isSSL;
+      }
+      const forceBase64 = opts && opts.forceBase64;
+      this.supportsBinary = hasXHR2 && !forceBase64;
+    }
+    get name() {
+      return "polling";
+    }
+    doOpen() {
+      this.poll();
+    }
+    pause(onPause) {
+      this.readyState = "pausing";
+      const pause = () => {
+        this.readyState = "paused";
+        onPause();
+      };
+      if (this.polling || !this.writable) {
+        let total = 0;
+        if (this.polling) {
+          total++;
+          this.once("pollComplete", function() {
+            --total || pause();
+          });
+        }
+        if (!this.writable) {
+          total++;
+          this.once("drain", function() {
+            --total || pause();
+          });
+        }
+      } else {
+        pause();
+      }
+    }
+    poll() {
+      this.polling = true;
+      this.doPoll();
+      this.emitReserved("poll");
+    }
+    onData(data) {
+      const callback = (packet) => {
+        if ("opening" === this.readyState && packet.type === "open") {
+          this.onOpen();
+        }
+        if ("close" === packet.type) {
+          this.onClose({ description: "transport closed by the server" });
+          return false;
+        }
+        this.onPacket(packet);
+      };
+      decodePayload(data, this.socket.binaryType).forEach(callback);
+      if ("closed" !== this.readyState) {
+        this.polling = false;
+        this.emitReserved("pollComplete");
+        if ("open" === this.readyState) {
+          this.poll();
+        } else {
+        }
+      }
+    }
+    doClose() {
+      const close = () => {
+        this.write([{ type: "close" }]);
+      };
+      if ("open" === this.readyState) {
+        close();
+      } else {
+        this.once("open", close);
+      }
+    }
+    write(packets) {
+      this.writable = false;
+      encodePayload(packets, (data) => {
+        this.doWrite(data, () => {
+          this.writable = true;
+          this.emitReserved("drain");
+        });
+      });
+    }
+    uri() {
+      let query = this.query || {};
+      const schema = this.opts.secure ? "https" : "http";
+      let port = "";
+      if (false !== this.opts.timestampRequests) {
+        query[this.opts.timestampParam] = yeast();
+      }
+      if (!this.supportsBinary && !query.sid) {
+        query.b64 = 1;
+      }
+      if (this.opts.port && ("https" === schema && Number(this.opts.port) !== 443 || "http" === schema && Number(this.opts.port) !== 80)) {
+        port = ":" + this.opts.port;
+      }
+      const encodedQuery = encode2(query);
+      const ipv6 = this.opts.hostname.indexOf(":") !== -1;
+      return schema + "://" + (ipv6 ? "[" + this.opts.hostname + "]" : this.opts.hostname) + port + this.opts.path + (encodedQuery.length ? "?" + encodedQuery : "");
+    }
+    request(opts = {}) {
+      Object.assign(opts, { xd: this.xd, xs: this.xs }, this.opts);
+      return new Request(this.uri(), opts);
+    }
+    doWrite(data, fn) {
+      const req = this.request({
+        method: "POST",
+        data
+      });
+      req.on("success", fn);
+      req.on("error", (xhrStatus, context) => {
+        this.onError("xhr post error", xhrStatus, context);
+      });
+    }
+    doPoll() {
+      const req = this.request();
+      req.on("data", this.onData.bind(this));
+      req.on("error", (xhrStatus, context) => {
+        this.onError("xhr poll error", xhrStatus, context);
+      });
+      this.pollXhr = req;
+    }
+  };
+  var Request = class extends Emitter {
+    constructor(uri, opts) {
+      super();
+      installTimerFunctions(this, opts);
+      this.opts = opts;
+      this.method = opts.method || "GET";
+      this.uri = uri;
+      this.async = false !== opts.async;
+      this.data = void 0 !== opts.data ? opts.data : null;
+      this.create();
+    }
+    create() {
+      const opts = pick(this.opts, "agent", "pfx", "key", "passphrase", "cert", "ca", "ciphers", "rejectUnauthorized", "autoUnref");
+      opts.xdomain = !!this.opts.xd;
+      opts.xscheme = !!this.opts.xs;
+      const xhr = this.xhr = new XHR(opts);
+      try {
+        xhr.open(this.method, this.uri, this.async);
+        try {
+          if (this.opts.extraHeaders) {
+            xhr.setDisableHeaderCheck && xhr.setDisableHeaderCheck(true);
+            for (let i2 in this.opts.extraHeaders) {
+              if (this.opts.extraHeaders.hasOwnProperty(i2)) {
+                xhr.setRequestHeader(i2, this.opts.extraHeaders[i2]);
+              }
+            }
+          }
+        } catch (e) {
+        }
+        if ("POST" === this.method) {
+          try {
+            xhr.setRequestHeader("Content-type", "text/plain;charset=UTF-8");
+          } catch (e) {
+          }
+        }
+        try {
+          xhr.setRequestHeader("Accept", "*/*");
+        } catch (e) {
+        }
+        if ("withCredentials" in xhr) {
+          xhr.withCredentials = this.opts.withCredentials;
+        }
+        if (this.opts.requestTimeout) {
+          xhr.timeout = this.opts.requestTimeout;
+        }
+        xhr.onreadystatechange = () => {
+          if (4 !== xhr.readyState)
+            return;
+          if (200 === xhr.status || 1223 === xhr.status) {
+            this.onLoad();
+          } else {
+            this.setTimeoutFn(() => {
+              this.onError(typeof xhr.status === "number" ? xhr.status : 0);
+            }, 0);
+          }
+        };
+        xhr.send(this.data);
+      } catch (e) {
+        this.setTimeoutFn(() => {
+          this.onError(e);
+        }, 0);
+        return;
+      }
+      if (typeof document !== "undefined") {
+        this.index = Request.requestsCount++;
+        Request.requests[this.index] = this;
+      }
+    }
+    onError(err) {
+      this.emitReserved("error", err, this.xhr);
+      this.cleanup(true);
+    }
+    cleanup(fromError) {
+      if ("undefined" === typeof this.xhr || null === this.xhr) {
+        return;
+      }
+      this.xhr.onreadystatechange = empty;
+      if (fromError) {
+        try {
+          this.xhr.abort();
+        } catch (e) {
+        }
+      }
+      if (typeof document !== "undefined") {
+        delete Request.requests[this.index];
+      }
+      this.xhr = null;
+    }
+    onLoad() {
+      const data = this.xhr.responseText;
+      if (data !== null) {
+        this.emitReserved("data", data);
+        this.emitReserved("success");
+        this.cleanup();
+      }
+    }
+    abort() {
+      this.cleanup();
+    }
+  };
+  Request.requestsCount = 0;
+  Request.requests = {};
+  if (typeof document !== "undefined") {
+    if (typeof attachEvent === "function") {
+      attachEvent("onunload", unloadHandler);
+    } else if (typeof addEventListener === "function") {
+      const terminationEvent = "onpagehide" in globalThisShim ? "pagehide" : "unload";
+      addEventListener(terminationEvent, unloadHandler, false);
+    }
+  }
+  function unloadHandler() {
+    for (let i2 in Request.requests) {
+      if (Request.requests.hasOwnProperty(i2)) {
+        Request.requests[i2].abort();
+      }
+    }
+  }
+
+  // node_modules/engine.io-client/build/esm/transports/websocket-constructor.browser.js
+  var nextTick = (() => {
+    const isPromiseAvailable = typeof Promise === "function" && typeof Promise.resolve === "function";
+    if (isPromiseAvailable) {
+      return (cb) => Promise.resolve().then(cb);
+    } else {
+      return (cb, setTimeoutFn) => setTimeoutFn(cb, 0);
+    }
+  })();
+  var WebSocket = globalThisShim.WebSocket || globalThisShim.MozWebSocket;
+  var usingBrowserWebSocket = true;
+  var defaultBinaryType = "arraybuffer";
+
+  // node_modules/engine.io-client/build/esm/transports/websocket.js
+  var isReactNative = typeof navigator !== "undefined" && typeof navigator.product === "string" && navigator.product.toLowerCase() === "reactnative";
+  var WS = class extends Transport {
+    constructor(opts) {
+      super(opts);
+      this.supportsBinary = !opts.forceBase64;
+    }
+    get name() {
+      return "websocket";
+    }
+    doOpen() {
+      if (!this.check()) {
+        return;
+      }
+      const uri = this.uri();
+      const protocols = this.opts.protocols;
+      const opts = isReactNative ? {} : pick(this.opts, "agent", "perMessageDeflate", "pfx", "key", "passphrase", "cert", "ca", "ciphers", "rejectUnauthorized", "localAddress", "protocolVersion", "origin", "maxPayload", "family", "checkServerIdentity");
+      if (this.opts.extraHeaders) {
+        opts.headers = this.opts.extraHeaders;
+      }
+      try {
+        this.ws = usingBrowserWebSocket && !isReactNative ? protocols ? new WebSocket(uri, protocols) : new WebSocket(uri) : new WebSocket(uri, protocols, opts);
+      } catch (err) {
+        return this.emitReserved("error", err);
+      }
+      this.ws.binaryType = this.socket.binaryType || defaultBinaryType;
+      this.addEventListeners();
+    }
+    addEventListeners() {
+      this.ws.onopen = () => {
+        if (this.opts.autoUnref) {
+          this.ws._socket.unref();
+        }
+        this.onOpen();
+      };
+      this.ws.onclose = (closeEvent) => this.onClose({
+        description: "websocket connection closed",
+        context: closeEvent
+      });
+      this.ws.onmessage = (ev) => this.onData(ev.data);
+      this.ws.onerror = (e) => this.onError("websocket error", e);
+    }
+    write(packets) {
+      this.writable = false;
+      for (let i2 = 0; i2 < packets.length; i2++) {
+        const packet = packets[i2];
+        const lastPacket = i2 === packets.length - 1;
+        encodePacket_browser_default(packet, this.supportsBinary, (data) => {
+          const opts = {};
+          if (!usingBrowserWebSocket) {
+            if (packet.options) {
+              opts.compress = packet.options.compress;
+            }
+            if (this.opts.perMessageDeflate) {
+              const len = "string" === typeof data ? Buffer.byteLength(data) : data.length;
+              if (len < this.opts.perMessageDeflate.threshold) {
+                opts.compress = false;
+              }
+            }
+          }
+          try {
+            if (usingBrowserWebSocket) {
+              this.ws.send(data);
+            } else {
+              this.ws.send(data, opts);
+            }
+          } catch (e) {
+          }
+          if (lastPacket) {
+            nextTick(() => {
+              this.writable = true;
+              this.emitReserved("drain");
+            }, this.setTimeoutFn);
+          }
+        });
+      }
+    }
+    doClose() {
+      if (typeof this.ws !== "undefined") {
+        this.ws.close();
+        this.ws = null;
+      }
+    }
+    uri() {
+      let query = this.query || {};
+      const schema = this.opts.secure ? "wss" : "ws";
+      let port = "";
+      if (this.opts.port && ("wss" === schema && Number(this.opts.port) !== 443 || "ws" === schema && Number(this.opts.port) !== 80)) {
+        port = ":" + this.opts.port;
+      }
+      if (this.opts.timestampRequests) {
+        query[this.opts.timestampParam] = yeast();
+      }
+      if (!this.supportsBinary) {
+        query.b64 = 1;
+      }
+      const encodedQuery = encode2(query);
+      const ipv6 = this.opts.hostname.indexOf(":") !== -1;
+      return schema + "://" + (ipv6 ? "[" + this.opts.hostname + "]" : this.opts.hostname) + port + this.opts.path + (encodedQuery.length ? "?" + encodedQuery : "");
+    }
+    check() {
+      return !!WebSocket;
+    }
+  };
+
+  // node_modules/engine.io-client/build/esm/transports/index.js
+  var transports = {
+    websocket: WS,
+    polling: Polling
+  };
+
+  // node_modules/engine.io-client/build/esm/contrib/parseuri.js
+  var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+  var parts = [
+    "source",
+    "protocol",
+    "authority",
+    "userInfo",
+    "user",
+    "password",
+    "host",
+    "port",
+    "relative",
+    "path",
+    "directory",
+    "file",
+    "query",
+    "anchor"
+  ];
+  function parse(str) {
+    const src = str, b = str.indexOf("["), e = str.indexOf("]");
+    if (b != -1 && e != -1) {
+      str = str.substring(0, b) + str.substring(b, e).replace(/:/g, ";") + str.substring(e, str.length);
+    }
+    let m = re.exec(str || ""), uri = {}, i2 = 14;
+    while (i2--) {
+      uri[parts[i2]] = m[i2] || "";
+    }
+    if (b != -1 && e != -1) {
+      uri.source = src;
+      uri.host = uri.host.substring(1, uri.host.length - 1).replace(/;/g, ":");
+      uri.authority = uri.authority.replace("[", "").replace("]", "").replace(/;/g, ":");
+      uri.ipv6uri = true;
+    }
+    uri.pathNames = pathNames(uri, uri["path"]);
+    uri.queryKey = queryKey(uri, uri["query"]);
+    return uri;
+  }
+  function pathNames(obj, path) {
+    const regx = /\/{2,9}/g, names = path.replace(regx, "/").split("/");
+    if (path.substr(0, 1) == "/" || path.length === 0) {
+      names.splice(0, 1);
+    }
+    if (path.substr(path.length - 1, 1) == "/") {
+      names.splice(names.length - 1, 1);
+    }
+    return names;
+  }
+  function queryKey(uri, query) {
+    const data = {};
+    query.replace(/(?:^|&)([^&=]*)=?([^&]*)/g, function($0, $1, $2) {
+      if ($1) {
+        data[$1] = $2;
+      }
+    });
+    return data;
+  }
+
+  // node_modules/engine.io-client/build/esm/socket.js
+  var Socket = class extends Emitter {
+    constructor(uri, opts = {}) {
+      super();
+      if (uri && "object" === typeof uri) {
+        opts = uri;
+        uri = null;
+      }
+      if (uri) {
+        uri = parse(uri);
+        opts.hostname = uri.host;
+        opts.secure = uri.protocol === "https" || uri.protocol === "wss";
+        opts.port = uri.port;
+        if (uri.query)
+          opts.query = uri.query;
+      } else if (opts.host) {
+        opts.hostname = parse(opts.host).host;
+      }
+      installTimerFunctions(this, opts);
+      this.secure = null != opts.secure ? opts.secure : typeof location !== "undefined" && "https:" === location.protocol;
+      if (opts.hostname && !opts.port) {
+        opts.port = this.secure ? "443" : "80";
+      }
+      this.hostname = opts.hostname || (typeof location !== "undefined" ? location.hostname : "localhost");
+      this.port = opts.port || (typeof location !== "undefined" && location.port ? location.port : this.secure ? "443" : "80");
+      this.transports = opts.transports || ["polling", "websocket"];
+      this.readyState = "";
+      this.writeBuffer = [];
+      this.prevBufferLen = 0;
+      this.opts = Object.assign({
+        path: "/engine.io",
+        agent: false,
+        withCredentials: false,
+        upgrade: true,
+        timestampParam: "t",
+        rememberUpgrade: false,
+        rejectUnauthorized: true,
+        perMessageDeflate: {
+          threshold: 1024
+        },
+        transportOptions: {},
+        closeOnBeforeunload: true
+      }, opts);
+      this.opts.path = this.opts.path.replace(/\/$/, "") + "/";
+      if (typeof this.opts.query === "string") {
+        this.opts.query = decode2(this.opts.query);
+      }
+      this.id = null;
+      this.upgrades = null;
+      this.pingInterval = null;
+      this.pingTimeout = null;
+      this.pingTimeoutTimer = null;
+      if (typeof addEventListener === "function") {
+        if (this.opts.closeOnBeforeunload) {
+          addEventListener("beforeunload", () => {
+            if (this.transport) {
+              this.transport.removeAllListeners();
+              this.transport.close();
+            }
+          }, false);
+        }
+        if (this.hostname !== "localhost") {
+          this.offlineEventListener = () => {
+            this.onClose("transport close", {
+              description: "network connection lost"
+            });
+          };
+          addEventListener("offline", this.offlineEventListener, false);
+        }
+      }
+      this.open();
+    }
+    createTransport(name) {
+      const query = Object.assign({}, this.opts.query);
+      query.EIO = protocol;
+      query.transport = name;
+      if (this.id)
+        query.sid = this.id;
+      const opts = Object.assign({}, this.opts.transportOptions[name], this.opts, {
+        query,
+        socket: this,
+        hostname: this.hostname,
+        secure: this.secure,
+        port: this.port
+      });
+      return new transports[name](opts);
+    }
+    open() {
+      let transport;
+      if (this.opts.rememberUpgrade && Socket.priorWebsocketSuccess && this.transports.indexOf("websocket") !== -1) {
+        transport = "websocket";
+      } else if (0 === this.transports.length) {
+        this.setTimeoutFn(() => {
+          this.emitReserved("error", "No transports available");
+        }, 0);
+        return;
+      } else {
+        transport = this.transports[0];
+      }
+      this.readyState = "opening";
+      try {
+        transport = this.createTransport(transport);
+      } catch (e) {
+        this.transports.shift();
+        this.open();
+        return;
+      }
+      transport.open();
+      this.setTransport(transport);
+    }
+    setTransport(transport) {
+      if (this.transport) {
+        this.transport.removeAllListeners();
+      }
+      this.transport = transport;
+      transport.on("drain", this.onDrain.bind(this)).on("packet", this.onPacket.bind(this)).on("error", this.onError.bind(this)).on("close", (reason) => this.onClose("transport close", reason));
+    }
+    probe(name) {
+      let transport = this.createTransport(name);
+      let failed = false;
+      Socket.priorWebsocketSuccess = false;
+      const onTransportOpen = () => {
+        if (failed)
+          return;
+        transport.send([{ type: "ping", data: "probe" }]);
+        transport.once("packet", (msg) => {
+          if (failed)
+            return;
+          if ("pong" === msg.type && "probe" === msg.data) {
+            this.upgrading = true;
+            this.emitReserved("upgrading", transport);
+            if (!transport)
+              return;
+            Socket.priorWebsocketSuccess = "websocket" === transport.name;
+            this.transport.pause(() => {
+              if (failed)
+                return;
+              if ("closed" === this.readyState)
+                return;
+              cleanup();
+              this.setTransport(transport);
+              transport.send([{ type: "upgrade" }]);
+              this.emitReserved("upgrade", transport);
+              transport = null;
+              this.upgrading = false;
+              this.flush();
+            });
+          } else {
+            const err = new Error("probe error");
+            err.transport = transport.name;
+            this.emitReserved("upgradeError", err);
+          }
+        });
+      };
+      function freezeTransport() {
+        if (failed)
+          return;
+        failed = true;
+        cleanup();
+        transport.close();
+        transport = null;
+      }
+      const onerror = (err) => {
+        const error = new Error("probe error: " + err);
+        error.transport = transport.name;
+        freezeTransport();
+        this.emitReserved("upgradeError", error);
+      };
+      function onTransportClose() {
+        onerror("transport closed");
+      }
+      function onclose() {
+        onerror("socket closed");
+      }
+      function onupgrade(to) {
+        if (transport && to.name !== transport.name) {
+          freezeTransport();
+        }
+      }
+      const cleanup = () => {
+        transport.removeListener("open", onTransportOpen);
+        transport.removeListener("error", onerror);
+        transport.removeListener("close", onTransportClose);
+        this.off("close", onclose);
+        this.off("upgrading", onupgrade);
+      };
+      transport.once("open", onTransportOpen);
+      transport.once("error", onerror);
+      transport.once("close", onTransportClose);
+      this.once("close", onclose);
+      this.once("upgrading", onupgrade);
+      transport.open();
+    }
+    onOpen() {
+      this.readyState = "open";
+      Socket.priorWebsocketSuccess = "websocket" === this.transport.name;
+      this.emitReserved("open");
+      this.flush();
+      if ("open" === this.readyState && this.opts.upgrade && this.transport.pause) {
+        let i2 = 0;
+        const l = this.upgrades.length;
+        for (; i2 < l; i2++) {
+          this.probe(this.upgrades[i2]);
+        }
+      }
+    }
+    onPacket(packet) {
+      if ("opening" === this.readyState || "open" === this.readyState || "closing" === this.readyState) {
+        this.emitReserved("packet", packet);
+        this.emitReserved("heartbeat");
+        switch (packet.type) {
+          case "open":
+            this.onHandshake(JSON.parse(packet.data));
+            break;
+          case "ping":
+            this.resetPingTimeout();
+            this.sendPacket("pong");
+            this.emitReserved("ping");
+            this.emitReserved("pong");
+            break;
+          case "error":
+            const err = new Error("server error");
+            err.code = packet.data;
+            this.onError(err);
+            break;
+          case "message":
+            this.emitReserved("data", packet.data);
+            this.emitReserved("message", packet.data);
+            break;
+        }
+      } else {
+      }
+    }
+    onHandshake(data) {
+      this.emitReserved("handshake", data);
+      this.id = data.sid;
+      this.transport.query.sid = data.sid;
+      this.upgrades = this.filterUpgrades(data.upgrades);
+      this.pingInterval = data.pingInterval;
+      this.pingTimeout = data.pingTimeout;
+      this.maxPayload = data.maxPayload;
+      this.onOpen();
+      if ("closed" === this.readyState)
+        return;
+      this.resetPingTimeout();
+    }
+    resetPingTimeout() {
+      this.clearTimeoutFn(this.pingTimeoutTimer);
+      this.pingTimeoutTimer = this.setTimeoutFn(() => {
+        this.onClose("ping timeout");
+      }, this.pingInterval + this.pingTimeout);
+      if (this.opts.autoUnref) {
+        this.pingTimeoutTimer.unref();
+      }
+    }
+    onDrain() {
+      this.writeBuffer.splice(0, this.prevBufferLen);
+      this.prevBufferLen = 0;
+      if (0 === this.writeBuffer.length) {
+        this.emitReserved("drain");
+      } else {
+        this.flush();
+      }
+    }
+    flush() {
+      if ("closed" !== this.readyState && this.transport.writable && !this.upgrading && this.writeBuffer.length) {
+        const packets = this.getWritablePackets();
+        this.transport.send(packets);
+        this.prevBufferLen = packets.length;
+        this.emitReserved("flush");
+      }
+    }
+    getWritablePackets() {
+      const shouldCheckPayloadSize = this.maxPayload && this.transport.name === "polling" && this.writeBuffer.length > 1;
+      if (!shouldCheckPayloadSize) {
+        return this.writeBuffer;
+      }
+      let payloadSize = 1;
+      for (let i2 = 0; i2 < this.writeBuffer.length; i2++) {
+        const data = this.writeBuffer[i2].data;
+        if (data) {
+          payloadSize += byteLength(data);
+        }
+        if (i2 > 0 && payloadSize > this.maxPayload) {
+          return this.writeBuffer.slice(0, i2);
+        }
+        payloadSize += 2;
+      }
+      return this.writeBuffer;
+    }
+    write(msg, options, fn) {
+      this.sendPacket("message", msg, options, fn);
+      return this;
+    }
+    send(msg, options, fn) {
+      this.sendPacket("message", msg, options, fn);
+      return this;
+    }
+    sendPacket(type, data, options, fn) {
+      if ("function" === typeof data) {
+        fn = data;
+        data = void 0;
+      }
+      if ("function" === typeof options) {
+        fn = options;
+        options = null;
+      }
+      if ("closing" === this.readyState || "closed" === this.readyState) {
+        return;
+      }
+      options = options || {};
+      options.compress = false !== options.compress;
+      const packet = {
+        type,
+        data,
+        options
+      };
+      this.emitReserved("packetCreate", packet);
+      this.writeBuffer.push(packet);
+      if (fn)
+        this.once("flush", fn);
+      this.flush();
+    }
+    close() {
+      const close = () => {
+        this.onClose("forced close");
+        this.transport.close();
+      };
+      const cleanupAndClose = () => {
+        this.off("upgrade", cleanupAndClose);
+        this.off("upgradeError", cleanupAndClose);
+        close();
+      };
+      const waitForUpgrade = () => {
+        this.once("upgrade", cleanupAndClose);
+        this.once("upgradeError", cleanupAndClose);
+      };
+      if ("opening" === this.readyState || "open" === this.readyState) {
+        this.readyState = "closing";
+        if (this.writeBuffer.length) {
+          this.once("drain", () => {
+            if (this.upgrading) {
+              waitForUpgrade();
+            } else {
+              close();
+            }
+          });
+        } else if (this.upgrading) {
+          waitForUpgrade();
+        } else {
+          close();
+        }
+      }
+      return this;
+    }
+    onError(err) {
+      Socket.priorWebsocketSuccess = false;
+      this.emitReserved("error", err);
+      this.onClose("transport error", err);
+    }
+    onClose(reason, description) {
+      if ("opening" === this.readyState || "open" === this.readyState || "closing" === this.readyState) {
+        this.clearTimeoutFn(this.pingTimeoutTimer);
+        this.transport.removeAllListeners("close");
+        this.transport.close();
+        this.transport.removeAllListeners();
+        if (typeof removeEventListener === "function") {
+          removeEventListener("offline", this.offlineEventListener, false);
+        }
+        this.readyState = "closed";
+        this.id = null;
+        this.emitReserved("close", reason, description);
+        this.writeBuffer = [];
+        this.prevBufferLen = 0;
+      }
+    }
+    filterUpgrades(upgrades) {
+      const filteredUpgrades = [];
+      let i2 = 0;
+      const j = upgrades.length;
+      for (; i2 < j; i2++) {
+        if (~this.transports.indexOf(upgrades[i2]))
+          filteredUpgrades.push(upgrades[i2]);
+      }
+      return filteredUpgrades;
+    }
+  };
+  Socket.protocol = protocol;
+
+  // node_modules/engine.io-client/build/esm/index.js
+  var protocol2 = Socket.protocol;
+
+  // node_modules/socket.io-client/build/esm/url.js
+  function url(uri, path = "", loc) {
+    let obj = uri;
+    loc = loc || typeof location !== "undefined" && location;
+    if (null == uri)
+      uri = loc.protocol + "//" + loc.host;
+    if (typeof uri === "string") {
+      if ("/" === uri.charAt(0)) {
+        if ("/" === uri.charAt(1)) {
+          uri = loc.protocol + uri;
+        } else {
+          uri = loc.host + uri;
+        }
+      }
+      if (!/^(https?|wss?):\/\//.test(uri)) {
+        if ("undefined" !== typeof loc) {
+          uri = loc.protocol + "//" + uri;
+        } else {
+          uri = "https://" + uri;
+        }
+      }
+      obj = parse(uri);
+    }
+    if (!obj.port) {
+      if (/^(http|ws)$/.test(obj.protocol)) {
+        obj.port = "80";
+      } else if (/^(http|ws)s$/.test(obj.protocol)) {
+        obj.port = "443";
+      }
+    }
+    obj.path = obj.path || "/";
+    const ipv6 = obj.host.indexOf(":") !== -1;
+    const host = ipv6 ? "[" + obj.host + "]" : obj.host;
+    obj.id = obj.protocol + "://" + host + ":" + obj.port + path;
+    obj.href = obj.protocol + "://" + host + (loc && loc.port === obj.port ? "" : ":" + obj.port);
+    return obj;
+  }
+
+  // node_modules/socket.io-parser/build/esm/index.js
+  var esm_exports = {};
+  __export(esm_exports, {
+    Decoder: () => Decoder,
+    Encoder: () => Encoder,
+    PacketType: () => PacketType,
+    protocol: () => protocol3
+  });
+
+  // node_modules/socket.io-parser/build/esm/is-binary.js
+  var withNativeArrayBuffer3 = typeof ArrayBuffer === "function";
+  var isView2 = (obj) => {
+    return typeof ArrayBuffer.isView === "function" ? ArrayBuffer.isView(obj) : obj.buffer instanceof ArrayBuffer;
+  };
+  var toString = Object.prototype.toString;
+  var withNativeBlob2 = typeof Blob === "function" || typeof Blob !== "undefined" && toString.call(Blob) === "[object BlobConstructor]";
+  var withNativeFile = typeof File === "function" || typeof File !== "undefined" && toString.call(File) === "[object FileConstructor]";
+  function isBinary(obj) {
+    return withNativeArrayBuffer3 && (obj instanceof ArrayBuffer || isView2(obj)) || withNativeBlob2 && obj instanceof Blob || withNativeFile && obj instanceof File;
+  }
+  function hasBinary(obj, toJSON) {
+    if (!obj || typeof obj !== "object") {
+      return false;
+    }
+    if (Array.isArray(obj)) {
+      for (let i2 = 0, l = obj.length; i2 < l; i2++) {
+        if (hasBinary(obj[i2])) {
+          return true;
+        }
+      }
+      return false;
+    }
+    if (isBinary(obj)) {
+      return true;
+    }
+    if (obj.toJSON && typeof obj.toJSON === "function" && arguments.length === 1) {
+      return hasBinary(obj.toJSON(), true);
+    }
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key) && hasBinary(obj[key])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // node_modules/socket.io-parser/build/esm/binary.js
+  function deconstructPacket(packet) {
+    const buffers = [];
+    const packetData = packet.data;
+    const pack = packet;
+    pack.data = _deconstructPacket(packetData, buffers);
+    pack.attachments = buffers.length;
+    return { packet: pack, buffers };
+  }
+  function _deconstructPacket(data, buffers) {
+    if (!data)
+      return data;
+    if (isBinary(data)) {
+      const placeholder = { _placeholder: true, num: buffers.length };
+      buffers.push(data);
+      return placeholder;
+    } else if (Array.isArray(data)) {
+      const newData = new Array(data.length);
+      for (let i2 = 0; i2 < data.length; i2++) {
+        newData[i2] = _deconstructPacket(data[i2], buffers);
+      }
+      return newData;
+    } else if (typeof data === "object" && !(data instanceof Date)) {
+      const newData = {};
+      for (const key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          newData[key] = _deconstructPacket(data[key], buffers);
+        }
+      }
+      return newData;
+    }
+    return data;
+  }
+  function reconstructPacket(packet, buffers) {
+    packet.data = _reconstructPacket(packet.data, buffers);
+    packet.attachments = void 0;
+    return packet;
+  }
+  function _reconstructPacket(data, buffers) {
+    if (!data)
+      return data;
+    if (data && data._placeholder === true) {
+      const isIndexValid = typeof data.num === "number" && data.num >= 0 && data.num < buffers.length;
+      if (isIndexValid) {
+        return buffers[data.num];
+      } else {
+        throw new Error("illegal attachments");
+      }
+    } else if (Array.isArray(data)) {
+      for (let i2 = 0; i2 < data.length; i2++) {
+        data[i2] = _reconstructPacket(data[i2], buffers);
+      }
+    } else if (typeof data === "object") {
+      for (const key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          data[key] = _reconstructPacket(data[key], buffers);
+        }
+      }
+    }
+    return data;
+  }
+
+  // node_modules/socket.io-parser/build/esm/index.js
+  var protocol3 = 5;
+  var PacketType;
+  (function(PacketType2) {
+    PacketType2[PacketType2["CONNECT"] = 0] = "CONNECT";
+    PacketType2[PacketType2["DISCONNECT"] = 1] = "DISCONNECT";
+    PacketType2[PacketType2["EVENT"] = 2] = "EVENT";
+    PacketType2[PacketType2["ACK"] = 3] = "ACK";
+    PacketType2[PacketType2["CONNECT_ERROR"] = 4] = "CONNECT_ERROR";
+    PacketType2[PacketType2["BINARY_EVENT"] = 5] = "BINARY_EVENT";
+    PacketType2[PacketType2["BINARY_ACK"] = 6] = "BINARY_ACK";
+  })(PacketType || (PacketType = {}));
+  var Encoder = class {
+    constructor(replacer) {
+      this.replacer = replacer;
+    }
+    encode(obj) {
+      if (obj.type === PacketType.EVENT || obj.type === PacketType.ACK) {
+        if (hasBinary(obj)) {
+          obj.type = obj.type === PacketType.EVENT ? PacketType.BINARY_EVENT : PacketType.BINARY_ACK;
+          return this.encodeAsBinary(obj);
+        }
+      }
+      return [this.encodeAsString(obj)];
+    }
+    encodeAsString(obj) {
+      let str = "" + obj.type;
+      if (obj.type === PacketType.BINARY_EVENT || obj.type === PacketType.BINARY_ACK) {
+        str += obj.attachments + "-";
+      }
+      if (obj.nsp && "/" !== obj.nsp) {
+        str += obj.nsp + ",";
+      }
+      if (null != obj.id) {
+        str += obj.id;
+      }
+      if (null != obj.data) {
+        str += JSON.stringify(obj.data, this.replacer);
+      }
+      return str;
+    }
+    encodeAsBinary(obj) {
+      const deconstruction = deconstructPacket(obj);
+      const pack = this.encodeAsString(deconstruction.packet);
+      const buffers = deconstruction.buffers;
+      buffers.unshift(pack);
+      return buffers;
+    }
+  };
+  var Decoder = class extends Emitter {
+    constructor(reviver) {
+      super();
+      this.reviver = reviver;
+    }
+    add(obj) {
+      let packet;
+      if (typeof obj === "string") {
+        if (this.reconstructor) {
+          throw new Error("got plaintext data when reconstructing a packet");
+        }
+        packet = this.decodeString(obj);
+        if (packet.type === PacketType.BINARY_EVENT || packet.type === PacketType.BINARY_ACK) {
+          this.reconstructor = new BinaryReconstructor(packet);
+          if (packet.attachments === 0) {
+            super.emitReserved("decoded", packet);
+          }
+        } else {
+          super.emitReserved("decoded", packet);
+        }
+      } else if (isBinary(obj) || obj.base64) {
+        if (!this.reconstructor) {
+          throw new Error("got binary data when not reconstructing a packet");
+        } else {
+          packet = this.reconstructor.takeBinaryData(obj);
+          if (packet) {
+            this.reconstructor = null;
+            super.emitReserved("decoded", packet);
+          }
+        }
+      } else {
+        throw new Error("Unknown type: " + obj);
+      }
+    }
+    decodeString(str) {
+      let i2 = 0;
+      const p = {
+        type: Number(str.charAt(0))
+      };
+      if (PacketType[p.type] === void 0) {
+        throw new Error("unknown packet type " + p.type);
+      }
+      if (p.type === PacketType.BINARY_EVENT || p.type === PacketType.BINARY_ACK) {
+        const start = i2 + 1;
+        while (str.charAt(++i2) !== "-" && i2 != str.length) {
+        }
+        const buf = str.substring(start, i2);
+        if (buf != Number(buf) || str.charAt(i2) !== "-") {
+          throw new Error("Illegal attachments");
+        }
+        p.attachments = Number(buf);
+      }
+      if ("/" === str.charAt(i2 + 1)) {
+        const start = i2 + 1;
+        while (++i2) {
+          const c = str.charAt(i2);
+          if ("," === c)
+            break;
+          if (i2 === str.length)
+            break;
+        }
+        p.nsp = str.substring(start, i2);
+      } else {
+        p.nsp = "/";
+      }
+      const next = str.charAt(i2 + 1);
+      if ("" !== next && Number(next) == next) {
+        const start = i2 + 1;
+        while (++i2) {
+          const c = str.charAt(i2);
+          if (null == c || Number(c) != c) {
+            --i2;
+            break;
+          }
+          if (i2 === str.length)
+            break;
+        }
+        p.id = Number(str.substring(start, i2 + 1));
+      }
+      if (str.charAt(++i2)) {
+        const payload = this.tryParse(str.substr(i2));
+        if (Decoder.isPayloadValid(p.type, payload)) {
+          p.data = payload;
+        } else {
+          throw new Error("invalid payload");
+        }
+      }
+      return p;
+    }
+    tryParse(str) {
+      try {
+        return JSON.parse(str, this.reviver);
+      } catch (e) {
+        return false;
+      }
+    }
+    static isPayloadValid(type, payload) {
+      switch (type) {
+        case PacketType.CONNECT:
+          return typeof payload === "object";
+        case PacketType.DISCONNECT:
+          return payload === void 0;
+        case PacketType.CONNECT_ERROR:
+          return typeof payload === "string" || typeof payload === "object";
+        case PacketType.EVENT:
+        case PacketType.BINARY_EVENT:
+          return Array.isArray(payload) && payload.length > 0;
+        case PacketType.ACK:
+        case PacketType.BINARY_ACK:
+          return Array.isArray(payload);
+      }
+    }
+    destroy() {
+      if (this.reconstructor) {
+        this.reconstructor.finishedReconstruction();
+      }
+    }
+  };
+  var BinaryReconstructor = class {
+    constructor(packet) {
+      this.packet = packet;
+      this.buffers = [];
+      this.reconPack = packet;
+    }
+    takeBinaryData(binData) {
+      this.buffers.push(binData);
+      if (this.buffers.length === this.reconPack.attachments) {
+        const packet = reconstructPacket(this.reconPack, this.buffers);
+        this.finishedReconstruction();
+        return packet;
+      }
+      return null;
+    }
+    finishedReconstruction() {
+      this.reconPack = null;
+      this.buffers = [];
+    }
+  };
+
+  // node_modules/socket.io-client/build/esm/on.js
+  function on(obj, ev, fn) {
+    obj.on(ev, fn);
+    return function subDestroy() {
+      obj.off(ev, fn);
+    };
+  }
+
+  // node_modules/socket.io-client/build/esm/socket.js
+  var RESERVED_EVENTS = Object.freeze({
+    connect: 1,
+    connect_error: 1,
+    disconnect: 1,
+    disconnecting: 1,
+    newListener: 1,
+    removeListener: 1
+  });
+  var Socket2 = class extends Emitter {
+    constructor(io, nsp, opts) {
+      super();
+      this.connected = false;
+      this.receiveBuffer = [];
+      this.sendBuffer = [];
+      this.ids = 0;
+      this.acks = {};
+      this.flags = {};
+      this.io = io;
+      this.nsp = nsp;
+      if (opts && opts.auth) {
+        this.auth = opts.auth;
+      }
+      if (this.io._autoConnect)
+        this.open();
+    }
+    get disconnected() {
+      return !this.connected;
+    }
+    subEvents() {
+      if (this.subs)
+        return;
+      const io = this.io;
+      this.subs = [
+        on(io, "open", this.onopen.bind(this)),
+        on(io, "packet", this.onpacket.bind(this)),
+        on(io, "error", this.onerror.bind(this)),
+        on(io, "close", this.onclose.bind(this))
+      ];
+    }
+    get active() {
+      return !!this.subs;
+    }
+    connect() {
+      if (this.connected)
+        return this;
+      this.subEvents();
+      if (!this.io["_reconnecting"])
+        this.io.open();
+      if ("open" === this.io._readyState)
+        this.onopen();
+      return this;
+    }
+    open() {
+      return this.connect();
+    }
+    send(...args) {
+      args.unshift("message");
+      this.emit.apply(this, args);
+      return this;
+    }
+    emit(ev, ...args) {
+      if (RESERVED_EVENTS.hasOwnProperty(ev)) {
+        throw new Error('"' + ev.toString() + '" is a reserved event name');
+      }
+      args.unshift(ev);
+      const packet = {
+        type: PacketType.EVENT,
+        data: args
+      };
+      packet.options = {};
+      packet.options.compress = this.flags.compress !== false;
+      if ("function" === typeof args[args.length - 1]) {
+        const id = this.ids++;
+        const ack = args.pop();
+        this._registerAckCallback(id, ack);
+        packet.id = id;
+      }
+      const isTransportWritable = this.io.engine && this.io.engine.transport && this.io.engine.transport.writable;
+      const discardPacket = this.flags.volatile && (!isTransportWritable || !this.connected);
+      if (discardPacket) {
+      } else if (this.connected) {
+        this.notifyOutgoingListeners(packet);
+        this.packet(packet);
+      } else {
+        this.sendBuffer.push(packet);
+      }
+      this.flags = {};
+      return this;
+    }
+    _registerAckCallback(id, ack) {
+      const timeout = this.flags.timeout;
+      if (timeout === void 0) {
+        this.acks[id] = ack;
+        return;
+      }
+      const timer = this.io.setTimeoutFn(() => {
+        delete this.acks[id];
+        for (let i2 = 0; i2 < this.sendBuffer.length; i2++) {
+          if (this.sendBuffer[i2].id === id) {
+            this.sendBuffer.splice(i2, 1);
+          }
+        }
+        ack.call(this, new Error("operation has timed out"));
+      }, timeout);
+      this.acks[id] = (...args) => {
+        this.io.clearTimeoutFn(timer);
+        ack.apply(this, [null, ...args]);
+      };
+    }
+    packet(packet) {
+      packet.nsp = this.nsp;
+      this.io._packet(packet);
+    }
+    onopen() {
+      if (typeof this.auth == "function") {
+        this.auth((data) => {
+          this.packet({ type: PacketType.CONNECT, data });
+        });
+      } else {
+        this.packet({ type: PacketType.CONNECT, data: this.auth });
+      }
+    }
+    onerror(err) {
+      if (!this.connected) {
+        this.emitReserved("connect_error", err);
+      }
+    }
+    onclose(reason, description) {
+      this.connected = false;
+      delete this.id;
+      this.emitReserved("disconnect", reason, description);
+    }
+    onpacket(packet) {
+      const sameNamespace = packet.nsp === this.nsp;
+      if (!sameNamespace)
+        return;
+      switch (packet.type) {
+        case PacketType.CONNECT:
+          if (packet.data && packet.data.sid) {
+            const id = packet.data.sid;
+            this.onconnect(id);
+          } else {
+            this.emitReserved("connect_error", new Error("It seems you are trying to reach a Socket.IO server in v2.x with a v3.x client, but they are not compatible (more information here: https://socket.io/docs/v3/migrating-from-2-x-to-3-0/)"));
+          }
+          break;
+        case PacketType.EVENT:
+        case PacketType.BINARY_EVENT:
+          this.onevent(packet);
+          break;
+        case PacketType.ACK:
+        case PacketType.BINARY_ACK:
+          this.onack(packet);
+          break;
+        case PacketType.DISCONNECT:
+          this.ondisconnect();
+          break;
+        case PacketType.CONNECT_ERROR:
+          this.destroy();
+          const err = new Error(packet.data.message);
+          err.data = packet.data.data;
+          this.emitReserved("connect_error", err);
+          break;
+      }
+    }
+    onevent(packet) {
+      const args = packet.data || [];
+      if (null != packet.id) {
+        args.push(this.ack(packet.id));
+      }
+      if (this.connected) {
+        this.emitEvent(args);
+      } else {
+        this.receiveBuffer.push(Object.freeze(args));
+      }
+    }
+    emitEvent(args) {
+      if (this._anyListeners && this._anyListeners.length) {
+        const listeners = this._anyListeners.slice();
+        for (const listener of listeners) {
+          listener.apply(this, args);
+        }
+      }
+      super.emit.apply(this, args);
+    }
+    ack(id) {
+      const self2 = this;
+      let sent = false;
+      return function(...args) {
+        if (sent)
+          return;
+        sent = true;
+        self2.packet({
+          type: PacketType.ACK,
+          id,
+          data: args
+        });
+      };
+    }
+    onack(packet) {
+      const ack = this.acks[packet.id];
+      if ("function" === typeof ack) {
+        ack.apply(this, packet.data);
+        delete this.acks[packet.id];
+      } else {
+      }
+    }
+    onconnect(id) {
+      this.id = id;
+      this.connected = true;
+      this.emitBuffered();
+      this.emitReserved("connect");
+    }
+    emitBuffered() {
+      this.receiveBuffer.forEach((args) => this.emitEvent(args));
+      this.receiveBuffer = [];
+      this.sendBuffer.forEach((packet) => {
+        this.notifyOutgoingListeners(packet);
+        this.packet(packet);
+      });
+      this.sendBuffer = [];
+    }
+    ondisconnect() {
+      this.destroy();
+      this.onclose("io server disconnect");
+    }
+    destroy() {
+      if (this.subs) {
+        this.subs.forEach((subDestroy) => subDestroy());
+        this.subs = void 0;
+      }
+      this.io["_destroy"](this);
+    }
+    disconnect() {
+      if (this.connected) {
+        this.packet({ type: PacketType.DISCONNECT });
+      }
+      this.destroy();
+      if (this.connected) {
+        this.onclose("io client disconnect");
+      }
+      return this;
+    }
+    close() {
+      return this.disconnect();
+    }
+    compress(compress) {
+      this.flags.compress = compress;
+      return this;
+    }
+    get volatile() {
+      this.flags.volatile = true;
+      return this;
+    }
+    timeout(timeout) {
+      this.flags.timeout = timeout;
+      return this;
+    }
+    onAny(listener) {
+      this._anyListeners = this._anyListeners || [];
+      this._anyListeners.push(listener);
+      return this;
+    }
+    prependAny(listener) {
+      this._anyListeners = this._anyListeners || [];
+      this._anyListeners.unshift(listener);
+      return this;
+    }
+    offAny(listener) {
+      if (!this._anyListeners) {
+        return this;
+      }
+      if (listener) {
+        const listeners = this._anyListeners;
+        for (let i2 = 0; i2 < listeners.length; i2++) {
+          if (listener === listeners[i2]) {
+            listeners.splice(i2, 1);
+            return this;
+          }
+        }
+      } else {
+        this._anyListeners = [];
+      }
+      return this;
+    }
+    listenersAny() {
+      return this._anyListeners || [];
+    }
+    onAnyOutgoing(listener) {
+      this._anyOutgoingListeners = this._anyOutgoingListeners || [];
+      this._anyOutgoingListeners.push(listener);
+      return this;
+    }
+    prependAnyOutgoing(listener) {
+      this._anyOutgoingListeners = this._anyOutgoingListeners || [];
+      this._anyOutgoingListeners.unshift(listener);
+      return this;
+    }
+    offAnyOutgoing(listener) {
+      if (!this._anyOutgoingListeners) {
+        return this;
+      }
+      if (listener) {
+        const listeners = this._anyOutgoingListeners;
+        for (let i2 = 0; i2 < listeners.length; i2++) {
+          if (listener === listeners[i2]) {
+            listeners.splice(i2, 1);
+            return this;
+          }
+        }
+      } else {
+        this._anyOutgoingListeners = [];
+      }
+      return this;
+    }
+    listenersAnyOutgoing() {
+      return this._anyOutgoingListeners || [];
+    }
+    notifyOutgoingListeners(packet) {
+      if (this._anyOutgoingListeners && this._anyOutgoingListeners.length) {
+        const listeners = this._anyOutgoingListeners.slice();
+        for (const listener of listeners) {
+          listener.apply(this, packet.data);
+        }
+      }
+    }
+  };
+
+  // node_modules/socket.io-client/build/esm/contrib/backo2.js
+  function Backoff(opts) {
+    opts = opts || {};
+    this.ms = opts.min || 100;
+    this.max = opts.max || 1e4;
+    this.factor = opts.factor || 2;
+    this.jitter = opts.jitter > 0 && opts.jitter <= 1 ? opts.jitter : 0;
+    this.attempts = 0;
+  }
+  Backoff.prototype.duration = function() {
+    var ms = this.ms * Math.pow(this.factor, this.attempts++);
+    if (this.jitter) {
+      var rand = Math.random();
+      var deviation = Math.floor(rand * this.jitter * ms);
+      ms = (Math.floor(rand * 10) & 1) == 0 ? ms - deviation : ms + deviation;
+    }
+    return Math.min(ms, this.max) | 0;
+  };
+  Backoff.prototype.reset = function() {
+    this.attempts = 0;
+  };
+  Backoff.prototype.setMin = function(min) {
+    this.ms = min;
+  };
+  Backoff.prototype.setMax = function(max) {
+    this.max = max;
+  };
+  Backoff.prototype.setJitter = function(jitter) {
+    this.jitter = jitter;
+  };
+
+  // node_modules/socket.io-client/build/esm/manager.js
+  var Manager = class extends Emitter {
+    constructor(uri, opts) {
+      var _a;
+      super();
+      this.nsps = {};
+      this.subs = [];
+      if (uri && "object" === typeof uri) {
+        opts = uri;
+        uri = void 0;
+      }
+      opts = opts || {};
+      opts.path = opts.path || "/socket.io";
+      this.opts = opts;
+      installTimerFunctions(this, opts);
+      this.reconnection(opts.reconnection !== false);
+      this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
+      this.reconnectionDelay(opts.reconnectionDelay || 1e3);
+      this.reconnectionDelayMax(opts.reconnectionDelayMax || 5e3);
+      this.randomizationFactor((_a = opts.randomizationFactor) !== null && _a !== void 0 ? _a : 0.5);
+      this.backoff = new Backoff({
+        min: this.reconnectionDelay(),
+        max: this.reconnectionDelayMax(),
+        jitter: this.randomizationFactor()
+      });
+      this.timeout(null == opts.timeout ? 2e4 : opts.timeout);
+      this._readyState = "closed";
+      this.uri = uri;
+      const _parser = opts.parser || esm_exports;
+      this.encoder = new _parser.Encoder();
+      this.decoder = new _parser.Decoder();
+      this._autoConnect = opts.autoConnect !== false;
+      if (this._autoConnect)
+        this.open();
+    }
+    reconnection(v) {
+      if (!arguments.length)
+        return this._reconnection;
+      this._reconnection = !!v;
+      return this;
+    }
+    reconnectionAttempts(v) {
+      if (v === void 0)
+        return this._reconnectionAttempts;
+      this._reconnectionAttempts = v;
+      return this;
+    }
+    reconnectionDelay(v) {
+      var _a;
+      if (v === void 0)
+        return this._reconnectionDelay;
+      this._reconnectionDelay = v;
+      (_a = this.backoff) === null || _a === void 0 ? void 0 : _a.setMin(v);
+      return this;
+    }
+    randomizationFactor(v) {
+      var _a;
+      if (v === void 0)
+        return this._randomizationFactor;
+      this._randomizationFactor = v;
+      (_a = this.backoff) === null || _a === void 0 ? void 0 : _a.setJitter(v);
+      return this;
+    }
+    reconnectionDelayMax(v) {
+      var _a;
+      if (v === void 0)
+        return this._reconnectionDelayMax;
+      this._reconnectionDelayMax = v;
+      (_a = this.backoff) === null || _a === void 0 ? void 0 : _a.setMax(v);
+      return this;
+    }
+    timeout(v) {
+      if (!arguments.length)
+        return this._timeout;
+      this._timeout = v;
+      return this;
+    }
+    maybeReconnectOnOpen() {
+      if (!this._reconnecting && this._reconnection && this.backoff.attempts === 0) {
+        this.reconnect();
+      }
+    }
+    open(fn) {
+      if (~this._readyState.indexOf("open"))
+        return this;
+      this.engine = new Socket(this.uri, this.opts);
+      const socket = this.engine;
+      const self2 = this;
+      this._readyState = "opening";
+      this.skipReconnect = false;
+      const openSubDestroy = on(socket, "open", function() {
+        self2.onopen();
+        fn && fn();
+      });
+      const errorSub = on(socket, "error", (err) => {
+        self2.cleanup();
+        self2._readyState = "closed";
+        this.emitReserved("error", err);
+        if (fn) {
+          fn(err);
+        } else {
+          self2.maybeReconnectOnOpen();
+        }
+      });
+      if (false !== this._timeout) {
+        const timeout = this._timeout;
+        if (timeout === 0) {
+          openSubDestroy();
+        }
+        const timer = this.setTimeoutFn(() => {
+          openSubDestroy();
+          socket.close();
+          socket.emit("error", new Error("timeout"));
+        }, timeout);
+        if (this.opts.autoUnref) {
+          timer.unref();
+        }
+        this.subs.push(function subDestroy() {
+          clearTimeout(timer);
+        });
+      }
+      this.subs.push(openSubDestroy);
+      this.subs.push(errorSub);
+      return this;
+    }
+    connect(fn) {
+      return this.open(fn);
+    }
+    onopen() {
+      this.cleanup();
+      this._readyState = "open";
+      this.emitReserved("open");
+      const socket = this.engine;
+      this.subs.push(on(socket, "ping", this.onping.bind(this)), on(socket, "data", this.ondata.bind(this)), on(socket, "error", this.onerror.bind(this)), on(socket, "close", this.onclose.bind(this)), on(this.decoder, "decoded", this.ondecoded.bind(this)));
+    }
+    onping() {
+      this.emitReserved("ping");
+    }
+    ondata(data) {
+      try {
+        this.decoder.add(data);
+      } catch (e) {
+        this.onclose("parse error");
+      }
+    }
+    ondecoded(packet) {
+      this.emitReserved("packet", packet);
+    }
+    onerror(err) {
+      this.emitReserved("error", err);
+    }
+    socket(nsp, opts) {
+      let socket = this.nsps[nsp];
+      if (!socket) {
+        socket = new Socket2(this, nsp, opts);
+        this.nsps[nsp] = socket;
+      }
+      return socket;
+    }
+    _destroy(socket) {
+      const nsps = Object.keys(this.nsps);
+      for (const nsp of nsps) {
+        const socket2 = this.nsps[nsp];
+        if (socket2.active) {
+          return;
+        }
+      }
+      this._close();
+    }
+    _packet(packet) {
+      const encodedPackets = this.encoder.encode(packet);
+      for (let i2 = 0; i2 < encodedPackets.length; i2++) {
+        this.engine.write(encodedPackets[i2], packet.options);
+      }
+    }
+    cleanup() {
+      this.subs.forEach((subDestroy) => subDestroy());
+      this.subs.length = 0;
+      this.decoder.destroy();
+    }
+    _close() {
+      this.skipReconnect = true;
+      this._reconnecting = false;
+      this.onclose("forced close");
+      if (this.engine)
+        this.engine.close();
+    }
+    disconnect() {
+      return this._close();
+    }
+    onclose(reason, description) {
+      this.cleanup();
+      this.backoff.reset();
+      this._readyState = "closed";
+      this.emitReserved("close", reason, description);
+      if (this._reconnection && !this.skipReconnect) {
+        this.reconnect();
+      }
+    }
+    reconnect() {
+      if (this._reconnecting || this.skipReconnect)
+        return this;
+      const self2 = this;
+      if (this.backoff.attempts >= this._reconnectionAttempts) {
+        this.backoff.reset();
+        this.emitReserved("reconnect_failed");
+        this._reconnecting = false;
+      } else {
+        const delay = this.backoff.duration();
+        this._reconnecting = true;
+        const timer = this.setTimeoutFn(() => {
+          if (self2.skipReconnect)
+            return;
+          this.emitReserved("reconnect_attempt", self2.backoff.attempts);
+          if (self2.skipReconnect)
+            return;
+          self2.open((err) => {
+            if (err) {
+              self2._reconnecting = false;
+              self2.reconnect();
+              this.emitReserved("reconnect_error", err);
+            } else {
+              self2.onreconnect();
+            }
+          });
+        }, delay);
+        if (this.opts.autoUnref) {
+          timer.unref();
+        }
+        this.subs.push(function subDestroy() {
+          clearTimeout(timer);
+        });
+      }
+    }
+    onreconnect() {
+      const attempt = this.backoff.attempts;
+      this._reconnecting = false;
+      this.backoff.reset();
+      this.emitReserved("reconnect", attempt);
+    }
+  };
+
+  // node_modules/socket.io-client/build/esm/index.js
+  var cache = {};
+  function lookup2(uri, opts) {
+    if (typeof uri === "object") {
+      opts = uri;
+      uri = void 0;
+    }
+    opts = opts || {};
+    const parsed = url(uri, opts.path || "/socket.io");
+    const source = parsed.source;
+    const id = parsed.id;
+    const path = parsed.path;
+    const sameNamespace = cache[id] && path in cache[id]["nsps"];
+    const newConnection = opts.forceNew || opts["force new connection"] || false === opts.multiplex || sameNamespace;
+    let io;
+    if (newConnection) {
+      io = new Manager(source, opts);
+    } else {
+      if (!cache[id]) {
+        cache[id] = new Manager(source, opts);
+      }
+      io = cache[id];
+    }
+    if (parsed.query && !opts.query) {
+      opts.query = parsed.queryKey;
+    }
+    return io.socket(parsed.path, opts);
+  }
+  Object.assign(lookup2, {
+    Manager,
+    Socket: Socket2,
+    io: lookup2,
+    connect: lookup2
+  });
+
+  // src/components/Chat.tsx
   function Chat() {
-    return /* @__PURE__ */ import_react.default.createElement("div", null, "Chat??");
+    const socket = (0, import_react.useRef)(null);
+    (0, import_react.useEffect)(() => {
+      if (!socket.current) {
+        socket.current = lookup2();
+        socket.current.on("speak", (stuff) => {
+          console.log(stuff);
+        });
+      }
+    });
+    return /* @__PURE__ */ import_react.default.createElement("section", {
+      className: "Chat"
+    }, "Chat");
   }
 
   // src/index.tsx
