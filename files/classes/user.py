@@ -69,7 +69,7 @@ class User(Base):
 	post_count = Column(Integer, default=0)
 	comment_count = Column(Integer, default=0)
 	received_award_count = Column(Integer, default=0)
-	created_utc = Column(Integer)
+	created_utc = Column(Integer, default=int(time.time()))
 	admin_level = Column(Integer, default=0)
 	last_active = Column(Integer, default=0, nullable=False)
 	coins_spent = Column(Integer, default=0)
@@ -134,8 +134,8 @@ class User(Base):
 	currently_held_lottery_tickets = Column(Integer, default=0)
 	total_held_lottery_tickets = Column(Integer, default=0)
 	total_lottery_winnings = Column(Integer, default=0)
-	last_viewed_post_notifs = Column(Integer, default=0)
-	last_viewed_log_notifs = Column(Integer, default=0)
+	last_viewed_post_notifs = Column(Integer, default=int(time.time()))
+	last_viewed_log_notifs = Column(Integer, default=int(time.time()))
 	pronouns = Column(String, default='they/them')
 	bite = Column(Integer)
 	earlylife = Column(Integer)
@@ -162,11 +162,6 @@ class User(Base):
 		if "password" in kwargs:
 			kwargs["passhash"] = self.hash_password(kwargs["password"])
 			kwargs.pop("password")
-
-		if "created_utc" not in kwargs:
-			kwargs["created_utc"] = int(time.time())
-			kwargs["last_viewed_post_notifs"] = kwargs["created_utc"]
-			kwargs["last_viewed_log_notifs"] = kwargs["created_utc"]
 
 		super().__init__(**kwargs)
 
@@ -233,12 +228,25 @@ class User(Base):
 
 	@property
 	@lazy
+	def forced_hat(self):
+		user_forced_hats = []
+		for k, val in forced_hats.items():
+			if getattr(self, k):
+				user_forced_hats.append(val)
+		if user_forced_hats: return random.choice(user_forced_hats)
+		else: return None
+
+	@property
+	@lazy
 	def hat_active(self):
 		if not FEATURES['HATS']:
 			return ''
 
 		if self.is_cakeday:
 			return '/i/hats/Cakeday.webp'
+
+		if self.forced_hat:
+			return f'/i/hats/{self.forced_hat[0]}.webp'
 
 		if self.equipped_hat:
 			return f'/i/hats/{self.equipped_hat.name}.webp'
@@ -252,6 +260,9 @@ class User(Base):
 
 		if self.is_cakeday:
 			return "I've spent another year rotting my brain with dramaposting, please ridicule me 🤓"
+
+		if self.forced_hat:
+			return self.forced_hat[1]
 
 		if self.equipped_hat:
 			return self.equipped_hat.name + ' - ' + self.equipped_hat.censored_description(v)
@@ -541,11 +552,12 @@ class User(Base):
 		total_awards = post_awards + comment_awards
 
 		for a in total_awards:
-			if a.kind in awards:
-				awards[a.kind]['count'] += 1
+			kind = a.kind.replace(' Founder', '')
+			if kind in awards:
+				awards[kind]['count'] += 1
 			else:
-				awards[a.kind] = a.type
-				awards[a.kind]['count'] = 1
+				awards[kind] = a.type
+				awards[kind]['count'] = 1
 
 		return sorted(list(awards.values()), key=lambda x: x['kind'], reverse=True)
 
@@ -737,8 +749,6 @@ class User(Base):
 	def profile_url(self):
 		if self.agendaposter:
 			return f"{SITE_FULL}/assets/images/pfps/agendaposter/{random.randint(1, 57)}.webp?v=1"
-		if self.bite:
-			return f"{SITE_FULL}/e/marseyvampire.webp"
 		if self.rainbow:
 			return f"{SITE_FULL}/e/marseysalutepride.webp"
 		if self.profileurl: 
@@ -934,3 +944,16 @@ class User(Base):
 		from_casino_value = from_casino or 0
 
 		return from_casino_value + self.total_lottery_winnings
+
+	@lazy
+	def show_sig(self, v):
+		if not self.sig_html:
+			return False
+
+		if not self.patron and SITE_NAME != 'WPD':
+			return False
+
+		if v and (v.sigs_disabled or v.poor):
+			return False
+
+		return True

@@ -37,7 +37,7 @@ class Comment(Base):
 	id = Column(Integer, primary_key=True)
 	author_id = Column(Integer, ForeignKey("users.id"))
 	parent_submission = Column(Integer, ForeignKey("submissions.id"))
-	created_utc = Column(Integer)
+	created_utc = Column(Integer, default=int(time.time()))
 	edited_utc = Column(Integer, default=0)
 	is_banned = Column(Boolean, default=False)
 	ghost = Column(Boolean, default=False)
@@ -73,13 +73,7 @@ class Comment(Base):
 	flags = relationship("CommentFlag", order_by="CommentFlag.created_utc")
 	options = relationship("CommentOption", order_by="CommentOption.id")
 
-	def __init__(self, *args, **kwargs):
-		if "created_utc" not in kwargs:
-			kwargs["created_utc"] = int(time.time())
-		super().__init__(*args, **kwargs)
-
 	def __repr__(self):
-
 		return f"<Comment(id={self.id})>"
 
 	@lazy
@@ -383,7 +377,7 @@ class Comment(Base):
 			body += f'''><label class="custom-control-label" for="comment-{o.id}">{o.body_html} - 
 			<a href="/votes/comment/option/{o.id}"><span id="score-comment-{o.id}">{o.upvotes}</span> votes</a></label></div>'''
 
-		if self.author.sig_html and (self.author_id == MOOSE_ID or (not self.ghost and not (v and (v.sigs_disabled or v.poor)))):
+		if not self.ghost and self.author.show_sig(v):
 			body += f"<hr>{self.author.sig_html}"
 
 		return body

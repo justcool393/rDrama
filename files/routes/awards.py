@@ -376,8 +376,8 @@ def award_thing(v, thing_type, id):
 			thing.body_html = sanitize(body, limit_pings=5)
 			g.db.add(thing)
 	elif "Vampire" in kind and kind == v.house:
-		if author.bite: author.bite += 86400 * 3
-		else: author.bite = int(time.time()) + 86400 * 3
+		if author.bite: author.bite += 86400
+		else: author.bite = int(time.time()) + 86400
 		
 		if not author.old_house:
 			author.old_house = author.house
@@ -457,7 +457,7 @@ def admin_userawards_post(v):
 
 		if value:
 			
-			if int(value) > 100 or (int(value) > 10 and v.id != AEVANN_ID): abort(403)
+			if int(value) > 10: abort(403)
 
 			if int(value): notify_awards[key] = int(value)
 

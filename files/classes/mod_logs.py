@@ -16,15 +16,11 @@ class ModAction(Base):
 	target_submission_id = Column(Integer, ForeignKey("submissions.id"))
 	target_comment_id = Column(Integer, ForeignKey("comments.id"))
 	_note=Column(String)
-	created_utc = Column(Integer)
+	created_utc = Column(Integer, default=int(time.time()))
 
 	user = relationship("User", primaryjoin="User.id==ModAction.user_id")
 	target_user = relationship("User", primaryjoin="User.id==ModAction.target_user_id")
 	target_post = relationship("Submission")
-
-	def __init__(self, *args, **kwargs):
-		if "created_utc" not in kwargs: kwargs["created_utc"] = int(time.time())
-		super().__init__(*args, **kwargs)
 
 	def __repr__(self):
 		return f"<ModAction(id={self.id})>"
@@ -313,11 +309,6 @@ ACTIONTYPES = {
 		"str": 'pinned post {self.target_link}', 
 		"icon": 'fa-thumbtack fa-rotate--45', 
 		"color": 'bg-success'
-	},
-	'post_recategorize': {
-		"str": 'changed category of {self.target_link}',
-		"icon": 'fa-grid',
-		"color": 'bg-primary'
 	},
 	'purge_cache': {
 		"str": 'purged cache', 
