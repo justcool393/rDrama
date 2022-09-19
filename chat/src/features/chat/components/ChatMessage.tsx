@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Username } from "./Username";
-import { useLoggedInUser } from "../../../hooks";
+import { useChat, useLoggedInUser } from "../../../hooks";
 import "./ChatMessage.css";
 
 interface ChatMessageProps extends ChatSpeakResponse {
@@ -57,6 +57,29 @@ export function ChatMessage({
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+export function ChatMessageList() {
+  const { messages, deleteMessage } = useChat();
+  const messageWrapper = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
+  }, [messages]);
+
+  return (
+    <div className="ChatMessageList" ref={messageWrapper}>
+      {messages.map((message, index) => (
+        <ChatMessage
+          key={message.time}
+          {...message}
+          showUser={message.username !== messages[index - 1]?.username}
+          onDelete={() => deleteMessage(message.text)}
+          onQuote={() => {}}
+        />
+      ))}
     </div>
   );
 }

@@ -3,6 +3,7 @@
   align-items: flex-start;
   justify-content: center;
   width: 100%;
+  max-width: 600px;
 }
 
 .UserInput > div {

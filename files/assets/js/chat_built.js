@@ -1012,11 +1012,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef4(initialValue) {
+          function useRef5(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect5(create, deps) {
+          function useEffect6(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1796,14 +1796,14 @@
           exports.useContext = useContext2;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect5;
+          exports.useEffect = useEffect6;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo4;
           exports.useReducer = useReducer;
-          exports.useRef = useRef4;
+          exports.useRef = useRef5;
           exports.useState = useState5;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
@@ -2300,9 +2300,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React12 = require_react();
+          var React13 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React12.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React13.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3823,7 +3823,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React12.Children.forEach(props.children, function(child) {
+                  React13.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -11984,7 +11984,7 @@
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React12.Component().refs;
+          var emptyRefsObject = new React13.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22901,46 +22901,17 @@
   });
 
   // src/index.tsx
-  var import_react15 = __toESM(require_react());
+  var import_react16 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // src/Layout.tsx
+  var import_react15 = __toESM(require_react());
+
+  // src/App.tsx
   var import_react14 = __toESM(require_react());
 
   // src/features/activity/components/Activity.tsx
   var import_react = __toESM(require_react());
-  var ACTIVITIES = [
-    {
-      icon: "circle",
-      title: "Roulette",
-      description: "Round and round the wheel of fate turns."
-    },
-    {
-      icon: "cards",
-      title: "Blackjack",
-      description: "Twenty one ways to change your life."
-    },
-    {
-      icon: "dollar-sign",
-      title: "Slots",
-      description: "Today's your lucky day."
-    },
-    {
-      icon: "dollar-sign",
-      title: "Racing",
-      description: "Make it all back at the track."
-    },
-    { icon: "dollar-sign", title: "Crossing", description: "Take a load off." }
-  ];
-  function Activity() {
-    return /* @__PURE__ */ import_react.default.createElement("div", {
-      className: "Activity"
-    }, ACTIVITIES.map((activity) => /* @__PURE__ */ import_react.default.createElement("section", {
-      key: activity.title
-    }, /* @__PURE__ */ import_react.default.createElement("i", {
-      className: `fas fa-${activity.icon}`
-    }), /* @__PURE__ */ import_react.default.createElement("h4", null, activity.title))));
-  }
 
   // src/features/chat/components/Chat.tsx
   var import_react13 = __toESM(require_react());
@@ -25955,6 +25926,24 @@
       className: "fas fa-trash-alt"
     }))));
   }
+  function ChatMessageList() {
+    const { messages, deleteMessage } = useChat();
+    const messageWrapper = (0, import_react9.useRef)(null);
+    (0, import_react9.useEffect)(() => {
+      messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
+    }, [messages]);
+    return /* @__PURE__ */ import_react9.default.createElement("div", {
+      className: "ChatMessageList",
+      ref: messageWrapper
+    }, messages.map((message, index) => /* @__PURE__ */ import_react9.default.createElement(ChatMessage, {
+      key: message.time,
+      ...message,
+      showUser: message.username !== messages[index - 1]?.username,
+      onDelete: () => deleteMessage(message.text),
+      onQuote: () => {
+      }
+    })));
+  }
 
   // src/features/chat/components/UserInput.tsx
   var import_react11 = __toESM(require_react());
@@ -26030,16 +26019,7 @@
 
   // src/features/chat/components/Chat.tsx
   function Chat() {
-    const messageWrapper = (0, import_react13.useRef)(null);
-    const {
-      online,
-      typing,
-      messages,
-      draft,
-      sendMessage,
-      deleteMessage,
-      updateDraft
-    } = useChat();
+    const { online, typing, draft, sendMessage, updateDraft } = useChat();
     const usersTyping = (0, import_react13.useMemo)(() => formatTypingString(typing), [typing]);
     const [emojiDrawerOpen, setEmojiDrawerOpen] = (0, import_react13.useState)(false);
     const handleSendMessage = (0, import_react13.useCallback)(
@@ -26049,9 +26029,6 @@
       },
       [sendMessage]
     );
-    (0, import_react13.useEffect)(() => {
-      messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
-    }, [messages]);
     return /* @__PURE__ */ import_react13.default.createElement("section", {
       className: "Chat"
     }, /* @__PURE__ */ import_react13.default.createElement("div", {
@@ -26060,27 +26037,16 @@
       className: "Chat-online"
     }, /* @__PURE__ */ import_react13.default.createElement("i", {
       className: "far fa-user fa-sm"
-    }), " ", online.length), /* @__PURE__ */ import_react13.default.createElement("div", {
-      className: "Chat-messagelist",
-      style: { position: "relative" }
-    }, emojiDrawerOpen && /* @__PURE__ */ import_react13.default.createElement(EmojiDrawer, null), /* @__PURE__ */ import_react13.default.createElement("div", {
-      className: "Chat-messagewrapper",
-      ref: messageWrapper
-    }, messages.map((message, index) => /* @__PURE__ */ import_react13.default.createElement(ChatMessage, {
-      key: message.time,
-      ...message,
-      showUser: message.username !== messages[index - 1]?.username,
-      onDelete: () => deleteMessage(message.text),
-      onQuote: () => {
-      }
-    }))), /* @__PURE__ */ import_react13.default.createElement(UserInput, {
+    }), " ", online.length), emojiDrawerOpen && /* @__PURE__ */ import_react13.default.createElement(EmojiDrawer, null), /* @__PURE__ */ import_react13.default.createElement("div", {
+      style: { width: 600, position: "relative" }
+    }, /* @__PURE__ */ import_react13.default.createElement(ChatMessageList, null)), /* @__PURE__ */ import_react13.default.createElement(UserInput, {
       value: draft,
       onChange: updateDraft,
       onSubmit: handleSendMessage,
       onEmojiButtonClick: () => setEmojiDrawerOpen((prev2) => !prev2)
     }, /* @__PURE__ */ import_react13.default.createElement("small", {
       className: "Chat-typing"
-    }, usersTyping)))), /* @__PURE__ */ import_react13.default.createElement(UserList, {
+    }, usersTyping))), /* @__PURE__ */ import_react13.default.createElement(UserList, {
       users: online
     }));
   }
@@ -26102,16 +26068,21 @@
     }
   }
 
+  // src/App.tsx
+  function App() {
+    return /* @__PURE__ */ import_react14.default.createElement("div", null, /* @__PURE__ */ import_react14.default.createElement(Chat, null));
+  }
+
   // src/Layout.tsx
   function Layout() {
-    return /* @__PURE__ */ import_react14.default.createElement("div", {
+    return /* @__PURE__ */ import_react15.default.createElement(ChatProvider, null, /* @__PURE__ */ import_react15.default.createElement("div", {
       className: "Layout"
-    }, /* @__PURE__ */ import_react14.default.createElement(ChatProvider, null, /* @__PURE__ */ import_react14.default.createElement(Activity, null), /* @__PURE__ */ import_react14.default.createElement(Chat, null)));
+    }, /* @__PURE__ */ import_react15.default.createElement(App, null)));
   }
 
   // src/index.tsx
   var root = (0, import_client.createRoot)(document.getElementById("root"));
-  root.render(/* @__PURE__ */ import_react15.default.createElement(Layout, null));
+  root.render(/* @__PURE__ */ import_react16.default.createElement(Layout, null));
 })();
 /**
  * @license React

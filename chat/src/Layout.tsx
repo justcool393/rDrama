@@ -1,15 +1,14 @@
 import React from "react";
-import { Activity, Chat } from "./features";
+import { App } from "./App";
 import { ChatProvider } from "./hooks";
 import "./Layout.css";
 
 export function Layout() {
   return (
-    <div className="Layout">
-      <ChatProvider>
-        <Activity />
-        <Chat />
-      </ChatProvider>
-    </div>
+    <ChatProvider>
+      <div className="Layout">
+        <App />
+      </div>
+    </ChatProvider>
   );
 }

@@ -8,22 +8,13 @@ import React, {
 } from "react";
 import { useChat } from "../../../hooks";
 import { EmojiDrawer } from "../../emoji";
-import { ChatMessage } from "./ChatMessage";
+import { ChatMessageList } from "./ChatMessage";
 import { UserInput } from "./UserInput";
 import { UserList } from "./UserList";
 import "./Chat.css";
 
 export function Chat() {
-  const messageWrapper = useRef<HTMLDivElement>(null);
-  const {
-    online,
-    typing,
-    messages,
-    draft,
-    sendMessage,
-    deleteMessage,
-    updateDraft,
-  } = useChat();
+  const { online, typing, draft, sendMessage, updateDraft } = useChat();
   const usersTyping = useMemo(() => formatTypingString(typing), [typing]);
   const [emojiDrawerOpen, setEmojiDrawerOpen] = useState(false);
   const handleSendMessage = useCallback(
@@ -34,38 +25,24 @@ export function Chat() {
     [sendMessage]
   );
 
-  useEffect(() => {
-    messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
-  }, [messages]);
-
   return (
     <section className="Chat">
       <div className="Chat-left">
         <div className="Chat-online">
           <i className="far fa-user fa-sm" /> {online.length}
         </div>
-        <div className="Chat-messagelist" style={{ position: "relative" }}>
-          {emojiDrawerOpen && <EmojiDrawer />}
-          <div className="Chat-messagewrapper" ref={messageWrapper}>
-            {messages.map((message, index) => (
-              <ChatMessage
-                key={message.time}
-                {...message}
-                showUser={message.username !== messages[index - 1]?.username}
-                onDelete={() => deleteMessage(message.text)}
-                onQuote={() => {}}
-              />
-            ))}
-          </div>
-          <UserInput
-            value={draft}
-            onChange={updateDraft}
-            onSubmit={handleSendMessage}
-            onEmojiButtonClick={() => setEmojiDrawerOpen((prev) => !prev)}
-          >
-            <small className="Chat-typing">{usersTyping}</small>
-          </UserInput>
+        {emojiDrawerOpen && <EmojiDrawer />}
+        <div style={{ width: 600, position: "relative" }}>
+          <ChatMessageList />
         </div>
+        <UserInput
+          value={draft}
+          onChange={updateDraft}
+          onSubmit={handleSendMessage}
+          onEmojiButtonClick={() => setEmojiDrawerOpen((prev) => !prev)}
+        >
+          <small className="Chat-typing">{usersTyping}</small>
+        </UserInput>
       </div>
       <UserList users={online} />
     </section>

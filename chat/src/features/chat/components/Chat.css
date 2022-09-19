@@ -23,8 +23,3 @@
   align-items: center;
   min-height: 18px;
 }
-
-.Chat-messagewrapper {
-  height: 640px;
-  overflow: auto;
-}
