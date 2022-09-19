@@ -26,10 +26,13 @@ export function Chat() {
   } = useChat();
   const usersTyping = useMemo(() => formatTypingString(typing), [typing]);
   const [emojiDrawerOpen, setEmojiDrawerOpen] = useState(false);
-  const handleSendMessage = useCallback((event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    sendMessage();
-  }, [])
+  const handleSendMessage = useCallback(
+    (event?: FormEvent<HTMLFormElement>) => {
+      event?.preventDefault();
+      sendMessage();
+    },
+    [sendMessage]
+  );
 
   useEffect(() => {
     messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
@@ -54,7 +57,6 @@ export function Chat() {
               />
             ))}
           </div>
-
           <UserInput
             value={draft}
             onChange={updateDraft}
@@ -99,4 +101,21 @@ function formatTypingString(typing: string[]) {
         </div>
       );
   }
+}
+
+function autoExpand(input: HTMLTextAreaElement) {
+  const convert = (from: string) => parseInt(from, 10);
+  const [x, y] = [window.scrollX, window.scrollY];
+  const computedStyle = window.getComputedStyle(input);
+  const elements = [
+    "border-top-width",
+    "border-bottom-width",
+    "padding-top",
+    "padding-bottom",
+  ].map((element) => convert(computedStyle.getPropertyValue(element)));
+  const elementHeight = elements.reduce((prev, next) => prev + next, 0);
+
+  input.style.height = `${elementHeight + input.scrollHeight}px`;
+
+  window.scrollTo(x, y);
 }

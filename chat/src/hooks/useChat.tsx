@@ -73,7 +73,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
       deleteMessage: requestDeleteMessage,
       updateDraft: setDraft,
     }),
-    [online, typing, messages, draft, sendMessage, deleteMessage, setDraft]
+    [online, typing, messages, draft, sendMessage, deleteMessage]
   );
 
   // Initialize the socket.
