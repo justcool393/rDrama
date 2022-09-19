@@ -22909,38 +22909,6 @@
 
   // src/features/activity/components/Activity.tsx
   var import_react = __toESM(require_react());
-  var ACTIVITIES = [
-    {
-      icon: "circle",
-      title: "Roulette",
-      description: "Round and round the wheel of fate turns."
-    },
-    {
-      icon: "cards",
-      title: "Blackjack",
-      description: "Twenty one ways to change your life."
-    },
-    {
-      icon: "dollar-sign",
-      title: "Slots",
-      description: "Today's your lucky day."
-    },
-    {
-      icon: "dollar-sign",
-      title: "Racing",
-      description: "Make it all back at the track."
-    },
-    { icon: "dollar-sign", title: "Crossing", description: "Take a load off." }
-  ];
-  function Activity() {
-    return /* @__PURE__ */ import_react.default.createElement("div", {
-      className: "Activity"
-    }, ACTIVITIES.map((activity) => /* @__PURE__ */ import_react.default.createElement("section", {
-      key: activity.title
-    }, /* @__PURE__ */ import_react.default.createElement("i", {
-      className: `fas fa-${activity.icon}`
-    }), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h4", null, activity.title), /* @__PURE__ */ import_react.default.createElement("p", null, activity.description)))));
-  }
 
   // src/features/chat/components/Chat.tsx
   var import_react11 = __toESM(require_react());
@@ -25958,6 +25926,7 @@
 
   // src/features/chat/components/Chat.tsx
   function Chat() {
+    const messageWrapper = (0, import_react11.useRef)(null);
     const socket = (0, import_react11.useRef)(null);
     const [online, setOnline] = (0, import_react11.useState)([]);
     const [typing, setTyping] = (0, import_react11.useState)([]);
@@ -25995,6 +25964,9 @@
     (0, import_react11.useEffect)(() => {
       socket.current?.emit("typing" /* TYPING */, draft);
     }, [draft]);
+    (0, import_react11.useEffect)(() => {
+      messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
+    }, [messages]);
     return /* @__PURE__ */ import_react11.default.createElement("section", {
       className: "Chat"
     }, /* @__PURE__ */ import_react11.default.createElement("div", {
@@ -26006,12 +25978,15 @@
     }), " ", online.length), /* @__PURE__ */ import_react11.default.createElement("div", {
       className: "Chat-messagelist",
       style: { position: "relative" }
-    }, emojiDrawerOpen && /* @__PURE__ */ import_react11.default.createElement(EmojiDrawer, null), messages.map((message, index) => /* @__PURE__ */ import_react11.default.createElement(ChatMessage, {
+    }, emojiDrawerOpen && /* @__PURE__ */ import_react11.default.createElement(EmojiDrawer, null), /* @__PURE__ */ import_react11.default.createElement("div", {
+      className: "Chat-messagewrapper",
+      ref: messageWrapper
+    }, messages.map((message, index) => /* @__PURE__ */ import_react11.default.createElement(ChatMessage, {
       key: message.time,
       ...message,
       showUser: message.username !== messages[index - 1]?.username,
       onDelete: () => requestDeleteMessage(message.text)
-    })), /* @__PURE__ */ import_react11.default.createElement(UserInput, {
+    }))), /* @__PURE__ */ import_react11.default.createElement(UserInput, {
       value: draft,
       onChange: setDraft,
       onSubmit: sendMessage,
@@ -26044,7 +26019,7 @@
   function Layout() {
     return /* @__PURE__ */ import_react12.default.createElement("div", {
       className: "Layout"
-    }, /* @__PURE__ */ import_react12.default.createElement(Activity, null), /* @__PURE__ */ import_react12.default.createElement(Chat, null));
+    }, /* @__PURE__ */ import_react12.default.createElement(Chat, null));
   }
 
   // src/index.tsx

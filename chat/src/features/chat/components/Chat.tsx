@@ -23,6 +23,7 @@ enum ChatHandlers {
 }
 
 export function Chat() {
+  const messageWrapper = useRef<HTMLDivElement>(null);
   const socket = useRef<null | Socket>(null);
   const [online, setOnline] = useState<string[]>([]);
   const [typing, setTyping] = useState<string[]>([]);
@@ -70,6 +71,10 @@ export function Chat() {
     socket.current?.emit(ChatHandlers.TYPING, draft);
   }, [draft]);
 
+  useEffect(() => {
+    messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
+  }, [messages]);
+
   return (
     <section className="Chat">
       <div className="Chat-left">
@@ -78,14 +83,17 @@ export function Chat() {
         </div>
         <div className="Chat-messagelist" style={{ position: "relative" }}>
           {emojiDrawerOpen && <EmojiDrawer />}
-          {messages.map((message, index) => (
-            <ChatMessage
-              key={message.time}
-              {...message}
-              showUser={message.username !== messages[index - 1]?.username}
-              onDelete={() => requestDeleteMessage(message.text)}
-            />
-          ))}
+          <div className="Chat-messagewrapper" ref={messageWrapper}>
+            {messages.map((message, index) => (
+              <ChatMessage
+                key={message.time}
+                {...message}
+                showUser={message.username !== messages[index - 1]?.username}
+                onDelete={() => requestDeleteMessage(message.text)}
+              />
+            ))}
+          </div>
+
           <UserInput
             value={draft}
             onChange={setDraft}
