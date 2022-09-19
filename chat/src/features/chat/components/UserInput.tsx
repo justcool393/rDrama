@@ -13,6 +13,7 @@ interface UserInputProps extends PropsWithChildren {
   value: string;
   onChange(newValue: string): void;
   onSubmit(event?: FormEvent<HTMLFormElement>): void;
+  onEmojiButtonClick(): void;
 }
 
 export function UserInput({
@@ -20,6 +21,7 @@ export function UserInput({
   children = null,
   onChange,
   onSubmit,
+  onEmojiButtonClick
 }: UserInputProps) {
   const form = useRef<HTMLFormElement>(null);
   const handleChange = useCallback(
@@ -37,7 +39,7 @@ export function UserInput({
 
   return (
     <form ref={form} className="UserInput" onSubmit={onSubmit}>
-      <EmojiPickerButton />
+      <EmojiPickerButton onClick={onEmojiButtonClick} />
       <div>
         <textarea
           id="builtChatInput"

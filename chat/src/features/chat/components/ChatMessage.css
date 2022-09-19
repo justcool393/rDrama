@@ -3,7 +3,7 @@
   position: relative;
 }
 
-.ChatMessage:nth-child(even) {
+.ChatMessage:not(.EmojiDrawer):nth-of-type(even) {
   background: rgba(255, 255, 255, 0.02);
 }
 

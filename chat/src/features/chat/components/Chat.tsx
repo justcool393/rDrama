@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
-import { EmojiDrawer } from "../../emoji"
+import { EmojiDrawer } from "../../emoji";
 import { ChatMessage } from "./ChatMessage";
 import { UserInput } from "./UserInput";
 import { UserList } from "./UserList";
@@ -28,6 +28,7 @@ export function Chat() {
   const [typing, setTyping] = useState<string[]>([]);
   const [messages, setMessages] = useState<ChatSpeakResponse[]>([]);
   const [draft, setDraft] = useState("");
+  const [emojiDrawerOpen, setEmojiDrawerOpen] = useState(false);
   const usersTyping = useMemo(() => formatTypingString(typing), [typing]);
   const addMessage = useCallback(
     (message: ChatSpeakResponse) => setMessages((prev) => prev.concat(message)),
@@ -75,8 +76,8 @@ export function Chat() {
         <div className="Chat-online">
           <i className="far fa-user fa-sm" /> {online.length}
         </div>
-        <div>
-          <EmojiDrawer />
+        <div style={{ position: "relative" }}>
+          {emojiDrawerOpen && <EmojiDrawer />}
           {messages.map((message, index) => (
             <ChatMessage
               key={message.time}
@@ -86,7 +87,12 @@ export function Chat() {
             />
           ))}
         </div>
-        <UserInput value={draft} onChange={setDraft} onSubmit={sendMessage}>
+        <UserInput
+          value={draft}
+          onChange={setDraft}
+          onSubmit={sendMessage}
+          onEmojiButtonClick={() => setEmojiDrawerOpen((prev) => !prev)}
+        >
           {usersTyping && <small className="Chat-typing">{usersTyping}</small>}
         </UserInput>
       </div>

@@ -1,0 +1,21 @@
+.EmojiDrawer {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: -400px;
+  width: 50%;
+  min-width: 400px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  overflow: auto;
+}
+
+@keyframes sliding-in {
+    to {
+        left: 0;
+    }
+}
+
+.sliding-in {
+    animation: sliding-in 0.3s ease-in-out forwards;
+}

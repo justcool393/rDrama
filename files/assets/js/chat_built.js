@@ -220,14 +220,14 @@
           function ComponentDummy() {
           }
           ComponentDummy.prototype = Component.prototype;
-          function PureComponent(props, context, updater) {
+          function PureComponent2(props, context, updater) {
             this.props = props;
             this.context = context;
             this.refs = emptyObject;
             this.updater = updater || ReactNoopUpdateQueue;
           }
-          var pureComponentPrototype = PureComponent.prototype = new ComponentDummy();
-          pureComponentPrototype.constructor = PureComponent;
+          var pureComponentPrototype = PureComponent2.prototype = new ComponentDummy();
+          pureComponentPrototype.constructor = PureComponent2;
           assign(pureComponentPrototype, Component.prototype);
           pureComponentPrototype.isPureReactComponent = true;
           function createRef() {
@@ -451,7 +451,7 @@
             }
             return element;
           };
-          function createElement(type, config, children) {
+          function createElement2(type, config, children) {
             var propName;
             var props = {};
             var key = null;
@@ -1004,7 +1004,7 @@
             }
             return dispatcher.useContext(Context);
           }
-          function useState3(initialState) {
+          function useState4(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1016,7 +1016,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect3(create, deps) {
+          function useEffect4(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1028,11 +1028,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useLayoutEffect(create, deps);
           }
-          function useCallback3(callback, deps) {
+          function useCallback4(callback, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useCallback(callback, deps);
           }
-          function useMemo2(create, deps) {
+          function useMemo3(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create, deps);
           }
@@ -1527,7 +1527,7 @@
                 error("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
               }
             }
-            var element = createElement.apply(this, arguments);
+            var element = createElement2.apply(this, arguments);
             if (element == null) {
               return element;
             }
@@ -1777,7 +1777,7 @@
           exports.Component = Component;
           exports.Fragment = REACT_FRAGMENT_TYPE;
           exports.Profiler = REACT_PROFILER_TYPE;
-          exports.PureComponent = PureComponent;
+          exports.PureComponent = PureComponent2;
           exports.StrictMode = REACT_STRICT_MODE_TYPE;
           exports.Suspense = REACT_SUSPENSE_TYPE;
           exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
@@ -1792,19 +1792,19 @@
           exports.memo = memo;
           exports.startTransition = startTransition;
           exports.unstable_act = act;
-          exports.useCallback = useCallback3;
+          exports.useCallback = useCallback4;
           exports.useContext = useContext;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect3;
+          exports.useEffect = useEffect4;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
-          exports.useMemo = useMemo2;
+          exports.useMemo = useMemo3;
           exports.useReducer = useReducer;
           exports.useRef = useRef3;
-          exports.useState = useState3;
+          exports.useState = useState4;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -3819,7 +3819,7 @@
           var didWarnSelectedSetOnOption = false;
           var didWarnInvalidChild = false;
           var didWarnInvalidInnerHTML = false;
-          function validateProps(element, props) {
+          function validateProps2(element, props) {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
@@ -5734,7 +5734,7 @@
           var cancelCallback = Scheduler.unstable_cancelCallback;
           var shouldYield = Scheduler.unstable_shouldYield;
           var requestPaint = Scheduler.unstable_requestPaint;
-          var now = Scheduler.unstable_now;
+          var now2 = Scheduler.unstable_now;
           var getCurrentPriorityLevel = Scheduler.unstable_getCurrentPriorityLevel;
           var ImmediatePriority = Scheduler.unstable_ImmediatePriority;
           var UserBlockingPriority = Scheduler.unstable_UserBlockingPriority;
@@ -8956,7 +8956,7 @@
               }
             }
           }
-          function createElement(type, props, rootContainerElement, parentNamespace) {
+          function createElement2(type, props, rootContainerElement, parentNamespace) {
             var isCustomComponentTag;
             var ownerDocument = getOwnerDocumentFromRootContainer(rootContainerElement);
             var domElement;
@@ -9053,7 +9053,7 @@
                 listenToNonDelegatedEvent("invalid", domElement);
                 break;
               case "option":
-                validateProps(domElement, rawProps);
+                validateProps2(domElement, rawProps);
                 props = rawProps;
                 break;
               case "select":
@@ -9300,7 +9300,7 @@
                 listenToNonDelegatedEvent("invalid", domElement);
                 break;
               case "option":
-                validateProps(domElement, rawProps);
+                validateProps2(domElement, rawProps);
                 break;
               case "select":
                 initWrapperState$1(domElement, rawProps);
@@ -9808,7 +9808,7 @@
               }
               parentNamespace = hostContextDev.namespace;
             }
-            var domElement = createElement(type, props, rootContainerInstance, parentNamespace);
+            var domElement = createElement2(type, props, rootContainerInstance, parentNamespace);
             precacheFiberNode(internalInstanceHandle, domElement);
             updateFiberProps(domElement, props);
             return domElement;
@@ -9861,7 +9861,7 @@
             return getEventPriority(currentEvent.type);
           }
           var scheduleTimeout = typeof setTimeout === "function" ? setTimeout : void 0;
-          var cancelTimeout = typeof clearTimeout === "function" ? clearTimeout : void 0;
+          var cancelTimeout2 = typeof clearTimeout === "function" ? clearTimeout : void 0;
           var noTimeout = -1;
           var localPromise = typeof Promise === "function" ? Promise : void 0;
           var scheduleMicrotask = typeof queueMicrotask === "function" ? queueMicrotask : typeof localPromise !== "undefined" ? function(callback) {
@@ -17785,7 +17785,7 @@
                         row = row.sibling;
                       }
                     }
-                    if (renderState.tail !== null && now() > getRenderTargetTime()) {
+                    if (renderState.tail !== null && now2() > getRenderTargetTime()) {
                       workInProgress2.flags |= DidCapture;
                       didSuspendAlready = true;
                       cutOffTailIfNeeded(renderState, false);
@@ -17810,7 +17810,7 @@
                         bubbleProperties(workInProgress2);
                         return null;
                       }
-                    } else if (now() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane) {
+                    } else if (now2() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane) {
                       workInProgress2.flags |= DidCapture;
                       didSuspendAlready = true;
                       cutOffTailIfNeeded(renderState, false);
@@ -17834,7 +17834,7 @@
                   var next = renderState.tail;
                   renderState.rendering = next;
                   renderState.tail = next.sibling;
-                  renderState.renderingStartTime = now();
+                  renderState.renderingStartTime = now2();
                   next.sibling = null;
                   var suspenseContext = suspenseStackCursor.current;
                   if (didSuspendAlready) {
@@ -19785,7 +19785,7 @@
           var RENDER_TIMEOUT_MS = 500;
           var workInProgressTransitions = null;
           function resetRenderTimer() {
-            workInProgressRootRenderTargetTime = now() + RENDER_TIMEOUT_MS;
+            workInProgressRootRenderTargetTime = now2() + RENDER_TIMEOUT_MS;
           }
           function getRenderTargetTime() {
             return workInProgressRootRenderTargetTime;
@@ -19814,12 +19814,12 @@
           }
           function requestEventTime() {
             if ((executionContext & (RenderContext | CommitContext)) !== NoContext) {
-              return now();
+              return now2();
             }
             if (currentEventTime !== NoTimestamp) {
               return currentEventTime;
             }
-            currentEventTime = now();
+            currentEventTime = now2();
             return currentEventTime;
           }
           function requestUpdateLane(fiber) {
@@ -20008,7 +20008,7 @@
                 var fatalError = workInProgressRootFatalError;
                 prepareFreshStack(root3, NoLanes);
                 markRootSuspended$1(root3, lanes);
-                ensureRootIsScheduled(root3, now());
+                ensureRootIsScheduled(root3, now2());
                 throw fatalError;
               }
               if (exitStatus === RootDidNotComplete) {
@@ -20029,7 +20029,7 @@
                     var _fatalError = workInProgressRootFatalError;
                     prepareFreshStack(root3, NoLanes);
                     markRootSuspended$1(root3, lanes);
-                    ensureRootIsScheduled(root3, now());
+                    ensureRootIsScheduled(root3, now2());
                     throw _fatalError;
                   }
                 }
@@ -20038,7 +20038,7 @@
                 finishConcurrentRender(root3, exitStatus, lanes);
               }
             }
-            ensureRootIsScheduled(root3, now());
+            ensureRootIsScheduled(root3, now2());
             if (root3.callbackNode === originalCallbackNode) {
               return performConcurrentWorkOnRoot.bind(null, root3);
             }
@@ -20083,7 +20083,7 @@
               case RootSuspended: {
                 markRootSuspended$1(root3, lanes);
                 if (includesOnlyRetries(lanes) && !shouldForceFlushFallbacksInDEV()) {
-                  var msUntilTimeout = globalMostRecentFallbackTime + FALLBACK_THROTTLE_MS - now();
+                  var msUntilTimeout = globalMostRecentFallbackTime + FALLBACK_THROTTLE_MS - now2();
                   if (msUntilTimeout > 10) {
                     var nextLanes = getNextLanes(root3, NoLanes);
                     if (nextLanes !== NoLanes) {
@@ -20110,7 +20110,7 @@
                 if (!shouldForceFlushFallbacksInDEV()) {
                   var mostRecentEventTime = getMostRecentEventTime(root3, lanes);
                   var eventTimeMs = mostRecentEventTime;
-                  var timeElapsedMs = now() - eventTimeMs;
+                  var timeElapsedMs = now2() - eventTimeMs;
                   var _msUntilTimeout = jnd(timeElapsedMs) - timeElapsedMs;
                   if (_msUntilTimeout > 10) {
                     root3.timeoutHandle = scheduleTimeout(commitRoot.bind(null, root3, workInProgressRootRecoverableErrors, workInProgressTransitions), _msUntilTimeout);
@@ -20187,7 +20187,7 @@
             flushPassiveEffects();
             var lanes = getNextLanes(root3, NoLanes);
             if (!includesSomeLane(lanes, SyncLane)) {
-              ensureRootIsScheduled(root3, now());
+              ensureRootIsScheduled(root3, now2());
               return null;
             }
             var exitStatus = renderRootSync(root3, lanes);
@@ -20202,7 +20202,7 @@
               var fatalError = workInProgressRootFatalError;
               prepareFreshStack(root3, NoLanes);
               markRootSuspended$1(root3, lanes);
-              ensureRootIsScheduled(root3, now());
+              ensureRootIsScheduled(root3, now2());
               throw fatalError;
             }
             if (exitStatus === RootDidNotComplete) {
@@ -20212,13 +20212,13 @@
             root3.finishedWork = finishedWork;
             root3.finishedLanes = lanes;
             commitRoot(root3, workInProgressRootRecoverableErrors, workInProgressTransitions);
-            ensureRootIsScheduled(root3, now());
+            ensureRootIsScheduled(root3, now2());
             return null;
           }
           function flushRoot(root3, lanes) {
             if (lanes !== NoLanes) {
               markRootEntangled(root3, mergeLanes(lanes, SyncLane));
-              ensureRootIsScheduled(root3, now());
+              ensureRootIsScheduled(root3, now2());
               if ((executionContext & (RenderContext | CommitContext)) === NoContext) {
                 resetRenderTimer();
                 flushSyncCallbacks();
@@ -20296,7 +20296,7 @@
             var timeoutHandle = root3.timeoutHandle;
             if (timeoutHandle !== noTimeout) {
               root3.timeoutHandle = noTimeout;
-              cancelTimeout(timeoutHandle);
+              cancelTimeout2(timeoutHandle);
             }
             if (workInProgress !== null) {
               var interruptedWork = workInProgress.return;
@@ -20377,7 +20377,7 @@
             ReactCurrentDispatcher$2.current = prevDispatcher;
           }
           function markCommitTimeOfFallback() {
-            globalMostRecentFallbackTime = now();
+            globalMostRecentFallbackTime = now2();
           }
           function markSkippedUpdateLanes(lane) {
             workInProgressRootSkippedLanes = mergeLanes(lane, workInProgressRootSkippedLanes);
@@ -20711,7 +20711,7 @@
             {
               onCommitRoot$1();
             }
-            ensureRootIsScheduled(root3, now());
+            ensureRootIsScheduled(root3, now2());
             if (recoverableErrors !== null) {
               var onRecoverableError = root3.onRecoverableError;
               for (var i2 = 0; i2 < recoverableErrors.length; i2++) {
@@ -20918,7 +20918,7 @@
             markRootPinged(root3, pingedLanes);
             warnIfSuspenseResolutionNotWrappedWithActDEV(root3);
             if (workInProgressRoot === root3 && isSubsetOfLanes(workInProgressRootRenderLanes, pingedLanes)) {
-              if (workInProgressRootExitStatus === RootSuspendedWithDelay || workInProgressRootExitStatus === RootSuspended && includesOnlyRetries(workInProgressRootRenderLanes) && now() - globalMostRecentFallbackTime < FALLBACK_THROTTLE_MS) {
+              if (workInProgressRootExitStatus === RootSuspendedWithDelay || workInProgressRootExitStatus === RootSuspended && includesOnlyRetries(workInProgressRootRenderLanes) && now2() - globalMostRecentFallbackTime < FALLBACK_THROTTLE_MS) {
                 prepareFreshStack(root3, NoLanes);
               } else {
                 workInProgressRootPingedLanes = mergeLanes(workInProgressRootPingedLanes, pingedLanes);
@@ -22901,11 +22901,11 @@
   });
 
   // src/index.tsx
-  var import_react9 = __toESM(require_react());
+  var import_react11 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // src/features/chat/components/Chat.tsx
-  var import_react8 = __toESM(require_react());
+  var import_react10 = __toESM(require_react());
 
   // node_modules/engine.io-parser/build/esm/commons.js
   var PACKET_TYPES = /* @__PURE__ */ Object.create(null);
@@ -23263,10 +23263,10 @@
     return encoded;
   }
   function yeast() {
-    const now = encode(+new Date());
-    if (now !== prev)
-      return seed = 0, prev = now;
-    return now + "." + encode(seed++);
+    const now2 = encode(+new Date());
+    if (now2 !== prev)
+      return seed = 0, prev = now2;
+    return now2 + "." + encode(seed++);
   }
   for (; i < length; i++)
     map[alphabet[i]] = i;
@@ -25128,45 +25128,27 @@
   });
 
   // src/features/emoji/components/EmojiDrawer.tsx
-  var import_react = __toESM(require_react());
-  function EmojiDrawer() {
-    return /* @__PURE__ */ import_react.default.createElement("div", null, "Drawer");
-  }
-
-  // src/features/chat/components/ChatMessage.tsx
   var import_react4 = __toESM(require_react());
 
-  // src/features/chat/components/Username.tsx
-  var import_react2 = __toESM(require_react());
-  function Username({ avatar, color, name, hat = "" }) {
-    return /* @__PURE__ */ import_react2.default.createElement("div", {
-      className: "Username"
-    }, /* @__PURE__ */ import_react2.default.createElement("div", {
-      className: "profile-pic-20-wrapper"
-    }, /* @__PURE__ */ import_react2.default.createElement("img", {
-      alt: name,
-      src: avatar,
-      className: "pp20"
-    }), hat && /* @__PURE__ */ import_react2.default.createElement("img", {
-      className: "avatar-hat profile-pic-20-hat hat",
-      loading: "lazy",
-      src: hat
-    })), /* @__PURE__ */ import_react2.default.createElement("a", {
-      className: "userlink",
-      style: { color: `#${color}` },
-      target: "_blank",
-      href: "/@111"
-    }, "111"));
+  // src/hooks/useEmojis.ts
+  var import_react = __toESM(require_react());
+  function useEmojis() {
+    const [error, setError] = (0, import_react.useState)("");
+    const [emojis, setEmojis] = (0, import_react.useState)([]);
+    (0, import_react.useEffect)(() => {
+      fetch("/marsey_list.json").then((res) => res.json()).then(setEmojis).catch(setError);
+    }, []);
+    return [error, emojis];
   }
 
   // src/hooks/useLoggedInUser.ts
-  var import_react3 = __toESM(require_react());
+  var import_react2 = __toESM(require_react());
   function useLoggedInUser() {
-    const [{ admin, censored }, setContext] = (0, import_react3.useState)({
+    const [{ admin, censored }, setContext] = (0, import_react2.useState)({
       admin: false,
       censored: true
     });
-    (0, import_react3.useEffect)(() => {
+    (0, import_react2.useEffect)(() => {
       const root2 = document.getElementById("root");
       setContext({
         admin: root2.dataset.admin === "True",
@@ -25174,6 +25156,651 @@
       });
     }, []);
     return { admin, censored };
+  }
+
+  // node_modules/@babel/runtime/helpers/esm/extends.js
+  function _extends() {
+    _extends = Object.assign ? Object.assign.bind() : function(target) {
+      for (var i2 = 1; i2 < arguments.length; i2++) {
+        var source = arguments[i2];
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+      return target;
+    };
+    return _extends.apply(this, arguments);
+  }
+
+  // node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js
+  function _assertThisInitialized(self2) {
+    if (self2 === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+    return self2;
+  }
+
+  // node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js
+  function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p2) {
+      o2.__proto__ = p2;
+      return o2;
+    };
+    return _setPrototypeOf(o, p);
+  }
+
+  // node_modules/@babel/runtime/helpers/esm/inheritsLoose.js
+  function _inheritsLoose(subClass, superClass) {
+    subClass.prototype = Object.create(superClass.prototype);
+    subClass.prototype.constructor = subClass;
+    _setPrototypeOf(subClass, superClass);
+  }
+
+  // node_modules/memoize-one/dist/memoize-one.esm.js
+  var safeIsNaN = Number.isNaN || function ponyfill(value2) {
+    return typeof value2 === "number" && value2 !== value2;
+  };
+  function isEqual(first, second) {
+    if (first === second) {
+      return true;
+    }
+    if (safeIsNaN(first) && safeIsNaN(second)) {
+      return true;
+    }
+    return false;
+  }
+  function areInputsEqual(newInputs, lastInputs) {
+    if (newInputs.length !== lastInputs.length) {
+      return false;
+    }
+    for (var i2 = 0; i2 < newInputs.length; i2++) {
+      if (!isEqual(newInputs[i2], lastInputs[i2])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  function memoizeOne(resultFn, isEqual2) {
+    if (isEqual2 === void 0) {
+      isEqual2 = areInputsEqual;
+    }
+    var lastThis;
+    var lastArgs = [];
+    var lastResult;
+    var calledOnce = false;
+    function memoized() {
+      var newArgs = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        newArgs[_i] = arguments[_i];
+      }
+      if (calledOnce && lastThis === this && isEqual2(newArgs, lastArgs)) {
+        return lastResult;
+      }
+      lastResult = resultFn.apply(this, newArgs);
+      calledOnce = true;
+      lastThis = this;
+      lastArgs = newArgs;
+      return lastResult;
+    }
+    return memoized;
+  }
+  var memoize_one_esm_default = memoizeOne;
+
+  // node_modules/react-window/dist/index.esm.js
+  var import_react3 = __toESM(require_react());
+  var hasNativePerformanceNow = typeof performance === "object" && typeof performance.now === "function";
+  var now = hasNativePerformanceNow ? function() {
+    return performance.now();
+  } : function() {
+    return Date.now();
+  };
+  function cancelTimeout(timeoutID) {
+    cancelAnimationFrame(timeoutID.id);
+  }
+  function requestTimeout(callback, delay) {
+    var start = now();
+    function tick() {
+      if (now() - start >= delay) {
+        callback.call(null);
+      } else {
+        timeoutID.id = requestAnimationFrame(tick);
+      }
+    }
+    var timeoutID = {
+      id: requestAnimationFrame(tick)
+    };
+    return timeoutID;
+  }
+  var cachedRTLResult = null;
+  function getRTLOffsetType(recalculate) {
+    if (recalculate === void 0) {
+      recalculate = false;
+    }
+    if (cachedRTLResult === null || recalculate) {
+      var outerDiv = document.createElement("div");
+      var outerStyle = outerDiv.style;
+      outerStyle.width = "50px";
+      outerStyle.height = "50px";
+      outerStyle.overflow = "scroll";
+      outerStyle.direction = "rtl";
+      var innerDiv = document.createElement("div");
+      var innerStyle = innerDiv.style;
+      innerStyle.width = "100px";
+      innerStyle.height = "100px";
+      outerDiv.appendChild(innerDiv);
+      document.body.appendChild(outerDiv);
+      if (outerDiv.scrollLeft > 0) {
+        cachedRTLResult = "positive-descending";
+      } else {
+        outerDiv.scrollLeft = 1;
+        if (outerDiv.scrollLeft === 0) {
+          cachedRTLResult = "negative";
+        } else {
+          cachedRTLResult = "positive-ascending";
+        }
+      }
+      document.body.removeChild(outerDiv);
+      return cachedRTLResult;
+    }
+    return cachedRTLResult;
+  }
+  var devWarningsOverscanCount = null;
+  var devWarningsOverscanRowsColumnsCount = null;
+  var devWarningsTagName = null;
+  if (true) {
+    if (typeof window !== "undefined" && typeof window.WeakSet !== "undefined") {
+      devWarningsOverscanCount = /* @__PURE__ */ new WeakSet();
+      devWarningsOverscanRowsColumnsCount = /* @__PURE__ */ new WeakSet();
+      devWarningsTagName = /* @__PURE__ */ new WeakSet();
+    }
+  }
+  var IS_SCROLLING_DEBOUNCE_INTERVAL$1 = 150;
+  var defaultItemKey$1 = function defaultItemKey(index, data) {
+    return index;
+  };
+  var devWarningsDirection = null;
+  var devWarningsTagName$1 = null;
+  if (true) {
+    if (typeof window !== "undefined" && typeof window.WeakSet !== "undefined") {
+      devWarningsDirection = /* @__PURE__ */ new WeakSet();
+      devWarningsTagName$1 = /* @__PURE__ */ new WeakSet();
+    }
+  }
+  function createListComponent(_ref) {
+    var _class;
+    var getItemOffset2 = _ref.getItemOffset, getEstimatedTotalSize2 = _ref.getEstimatedTotalSize, getItemSize2 = _ref.getItemSize, getOffsetForIndexAndAlignment2 = _ref.getOffsetForIndexAndAlignment, getStartIndexForOffset2 = _ref.getStartIndexForOffset, getStopIndexForStartIndex2 = _ref.getStopIndexForStartIndex, initInstanceProps2 = _ref.initInstanceProps, shouldResetStyleCacheOnItemSizeChange = _ref.shouldResetStyleCacheOnItemSizeChange, validateProps2 = _ref.validateProps;
+    return _class = /* @__PURE__ */ function(_PureComponent) {
+      _inheritsLoose(List, _PureComponent);
+      function List(props) {
+        var _this;
+        _this = _PureComponent.call(this, props) || this;
+        _this._instanceProps = initInstanceProps2(_this.props, _assertThisInitialized(_this));
+        _this._outerRef = void 0;
+        _this._resetIsScrollingTimeoutId = null;
+        _this.state = {
+          instance: _assertThisInitialized(_this),
+          isScrolling: false,
+          scrollDirection: "forward",
+          scrollOffset: typeof _this.props.initialScrollOffset === "number" ? _this.props.initialScrollOffset : 0,
+          scrollUpdateWasRequested: false
+        };
+        _this._callOnItemsRendered = void 0;
+        _this._callOnItemsRendered = memoize_one_esm_default(function(overscanStartIndex, overscanStopIndex, visibleStartIndex, visibleStopIndex) {
+          return _this.props.onItemsRendered({
+            overscanStartIndex,
+            overscanStopIndex,
+            visibleStartIndex,
+            visibleStopIndex
+          });
+        });
+        _this._callOnScroll = void 0;
+        _this._callOnScroll = memoize_one_esm_default(function(scrollDirection, scrollOffset, scrollUpdateWasRequested) {
+          return _this.props.onScroll({
+            scrollDirection,
+            scrollOffset,
+            scrollUpdateWasRequested
+          });
+        });
+        _this._getItemStyle = void 0;
+        _this._getItemStyle = function(index) {
+          var _this$props = _this.props, direction = _this$props.direction, itemSize = _this$props.itemSize, layout = _this$props.layout;
+          var itemStyleCache = _this._getItemStyleCache(shouldResetStyleCacheOnItemSizeChange && itemSize, shouldResetStyleCacheOnItemSizeChange && layout, shouldResetStyleCacheOnItemSizeChange && direction);
+          var style;
+          if (itemStyleCache.hasOwnProperty(index)) {
+            style = itemStyleCache[index];
+          } else {
+            var _offset = getItemOffset2(_this.props, index, _this._instanceProps);
+            var size = getItemSize2(_this.props, index, _this._instanceProps);
+            var isHorizontal = direction === "horizontal" || layout === "horizontal";
+            var isRtl = direction === "rtl";
+            var offsetHorizontal = isHorizontal ? _offset : 0;
+            itemStyleCache[index] = style = {
+              position: "absolute",
+              left: isRtl ? void 0 : offsetHorizontal,
+              right: isRtl ? offsetHorizontal : void 0,
+              top: !isHorizontal ? _offset : 0,
+              height: !isHorizontal ? size : "100%",
+              width: isHorizontal ? size : "100%"
+            };
+          }
+          return style;
+        };
+        _this._getItemStyleCache = void 0;
+        _this._getItemStyleCache = memoize_one_esm_default(function(_, __, ___) {
+          return {};
+        });
+        _this._onScrollHorizontal = function(event) {
+          var _event$currentTarget = event.currentTarget, clientWidth = _event$currentTarget.clientWidth, scrollLeft = _event$currentTarget.scrollLeft, scrollWidth = _event$currentTarget.scrollWidth;
+          _this.setState(function(prevState) {
+            if (prevState.scrollOffset === scrollLeft) {
+              return null;
+            }
+            var direction = _this.props.direction;
+            var scrollOffset = scrollLeft;
+            if (direction === "rtl") {
+              switch (getRTLOffsetType()) {
+                case "negative":
+                  scrollOffset = -scrollLeft;
+                  break;
+                case "positive-descending":
+                  scrollOffset = scrollWidth - clientWidth - scrollLeft;
+                  break;
+              }
+            }
+            scrollOffset = Math.max(0, Math.min(scrollOffset, scrollWidth - clientWidth));
+            return {
+              isScrolling: true,
+              scrollDirection: prevState.scrollOffset < scrollLeft ? "forward" : "backward",
+              scrollOffset,
+              scrollUpdateWasRequested: false
+            };
+          }, _this._resetIsScrollingDebounced);
+        };
+        _this._onScrollVertical = function(event) {
+          var _event$currentTarget2 = event.currentTarget, clientHeight = _event$currentTarget2.clientHeight, scrollHeight = _event$currentTarget2.scrollHeight, scrollTop = _event$currentTarget2.scrollTop;
+          _this.setState(function(prevState) {
+            if (prevState.scrollOffset === scrollTop) {
+              return null;
+            }
+            var scrollOffset = Math.max(0, Math.min(scrollTop, scrollHeight - clientHeight));
+            return {
+              isScrolling: true,
+              scrollDirection: prevState.scrollOffset < scrollOffset ? "forward" : "backward",
+              scrollOffset,
+              scrollUpdateWasRequested: false
+            };
+          }, _this._resetIsScrollingDebounced);
+        };
+        _this._outerRefSetter = function(ref) {
+          var outerRef = _this.props.outerRef;
+          _this._outerRef = ref;
+          if (typeof outerRef === "function") {
+            outerRef(ref);
+          } else if (outerRef != null && typeof outerRef === "object" && outerRef.hasOwnProperty("current")) {
+            outerRef.current = ref;
+          }
+        };
+        _this._resetIsScrollingDebounced = function() {
+          if (_this._resetIsScrollingTimeoutId !== null) {
+            cancelTimeout(_this._resetIsScrollingTimeoutId);
+          }
+          _this._resetIsScrollingTimeoutId = requestTimeout(_this._resetIsScrolling, IS_SCROLLING_DEBOUNCE_INTERVAL$1);
+        };
+        _this._resetIsScrolling = function() {
+          _this._resetIsScrollingTimeoutId = null;
+          _this.setState({
+            isScrolling: false
+          }, function() {
+            _this._getItemStyleCache(-1, null);
+          });
+        };
+        return _this;
+      }
+      List.getDerivedStateFromProps = function getDerivedStateFromProps(nextProps, prevState) {
+        validateSharedProps$1(nextProps, prevState);
+        validateProps2(nextProps);
+        return null;
+      };
+      var _proto = List.prototype;
+      _proto.scrollTo = function scrollTo(scrollOffset) {
+        scrollOffset = Math.max(0, scrollOffset);
+        this.setState(function(prevState) {
+          if (prevState.scrollOffset === scrollOffset) {
+            return null;
+          }
+          return {
+            scrollDirection: prevState.scrollOffset < scrollOffset ? "forward" : "backward",
+            scrollOffset,
+            scrollUpdateWasRequested: true
+          };
+        }, this._resetIsScrollingDebounced);
+      };
+      _proto.scrollToItem = function scrollToItem(index, align) {
+        if (align === void 0) {
+          align = "auto";
+        }
+        var itemCount = this.props.itemCount;
+        var scrollOffset = this.state.scrollOffset;
+        index = Math.max(0, Math.min(index, itemCount - 1));
+        this.scrollTo(getOffsetForIndexAndAlignment2(this.props, index, align, scrollOffset, this._instanceProps));
+      };
+      _proto.componentDidMount = function componentDidMount() {
+        var _this$props2 = this.props, direction = _this$props2.direction, initialScrollOffset = _this$props2.initialScrollOffset, layout = _this$props2.layout;
+        if (typeof initialScrollOffset === "number" && this._outerRef != null) {
+          var outerRef = this._outerRef;
+          if (direction === "horizontal" || layout === "horizontal") {
+            outerRef.scrollLeft = initialScrollOffset;
+          } else {
+            outerRef.scrollTop = initialScrollOffset;
+          }
+        }
+        this._callPropsCallbacks();
+      };
+      _proto.componentDidUpdate = function componentDidUpdate() {
+        var _this$props3 = this.props, direction = _this$props3.direction, layout = _this$props3.layout;
+        var _this$state = this.state, scrollOffset = _this$state.scrollOffset, scrollUpdateWasRequested = _this$state.scrollUpdateWasRequested;
+        if (scrollUpdateWasRequested && this._outerRef != null) {
+          var outerRef = this._outerRef;
+          if (direction === "horizontal" || layout === "horizontal") {
+            if (direction === "rtl") {
+              switch (getRTLOffsetType()) {
+                case "negative":
+                  outerRef.scrollLeft = -scrollOffset;
+                  break;
+                case "positive-ascending":
+                  outerRef.scrollLeft = scrollOffset;
+                  break;
+                default:
+                  var clientWidth = outerRef.clientWidth, scrollWidth = outerRef.scrollWidth;
+                  outerRef.scrollLeft = scrollWidth - clientWidth - scrollOffset;
+                  break;
+              }
+            } else {
+              outerRef.scrollLeft = scrollOffset;
+            }
+          } else {
+            outerRef.scrollTop = scrollOffset;
+          }
+        }
+        this._callPropsCallbacks();
+      };
+      _proto.componentWillUnmount = function componentWillUnmount() {
+        if (this._resetIsScrollingTimeoutId !== null) {
+          cancelTimeout(this._resetIsScrollingTimeoutId);
+        }
+      };
+      _proto.render = function render() {
+        var _this$props4 = this.props, children = _this$props4.children, className = _this$props4.className, direction = _this$props4.direction, height = _this$props4.height, innerRef = _this$props4.innerRef, innerElementType = _this$props4.innerElementType, innerTagName = _this$props4.innerTagName, itemCount = _this$props4.itemCount, itemData = _this$props4.itemData, _this$props4$itemKey = _this$props4.itemKey, itemKey = _this$props4$itemKey === void 0 ? defaultItemKey$1 : _this$props4$itemKey, layout = _this$props4.layout, outerElementType = _this$props4.outerElementType, outerTagName = _this$props4.outerTagName, style = _this$props4.style, useIsScrolling = _this$props4.useIsScrolling, width = _this$props4.width;
+        var isScrolling = this.state.isScrolling;
+        var isHorizontal = direction === "horizontal" || layout === "horizontal";
+        var onScroll = isHorizontal ? this._onScrollHorizontal : this._onScrollVertical;
+        var _this$_getRangeToRend = this._getRangeToRender(), startIndex = _this$_getRangeToRend[0], stopIndex = _this$_getRangeToRend[1];
+        var items = [];
+        if (itemCount > 0) {
+          for (var _index = startIndex; _index <= stopIndex; _index++) {
+            items.push((0, import_react3.createElement)(children, {
+              data: itemData,
+              key: itemKey(_index, itemData),
+              index: _index,
+              isScrolling: useIsScrolling ? isScrolling : void 0,
+              style: this._getItemStyle(_index)
+            }));
+          }
+        }
+        var estimatedTotalSize = getEstimatedTotalSize2(this.props, this._instanceProps);
+        return (0, import_react3.createElement)(outerElementType || outerTagName || "div", {
+          className,
+          onScroll,
+          ref: this._outerRefSetter,
+          style: _extends({
+            position: "relative",
+            height,
+            width,
+            overflow: "auto",
+            WebkitOverflowScrolling: "touch",
+            willChange: "transform",
+            direction
+          }, style)
+        }, (0, import_react3.createElement)(innerElementType || innerTagName || "div", {
+          children: items,
+          ref: innerRef,
+          style: {
+            height: isHorizontal ? "100%" : estimatedTotalSize,
+            pointerEvents: isScrolling ? "none" : void 0,
+            width: isHorizontal ? estimatedTotalSize : "100%"
+          }
+        }));
+      };
+      _proto._callPropsCallbacks = function _callPropsCallbacks() {
+        if (typeof this.props.onItemsRendered === "function") {
+          var itemCount = this.props.itemCount;
+          if (itemCount > 0) {
+            var _this$_getRangeToRend2 = this._getRangeToRender(), _overscanStartIndex = _this$_getRangeToRend2[0], _overscanStopIndex = _this$_getRangeToRend2[1], _visibleStartIndex = _this$_getRangeToRend2[2], _visibleStopIndex = _this$_getRangeToRend2[3];
+            this._callOnItemsRendered(_overscanStartIndex, _overscanStopIndex, _visibleStartIndex, _visibleStopIndex);
+          }
+        }
+        if (typeof this.props.onScroll === "function") {
+          var _this$state2 = this.state, _scrollDirection = _this$state2.scrollDirection, _scrollOffset = _this$state2.scrollOffset, _scrollUpdateWasRequested = _this$state2.scrollUpdateWasRequested;
+          this._callOnScroll(_scrollDirection, _scrollOffset, _scrollUpdateWasRequested);
+        }
+      };
+      _proto._getRangeToRender = function _getRangeToRender() {
+        var _this$props5 = this.props, itemCount = _this$props5.itemCount, overscanCount = _this$props5.overscanCount;
+        var _this$state3 = this.state, isScrolling = _this$state3.isScrolling, scrollDirection = _this$state3.scrollDirection, scrollOffset = _this$state3.scrollOffset;
+        if (itemCount === 0) {
+          return [0, 0, 0, 0];
+        }
+        var startIndex = getStartIndexForOffset2(this.props, scrollOffset, this._instanceProps);
+        var stopIndex = getStopIndexForStartIndex2(this.props, startIndex, scrollOffset, this._instanceProps);
+        var overscanBackward = !isScrolling || scrollDirection === "backward" ? Math.max(1, overscanCount) : 1;
+        var overscanForward = !isScrolling || scrollDirection === "forward" ? Math.max(1, overscanCount) : 1;
+        return [Math.max(0, startIndex - overscanBackward), Math.max(0, Math.min(itemCount - 1, stopIndex + overscanForward)), startIndex, stopIndex];
+      };
+      return List;
+    }(import_react3.PureComponent), _class.defaultProps = {
+      direction: "ltr",
+      itemData: void 0,
+      layout: "vertical",
+      overscanCount: 2,
+      useIsScrolling: false
+    }, _class;
+  }
+  var validateSharedProps$1 = function validateSharedProps(_ref2, _ref3) {
+    var children = _ref2.children, direction = _ref2.direction, height = _ref2.height, layout = _ref2.layout, innerTagName = _ref2.innerTagName, outerTagName = _ref2.outerTagName, width = _ref2.width;
+    var instance = _ref3.instance;
+    if (true) {
+      if (innerTagName != null || outerTagName != null) {
+        if (devWarningsTagName$1 && !devWarningsTagName$1.has(instance)) {
+          devWarningsTagName$1.add(instance);
+          console.warn("The innerTagName and outerTagName props have been deprecated. Please use the innerElementType and outerElementType props instead.");
+        }
+      }
+      var isHorizontal = direction === "horizontal" || layout === "horizontal";
+      switch (direction) {
+        case "horizontal":
+        case "vertical":
+          if (devWarningsDirection && !devWarningsDirection.has(instance)) {
+            devWarningsDirection.add(instance);
+            console.warn('The direction prop should be either "ltr" (default) or "rtl". Please use the layout prop to specify "vertical" (default) or "horizontal" orientation.');
+          }
+          break;
+        case "ltr":
+        case "rtl":
+          break;
+        default:
+          throw Error('An invalid "direction" prop has been specified. Value should be either "ltr" or "rtl". ' + ('"' + direction + '" was specified.'));
+      }
+      switch (layout) {
+        case "horizontal":
+        case "vertical":
+          break;
+        default:
+          throw Error('An invalid "layout" prop has been specified. Value should be either "horizontal" or "vertical". ' + ('"' + layout + '" was specified.'));
+      }
+      if (children == null) {
+        throw Error('An invalid "children" prop has been specified. Value should be a React component. ' + ('"' + (children === null ? "null" : typeof children) + '" was specified.'));
+      }
+      if (isHorizontal && typeof width !== "number") {
+        throw Error('An invalid "width" prop has been specified. Horizontal lists must specify a number for width. ' + ('"' + (width === null ? "null" : typeof width) + '" was specified.'));
+      } else if (!isHorizontal && typeof height !== "number") {
+        throw Error('An invalid "height" prop has been specified. Vertical lists must specify a number for height. ' + ('"' + (height === null ? "null" : typeof height) + '" was specified.'));
+      }
+    }
+  };
+  var FixedSizeList = /* @__PURE__ */ createListComponent({
+    getItemOffset: function getItemOffset(_ref, index) {
+      var itemSize = _ref.itemSize;
+      return index * itemSize;
+    },
+    getItemSize: function getItemSize(_ref2, index) {
+      var itemSize = _ref2.itemSize;
+      return itemSize;
+    },
+    getEstimatedTotalSize: function getEstimatedTotalSize(_ref3) {
+      var itemCount = _ref3.itemCount, itemSize = _ref3.itemSize;
+      return itemSize * itemCount;
+    },
+    getOffsetForIndexAndAlignment: function getOffsetForIndexAndAlignment(_ref4, index, align, scrollOffset) {
+      var direction = _ref4.direction, height = _ref4.height, itemCount = _ref4.itemCount, itemSize = _ref4.itemSize, layout = _ref4.layout, width = _ref4.width;
+      var isHorizontal = direction === "horizontal" || layout === "horizontal";
+      var size = isHorizontal ? width : height;
+      var lastItemOffset = Math.max(0, itemCount * itemSize - size);
+      var maxOffset = Math.min(lastItemOffset, index * itemSize);
+      var minOffset = Math.max(0, index * itemSize - size + itemSize);
+      if (align === "smart") {
+        if (scrollOffset >= minOffset - size && scrollOffset <= maxOffset + size) {
+          align = "auto";
+        } else {
+          align = "center";
+        }
+      }
+      switch (align) {
+        case "start":
+          return maxOffset;
+        case "end":
+          return minOffset;
+        case "center": {
+          var middleOffset = Math.round(minOffset + (maxOffset - minOffset) / 2);
+          if (middleOffset < Math.ceil(size / 2)) {
+            return 0;
+          } else if (middleOffset > lastItemOffset + Math.floor(size / 2)) {
+            return lastItemOffset;
+          } else {
+            return middleOffset;
+          }
+        }
+        case "auto":
+        default:
+          if (scrollOffset >= minOffset && scrollOffset <= maxOffset) {
+            return scrollOffset;
+          } else if (scrollOffset < minOffset) {
+            return minOffset;
+          } else {
+            return maxOffset;
+          }
+      }
+    },
+    getStartIndexForOffset: function getStartIndexForOffset(_ref5, offset) {
+      var itemCount = _ref5.itemCount, itemSize = _ref5.itemSize;
+      return Math.max(0, Math.min(itemCount - 1, Math.floor(offset / itemSize)));
+    },
+    getStopIndexForStartIndex: function getStopIndexForStartIndex(_ref6, startIndex, scrollOffset) {
+      var direction = _ref6.direction, height = _ref6.height, itemCount = _ref6.itemCount, itemSize = _ref6.itemSize, layout = _ref6.layout, width = _ref6.width;
+      var isHorizontal = direction === "horizontal" || layout === "horizontal";
+      var offset = startIndex * itemSize;
+      var size = isHorizontal ? width : height;
+      var numVisibleItems = Math.ceil((size + scrollOffset - offset) / itemSize);
+      return Math.max(0, Math.min(
+        itemCount - 1,
+        startIndex + numVisibleItems - 1
+      ));
+    },
+    initInstanceProps: function initInstanceProps(props) {
+    },
+    shouldResetStyleCacheOnItemSizeChange: true,
+    validateProps: function validateProps(_ref7) {
+      var itemSize = _ref7.itemSize;
+      if (true) {
+        if (typeof itemSize !== "number") {
+          throw Error('An invalid "itemSize" prop has been specified. Value should be a number. ' + ('"' + (itemSize === null ? "null" : typeof itemSize) + '" was specified.'));
+        }
+      }
+    }
+  });
+
+  // src/features/emoji/components/EmojiDrawer.tsx
+  var BASE_WIDTH = 60;
+  var PER_ROW = 7;
+  function EmojiDrawer() {
+    const [error, emojis] = useEmojis();
+    const emojiRows = (0, import_react4.useMemo)(() => {
+      const classes = /* @__PURE__ */ new Set();
+      const tags = /* @__PURE__ */ new Set();
+      const rows = [];
+      let tempRow = [];
+      for (let i2 = 0; i2 < emojis.length; i2++) {
+        const emoji = emojis[i2];
+        if (emoji.class) {
+          classes.add(emoji.class);
+        }
+        for (const tag of emoji.tags ?? []) {
+          tags.add(tag);
+        }
+        tempRow.push(emoji.name);
+        if (i2 % PER_ROW === 0) {
+          rows.push([...tempRow]);
+          tempRow = [];
+        }
+      }
+      return rows;
+    }, [emojis]);
+    const Row = (0, import_react4.useCallback)(
+      ({ index, style }) => {
+        return /* @__PURE__ */ import_react4.default.createElement("div", null, emojiRows[index].map((marsey) => /* @__PURE__ */ import_react4.default.createElement("img", {
+          key: marsey,
+          width: "60",
+          src: `/e/${marsey}.webp`,
+          alt: marsey
+        })));
+      },
+      [emojiRows]
+    );
+    return /* @__PURE__ */ import_react4.default.createElement("div", {
+      className: "EmojiDrawer sliding-in"
+    }, /* @__PURE__ */ import_react4.default.createElement(FixedSizeList, {
+      width: BASE_WIDTH * PER_ROW,
+      height: 400,
+      itemCount: emojiRows.length,
+      itemSize: BASE_WIDTH
+    }, Row));
+  }
+
+  // src/features/chat/components/ChatMessage.tsx
+  var import_react6 = __toESM(require_react());
+
+  // src/features/chat/components/Username.tsx
+  var import_react5 = __toESM(require_react());
+  function Username({ avatar, color, name, hat = "" }) {
+    return /* @__PURE__ */ import_react5.default.createElement("div", {
+      className: "Username"
+    }, /* @__PURE__ */ import_react5.default.createElement("div", {
+      className: "profile-pic-20-wrapper"
+    }, /* @__PURE__ */ import_react5.default.createElement("img", {
+      alt: name,
+      src: avatar,
+      className: "pp20"
+    }), hat && /* @__PURE__ */ import_react5.default.createElement("img", {
+      className: "avatar-hat profile-pic-20-hat hat",
+      loading: "lazy",
+      src: hat
+    })), /* @__PURE__ */ import_react5.default.createElement("a", {
+      className: "userlink",
+      style: { color: `#${color}` },
+      target: "_blank",
+      href: "/@111"
+    }, "111"));
   }
 
   // src/features/chat/components/ChatMessage.tsx
@@ -25189,49 +25816,49 @@
     onDelete
   }) {
     const { admin, censored } = useLoggedInUser();
-    return /* @__PURE__ */ import_react4.default.createElement("div", {
+    return /* @__PURE__ */ import_react6.default.createElement("div", {
       className: "ChatMessage"
-    }, showUser && /* @__PURE__ */ import_react4.default.createElement("div", {
+    }, showUser && /* @__PURE__ */ import_react6.default.createElement("div", {
       className: "ChatMessage-top"
-    }, /* @__PURE__ */ import_react4.default.createElement(Username, {
+    }, /* @__PURE__ */ import_react6.default.createElement(Username, {
       avatar,
       name: username,
       color: namecolor,
       hat
-    }), /* @__PURE__ */ import_react4.default.createElement("div", {
+    }), /* @__PURE__ */ import_react6.default.createElement("div", {
       className: "ChatMessage-timestamp"
-    }, timestamp)), /* @__PURE__ */ import_react4.default.createElement("div", {
+    }, timestamp)), /* @__PURE__ */ import_react6.default.createElement("div", {
       className: "ChatMessage-bottom"
-    }, /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("span", {
+    }, /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("span", {
       className: "ChatMessage-content",
       dangerouslySetInnerHTML: {
         __html: censored ? text_censored : text_html
       }
-    }), /* @__PURE__ */ import_react4.default.createElement("button", {
+    }), /* @__PURE__ */ import_react6.default.createElement("button", {
       className: "ChatMessage-button quote btn"
-    }, /* @__PURE__ */ import_react4.default.createElement("i", {
+    }, /* @__PURE__ */ import_react6.default.createElement("i", {
       className: "fas fa-reply"
-    }))), admin && /* @__PURE__ */ import_react4.default.createElement("button", {
+    }))), admin && /* @__PURE__ */ import_react6.default.createElement("button", {
       className: "ChatMessage-button ChatMessage-delete quote btn del",
       onClick: onDelete
-    }, /* @__PURE__ */ import_react4.default.createElement("i", {
+    }, /* @__PURE__ */ import_react6.default.createElement("i", {
       className: "fas fa-trash-alt"
     }))));
   }
 
   // src/features/chat/components/UserInput.tsx
-  var import_react6 = __toESM(require_react());
+  var import_react8 = __toESM(require_react());
 
   // src/features/chat/components/EmojiPickerButton.tsx
-  var import_react5 = __toESM(require_react());
-  function EmojiPickerButton() {
-    return /* @__PURE__ */ import_react5.default.createElement(import_react5.default.Fragment, null, /* @__PURE__ */ import_react5.default.createElement("button", {
+  var import_react7 = __toESM(require_react());
+  function EmojiPickerButton({ onClick }) {
+    return /* @__PURE__ */ import_react7.default.createElement("button", {
       type: "button",
       className: "btn btn-secondary UserInput-emojiPickerButton",
-      onClick: () => window.loadEmojis("builtChatInput")
-    }, /* @__PURE__ */ import_react5.default.createElement("i", {
+      onClick
+    }, /* @__PURE__ */ import_react7.default.createElement("i", {
       className: "fas fa-smile-beam"
-    })));
+    }));
   }
 
   // src/features/chat/components/UserInput.tsx
@@ -25239,14 +25866,15 @@
     value: value2,
     children = null,
     onChange,
-    onSubmit
+    onSubmit,
+    onEmojiButtonClick
   }) {
-    const form = (0, import_react6.useRef)(null);
-    const handleChange = (0, import_react6.useCallback)(
+    const form = (0, import_react8.useRef)(null);
+    const handleChange = (0, import_react8.useCallback)(
       (event) => onChange(event.target.value),
       []
     );
-    const handleKeyUp = (0, import_react6.useCallback)(
+    const handleKeyUp = (0, import_react8.useCallback)(
       (event) => {
         if (event.key === "Enter") {
           onSubmit();
@@ -25254,11 +25882,13 @@
       },
       [onSubmit]
     );
-    return /* @__PURE__ */ import_react6.default.createElement("form", {
+    return /* @__PURE__ */ import_react8.default.createElement("form", {
       ref: form,
       className: "UserInput",
       onSubmit
-    }, /* @__PURE__ */ import_react6.default.createElement(EmojiPickerButton, null), /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("textarea", {
+    }, /* @__PURE__ */ import_react8.default.createElement(EmojiPickerButton, {
+      onClick: onEmojiButtonClick
+    }), /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement("textarea", {
       id: "builtChatInput",
       className: "form-control",
       minLength: 1,
@@ -25270,37 +25900,38 @@
       autoComplete: "off",
       autoFocus: true,
       value: value2
-    }), children), /* @__PURE__ */ import_react6.default.createElement("button", {
+    }), children), /* @__PURE__ */ import_react8.default.createElement("button", {
       type: "submit",
       className: "btn btn-primary"
     }, "Send"));
   }
 
   // src/features/chat/components/UserList.tsx
-  var import_react7 = __toESM(require_react());
+  var import_react9 = __toESM(require_react());
   function UserList({ users }) {
-    return /* @__PURE__ */ import_react7.default.createElement("div", {
+    return /* @__PURE__ */ import_react9.default.createElement("div", {
       className: "UserList"
-    }, /* @__PURE__ */ import_react7.default.createElement("h4", null, "Users in chat right now"), /* @__PURE__ */ import_react7.default.createElement("ul", null, users.map((user) => /* @__PURE__ */ import_react7.default.createElement("li", {
+    }, /* @__PURE__ */ import_react9.default.createElement("h4", null, "Users in chat right now"), /* @__PURE__ */ import_react9.default.createElement("ul", null, users.map((user) => /* @__PURE__ */ import_react9.default.createElement("li", {
       key: user
-    }, /* @__PURE__ */ import_react7.default.createElement("a", {
+    }, /* @__PURE__ */ import_react9.default.createElement("a", {
       href: `/@${user}`
     }, "@", user)))));
   }
 
   // src/features/chat/components/Chat.tsx
   function Chat() {
-    const socket = (0, import_react8.useRef)(null);
-    const [online, setOnline] = (0, import_react8.useState)([]);
-    const [typing, setTyping] = (0, import_react8.useState)([]);
-    const [messages, setMessages] = (0, import_react8.useState)([]);
-    const [draft, setDraft] = (0, import_react8.useState)("");
-    const usersTyping = (0, import_react8.useMemo)(() => formatTypingString(typing), [typing]);
-    const addMessage = (0, import_react8.useCallback)(
+    const socket = (0, import_react10.useRef)(null);
+    const [online, setOnline] = (0, import_react10.useState)([]);
+    const [typing, setTyping] = (0, import_react10.useState)([]);
+    const [messages, setMessages] = (0, import_react10.useState)([]);
+    const [draft, setDraft] = (0, import_react10.useState)("");
+    const [emojiDrawerOpen, setEmojiDrawerOpen] = (0, import_react10.useState)(false);
+    const usersTyping = (0, import_react10.useMemo)(() => formatTypingString(typing), [typing]);
+    const addMessage = (0, import_react10.useCallback)(
       (message) => setMessages((prev2) => prev2.concat(message)),
       []
     );
-    const sendMessage = (0, import_react8.useCallback)(
+    const sendMessage = (0, import_react10.useCallback)(
       (event) => {
         event?.preventDefault();
         socket.current?.emit("speak" /* SPEAK */, draft);
@@ -25308,68 +25939,71 @@
       },
       [draft]
     );
-    const requestDeleteMessage = (0, import_react8.useCallback)((withText) => {
+    const requestDeleteMessage = (0, import_react10.useCallback)((withText) => {
       socket.current?.emit("delete" /* DELETE */, withText);
     }, []);
-    const deleteMessage = (0, import_react8.useCallback)(
+    const deleteMessage = (0, import_react10.useCallback)(
       (withText) => setMessages(
         (prev2) => prev2.filter((prevMessage) => prevMessage.text !== withText)
       ),
       []
     );
-    (0, import_react8.useEffect)(() => {
+    (0, import_react10.useEffect)(() => {
       if (!socket.current) {
         socket.current = lookup2();
         socket.current.on("catchup" /* CATCHUP */, setMessages).on("online" /* ONLINE */, setOnline).on("typing" /* TYPING */, setTyping).on("speak" /* SPEAK */, addMessage).on("delete" /* DELETE */, deleteMessage);
       }
     });
-    (0, import_react8.useEffect)(() => {
+    (0, import_react10.useEffect)(() => {
       socket.current?.emit("typing" /* TYPING */, draft);
     }, [draft]);
-    return /* @__PURE__ */ import_react8.default.createElement("section", {
+    return /* @__PURE__ */ import_react10.default.createElement("section", {
       className: "Chat"
-    }, /* @__PURE__ */ import_react8.default.createElement("div", {
+    }, /* @__PURE__ */ import_react10.default.createElement("div", {
       className: "Chat-left"
-    }, /* @__PURE__ */ import_react8.default.createElement("div", {
+    }, /* @__PURE__ */ import_react10.default.createElement("div", {
       className: "Chat-online"
-    }, /* @__PURE__ */ import_react8.default.createElement("i", {
+    }, /* @__PURE__ */ import_react10.default.createElement("i", {
       className: "far fa-user fa-sm"
-    }), " ", online.length), /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement(EmojiDrawer, null), messages.map((message, index) => /* @__PURE__ */ import_react8.default.createElement(ChatMessage, {
+    }), " ", online.length), /* @__PURE__ */ import_react10.default.createElement("div", {
+      style: { position: "relative" }
+    }, emojiDrawerOpen && /* @__PURE__ */ import_react10.default.createElement(EmojiDrawer, null), messages.map((message, index) => /* @__PURE__ */ import_react10.default.createElement(ChatMessage, {
       key: message.time,
       ...message,
       showUser: message.username !== messages[index - 1]?.username,
       onDelete: () => requestDeleteMessage(message.text)
-    }))), /* @__PURE__ */ import_react8.default.createElement(UserInput, {
+    }))), /* @__PURE__ */ import_react10.default.createElement(UserInput, {
       value: draft,
       onChange: setDraft,
-      onSubmit: sendMessage
-    }, usersTyping && /* @__PURE__ */ import_react8.default.createElement("small", {
+      onSubmit: sendMessage,
+      onEmojiButtonClick: () => setEmojiDrawerOpen((prev2) => !prev2)
+    }, usersTyping && /* @__PURE__ */ import_react10.default.createElement("small", {
       className: "Chat-typing"
-    }, usersTyping))), /* @__PURE__ */ import_react8.default.createElement(UserList, {
+    }, usersTyping))), /* @__PURE__ */ import_react10.default.createElement(UserList, {
       users: online
     }));
   }
   function formatTypingString(typing) {
-    const [first, second, third, ...rest] = typing.map((user) => /* @__PURE__ */ import_react8.default.createElement("strong", {
+    const [first, second, third, ...rest] = typing.map((user) => /* @__PURE__ */ import_react10.default.createElement("strong", {
       key: user
     }, user));
     switch (typing.length) {
       case 0:
         return "";
       case 1:
-        return /* @__PURE__ */ import_react8.default.createElement("div", null, first, " is typing...");
+        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, " is typing...");
       case 2:
-        return /* @__PURE__ */ import_react8.default.createElement("div", null, first, " and ", second, " are typing...");
+        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, " and ", second, " are typing...");
       case 3:
-        return /* @__PURE__ */ import_react8.default.createElement("div", null, first, ", ", second, " and ", third, " are typing...");
+        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, ", ", second, " and ", third, " are typing...");
       default:
-        return /* @__PURE__ */ import_react8.default.createElement("div", null, first, ", ", second, ", ", third, " and ", rest.length, " more are typing...");
+        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, ", ", second, ", ", third, " and ", rest.length, " more are typing...");
     }
   }
 
   // src/index.tsx
   var root = (0, import_client.createRoot)(document.getElementById("root"));
-  root.render(/* @__PURE__ */ import_react9.default.createElement(Chat, null));
+  root.render(/* @__PURE__ */ import_react11.default.createElement(Chat, null));
 })();
 /**
  * @license React

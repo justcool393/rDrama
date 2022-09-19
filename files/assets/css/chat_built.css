@@ -1,3 +1,24 @@
+/* src/features/emoji/components/EmojiDrawer.css */
+.EmojiDrawer {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: -400px;
+  width: 50%;
+  min-width: 400px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  overflow: auto;
+}
+@keyframes sliding-in {
+  to {
+    left: 0;
+  }
+}
+.sliding-in {
+  animation: sliding-in 0.3s ease-in-out forwards;
+}
+
 /* src/features/chat/components/Username.css */
 .Username {
   display: flex;
@@ -13,7 +34,7 @@
   padding: 1rem;
   position: relative;
 }
-.ChatMessage:nth-child(even) {
+.ChatMessage:not(.EmojiDrawer):nth-of-type(even) {
   background: rgba(255, 255, 255, 0.02);
 }
 .ChatMessage-top {
