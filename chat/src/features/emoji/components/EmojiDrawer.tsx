@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useEmojis } from "../../../hooks";
 import { FixedSizeList as List } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import "./EmojiDrawer.css";
 
 const BASE_WIDTH = 60;

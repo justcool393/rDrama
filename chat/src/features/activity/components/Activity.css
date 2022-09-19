@@ -1,0 +1,27 @@
+.Activity {
+  min-width: 400px;
+  -moz-box-shadow: inset 0 0 10px #000000;
+  -webkit-box-shadow: inset 0 0 10px #000000;
+  box-shadow: inset 0 0 10px #000000;
+  height: 600px;
+  overflow: auto;
+}
+
+.Activity > section {
+  width: 100;
+  border-bottom: 1px solid gray;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: right;
+}
+
+.Activity p {
+  /* font-size: 32px; */
+}
+
+.Activity p {
+  margin: 0;
+  padding: 0;
+}

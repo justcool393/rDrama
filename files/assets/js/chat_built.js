@@ -2300,9 +2300,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React9 = require_react();
+          var React11 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React9.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React11.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3823,7 +3823,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React9.Children.forEach(props.children, function(child) {
+                  React11.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -11984,7 +11984,7 @@
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React9.Component().refs;
+          var emptyRefsObject = new React11.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -13444,7 +13444,7 @@
           var NoFlags$1 = 0;
           var HasEffect = 1;
           var Insertion = 2;
-          var Layout = 4;
+          var Layout2 = 4;
           var Passive$1 = 8;
           var workInProgressSources = [];
           function resetWorkInProgressVersions() {
@@ -14139,10 +14139,10 @@
             if ((currentlyRenderingFiber$1.mode & StrictEffectsMode) !== NoMode) {
               fiberFlags |= MountLayoutDev;
             }
-            return mountEffectImpl(fiberFlags, Layout, create, deps);
+            return mountEffectImpl(fiberFlags, Layout2, create, deps);
           }
           function updateLayoutEffect(create, deps) {
-            return updateEffectImpl(Update, Layout, create, deps);
+            return updateEffectImpl(Update, Layout2, create, deps);
           }
           function imperativeHandleEffect(create, ref) {
             if (typeof ref === "function") {
@@ -14180,7 +14180,7 @@
             if ((currentlyRenderingFiber$1.mode & StrictEffectsMode) !== NoMode) {
               fiberFlags |= MountLayoutDev;
             }
-            return mountEffectImpl(fiberFlags, Layout, imperativeHandleEffect.bind(null, create, ref), effectDeps);
+            return mountEffectImpl(fiberFlags, Layout2, imperativeHandleEffect.bind(null, create, ref), effectDeps);
           }
           function updateImperativeHandle(ref, create, deps) {
             {
@@ -14189,7 +14189,7 @@
               }
             }
             var effectDeps = deps !== null && deps !== void 0 ? deps.concat([ref]) : null;
-            return updateEffectImpl(Update, Layout, imperativeHandleEffect.bind(null, create, ref), effectDeps);
+            return updateEffectImpl(Update, Layout2, imperativeHandleEffect.bind(null, create, ref), effectDeps);
           }
           function mountDebugValue(value2, formatterFn) {
           }
@@ -18034,7 +18034,7 @@
           };
           function safelyCallCommitHookLayoutEffectListMount(current2, nearestMountedAncestor) {
             try {
-              commitHookEffectListMount(Layout, current2);
+              commitHookEffectListMount(Layout2, current2);
             } catch (error2) {
               captureCommitPhaseError(current2, nearestMountedAncestor, error2);
             }
@@ -18209,7 +18209,7 @@
                     {
                       if ((flags & Passive$1) !== NoFlags$1) {
                         markComponentPassiveEffectUnmountStarted(finishedWork);
-                      } else if ((flags & Layout) !== NoFlags$1) {
+                      } else if ((flags & Layout2) !== NoFlags$1) {
                         markComponentLayoutEffectUnmountStarted(finishedWork);
                       }
                     }
@@ -18227,7 +18227,7 @@
                     {
                       if ((flags & Passive$1) !== NoFlags$1) {
                         markComponentPassiveEffectUnmountStopped();
-                      } else if ((flags & Layout) !== NoFlags$1) {
+                      } else if ((flags & Layout2) !== NoFlags$1) {
                         markComponentLayoutEffectUnmountStopped();
                       }
                     }
@@ -18248,7 +18248,7 @@
                   {
                     if ((flags & Passive$1) !== NoFlags$1) {
                       markComponentPassiveEffectMountStarted(finishedWork);
-                    } else if ((flags & Layout) !== NoFlags$1) {
+                    } else if ((flags & Layout2) !== NoFlags$1) {
                       markComponentLayoutEffectMountStarted(finishedWork);
                     }
                   }
@@ -18267,7 +18267,7 @@
                   {
                     if ((flags & Passive$1) !== NoFlags$1) {
                       markComponentPassiveEffectMountStopped();
-                    } else if ((flags & Layout) !== NoFlags$1) {
+                    } else if ((flags & Layout2) !== NoFlags$1) {
                       markComponentLayoutEffectMountStopped();
                     }
                   }
@@ -18275,7 +18275,7 @@
                     var destroy = effect.destroy;
                     if (destroy !== void 0 && typeof destroy !== "function") {
                       var hookName = void 0;
-                      if ((effect.tag & Layout) !== NoFlags) {
+                      if ((effect.tag & Layout2) !== NoFlags) {
                         hookName = "useLayoutEffect";
                       } else if ((effect.tag & Insertion) !== NoFlags) {
                         hookName = "useInsertionEffect";
@@ -18346,12 +18346,12 @@
                     if (finishedWork.mode & ProfileMode) {
                       try {
                         startLayoutEffectTimer();
-                        commitHookEffectListMount(Layout | HasEffect, finishedWork);
+                        commitHookEffectListMount(Layout2 | HasEffect, finishedWork);
                       } finally {
                         recordLayoutEffectDuration(finishedWork);
                       }
                     } else {
-                      commitHookEffectListMount(Layout | HasEffect, finishedWork);
+                      commitHookEffectListMount(Layout2 | HasEffect, finishedWork);
                     }
                   }
                   break;
@@ -18906,7 +18906,7 @@
                         if (destroy !== void 0) {
                           if ((tag & Insertion) !== NoFlags$1) {
                             safelyCallDestroy(deletedFiber, nearestMountedAncestor, destroy);
-                          } else if ((tag & Layout) !== NoFlags$1) {
+                          } else if ((tag & Layout2) !== NoFlags$1) {
                             {
                               markComponentLayoutEffectUnmountStarted(deletedFiber);
                             }
@@ -19058,14 +19058,14 @@
                   if (finishedWork.mode & ProfileMode) {
                     try {
                       startLayoutEffectTimer();
-                      commitHookEffectListUnmount(Layout | HasEffect, finishedWork, finishedWork.return);
+                      commitHookEffectListUnmount(Layout2 | HasEffect, finishedWork, finishedWork.return);
                     } catch (error2) {
                       captureCommitPhaseError(finishedWork, finishedWork.return, error2);
                     }
                     recordLayoutEffectDuration(finishedWork);
                   } else {
                     try {
-                      commitHookEffectListUnmount(Layout | HasEffect, finishedWork, finishedWork.return);
+                      commitHookEffectListUnmount(Layout2 | HasEffect, finishedWork, finishedWork.return);
                     } catch (error2) {
                       captureCommitPhaseError(finishedWork, finishedWork.return, error2);
                     }
@@ -19354,12 +19354,12 @@
                   if (fiber.mode & ProfileMode) {
                     try {
                       startLayoutEffectTimer();
-                      commitHookEffectListUnmount(Layout, fiber, fiber.return);
+                      commitHookEffectListUnmount(Layout2, fiber, fiber.return);
                     } finally {
                       recordLayoutEffectDuration(fiber);
                     }
                   } else {
-                    commitHookEffectListUnmount(Layout, fiber, fiber.return);
+                    commitHookEffectListUnmount(Layout2, fiber, fiber.return);
                   }
                   break;
                 }
@@ -19642,7 +19642,7 @@
                 case ForwardRef:
                 case SimpleMemoComponent: {
                   try {
-                    commitHookEffectListMount(Layout | HasEffect, fiber);
+                    commitHookEffectListMount(Layout2 | HasEffect, fiber);
                   } catch (error2) {
                     captureCommitPhaseError(fiber, fiber.return, error2);
                   }
@@ -19683,7 +19683,7 @@
                 case ForwardRef:
                 case SimpleMemoComponent: {
                   try {
-                    commitHookEffectListUnmount(Layout | HasEffect, fiber, fiber.return);
+                    commitHookEffectListUnmount(Layout2 | HasEffect, fiber, fiber.return);
                   } catch (error2) {
                     captureCommitPhaseError(fiber, fiber.return, error2);
                   }
@@ -22901,11 +22901,49 @@
   });
 
   // src/index.tsx
-  var import_react11 = __toESM(require_react());
+  var import_react13 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
+  // src/Layout.tsx
+  var import_react12 = __toESM(require_react());
+
+  // src/features/activity/components/Activity.tsx
+  var import_react = __toESM(require_react());
+  var ACTIVITIES = [
+    {
+      icon: "circle",
+      title: "Roulette",
+      description: "Round and round the wheel of fate turns."
+    },
+    {
+      icon: "cards",
+      title: "Blackjack",
+      description: "Twenty one ways to change your life."
+    },
+    {
+      icon: "dollar-sign",
+      title: "Slots",
+      description: "Today's your lucky day."
+    },
+    {
+      icon: "dollar-sign",
+      title: "Racing",
+      description: "Make it all back at the track."
+    },
+    { icon: "dollar-sign", title: "Crossing", description: "Take a load off." }
+  ];
+  function Activity() {
+    return /* @__PURE__ */ import_react.default.createElement("div", {
+      className: "Activity"
+    }, ACTIVITIES.map((activity) => /* @__PURE__ */ import_react.default.createElement("section", {
+      key: activity.title
+    }, /* @__PURE__ */ import_react.default.createElement("i", {
+      className: `fas fa-${activity.icon}`
+    }), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h4", null, activity.title), /* @__PURE__ */ import_react.default.createElement("p", null, activity.description)))));
+  }
+
   // src/features/chat/components/Chat.tsx
-  var import_react10 = __toESM(require_react());
+  var import_react11 = __toESM(require_react());
 
   // node_modules/engine.io-parser/build/esm/commons.js
   var PACKET_TYPES = /* @__PURE__ */ Object.create(null);
@@ -25128,27 +25166,27 @@
   });
 
   // src/features/emoji/components/EmojiDrawer.tsx
-  var import_react4 = __toESM(require_react());
+  var import_react5 = __toESM(require_react());
 
   // src/hooks/useEmojis.ts
-  var import_react = __toESM(require_react());
+  var import_react2 = __toESM(require_react());
   function useEmojis() {
-    const [error, setError] = (0, import_react.useState)("");
-    const [emojis, setEmojis] = (0, import_react.useState)([]);
-    (0, import_react.useEffect)(() => {
+    const [error, setError] = (0, import_react2.useState)("");
+    const [emojis, setEmojis] = (0, import_react2.useState)([]);
+    (0, import_react2.useEffect)(() => {
       fetch("/marsey_list.json").then((res) => res.json()).then(setEmojis).catch(setError);
     }, []);
     return [error, emojis];
   }
 
   // src/hooks/useLoggedInUser.ts
-  var import_react2 = __toESM(require_react());
+  var import_react3 = __toESM(require_react());
   function useLoggedInUser() {
-    const [{ admin, censored }, setContext] = (0, import_react2.useState)({
+    const [{ admin, censored }, setContext] = (0, import_react3.useState)({
       admin: false,
       censored: true
     });
-    (0, import_react2.useEffect)(() => {
+    (0, import_react3.useEffect)(() => {
       const root2 = document.getElementById("root");
       setContext({
         admin: root2.dataset.admin === "True",
@@ -25249,7 +25287,7 @@
   var memoize_one_esm_default = memoizeOne;
 
   // node_modules/react-window/dist/index.esm.js
-  var import_react3 = __toESM(require_react());
+  var import_react4 = __toESM(require_react());
   var hasNativePerformanceNow = typeof performance === "object" && typeof performance.now === "function";
   var now = hasNativePerformanceNow ? function() {
     return performance.now();
@@ -25540,7 +25578,7 @@
         var items = [];
         if (itemCount > 0) {
           for (var _index = startIndex; _index <= stopIndex; _index++) {
-            items.push((0, import_react3.createElement)(children, {
+            items.push((0, import_react4.createElement)(children, {
               data: itemData,
               key: itemKey(_index, itemData),
               index: _index,
@@ -25550,7 +25588,7 @@
           }
         }
         var estimatedTotalSize = getEstimatedTotalSize2(this.props, this._instanceProps);
-        return (0, import_react3.createElement)(outerElementType || outerTagName || "div", {
+        return (0, import_react4.createElement)(outerElementType || outerTagName || "div", {
           className,
           onScroll,
           ref: this._outerRefSetter,
@@ -25563,7 +25601,7 @@
             willChange: "transform",
             direction
           }, style)
-        }, (0, import_react3.createElement)(innerElementType || innerTagName || "div", {
+        }, (0, import_react4.createElement)(innerElementType || innerTagName || "div", {
           children: items,
           ref: innerRef,
           style: {
@@ -25599,7 +25637,7 @@
         return [Math.max(0, startIndex - overscanBackward), Math.max(0, Math.min(itemCount - 1, stopIndex + overscanForward)), startIndex, stopIndex];
       };
       return List;
-    }(import_react3.PureComponent), _class.defaultProps = {
+    }(import_react4.PureComponent), _class.defaultProps = {
       direction: "ltr",
       itemData: void 0,
       layout: "vertical",
@@ -25735,7 +25773,7 @@
   var PER_ROW = 7;
   function EmojiDrawer() {
     const [error, emojis] = useEmojis();
-    const emojiRows = (0, import_react4.useMemo)(() => {
+    const emojiRows = (0, import_react5.useMemo)(() => {
       const classes = /* @__PURE__ */ new Set();
       const tags = /* @__PURE__ */ new Set();
       const rows = [];
@@ -25756,9 +25794,9 @@
       }
       return rows;
     }, [emojis]);
-    const Row = (0, import_react4.useCallback)(
+    const Row = (0, import_react5.useCallback)(
       ({ index, style }) => {
-        return /* @__PURE__ */ import_react4.default.createElement("div", null, emojiRows[index].map((marsey) => /* @__PURE__ */ import_react4.default.createElement("img", {
+        return /* @__PURE__ */ import_react5.default.createElement("div", null, emojiRows[index].map((marsey) => /* @__PURE__ */ import_react5.default.createElement("img", {
           key: marsey,
           width: "60",
           src: `/e/${marsey}.webp`,
@@ -25767,9 +25805,9 @@
       },
       [emojiRows]
     );
-    return /* @__PURE__ */ import_react4.default.createElement("div", {
+    return /* @__PURE__ */ import_react5.default.createElement("div", {
       className: "EmojiDrawer sliding-in"
-    }, /* @__PURE__ */ import_react4.default.createElement(FixedSizeList, {
+    }, /* @__PURE__ */ import_react5.default.createElement(FixedSizeList, {
       width: BASE_WIDTH * PER_ROW,
       height: 400,
       itemCount: emojiRows.length,
@@ -25778,24 +25816,24 @@
   }
 
   // src/features/chat/components/ChatMessage.tsx
-  var import_react6 = __toESM(require_react());
+  var import_react7 = __toESM(require_react());
 
   // src/features/chat/components/Username.tsx
-  var import_react5 = __toESM(require_react());
+  var import_react6 = __toESM(require_react());
   function Username({ avatar, color, name, hat = "" }) {
-    return /* @__PURE__ */ import_react5.default.createElement("div", {
+    return /* @__PURE__ */ import_react6.default.createElement("div", {
       className: "Username"
-    }, /* @__PURE__ */ import_react5.default.createElement("div", {
+    }, /* @__PURE__ */ import_react6.default.createElement("div", {
       className: "profile-pic-20-wrapper"
-    }, /* @__PURE__ */ import_react5.default.createElement("img", {
+    }, /* @__PURE__ */ import_react6.default.createElement("img", {
       alt: name,
       src: avatar,
       className: "pp20"
-    }), hat && /* @__PURE__ */ import_react5.default.createElement("img", {
+    }), hat && /* @__PURE__ */ import_react6.default.createElement("img", {
       className: "avatar-hat profile-pic-20-hat hat",
       loading: "lazy",
       src: hat
-    })), /* @__PURE__ */ import_react5.default.createElement("a", {
+    })), /* @__PURE__ */ import_react6.default.createElement("a", {
       className: "userlink",
       style: { color: `#${color}` },
       target: "_blank",
@@ -25816,47 +25854,47 @@
     onDelete
   }) {
     const { admin, censored } = useLoggedInUser();
-    return /* @__PURE__ */ import_react6.default.createElement("div", {
+    return /* @__PURE__ */ import_react7.default.createElement("div", {
       className: "ChatMessage"
-    }, showUser && /* @__PURE__ */ import_react6.default.createElement("div", {
+    }, showUser && /* @__PURE__ */ import_react7.default.createElement("div", {
       className: "ChatMessage-top"
-    }, /* @__PURE__ */ import_react6.default.createElement(Username, {
+    }, /* @__PURE__ */ import_react7.default.createElement(Username, {
       avatar,
       name: username,
       color: namecolor,
       hat
-    }), /* @__PURE__ */ import_react6.default.createElement("div", {
+    }), /* @__PURE__ */ import_react7.default.createElement("div", {
       className: "ChatMessage-timestamp"
-    }, timestamp)), /* @__PURE__ */ import_react6.default.createElement("div", {
+    }, timestamp)), /* @__PURE__ */ import_react7.default.createElement("div", {
       className: "ChatMessage-bottom"
-    }, /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("span", {
+    }, /* @__PURE__ */ import_react7.default.createElement("div", null, /* @__PURE__ */ import_react7.default.createElement("span", {
       className: "ChatMessage-content",
       dangerouslySetInnerHTML: {
         __html: censored ? text_censored : text_html
       }
-    }), /* @__PURE__ */ import_react6.default.createElement("button", {
+    }), /* @__PURE__ */ import_react7.default.createElement("button", {
       className: "ChatMessage-button quote btn"
-    }, /* @__PURE__ */ import_react6.default.createElement("i", {
+    }, /* @__PURE__ */ import_react7.default.createElement("i", {
       className: "fas fa-reply"
-    }))), admin && /* @__PURE__ */ import_react6.default.createElement("button", {
+    }))), admin && /* @__PURE__ */ import_react7.default.createElement("button", {
       className: "ChatMessage-button ChatMessage-delete quote btn del",
       onClick: onDelete
-    }, /* @__PURE__ */ import_react6.default.createElement("i", {
+    }, /* @__PURE__ */ import_react7.default.createElement("i", {
       className: "fas fa-trash-alt"
     }))));
   }
 
   // src/features/chat/components/UserInput.tsx
-  var import_react8 = __toESM(require_react());
+  var import_react9 = __toESM(require_react());
 
   // src/features/chat/components/EmojiPickerButton.tsx
-  var import_react7 = __toESM(require_react());
+  var import_react8 = __toESM(require_react());
   function EmojiPickerButton({ onClick }) {
-    return /* @__PURE__ */ import_react7.default.createElement("button", {
+    return /* @__PURE__ */ import_react8.default.createElement("button", {
       type: "button",
       className: "btn btn-secondary UserInput-emojiPickerButton",
       onClick
-    }, /* @__PURE__ */ import_react7.default.createElement("i", {
+    }, /* @__PURE__ */ import_react8.default.createElement("i", {
       className: "fas fa-smile-beam"
     }));
   }
@@ -25869,12 +25907,12 @@
     onSubmit,
     onEmojiButtonClick
   }) {
-    const form = (0, import_react8.useRef)(null);
-    const handleChange = (0, import_react8.useCallback)(
+    const form = (0, import_react9.useRef)(null);
+    const handleChange = (0, import_react9.useCallback)(
       (event) => onChange(event.target.value),
       []
     );
-    const handleKeyUp = (0, import_react8.useCallback)(
+    const handleKeyUp = (0, import_react9.useCallback)(
       (event) => {
         if (event.key === "Enter") {
           onSubmit();
@@ -25882,13 +25920,13 @@
       },
       [onSubmit]
     );
-    return /* @__PURE__ */ import_react8.default.createElement("form", {
+    return /* @__PURE__ */ import_react9.default.createElement("form", {
       ref: form,
       className: "UserInput",
       onSubmit
-    }, /* @__PURE__ */ import_react8.default.createElement(EmojiPickerButton, {
+    }, /* @__PURE__ */ import_react9.default.createElement(EmojiPickerButton, {
       onClick: onEmojiButtonClick
-    }), /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement("textarea", {
+    }), /* @__PURE__ */ import_react9.default.createElement("div", null, /* @__PURE__ */ import_react9.default.createElement("textarea", {
       id: "builtChatInput",
       className: "form-control",
       minLength: 1,
@@ -25900,38 +25938,38 @@
       autoComplete: "off",
       autoFocus: true,
       value: value2
-    }), children), /* @__PURE__ */ import_react8.default.createElement("button", {
+    }), children), /* @__PURE__ */ import_react9.default.createElement("button", {
       type: "submit",
       className: "btn btn-primary"
     }, "Send"));
   }
 
   // src/features/chat/components/UserList.tsx
-  var import_react9 = __toESM(require_react());
+  var import_react10 = __toESM(require_react());
   function UserList({ users }) {
-    return /* @__PURE__ */ import_react9.default.createElement("div", {
+    return /* @__PURE__ */ import_react10.default.createElement("div", {
       className: "UserList"
-    }, /* @__PURE__ */ import_react9.default.createElement("h4", null, "Users in chat right now"), /* @__PURE__ */ import_react9.default.createElement("ul", null, users.map((user) => /* @__PURE__ */ import_react9.default.createElement("li", {
+    }, /* @__PURE__ */ import_react10.default.createElement("h4", null, "Users in chat right now"), /* @__PURE__ */ import_react10.default.createElement("ul", null, users.map((user) => /* @__PURE__ */ import_react10.default.createElement("li", {
       key: user
-    }, /* @__PURE__ */ import_react9.default.createElement("a", {
+    }, /* @__PURE__ */ import_react10.default.createElement("a", {
       href: `/@${user}`
     }, "@", user)))));
   }
 
   // src/features/chat/components/Chat.tsx
   function Chat() {
-    const socket = (0, import_react10.useRef)(null);
-    const [online, setOnline] = (0, import_react10.useState)([]);
-    const [typing, setTyping] = (0, import_react10.useState)([]);
-    const [messages, setMessages] = (0, import_react10.useState)([]);
-    const [draft, setDraft] = (0, import_react10.useState)("");
-    const [emojiDrawerOpen, setEmojiDrawerOpen] = (0, import_react10.useState)(false);
-    const usersTyping = (0, import_react10.useMemo)(() => formatTypingString(typing), [typing]);
-    const addMessage = (0, import_react10.useCallback)(
+    const socket = (0, import_react11.useRef)(null);
+    const [online, setOnline] = (0, import_react11.useState)([]);
+    const [typing, setTyping] = (0, import_react11.useState)([]);
+    const [messages, setMessages] = (0, import_react11.useState)([]);
+    const [draft, setDraft] = (0, import_react11.useState)("");
+    const [emojiDrawerOpen, setEmojiDrawerOpen] = (0, import_react11.useState)(false);
+    const usersTyping = (0, import_react11.useMemo)(() => formatTypingString(typing), [typing]);
+    const addMessage = (0, import_react11.useCallback)(
       (message) => setMessages((prev2) => prev2.concat(message)),
       []
     );
-    const sendMessage = (0, import_react10.useCallback)(
+    const sendMessage = (0, import_react11.useCallback)(
       (event) => {
         event?.preventDefault();
         socket.current?.emit("speak" /* SPEAK */, draft);
@@ -25939,71 +25977,79 @@
       },
       [draft]
     );
-    const requestDeleteMessage = (0, import_react10.useCallback)((withText) => {
+    const requestDeleteMessage = (0, import_react11.useCallback)((withText) => {
       socket.current?.emit("delete" /* DELETE */, withText);
     }, []);
-    const deleteMessage = (0, import_react10.useCallback)(
+    const deleteMessage = (0, import_react11.useCallback)(
       (withText) => setMessages(
         (prev2) => prev2.filter((prevMessage) => prevMessage.text !== withText)
       ),
       []
     );
-    (0, import_react10.useEffect)(() => {
+    (0, import_react11.useEffect)(() => {
       if (!socket.current) {
         socket.current = lookup2();
         socket.current.on("catchup" /* CATCHUP */, setMessages).on("online" /* ONLINE */, setOnline).on("typing" /* TYPING */, setTyping).on("speak" /* SPEAK */, addMessage).on("delete" /* DELETE */, deleteMessage);
       }
     });
-    (0, import_react10.useEffect)(() => {
+    (0, import_react11.useEffect)(() => {
       socket.current?.emit("typing" /* TYPING */, draft);
     }, [draft]);
-    return /* @__PURE__ */ import_react10.default.createElement("section", {
+    return /* @__PURE__ */ import_react11.default.createElement("section", {
       className: "Chat"
-    }, /* @__PURE__ */ import_react10.default.createElement("div", {
+    }, /* @__PURE__ */ import_react11.default.createElement("div", {
       className: "Chat-left"
-    }, /* @__PURE__ */ import_react10.default.createElement("div", {
+    }, /* @__PURE__ */ import_react11.default.createElement("div", {
       className: "Chat-online"
-    }, /* @__PURE__ */ import_react10.default.createElement("i", {
+    }, /* @__PURE__ */ import_react11.default.createElement("i", {
       className: "far fa-user fa-sm"
-    }), " ", online.length), /* @__PURE__ */ import_react10.default.createElement("div", {
+    }), " ", online.length), /* @__PURE__ */ import_react11.default.createElement("div", {
+      className: "Chat-messagelist",
       style: { position: "relative" }
-    }, emojiDrawerOpen && /* @__PURE__ */ import_react10.default.createElement(EmojiDrawer, null), messages.map((message, index) => /* @__PURE__ */ import_react10.default.createElement(ChatMessage, {
+    }, emojiDrawerOpen && /* @__PURE__ */ import_react11.default.createElement(EmojiDrawer, null), messages.map((message, index) => /* @__PURE__ */ import_react11.default.createElement(ChatMessage, {
       key: message.time,
       ...message,
       showUser: message.username !== messages[index - 1]?.username,
       onDelete: () => requestDeleteMessage(message.text)
-    }))), /* @__PURE__ */ import_react10.default.createElement(UserInput, {
+    })), /* @__PURE__ */ import_react11.default.createElement(UserInput, {
       value: draft,
       onChange: setDraft,
       onSubmit: sendMessage,
       onEmojiButtonClick: () => setEmojiDrawerOpen((prev2) => !prev2)
-    }, usersTyping && /* @__PURE__ */ import_react10.default.createElement("small", {
+    }, /* @__PURE__ */ import_react11.default.createElement("small", {
       className: "Chat-typing"
-    }, usersTyping))), /* @__PURE__ */ import_react10.default.createElement(UserList, {
+    }, usersTyping)))), /* @__PURE__ */ import_react11.default.createElement(UserList, {
       users: online
     }));
   }
   function formatTypingString(typing) {
-    const [first, second, third, ...rest] = typing.map((user) => /* @__PURE__ */ import_react10.default.createElement("strong", {
+    const [first, second, third, ...rest] = typing.map((user) => /* @__PURE__ */ import_react11.default.createElement("strong", {
       key: user
     }, user));
     switch (typing.length) {
       case 0:
         return "";
       case 1:
-        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, " is typing...");
+        return /* @__PURE__ */ import_react11.default.createElement("div", null, first, " is typing...");
       case 2:
-        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, " and ", second, " are typing...");
+        return /* @__PURE__ */ import_react11.default.createElement("div", null, first, " and ", second, " are typing...");
       case 3:
-        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, ", ", second, " and ", third, " are typing...");
+        return /* @__PURE__ */ import_react11.default.createElement("div", null, first, ", ", second, " and ", third, " are typing...");
       default:
-        return /* @__PURE__ */ import_react10.default.createElement("div", null, first, ", ", second, ", ", third, " and ", rest.length, " more are typing...");
+        return /* @__PURE__ */ import_react11.default.createElement("div", null, first, ", ", second, ", ", third, " and ", rest.length, " more are typing...");
     }
+  }
+
+  // src/Layout.tsx
+  function Layout() {
+    return /* @__PURE__ */ import_react12.default.createElement("div", {
+      className: "Layout"
+    }, /* @__PURE__ */ import_react12.default.createElement(Activity, null), /* @__PURE__ */ import_react12.default.createElement(Chat, null));
   }
 
   // src/index.tsx
   var root = (0, import_client.createRoot)(document.getElementById("root"));
-  root.render(/* @__PURE__ */ import_react11.default.createElement(Chat, null));
+  root.render(/* @__PURE__ */ import_react13.default.createElement(Layout, null));
 })();
 /**
  * @license React

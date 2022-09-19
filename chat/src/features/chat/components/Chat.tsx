@@ -76,7 +76,7 @@ export function Chat() {
         <div className="Chat-online">
           <i className="far fa-user fa-sm" /> {online.length}
         </div>
-        <div style={{ position: "relative" }}>
+        <div className="Chat-messagelist" style={{ position: "relative" }}>
           {emojiDrawerOpen && <EmojiDrawer />}
           {messages.map((message, index) => (
             <ChatMessage
@@ -86,15 +86,15 @@ export function Chat() {
               onDelete={() => requestDeleteMessage(message.text)}
             />
           ))}
+          <UserInput
+            value={draft}
+            onChange={setDraft}
+            onSubmit={sendMessage}
+            onEmojiButtonClick={() => setEmojiDrawerOpen((prev) => !prev)}
+          >
+            <small className="Chat-typing">{usersTyping}</small>
+          </UserInput>
         </div>
-        <UserInput
-          value={draft}
-          onChange={setDraft}
-          onSubmit={sendMessage}
-          onEmojiButtonClick={() => setEmojiDrawerOpen((prev) => !prev)}
-        >
-          {usersTyping && <small className="Chat-typing">{usersTyping}</small>}
-        </UserInput>
       </div>
       <UserList users={online} />
     </section>
