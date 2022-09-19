@@ -22909,6 +22909,38 @@
 
   // src/features/activity/components/Activity.tsx
   var import_react = __toESM(require_react());
+  var ACTIVITIES = [
+    {
+      icon: "circle",
+      title: "Roulette",
+      description: "Round and round the wheel of fate turns."
+    },
+    {
+      icon: "cards",
+      title: "Blackjack",
+      description: "Twenty one ways to change your life."
+    },
+    {
+      icon: "dollar-sign",
+      title: "Slots",
+      description: "Today's your lucky day."
+    },
+    {
+      icon: "dollar-sign",
+      title: "Racing",
+      description: "Make it all back at the track."
+    },
+    { icon: "dollar-sign", title: "Crossing", description: "Take a load off." }
+  ];
+  function Activity() {
+    return /* @__PURE__ */ import_react.default.createElement("div", {
+      className: "Activity"
+    }, ACTIVITIES.map((activity) => /* @__PURE__ */ import_react.default.createElement("section", {
+      key: activity.title
+    }, /* @__PURE__ */ import_react.default.createElement("i", {
+      className: `fas fa-${activity.icon}`
+    }), /* @__PURE__ */ import_react.default.createElement("h4", null, activity.title))));
+  }
 
   // src/features/chat/components/Chat.tsx
   var import_react11 = __toESM(require_react());
@@ -25805,8 +25837,8 @@
       className: "userlink",
       style: { color: `#${color}` },
       target: "_blank",
-      href: "/@111"
-    }, "111"));
+      href: `/@${name}`
+    }, name));
   }
 
   // src/features/chat/components/ChatMessage.tsx
@@ -25819,7 +25851,8 @@
     text_html,
     text_censored,
     timestamp,
-    onDelete
+    onDelete,
+    onQuote
   }) {
     const { admin, censored } = useLoggedInUser();
     return /* @__PURE__ */ import_react7.default.createElement("div", {
@@ -25841,7 +25874,8 @@
         __html: censored ? text_censored : text_html
       }
     }), /* @__PURE__ */ import_react7.default.createElement("button", {
-      className: "ChatMessage-button quote btn"
+      className: "ChatMessage-button quote btn",
+      onClick: onQuote
     }, /* @__PURE__ */ import_react7.default.createElement("i", {
       className: "fas fa-reply"
     }))), admin && /* @__PURE__ */ import_react7.default.createElement("button", {
@@ -25955,6 +25989,10 @@
       ),
       []
     );
+    const quoteMessage = (0, import_react11.useCallback)((message) => {
+      setDraft(`> ${message}
+`);
+    }, []);
     (0, import_react11.useEffect)(() => {
       if (!socket.current) {
         socket.current = lookup2();
@@ -25985,7 +26023,8 @@
       key: message.time,
       ...message,
       showUser: message.username !== messages[index - 1]?.username,
-      onDelete: () => requestDeleteMessage(message.text)
+      onDelete: () => requestDeleteMessage(message.text),
+      onQuote: () => quoteMessage(message.text)
     }))), /* @__PURE__ */ import_react11.default.createElement(UserInput, {
       value: draft,
       onChange: setDraft,
@@ -26019,7 +26058,7 @@
   function Layout() {
     return /* @__PURE__ */ import_react12.default.createElement("div", {
       className: "Layout"
-    }, /* @__PURE__ */ import_react12.default.createElement(Chat, null));
+    }, /* @__PURE__ */ import_react12.default.createElement(Activity, null), /* @__PURE__ */ import_react12.default.createElement(Chat, null));
   }
 
   // src/index.tsx

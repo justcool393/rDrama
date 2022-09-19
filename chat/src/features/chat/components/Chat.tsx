@@ -53,6 +53,9 @@ export function Chat() {
       ),
     []
   );
+  const quoteMessage = useCallback((message: string) => {
+    setDraft(`> ${message}\n`);
+  }, []);
 
   useEffect(() => {
     if (!socket.current) {
@@ -90,6 +93,7 @@ export function Chat() {
                 {...message}
                 showUser={message.username !== messages[index - 1]?.username}
                 onDelete={() => requestDeleteMessage(message.text)}
+                onQuote={() => quoteMessage(message.text)}
               />
             ))}
           </div>

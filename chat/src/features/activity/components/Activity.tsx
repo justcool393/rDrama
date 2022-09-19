@@ -31,10 +31,7 @@ export function Activity() {
       {ACTIVITIES.map((activity) => (
         <section key={activity.title}>
           <i className={`fas fa-${activity.icon}`}></i>
-          <div>
             <h4>{activity.title}</h4>
-            <p>{activity.description}</p>
-          </div>
         </section>
       ))}
     </div>

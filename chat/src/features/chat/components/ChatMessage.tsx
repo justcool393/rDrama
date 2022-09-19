@@ -6,6 +6,7 @@ import "./ChatMessage.css";
 interface ChatMessageProps extends ChatSpeakResponse {
   showUser?: boolean;
   onDelete(): void;
+  onQuote(): void;
 }
 
 export function ChatMessage({
@@ -18,6 +19,7 @@ export function ChatMessage({
   text_censored,
   timestamp,
   onDelete,
+  onQuote,
 }: ChatMessageProps) {
   const { admin, censored } = useLoggedInUser();
 
@@ -42,7 +44,7 @@ export function ChatMessage({
               __html: censored ? text_censored : text_html,
             }}
           />
-          <button className="ChatMessage-button quote btn">
+          <button className="ChatMessage-button quote btn" onClick={onQuote}>
             <i className="fas fa-reply"></i>
           </button>
         </div>

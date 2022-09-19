@@ -25,9 +25,9 @@ export function Username({ avatar, color, name, hat = "" }: UsernameProps) {
         className="userlink"
         style={{ color: `#${color}` }}
         target="_blank"
-        href="/@111"
+        href={`/@${name}`}
       >
-        111
+        {name}
       </a>
     </div>
   );

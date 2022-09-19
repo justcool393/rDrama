@@ -1,3 +1,7 @@
+.UserList {
+  flex: 0.3;
+}
+
 .UserList ul {
   padding-left: 16px;
 }

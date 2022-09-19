@@ -1,26 +1,21 @@
 /* src/features/activity/components/Activity.css */
 .Activity {
-  min-width: 400px;
-  -moz-box-shadow: inset 0 0 10px #000000;
-  -webkit-box-shadow: inset 0 0 10px #000000;
-  box-shadow: inset 0 0 10px #000000;
-  height: 600px;
-  overflow: auto;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin: 0 4rem;
 }
 .Activity > section {
-  width: 100;
-  border-bottom: 1px solid gray;
-  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  text-align: right;
+  padding: 0 1rem;
 }
-.Activity p {
+.Activity i {
+  margin-right: 1rem;
 }
-.Activity p {
-  margin: 0;
-  padding: 0;
+.Activity > section:not(:last-child) {
+  margin-right: 2rem;
 }
 
 /* src/features/emoji/components/EmojiDrawer.css */
@@ -101,6 +96,9 @@
 }
 
 /* src/features/chat/components/UserList.css */
+.UserList {
+  flex: 0.3;
+}
 .UserList ul {
   padding-left: 16px;
 }
