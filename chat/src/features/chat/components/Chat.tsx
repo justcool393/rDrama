@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import { EmojiDrawer } from "../../emoji"
 import { ChatMessage } from "./ChatMessage";
 import { UserInput } from "./UserInput";
 import { UserList } from "./UserList";
@@ -75,6 +76,7 @@ export function Chat() {
           <i className="far fa-user fa-sm" /> {online.length}
         </div>
         <div>
+          <EmojiDrawer />
           {messages.map((message, index) => (
             <ChatMessage
               key={message.time}

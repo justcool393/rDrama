@@ -1,6 +1,6 @@
 import React from "react";
 import { Username } from "./Username";
-import { useLoggedInUser } from "../hooks";
+import { useLoggedInUser } from "../../../hooks";
 import "./ChatMessage.css";
 
 interface ChatMessageProps extends ChatSpeakResponse {
