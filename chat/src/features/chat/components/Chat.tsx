@@ -6,73 +6,30 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { io, Socket } from "socket.io-client";
+import { useChat } from "../../../hooks";
 import { EmojiDrawer } from "../../emoji";
 import { ChatMessage } from "./ChatMessage";
 import { UserInput } from "./UserInput";
 import { UserList } from "./UserList";
 import "./Chat.css";
 
-enum ChatHandlers {
-  CONNECT = "connect",
-  CATCHUP = "catchup",
-  ONLINE = "online",
-  TYPING = "typing",
-  DELETE = "delete",
-  SPEAK = "speak",
-}
-
 export function Chat() {
   const messageWrapper = useRef<HTMLDivElement>(null);
-  const socket = useRef<null | Socket>(null);
-  const [online, setOnline] = useState<string[]>([]);
-  const [typing, setTyping] = useState<string[]>([]);
-  const [messages, setMessages] = useState<ChatSpeakResponse[]>([]);
-  const [draft, setDraft] = useState("");
-  const [emojiDrawerOpen, setEmojiDrawerOpen] = useState(false);
+  const {
+    online,
+    typing,
+    messages,
+    draft,
+    sendMessage,
+    deleteMessage,
+    updateDraft,
+  } = useChat();
   const usersTyping = useMemo(() => formatTypingString(typing), [typing]);
-  const addMessage = useCallback(
-    (message: ChatSpeakResponse) => setMessages((prev) => prev.concat(message)),
-    []
-  );
-  const sendMessage = useCallback(
-    (event?: FormEvent<HTMLFormElement>) => {
-      event?.preventDefault();
-      socket.current?.emit(ChatHandlers.SPEAK, draft);
-      setDraft("");
-    },
-    [draft]
-  );
-  const requestDeleteMessage = useCallback((withText: string) => {
-    socket.current?.emit(ChatHandlers.DELETE, withText);
-  }, []);
-  const deleteMessage = useCallback(
-    (withText: string) =>
-      setMessages((prev) =>
-        prev.filter((prevMessage) => prevMessage.text !== withText)
-      ),
-    []
-  );
-  const quoteMessage = useCallback((message: string) => {
-    setDraft(`> ${message}\n`);
-  }, []);
-
-  useEffect(() => {
-    if (!socket.current) {
-      socket.current = io();
-
-      socket.current
-        .on(ChatHandlers.CATCHUP, setMessages)
-        .on(ChatHandlers.ONLINE, setOnline)
-        .on(ChatHandlers.TYPING, setTyping)
-        .on(ChatHandlers.SPEAK, addMessage)
-        .on(ChatHandlers.DELETE, deleteMessage);
-    }
-  });
-
-  useEffect(() => {
-    socket.current?.emit(ChatHandlers.TYPING, draft);
-  }, [draft]);
+  const [emojiDrawerOpen, setEmojiDrawerOpen] = useState(false);
+  const handleSendMessage = useCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    sendMessage();
+  }, [])
 
   useEffect(() => {
     messageWrapper.current.scrollTop = messageWrapper.current.scrollHeight;
@@ -92,16 +49,16 @@ export function Chat() {
                 key={message.time}
                 {...message}
                 showUser={message.username !== messages[index - 1]?.username}
-                onDelete={() => requestDeleteMessage(message.text)}
-                onQuote={() => quoteMessage(message.text)}
+                onDelete={() => deleteMessage(message.text)}
+                onQuote={() => {}}
               />
             ))}
           </div>
 
           <UserInput
             value={draft}
-            onChange={setDraft}
-            onSubmit={sendMessage}
+            onChange={updateDraft}
+            onSubmit={handleSendMessage}
             onEmojiButtonClick={() => setEmojiDrawerOpen((prev) => !prev)}
           >
             <small className="Chat-typing">{usersTyping}</small>

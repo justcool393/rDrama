@@ -1,5 +1,5 @@
-export { Chat } from './Chat'
-export { ChatMessage } from './ChatMessage'
-export { EmojiPickerButton } from './EmojiPickerButton'
-export { UserInput } from './UserInput'
-export { UserList } from './UserList'
+export * from "./Chat";
+export * from "./ChatMessage";
+export * from "./EmojiPickerButton";
+export * from "./UserInput";
+export * from "./UserList";

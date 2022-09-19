@@ -1,1 +1,1 @@
-export { EmojiDrawer } from "./EmojiDrawer";
+export * from "./EmojiDrawer";
