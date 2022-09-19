@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import cx from "classnames";
 import { Username } from "./Username";
 import { useChat, useLoggedInUser } from "../../../hooks";
 import "./ChatMessage.css";
@@ -21,10 +22,15 @@ export function ChatMessage({
   onDelete,
   onQuote,
 }: ChatMessageProps) {
-  const { admin, censored } = useLoggedInUser();
+  const { id, admin, censored } = useLoggedInUser();
+  const content = censored ? text_censored : text_html;
 
   return (
-    <div className="ChatMessage">
+    <div
+      className={cx("ChatMessage", {
+        "chat-mention": content.includes(`id/${id}`),
+      })}
+    >
       {showUser && (
         <div className="ChatMessage-top">
           <Username
@@ -41,7 +47,7 @@ export function ChatMessage({
           <span
             className="ChatMessage-content"
             dangerouslySetInnerHTML={{
-              __html: censored ? text_censored : text_html,
+              __html: content,
             }}
           />
           <button className="ChatMessage-button quote btn" onClick={onQuote}>

@@ -132,7 +132,7 @@
 	{% include "emoji_modal.html" %}
 	{% include "expanded_image_modal.html" %}
 
-	<div id="root" data-admin="{{v.admin_level > 1}}" data-censored="{{v.slurreplacer}}"></div>
+	<div id="root" data-admin="{{v.admin_level > 1}}" data-censored="{{v.slurreplacer}}" data-id="{{v.id}}"></div>
 	<input id="vid" type="hidden" value="{{v.id}}">
 	<input id="vusername" type="hidden" value="{{v.username}}">
 	<input id="site_name" type="hidden" value="{{SITE_NAME}}">

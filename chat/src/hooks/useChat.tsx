@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import {
+import React, {
   createContext,
   PropsWithChildren,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -45,6 +45,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
   const [typing, setTyping] = useState<string[]>([]);
   const [messages, setMessages] = useState<ChatSpeakResponse[]>([]);
   const [draft, setDraft] = useState("");
+  const [notifications, setNotifications] = useState<string[]>();
   const addMessage = useCallback(
     (message: ChatSpeakResponse) => setMessages((prev) => prev.concat(message)),
     []

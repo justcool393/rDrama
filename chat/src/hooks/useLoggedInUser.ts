@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 export function useLoggedInUser() {
-  const [{ admin, censored }, setContext] = useState({
+  const [{ admin, id, censored }, setContext] = useState({
+    id: "",
     admin: false,
     censored: true,
   });
@@ -10,10 +11,11 @@ export function useLoggedInUser() {
     const root = document.getElementById("root");
     
     setContext({
+      id: root.dataset.userId,
       admin: root.dataset.admin === "True",
       censored: root.dataset.censored === "True",
     });
   }, []);
 
-  return { admin, censored };
+  return { id, admin, censored };
 }
