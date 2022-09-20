@@ -129,13 +129,14 @@
 
 <body>
 	{% include "header.html" %}
-	{% include "emoji_modal.html" %}
-	{% include "expanded_image_modal.html" %}
-
-	<div id="root" data-admin="{{v.admin_level > 1}}" data-censored="{{v.slurreplacer}}" data-id="{{v.id}}"></div>
-	<input id="vid" type="hidden" value="{{v.id}}">
-	<input id="vusername" type="hidden" value="{{v.username}}">
-	<input id="site_name" type="hidden" value="{{SITE_NAME}}">
-	<input id="slurreplacer" type="hidden" value="{{v.slurreplacer}}">
+	<div
+		id="root"
+		data-id="{{v.id}}"
+		data-username="{{v.username}}"
+		data-admin="{{v.admin_level > 1}}"
+		data-censored="{{v.slurreplacer}}"
+		data-sitename="{{SITE_NAME}}"
+		data-themecolor="{{v.themecolor}}">
+	</div>
 	<script defer src="/chat_built.js?h=5"></script>
 </body>

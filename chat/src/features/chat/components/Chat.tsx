@@ -1,9 +1,7 @@
 import React, {
   FormEvent,
   useCallback,
-  useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { useChat } from "../../../hooks";

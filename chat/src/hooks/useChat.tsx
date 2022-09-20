@@ -77,7 +77,6 @@ export function ChatProvider({ children }: PropsWithChildren) {
     [online, typing, messages, draft, sendMessage, deleteMessage]
   );
 
-  // Initialize the socket.
   useEffect(() => {
     if (!socket.current) {
       socket.current = io();

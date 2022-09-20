@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import cx from "classnames";
 import { Username } from "./Username";
-import { useChat, useLoggedInUser } from "../../../hooks";
+import { useChat, useRootContext } from "../../../hooks";
 import "./ChatMessage.css";
 
 interface ChatMessageProps extends ChatSpeakResponse {
@@ -22,15 +22,19 @@ export function ChatMessage({
   onDelete,
   onQuote,
 }: ChatMessageProps) {
-  const { id, admin, censored } = useLoggedInUser();
+  const {
+    id,
+    username: loggedInUsername,
+    admin,
+    censored,
+    themeColor,
+  } = useRootContext();
   const content = censored ? text_censored : text_html;
+  const hasMention = content.includes(loggedInUsername);
+  const mentionStyle = hasMention ? { backgroundColor: `#${themeColor}55` } : {};
 
   return (
-    <div
-      className={cx("ChatMessage", {
-        "chat-mention": content.includes(`id/${id}`),
-      })}
-    >
+    <div className={cx("ChatMessage")} style={mentionStyle}>
       {showUser && (
         <div className="ChatMessage-top">
           <Username

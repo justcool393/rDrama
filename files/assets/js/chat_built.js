@@ -1012,11 +1012,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef5(initialValue) {
+          function useRef4(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect6(create, deps) {
+          function useEffect5(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1796,14 +1796,14 @@
           exports.useContext = useContext2;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect6;
+          exports.useEffect = useEffect5;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo4;
           exports.useReducer = useReducer;
-          exports.useRef = useRef5;
+          exports.useRef = useRef4;
           exports.useState = useState5;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
@@ -25268,23 +25268,29 @@
     return [error, emojis];
   }
 
-  // src/hooks/useLoggedInUser.ts
+  // src/hooks/useRootContext.ts
   var import_react4 = __toESM(require_react());
-  function useLoggedInUser() {
-    const [{ admin, id, censored }, setContext] = (0, import_react4.useState)({
+  function useRootContext() {
+    const [{ admin, id, username, censored, themeColor, siteName }, setContext] = (0, import_react4.useState)({
       id: "",
+      username: "",
       admin: false,
-      censored: true
+      censored: true,
+      themeColor: "#ff66ac",
+      siteName: ""
     });
     (0, import_react4.useEffect)(() => {
       const root2 = document.getElementById("root");
       setContext({
-        id: root2.dataset.userId,
+        id: root2.dataset.id,
+        username: root2.dataset.username,
         admin: root2.dataset.admin === "True",
-        censored: root2.dataset.censored === "True"
+        censored: root2.dataset.censored === "True",
+        themeColor: root2.dataset.themecolor,
+        siteName: root2.dataset.sitename
       });
     }, []);
-    return { id, admin, censored };
+    return { id, admin, username, censored, themeColor, siteName };
   }
 
   // src/features/emoji/components/EmojiDrawer.tsx
@@ -25949,12 +25955,19 @@
     onDelete,
     onQuote
   }) {
-    const { id, admin, censored } = useLoggedInUser();
+    const {
+      id,
+      username: loggedInUsername,
+      admin,
+      censored,
+      themeColor
+    } = useRootContext();
     const content = censored ? text_censored : text_html;
+    const hasMention = content.includes(loggedInUsername);
+    const mentionStyle = hasMention ? { backgroundColor: `#${themeColor}55` } : {};
     return /* @__PURE__ */ import_react8.default.createElement("div", {
-      className: (0, import_classnames.default)("ChatMessage", {
-        "chat-mention": content.includes(`id/${id}`)
-      })
+      className: (0, import_classnames.default)("ChatMessage"),
+      style: mentionStyle
     }, showUser && /* @__PURE__ */ import_react8.default.createElement("div", {
       className: "ChatMessage-top"
     }, /* @__PURE__ */ import_react8.default.createElement(Username, {
