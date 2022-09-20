@@ -42,6 +42,7 @@ const ChatContext = createContext<ChatProviderContext>({
 });
 
 export function ChatProvider({ children }: PropsWithChildren) {
+  const { siteName } = useRootContext();
   const socket = useRef<null | Socket>(null);
   const [online, setOnline] = useState<string[]>([]);
   const [typing, setTyping] = useState<string[]>([]);
@@ -79,7 +80,6 @@ export function ChatProvider({ children }: PropsWithChildren) {
     }),
     [online, typing, messages, draft, sendMessage, deleteMessage]
   );
-  const { siteName } = useRootContext();
 
   useEffect(() => {
     if (!socket.current) {
@@ -100,7 +100,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (focused) {
-      setNotifications(notifications);
+      setNotifications(0);
     }
   }, [focused]);
 

@@ -26699,6 +26699,7 @@
     }
   });
   function ChatProvider({ children }) {
+    const { siteName } = useRootContext();
     const socket = (0, import_react4.useRef)(null);
     const [online, setOnline] = (0, import_react4.useState)([]);
     const [typing, setTyping] = (0, import_react4.useState)([]);
@@ -26735,7 +26736,6 @@
       }),
       [online, typing, messages, draft, sendMessage, deleteMessage]
     );
-    const { siteName } = useRootContext();
     (0, import_react4.useEffect)(() => {
       if (!socket.current) {
         socket.current = lookup2();
@@ -26747,7 +26747,7 @@
     }, [draft]);
     (0, import_react4.useEffect)(() => {
       if (focused) {
-        setNotifications(notifications);
+        setNotifications(0);
       }
     }, [focused]);
     (0, import_react4.useEffect)(() => {
