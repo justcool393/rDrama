@@ -9,6 +9,8 @@ import React, {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import { useRootContext } from "./useRootContext";
+import { useWindowFocus } from "./useWindowFocus";
 
 enum ChatHandlers {
   CONNECT = "connect",
@@ -45,11 +47,12 @@ export function ChatProvider({ children }: PropsWithChildren) {
   const [typing, setTyping] = useState<string[]>([]);
   const [messages, setMessages] = useState<ChatSpeakResponse[]>([]);
   const [draft, setDraft] = useState("");
-  const [notifications, setNotifications] = useState<string[]>();
-  const addMessage = useCallback(
-    (message: ChatSpeakResponse) => setMessages((prev) => prev.concat(message)),
-    []
-  );
+  const focused = useWindowFocus();
+  const [notifications, setNotifications] = useState<number>(0);
+  const addMessage = useCallback((message: ChatSpeakResponse) => {
+    setMessages((prev) => prev.concat(message));
+    setNotifications((prev) => prev + 1);
+  }, []);
   const sendMessage = useCallback(() => {
     socket.current?.emit(ChatHandlers.SPEAK, draft);
     setDraft("");
@@ -76,6 +79,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
     }),
     [online, typing, messages, draft, sendMessage, deleteMessage]
   );
+  const { siteName } = useRootContext();
 
   useEffect(() => {
     if (!socket.current) {
@@ -93,6 +97,23 @@ export function ChatProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     socket.current?.emit(ChatHandlers.TYPING, draft);
   }, [draft]);
+
+  useEffect(() => {
+    if (focused) {
+      setNotifications(notifications);
+    }
+  }, [focused]);
+
+  useEffect(() => {
+    const title = document.getElementsByTagName("title")[0];
+    const favicon = document.getElementById("favicon") as HTMLLinkElement;
+    const escape = (window as any).escapeHTML;
+    const alertedWhileAway = notifications > 0 && !focused;
+    const pathIcon = alertedWhileAway ? "alert" : "icon";
+
+    favicon.href = escape(`/assets/images/${siteName}/${pathIcon}.webp?v=3`);
+    title.innerHTML = alertedWhileAway ? `[+${notifications}] Chat` : "Chat";
+  }, [notifications, focused]);
 
   return (
     <ChatContext.Provider value={context}>{children}</ChatContext.Provider>

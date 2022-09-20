@@ -3,6 +3,7 @@ import cx from "classnames";
 import { Username } from "./Username";
 import { useChat, useRootContext } from "../../../hooks";
 import "./ChatMessage.css";
+import key from "weak-key";
 
 interface ChatMessageProps extends ChatSpeakResponse {
   showUser?: boolean;
@@ -83,7 +84,7 @@ export function ChatMessageList() {
     <div className="ChatMessageList" ref={messageWrapper}>
       {messages.map((message, index) => (
         <ChatMessage
-          key={message.time}
+          key={key(message)}
           {...message}
           showUser={message.username !== messages[index - 1]?.username}
           onDelete={() => deleteMessage(message.text)}
