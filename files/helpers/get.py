@@ -1,7 +1,7 @@
 from files.classes import *
 from flask import g
 
-def get_id(username, v=None, graceful=False):
+def get_id(username, v=None, graceful=False, include_shadowbanned=True):
 	
 	username = username.replace('\\', '').replace('_', '\_').replace('%', '').strip()
 
@@ -14,11 +14,9 @@ def get_id(username, v=None, graceful=False):
 			)
 		).one_or_none()
 
-	if not user:
-		if not graceful:
-			abort(404)
-		else:
-			return None
+	if not user or (user.shadowbanned and not (include_shadowbanned or (v and (v.admin_level >= 2 or v.shadowbanned)))):
+		if not graceful: abort(404)
+		else: return None
 
 	return user[0]
 
@@ -87,14 +85,14 @@ def get_users(usernames, graceful=False):
 
 	return users
 
-def get_account(id, v=None, graceful=False):
+def get_account(id, v=None, graceful=False, include_shadowbanned=True):
 
 	try: id = int(id)
 	except: abort(404)
 
 	user = g.db.get(User, id)
 
-	if not user:
+	if not user or (user.shadowbanned and not (include_shadowbanned or (v and (v.admin_level >= 2 or v.shadowbanned)))):
 		if not graceful: abort(404)
 		else: return None
 
