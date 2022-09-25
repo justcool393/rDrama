@@ -739,7 +739,7 @@ def unsubscribe(v, post_id):
 @limiter.limit("1/second;10/minute;20/hour;50/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @is_not_permabanned
 def message2(v, username):
-	user = get_user(username, v=v, include_shadowbanned=False)
+	user = get_user(username, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
 		return {"error": "You're blocking this user."}, 403
@@ -1001,7 +1001,7 @@ def visitors(v):
 @auth_desired_with_logingate
 def u_username(username, v=None):
 
-	u = get_user(username, v=v, include_shadowbanned=False, rendered=True)
+	u = get_user(username, v=v, include_blocks=True, include_shadowbanned=False, rendered=True)
 
 	if v and username == v.username:
 		is_following = False
@@ -1099,7 +1099,7 @@ def u_username(username, v=None):
 @auth_desired_with_logingate
 def u_username_comments(username, v=None):
 
-	user = get_user(username, v=v, include_shadowbanned=False, rendered=True)
+	user = get_user(username, v=v, include_blocks=True, include_shadowbanned=False, rendered=True)
 
 	if v and username == v.username:
 		is_following = False
@@ -1174,7 +1174,7 @@ def u_username_comments(username, v=None):
 @auth_required
 def u_username_info(username, v=None):
 
-	user=get_user(username, v=v, include_shadowbanned=False)
+	user=get_user(username, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
 		return {"error": "You're blocking this user."}, 401

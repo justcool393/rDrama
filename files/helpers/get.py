@@ -21,7 +21,7 @@ def get_id(username, v=None, graceful=False, include_shadowbanned=True):
 	return user[0]
 
 
-def get_user(username, v=None, graceful=False, rendered=False, include_shadowbanned=True):
+def get_user(username, v=None, graceful=False, rendered=False, include_blocks=False, include_shadowbanned=True):
 	if not username:
 		if not graceful: abort(404)
 		else: return None
@@ -43,7 +43,7 @@ def get_user(username, v=None, graceful=False, rendered=False, include_shadowban
 		if not graceful: abort(404)
 		else: return None
 
-	if rendered and v:
+	if rendered and v and include_blocks:
 		if v.id == user.id:
 			user.is_blocked = False
 			user.is_blocking = False
