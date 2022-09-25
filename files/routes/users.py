@@ -1,4 +1,3 @@
-from xml.etree.ElementInclude import include
 import qrcode
 import io
 import time
