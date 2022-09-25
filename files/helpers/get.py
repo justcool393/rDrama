@@ -23,8 +23,7 @@ def get_id(username, v=None, graceful=False):
 	return user[0]
 
 
-def get_user(username, v=None, graceful=False, rendered=False):
-
+def get_user(username, v=None, graceful=False, rendered=False, include_shadowbanned=True):
 	if not username:
 		if not graceful: abort(404)
 		else: return None
@@ -42,7 +41,7 @@ def get_user(username, v=None, graceful=False, rendered=False):
 
 	user = user.one_or_none()
 
-	if not user:
+	if not user or (user.shadowbanned and not (include_shadowbanned or (v and (v.admin_level >= 2 or v.shadowbanned)))):
 		if not graceful: abort(404)
 		else: return None
 

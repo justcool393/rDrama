@@ -250,7 +250,7 @@ def add_mod(v, sub):
 
 	if not user: abort(400)
 
-	user = get_user(user)
+	user = get_user(user, v=v, include_shadowbanned=False)
 
 	if sub in ('furry','vampire','racist','femboy') and not v.client and not user.house.lower().startswith(sub):
 		return {"error": f"@{user.username} needs to be a member of House {sub.capitalize()} to be added as a mod there!"}, 400
