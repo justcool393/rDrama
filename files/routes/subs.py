@@ -11,6 +11,7 @@ import tldextract
 @app.post("/exile/post/<pid>")
 @is_not_permabanned
 def exile_post(v, pid):
+	if v.shadowbanned: return {"error": "Internal Server Error"}, 500
 	try: pid = int(pid)
 	except: abort(400)
 
@@ -38,6 +39,7 @@ def exile_post(v, pid):
 @app.post("/exile/comment/<cid>")
 @is_not_permabanned
 def exile_comment(v, cid):
+	if v.shadowbanned: return {"error": "Internal Server Error"}, 500
 	try: cid = int(cid)
 	except: abort(400)
 
@@ -67,6 +69,7 @@ def unexile(v, sub, uid):
 	u = get_account(uid)
 
 	if not v.mods(sub): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/exilees')
 
 	if u.exiled_from(sub):
 		exile = g.db.query(Exile).filter_by(user_id=u.id, sub=sub).one_or_none()
@@ -245,6 +248,7 @@ def add_mod(v, sub):
 	sub = sub.name
 
 	if not v.mods(sub): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/mods')
 
 	user = request.values.get('user')
 
@@ -276,6 +280,7 @@ def remove_mod(v, sub):
 	sub = sub.name
 
 	if not v.mods(sub): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/mods')
 
 	uid = request.values.get('uid')
 
@@ -353,6 +358,7 @@ def kick(v, pid):
 
 	if not post.sub: abort(403)
 	if not v.mods(post.sub): abort(403)
+	if v.shadowbanned: return {"error": "Internal Server Error"}, 500
 
 	old = post.sub
 	post.sub = None
@@ -382,6 +388,7 @@ def post_sub_sidebar(v, sub):
 	if not sub: abort(404)
 	
 	if not v.mods(sub.name): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/settings')
 
 	sub.sidebar = request.values.get('sidebar', '').strip()[:10000]
 	sub.sidebar_html = sanitize(sub.sidebar)
@@ -403,6 +410,7 @@ def post_sub_css(v, sub):
 
 	if not sub: abort(404)
 	if not v.mods(sub.name): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/settings')
 
 	if len(css) > 6000:
 		error = "CSS is too long (max 6000 characters)"
@@ -438,6 +446,7 @@ def sub_banner(v, sub):
 	if not sub: abort(404)
 
 	if not v.mods(sub.name): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/settings')
 
 	file = request.files["banner"]
 
@@ -465,6 +474,7 @@ def sub_sidebar(v, sub):
 	if not sub: abort(404)
 
 	if not v.mods(sub.name): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/settings')
 	
 	file = request.files["sidebar"]
 	name = f'/images/{time.time()}'.replace('.','') + '.webp'
@@ -491,6 +501,7 @@ def sub_marsey(v, sub):
 	if not sub: abort(404)
 
 	if not v.mods(sub.name): abort(403)
+	if v.shadowbanned: return redirect(f'/h/{sub}/settings')
 	
 	file = request.files["marsey"]
 	name = f'/images/{time.time()}'.replace('.','') + '.webp'
