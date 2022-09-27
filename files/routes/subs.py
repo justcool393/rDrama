@@ -356,6 +356,17 @@ def kick(v, pid):
 
 	old = post.sub
 	post.sub = None
+	
+	if v.admin_level >= 3 and v.id != post.author_id:
+		sub_from_str = f'<a href="/h/{sub_from}">/h/{sub_from}</a>'
+		sub_to_str = 'main feed'
+		ma = ModAction(
+			kind='move_hole',
+			user_id=v.id,
+			target_submission_id=post.id,
+			_note=f'{sub_from_str} → {sub_to_str}',
+		)
+		g.db.add(ma)
 	g.db.add(post)
 
 	cache.delete_memoized(frontlist)
