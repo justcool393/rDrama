@@ -358,13 +358,12 @@ def kick(v, pid):
 	post.sub = None
 	
 	if v.admin_level >= 3 and v.id != post.author_id:
-		sub_from_str = f'<a href="/h/{sub_from}">/h/{sub_from}</a>'
-		sub_to_str = 'main feed'
+		old_str = f'<a href="/h/{old}">/h/{old}</a>'
 		ma = ModAction(
 			kind='move_hole',
 			user_id=v.id,
 			target_submission_id=post.id,
-			_note=f'{sub_from_str} → {sub_to_str}',
+			_note=f'{old_str} → main feed',
 		)
 		g.db.add(ma)
 	g.db.add(post)
