@@ -236,6 +236,7 @@ INSERT INTO public.hat_defs VALUES (737, 'Duel Wielding', 'Oh shit you''re packi
 
 INSERT INTO public.hat_defs VALUES (3, 'Cat Ears I', 'Mew :3', 2, 500, NULL, 1662167687);
 
+
 INSERT INTO public.hat_defs VALUES (723, 'Hohol', 'Мій предок :)', 2, 500, NULL, 1663892328);
 INSERT INTO public.hat_defs VALUES (92, 'Top Hat (black)', 'Traditional. Classy. Elegant.', 2, 500, NULL, 1662167687);
 INSERT INTO public.hat_defs VALUES (714, 'Captain Falcon', 'The chad that every smash player wanted to imitate, if only his moveset included a shower.', 2, 500, NULL, 1663474615);
@@ -886,7 +887,7 @@ INSERT INTO public.hat_defs VALUES (504, 'Iron Crown of Lombardy', 'This isn''t 
 -- Name: hat_defs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.hat_defs_id_seq', 740, true);
+SELECT pg_catalog.setval('public.hat_defs_id_seq', 741, true);
 
 
 --
@@ -1910,6 +1911,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseynerd',2,'dork loser dweeb geek glasses aevann',NULL),
 ('marseynerd2',2,'geek glasses dork loser pimples zits',NULL),
 ('marseynietzsche',2,'philosophy history',NULL),
+('marseyniggy',2,'idolmaster sachiko 4chan smug anime',1664383012),
 ('marseynightmare',2,'striped sweater freddy freddie horror halloween krueger holiday claws monster',NULL),
 ('marseyninja',2,'samurai japanese killer stealthy sneaky assassin weeb',NULL),
 ('marseynintendo',2,'mario gamer switch gaymer video game mustache soy',NULL),
