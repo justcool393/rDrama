@@ -101,8 +101,6 @@ if SITE_NAME == 'rDrama':
 		" kys ": " keep yourself safe ",
 		" pedo ": " libertarian ",
 		" pedos ": " libertarians ",
-		"pedophile": "libertarian",
-		"pedophiles": "libertarians",
 	}
 	SLURS.update(RDRAMA_SLURS)
 
