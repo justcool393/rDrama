@@ -45,6 +45,7 @@ AJ_REPLACEMENTS = {
 SLURS = {
 	"nigger": "BIPOC",
 	"niglet": "BIPOClet",
+	"negress": "BIPOC woman",
 	"faggot": "cute twink",
 	"fag": "strag",
 	"spic ": "hard-working American ",
@@ -100,6 +101,8 @@ if SITE_NAME == 'rDrama':
 		" kys ": " keep yourself safe ",
 		" pedo ": " libertarian ",
 		" pedos ": " libertarians ",
+		"pedophile": "libertarian",
+		"pedophiles": "libertarians",
 	}
 	SLURS.update(RDRAMA_SLURS)
 
