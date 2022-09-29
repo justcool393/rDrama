@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.0.6",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
+    "antd": "^4.23.3",
     "classnames": "^2.3.2",
     "dotenv": "^16.0.2",
     "esbuild": "^0.15.7",
@@ -32,7 +33,7 @@
   },
   "scripts": {
     "chat": "yarn check && yarn build && yarn css:move",
-    "chat:watch": "run-when-changed --watch \"**/*.*\" --exec \"yarn chat\"",
+    "chat:watch": "run-when-changed --watch \"src/**/*.*\" --exec \"yarn chat\"",
     "check": "tsc",
     "build": "node ./build",
     "css:move": "mv ../files/assets/js/chat_done.css ../files/assets/css/chat_done.css"
