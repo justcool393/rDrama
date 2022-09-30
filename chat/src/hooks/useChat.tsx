@@ -9,7 +9,6 @@ import React, {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
-import lozad from "lozad";
 import debounce from "lodash.debounce";
 import { useRootContext } from "./useRootContext";
 import { useWindowFocus } from "./useWindowFocus";
@@ -23,6 +22,11 @@ enum ChatHandlers {
   SPEAK = "speak",
 }
 
+interface UserToDM {
+  id: string;
+  username: string;
+}
+
 interface ChatProviderContext {
   online: string[];
   typing: string[];
@@ -30,10 +34,12 @@ interface ChatProviderContext {
   draft: string;
   quote: null | IChatMessage;
   messageLookup: Record<string, IChatMessage>;
+  userToDm: null | UserToDM;
   updateDraft: React.Dispatch<React.SetStateAction<string>>;
   sendMessage(): void;
   quoteMessage(message: null | IChatMessage): void;
   deleteMessage(withText: string): void;
+  updateUserToDm(userToDm: UserToDM): void;
 }
 
 const ChatContext = createContext<ChatProviderContext>({
@@ -43,16 +49,20 @@ const ChatContext = createContext<ChatProviderContext>({
   draft: "",
   quote: null,
   messageLookup: {},
+  userToDm: null,
   updateDraft() {},
   sendMessage() {},
   quoteMessage() {},
   deleteMessage() {},
+  updateUserToDm() {},
 });
 
 const MINIMUM_TYPING_UPDATE_INTERVAL = 250;
+export const DIRECT_MESSAGE_ID = "DIRECT_MESSAGE";
+export const OPTIMISTIC_MESSAGE_ID = "OPTIMISTIC";
 
 export function ChatProvider({ children }: PropsWithChildren) {
-  const { username, siteName } = useRootContext();
+  const { username, id, siteName, hat, avatar, nameColor } = useRootContext();
   const socket = useRef<null | Socket>(null);
   const [online, setOnline] = useState<string[]>([]);
   const [typing, setTyping] = useState<string[]>([]);
@@ -61,24 +71,83 @@ export function ChatProvider({ children }: PropsWithChildren) {
   const lastDraft = useRef("");
   const [quote, setQuote] = useState<null | IChatMessage>(null);
   const focused = useWindowFocus();
+  const [userToDm, setUserToDm] = useState<null | UserToDM>(null);
   const [notifications, setNotifications] = useState<number>(0);
   const [messageLookup, setMessageLookup] = useState({});
   const addMessage = useCallback((message: IChatMessage) => {
-    setMessages((prev) => prev.concat(message));
+    if (message.id === OPTIMISTIC_MESSAGE_ID) {
+      setMessages((prev) => prev.concat(message));
+    } else {
+      // Are there any optimistic messages that have the same text?
+      setMessages((prev) => {
+        const matchingOptimisticMessage = prev.findIndex(
+          (prevMessage) =>
+            prevMessage.id === OPTIMISTIC_MESSAGE_ID &&
+            prevMessage.text.trim() === message.text.trim()
+        );
+
+        if (matchingOptimisticMessage === -1) {
+          return prev.slice(-99).concat(message);
+        } else {
+          const before = prev.slice(0, matchingOptimisticMessage);
+          const after = prev.slice(matchingOptimisticMessage + 1);
+
+          return [...before, message, ...after];
+        }
+      });
+    }
 
     if (message.username !== username && !document.hasFocus()) {
       setNotifications((prev) => prev + 1);
     }
   }, []);
   const sendMessage = useCallback(() => {
+    if (userToDm) {
+      const directMessage = `<small class="text-primary"><em>(Sent to @${userToDm.username}):</em></small> ${draft}`;
+
+      addMessage({
+        id: DIRECT_MESSAGE_ID,
+        username,
+        user_id: id,
+        avatar,
+        hat,
+        namecolor: nameColor,
+        text: directMessage,
+        base_text_censored: directMessage,
+        text_censored: directMessage,
+        text_html: directMessage,
+        time: new Date().getTime() / 1000,
+        quotes: null,
+        dm: true,
+      });
+    } else {
+      addMessage({
+        id: OPTIMISTIC_MESSAGE_ID,
+        username,
+        user_id: id,
+        avatar,
+        hat,
+        namecolor: nameColor,
+        text: draft,
+        base_text_censored: draft,
+        text_censored: draft,
+        text_html: draft,
+        time: new Date().getTime() / 1000,
+        quotes: null,
+        dm: false,
+      });
+    }
+
     socket.current?.emit(ChatHandlers.SPEAK, {
       message: draft,
       quotes: quote?.id ?? null,
+      recipient: userToDm?.id ?? "",
     });
 
     setQuote(null);
     setDraft("");
-  }, [draft, quote]);
+    setUserToDm(null);
+  }, [draft, quote, userToDm]);
   const requestDeleteMessage = useCallback((withText: string) => {
     socket.current?.emit(ChatHandlers.DELETE, withText);
   }, []);
@@ -106,10 +175,12 @@ export function ChatProvider({ children }: PropsWithChildren) {
       draft,
       quote,
       messageLookup,
+      userToDm,
       quoteMessage,
       sendMessage,
       deleteMessage: requestDeleteMessage,
       updateDraft: setDraft,
+      updateUserToDm: setUserToDm,
     }),
     [
       online,
@@ -118,6 +189,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
       draft,
       quote,
       messageLookup,
+      userToDm,
       sendMessage,
       deleteMessage,
       quoteMessage,
@@ -177,17 +249,6 @@ export function ChatProvider({ children }: PropsWithChildren) {
     favicon.href = escape(`/assets/images/${siteName}/${pathIcon}.webp?v=3`);
     title.innerHTML = alertedWhileAway ? `[+${notifications}] Chat` : "Chat";
   }, [notifications, focused]);
-
-  // Setup Lozad
-  useEffect(() => {
-    const { observe, observer } = lozad();
-
-    observe();
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   return (
     <ChatContext.Provider value={context}>{children}</ChatContext.Provider>

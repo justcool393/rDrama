@@ -6,14 +6,21 @@ import React, {
   useRef,
   useMemo,
   useState,
+  useEffect,
 } from "react";
-import { useChat, useDrawer, useEmojis } from "../../hooks";
-import { EmojiDrawer, QuickEmojis } from "../emoji";
+import cx from "classnames";
+import { useChat, useEmojis } from "../../hooks";
+import { QuickEmojis } from "../emoji";
 import "./UserInput.css";
 
-export function UserInput() {
-  const { draft, sendMessage, updateDraft } = useChat();
-  const { reveal, hide, open } = useDrawer();
+interface Props {
+  large?: boolean;
+  onFocus(): void;
+  onBlur(): void;
+}
+
+export function UserInput({ large = false, onFocus, onBlur }: Props) {
+  const { draft, userToDm, sendMessage, updateDraft } = useChat();
   const builtChatInput = useRef<HTMLTextAreaElement>(null);
   const { visible, addQuery } = useEmojis();
   const form = useRef<HTMLFormElement>(null);
@@ -47,31 +54,12 @@ export function UserInput() {
   );
   const handleKeyUp = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !event.shiftKey) {
         handleSendMessage();
       }
     },
     [handleSendMessage]
   );
-  const handleToggleEmojiDrawer = useCallback(() => {
-    if (open) {
-      builtChatInput.current?.focus();
-      hide();
-    } else {
-      reveal({
-        title: "Select an emoji",
-        content: (
-          <EmojiDrawer
-            onSelectEmoji={handleSelectEmoji}
-            onClose={() => builtChatInput.current?.focus()}
-          />
-        ),
-      });
-    }
-  }, [open]);
-  const handleSelectEmoji = useCallback((emoji: string) => {
-    updateDraft((prev) => `${prev} :${emoji}: `);
-  }, []);
   const handleInsertQuickEmoji = useCallback(
     (emoji: string) => {
       const [openEmojiToken, closeEmojiToken] = locateEmojiTokens(draft);
@@ -84,6 +72,28 @@ export function UserInput() {
     },
     [draft]
   );
+  const handleFocus = useCallback(() => {
+    builtChatInput.current?.scrollIntoView({ behavior: "smooth" });
+    onFocus();
+  }, [onFocus]);
+
+  // Listen for changes from the Emoji Modal and reflect them in draft
+  useEffect(() => {
+    const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) =>
+      updateDraft((prev) => `${prev} ${event.detail.emoji} `);
+
+    document.addEventListener("emojiInserted", handleEmojiInsert);
+
+    return () => {
+      document.removeEventListener("emojiInserted", handleEmojiInsert);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToDm) {
+      builtChatInput.current?.focus();
+    }
+  }, [userToDm])
 
   return (
     <form ref={form} className="UserInput" onSubmit={handleSendMessage}>
@@ -107,24 +117,30 @@ export function UserInput() {
       <textarea
         ref={builtChatInput}
         id="builtChatInput"
-        className="UserInput-input form-control"
-        style={{
-          minHeight: 50,
-          height: 50,
-          maxHeight: 50,
-        }}
+        className={cx("UserInput-input form-control", {
+          "UserInput-input__large": large
+        })}
         minLength={1}
         maxLength={1000}
         rows={1}
         onChange={handleChange}
         onKeyUp={handleKeyUp}
+        onFocus={handleFocus}
+        onBlur={onBlur}
         placeholder="Message"
         autoComplete="off"
         value={draft}
       />
       <i
         role="button"
-        onClick={handleToggleEmojiDrawer}
+        data-bs-toggle="modal"
+        data-bs-target="#emojiModal"
+        data-bs-placement="bottom"
+        title="Add Emoji"
+        onClick={() => {
+          const whatever = window as any;
+          whatever.loadEmojis("builtChatInput");
+        }}
         className="UserInput-emoji fas fa-smile-beam"
       />
       <button

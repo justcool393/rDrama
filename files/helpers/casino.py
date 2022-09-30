@@ -1,9 +1,11 @@
 from files.__main__ import app, limiter, db_session
 from files.helpers.wrappers import *
+from files.helpers.actions import badge_grant
 from files.helpers.alerts import *
 from files.helpers.get import *
 from files.helpers.const import *
 from files.helpers.wrappers import *
+
 
 
 def get_game_feed(game):
@@ -81,3 +83,25 @@ def get_game_leaderboard(game):
 			}
         }
     }
+
+
+def distribute_wager_badges(user, wager, won):
+    badges_earned = []
+
+    if won:
+        if wager >= 1000:
+            badges_earned.append(160)
+        if wager >= 10000:
+            badges_earned.append(161)
+        if wager >= 100000:
+            badges_earned.append(162)
+    else:
+        if wager >= 1000:
+            badges_earned.append(157)
+        if wager >= 10000:
+            badges_earned.append(158)
+        if wager >= 100000:
+            badges_earned.append(159)
+
+    for badge in badges_earned:
+        badge_grant(user, badge)

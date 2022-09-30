@@ -429,7 +429,7 @@ def admin_home(v):
 
 	if v.admin_level > 2:
 		if CF_ZONE == 'blahblahblah': response = 'high'
-		else: response = requests.get(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, timeout=5, proxies=proxies).json()['result']['value']
+		else: response = requests.get(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, timeout=5).json()['result']['value']
 		under_attack = response == 'under_attack'
 
 	gitref = admin_git_head()
@@ -498,7 +498,7 @@ def purge_cache(v):
 @app.post("/admin/under_attack")
 @admin_level_required(3)
 def under_attack(v):
-	response = requests.get(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, timeout=5, proxies=proxies).json()['result']['value']
+	response = requests.get(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, timeout=5).json()['result']['value']
 
 	if response == 'under_attack':
 		ma = ModAction(
@@ -862,7 +862,7 @@ def agendaposter(user_id, v):
 		kind="agendaposter",
 		user_id=v.id,
 		target_user_id=user.id,
-		note=note
+		_note=note
 	)
 	g.db.add(ma)
 
@@ -910,23 +910,28 @@ def shadowban(user_id, v):
 	user = get_account(user_id)
 	if user.admin_level != 0: abort(403)
 	user.shadowbanned = v.username
+	reason = request.values.get("reason").strip()[:256]
+	user.ban_reason = reason
 	g.db.add(user)
 
-	for alt in user.alts:
-		if alt.admin_level: continue
-		alt.shadowbanned = v.username
-		g.db.add(alt)
+	if request.values.get("alts"):
+		for alt in user.alts:
+			if alt.admin_level: continue
+			alt.shadowbanned = v.username
+			alt.ban_reason = reason
+			g.db.add(alt)
 
 	ma = ModAction(
 		kind="shadowban",
 		user_id=v.id,
 		target_user_id=user.id,
+		_note=f'reason: "{reason}"'
 	)
 	g.db.add(ma)
 	
 	cache.delete_memoized(frontlist)
-	return {"message": f"@{user.username} has been shadowbanned!"}
 
+	return redirect(user.url)
 
 @app.post("/unshadowban/<user_id>")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
@@ -934,9 +939,11 @@ def shadowban(user_id, v):
 def unshadowban(user_id, v):
 	user = get_account(user_id)
 	user.shadowbanned = None
+	if not user.is_banned: user.ban_reason = None
 	g.db.add(user)
 	for alt in user.alts:
 		alt.shadowbanned = None
+		if not alt.is_banned: alt.ban_reason = None
 		g.db.add(alt)
 
 	ma = ModAction(
@@ -948,7 +955,7 @@ def unshadowban(user_id, v):
 	
 	cache.delete_memoized(frontlist)
 
-	return {"message": f"@{user.username} has been unshadowbanned!"}
+	return redirect(user.url)
 
 
 @app.post("/admin/title_change/<user_id>")
@@ -996,7 +1003,7 @@ def ban_user(user_id, v):
 
 	days = float(request.values.get("days")) if request.values.get('days') else 0
 
-	reason = request.values.get("reason", "").strip()[:256]
+	reason = request.values.get("reason").strip()[:256]
 	reason = filter_emojis_only(reason)
 
 	if reason.startswith("/") and '\\' not in reason: 
@@ -1429,7 +1436,7 @@ def admin_toggle_ban_domain(v):
 	domain=request.values.get("domain", "").strip()
 	if not domain: abort(400)
 
-	reason=request.values.get("reason", "").strip()
+	reason=request.values.get("reason").strip()
 
 	d = g.db.query(BannedDomain).filter_by(domain=domain).one_or_none()
 	if d:

@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import cx from "classnames";
+import throttle from "lodash.throttle";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { DndProvider, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import cx from "classnames";
+import "./App.css";
 import {
   ChatHeading,
   ChatMessageList,
@@ -11,9 +13,9 @@ import {
   UsersTyping,
 } from "./features";
 import { ChatProvider, DrawerProvider, useChat, useDrawer } from "./hooks";
-import "./App.css";
 
 const SCROLL_CANCEL_THRESHOLD = 500;
+const WINDOW_RESIZE_THROTTLE_WAIT = 250;
 
 export function App() {
   return (
@@ -34,7 +36,33 @@ function AppInner() {
   const { open, config } = useDrawer();
   const contentWrapper = useRef<HTMLDivElement>(null);
   const initiallyScrolledDown = useRef(false);
-  const { messages, quote } = useChat();
+  const { messages, quote, userToDm, updateUserToDm } = useChat();
+  const [focused, setFocused] = useState(false);
+  const toggleFocus = useCallback(() => {
+    setTimeout(() => {
+      setFocused(prev => !prev);
+    }, 0);
+  }, []);
+
+  // See: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+  useEffect(() => {
+    const updateViewportHeightUnit = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    const throttledResizeHandler = throttle(
+      updateViewportHeightUnit,
+      WINDOW_RESIZE_THROTTLE_WAIT
+    );
+
+    throttledResizeHandler();
+
+    window.addEventListener("resize", throttledResizeHandler);
+
+    return () => {
+      window.removeEventListener("resize", throttledResizeHandler);
+    };
+  }, []);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -77,7 +105,7 @@ function AppInner() {
         <div className="App-center">
           <div
             className={cx("App-content", {
-              "App-content__reduced": quote,
+              "App-content__reduced": quote || focused,
             })}
             ref={contentWrapper}
           >
@@ -95,10 +123,33 @@ function AppInner() {
           <div className="App-bottom">
             {quote && (
               <div className="App-bottom-extra">
-                {quote && <QuotedMessage />}
+                <QuotedMessage />
               </div>
             )}
-            <UserInput />
+            {userToDm && (
+              <div
+                className="App-bottom-extra text-primary"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <em>Directly messaging @{userToDm.username}</em>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => updateUserToDm(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+            <UserInput
+              large={focused}
+              onFocus={toggleFocus}
+              onBlur={toggleFocus}
+            />
             <UsersTyping />
           </div>
           <div className="App-bottom-dummy" />

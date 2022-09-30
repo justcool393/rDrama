@@ -67,18 +67,16 @@ def award_timers(v, bot=False):
 		badge = v.has_badge(167)
 	if v.bite and v.bite < now:
 		v.bite = None
-
 		notify_if_not_bot("Your vampire status has ended!")
 		v.house = v.old_house
 		v.old_house = ''
-
 		badge = v.has_badge(168)
 		if badge: g.db.delete(badge)
 	if v.earlylife and v.earlylife < now:
 		v.earlylife = None
 		notify_if_not_bot("Your earlylife status has expired!")
 		badge = v.has_badge(169)
-	if v.marsify and v.marsify != 1 and v.marsify < now:
+	if v.marsify and v.marsify < now and v.marsify != 1:
 		v.marsify = 0
 		if SITE_NAME != 'rDrama': notify_if_not_bot("Your marsify status has expired!")
 		badge = v.has_badge(170)
@@ -89,7 +87,7 @@ def award_timers(v, bot=False):
 		badge = v.has_badge(171)
 		if badge: g.db.delete(badge)
 	if v.spider and v.spider != 1 and v.spider < now:
-		v.spider = None
+		v.spider = 0
 		notify_if_not_bot("Your spider friend has left you!")
 		badge = v.has_badge(179)
 		if badge: g.db.delete(badge)

@@ -304,7 +304,7 @@ def award_thing(v, thing_type, id):
 				kind="agendaposter",
 				user_id=v.id,
 				target_user_id=author.id,
-				note=f"for 1 day"
+				_note=f"for 1 day"
 			)
 			g.db.add(ma)
 	elif kind == "flairlock":
@@ -383,8 +383,9 @@ def award_thing(v, thing_type, id):
 		author.verified = "Verified"
 		badge_grant(user=author, badge_id=150)
 	elif kind == 'marsify':
-		if author.marsify: author.marsify += 21600
-		else: author.marsify = int(time.time()) + 21600
+		if not author.marsify or author.marsify != 1:
+			if author.marsify: author.marsify += 21600
+			else: author.marsify = int(time.time()) + 21600
 		badge_grant(user=author, badge_id=170)
 
 		if thing_type == 'comment' and (not author.deflector or v.id == AEVANN_ID):

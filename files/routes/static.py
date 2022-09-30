@@ -11,6 +11,7 @@ from files.classes.badges import BadgeDef
 import files.helpers.stats as statshelper
 from shutil import move, copyfile
 
+
 @app.get("/r/drama/comments/<id>/<title>")
 @app.get("/r/Drama/comments/<id>/<title>")
 def rdrama(id, title):
@@ -27,7 +28,7 @@ def marseys(v):
 		if sort == "usage": marseys = marseys.order_by(Marsey.count.desc(), User.username).all()
 		else: marseys = marseys.order_by(User.username, Marsey.count.desc()).all()
 
-		original = listdir("/asset_submissions/marseys/original")
+		original = os.listdir("/asset_submissions/marseys/original")
 		for marsey, user in marseys:
 			if f'{marsey.name}.png' in original:
 				marsey.og = f'{marsey.name}.png'
@@ -79,6 +80,7 @@ def sidebar(v):
 @app.get("/stats")
 @auth_required
 def participation_stats(v):
+	if request.headers.get("Authorization"): return stats_cached()
 	return render_template("stats.html", v=v, title="Content Statistics", data=stats_cached())
 
 @cache.memoize(timeout=86400)
@@ -439,40 +441,79 @@ def donate(v):
 if SITE == 'pcmemes.net':
 	from files.classes.streamers import *
 
+	id_regex = re.compile('"externalId":"([^"]*?)"', flags=re.A)
 	live_regex = re.compile('playerOverlayVideoDetailsRenderer":\{"title":\{"simpleText":"(.*?)"\},"subtitle":\{"runs":\[\{"text":"(.*?)"\},\{"text":" • "\},\{"text":"(.*?)"\}', flags=re.A)
 	live_thumb_regex = re.compile('\{"thumbnail":\{"thumbnails":\[\{"url":"(.*?)"', flags=re.A)
 	offline_regex = re.compile('","title":"(.*?)".*?"width":48,"height":48\},\{"url":"(.*?)"', flags=re.A)
-	offline_details_regex = re.compile('simpleText":"Gestreamd: ([0-9]*?) ([a-z]*?) geleden"\},"viewCountText":\{"simpleText":"([0-9]*?) weergaven"', flags=re.A)
+	offline_details_regex = re.compile('simpleText":"Μεταδόθηκε πριν από ([0-9]*?) ([^"]*?)"\},"viewCountText":\{"simpleText":"([0-9.]*?) προβολές"', flags=re.A)
 
-	def process_streamer(id):
-		url = f'https://www.youtube.com/channel/{id}/live'
-		req = requests.get(url, cookies={'CONSENT': 'YES+1'}, timeout=5, proxies=proxies)
+	def process_streamer(id, live='live'):
+		url = f'https://www.youtube.com/channel/{id}/{live}'
+		req = requests.get(url, cookies={'CONSENT': 'YES+1'}, timeout=5)
 		text = req.text
 		if '"videoDetails":{"videoId"' in text:
-			t = live_thumb_regex.search(text)
 			y = live_regex.search(text)
-			try:
-				return_val = (True, (id, req.url, t.group(1), y.group(2), y.group(1), int(y.group(3))))
-			except:
-				print(id, flush=True)
-				return_val = None
+			count = y.group(3)
+
+			if count == '1 παρακολουθεί τώρα':
+				count = 1
+
+			if 'περιμένει' in count:
+				return process_streamer(id, '')
+
+			count = int(count.replace('.', ''))
+
+			t = live_thumb_regex.search(text)
+
+			thumb = t.group(1)
+			name = y.group(2)
+			title = y.group(1)
+			
+			return (True, (id, req.url, thumb, name, title, count))
 		else:
 			t = offline_regex.search(text)
+			if not t: return process_streamer(id, '')
+
 			y = offline_details_regex.search(text)
 
-			days = y.group(0)
-			modifier = y.group(1)
-			if modifier == 'weken': modifier = 7
-			elif modifier == 'maand': modifier = 30
-			elif modifier == 'jaar': modifier = 365
-			days *= modifier
+			if y:
+				views = y.group(3).replace('.', '')
+				quantity = int(y.group(1))
+				unit = y.group(2)
 
-			try:
-				return_val = (False, (id, req.url.rstrip('/live'), t.group(2), t.group(1), days, y.group(2)))
-			except:
-				print(id, flush=True)
-				return_val = None
-		return return_val
+				if unit.startswith('λεπτ'):
+					unit = 'minute'
+					modifier = 1
+				if unit.startswith('ώρ'):
+					unit = 'hour'
+					modifier = 60
+				if unit.startswith('ημέρ'):
+					unit = 'day'
+					modifier = 1440
+				if unit.startswith('εβδομάδ'):
+					unit = 'week'
+					modifier = 10080
+				elif unit.startswith('μήν'):
+					unit = 'month'
+					modifier = 43800
+				elif unit.startswith('έτ'):
+					unit = 'year'
+					modifier = 525600
+
+				minutes = quantity * modifier
+
+				actual = f'{quantity} {unit}'
+				if quantity > 1: actual += 's'
+			else:
+				minutes = 0
+				actual = '???'
+				views = 0
+
+			thumb = t.group(2)
+
+			name = t.group(1)
+
+			return (False, (id, req.url.rstrip('/live'), thumb, name, minutes, actual, views))
 
 
 	def live_cached():
@@ -490,10 +531,9 @@ if SITE == 'pcmemes.net':
 		live = sorted(live, key=lambda x: x[5], reverse=True)
 		offline = sorted(offline, key=lambda x: x[4])
 
-		cache.set('live', live)
-		cache.set('offline', offline)
+		if live: cache.set('live', live)
+		if offline: cache.set('offline', offline)
 
-		return live, offline
 
 	@app.get('/live')
 	@app.get('/logged_out/live')
@@ -507,13 +547,23 @@ if SITE == 'pcmemes.net':
 	@app.post('/live/add')
 	@admin_level_required(2)
 	def live_add(v):
-		id = request.values.get('id').strip()
+		if v.id not in (AEVANN_ID, KIPPY_ID, 1550):
+			return {"error": 'Only Kippy can add channels!'}, 403
+
+		link = request.values.get('link').strip()
+
+		if 'youtube.com/channel/' in link:
+			id = link.split('youtube.com/channel/')[1].rstrip('/')
+		else:
+			text = requests.get(link, cookies={'CONSENT': 'YES+1'}, timeout=5).text
+			try: id = id_regex.search(text).group(1)
+			except: return {"error": "Invalid ID"}
 
 		live = cache.get('live') or []
 		offline = cache.get('offline') or []
 
 		if not id or len(id) != 24:
-			return render_template('live.html', v=v, live=live, offline=offline, error="Invalid ID")
+			return {"error": "Invalid ID"}
 
 		existing = g.db.get(Streamer, id)
 		if not existing:
@@ -531,8 +581,8 @@ if SITE == 'pcmemes.net':
 		live = sorted(live, key=lambda x: x[5], reverse=True)
 		offline = sorted(offline, key=lambda x: x[4])
 
-		cache.set('live', live)
-		cache.set('offline', offline)
+		if live: cache.set('live', live)
+		if offline: cache.set('offline', offline)
 
 		return redirect('/live')
 
@@ -553,7 +603,7 @@ if SITE == 'pcmemes.net':
 		live = [x for x in live if x[0] != id]
 		offline = [x for x in offline if x[0] != id]
 
-		cache.set('live', live)
-		cache.set('offline', offline)
+		if live: cache.set('live', live)
+		if offline: cache.set('offline', offline)
 
 		return redirect('/live')

@@ -87,7 +87,7 @@ def publish(pid, v):
 @app.get("/h/<sub>/submit")
 @auth_required
 def submit_get(v, sub=None):
-	if sub: sub = g.db.query(Sub).filter_by(name=sub.strip().lower()).one_or_none()
+	if sub: sub = g.db.get(Sub, sub.strip().lower())
 	
 	if request.path.startswith('/h/') and not sub: abort(404)
 
@@ -769,7 +769,7 @@ def submit_post(v, sub=None):
 			return error(reason)
 		elif "twitter.com" == domain:
 			try:
-				embed = requests.get("https://publish.twitter.com/oembed", params={"url":url, "omit_script":"t"}, timeout=5, proxies=proxies).json()["html"]
+				embed = requests.get("https://publish.twitter.com/oembed", params={"url":url, "omit_script":"t"}, timeout=5).json()["html"]
 				embed = embed.replace('<a href', '<a rel="nofollow noopener noreferrer" href')
 			except: pass
 		elif url.startswith('https://youtube.com/watch?v='):
@@ -777,7 +777,7 @@ def submit_post(v, sub=None):
 			yt_id = url.split('https://youtube.com/watch?v=')[1].split('&')[0].split('%')[0]
 
 			if yt_id_regex.fullmatch(yt_id):
-				req = requests.get(f"https://www.googleapis.com/youtube/v3/videos?id={yt_id}&key={YOUTUBE_KEY}&part=contentDetails", timeout=5, proxies=proxies).json()
+				req = requests.get(f"https://www.googleapis.com/youtube/v3/videos?id={yt_id}&key={YOUTUBE_KEY}&part=contentDetails", timeout=5).json()
 				if req.get('items'):
 					params = parse_qs(urlparse(url).query, keep_blank_values=True)
 					t = params.get('t', params.get('start', [0]))[0]
@@ -1220,7 +1220,8 @@ def get_post_title(v):
 	url = request.values.get("url")
 	if not url or '\\' in url: abort(400)
 
-	if any((url.lower().endswith(x) for x in extensions)):
+	checking_url = url.lower().rstrip('%3F').rstrip('?')
+	if any((checking_url.endswith(x) for x in extensions)):
 		abort(400)
 
 	try: x = requests.get(url, headers=titleheaders, timeout=5, proxies=proxies)

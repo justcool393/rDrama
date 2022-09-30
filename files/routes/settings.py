@@ -100,20 +100,12 @@ def settings_profile_post(v):
 		updated = True
 		v.is_nofollow = request.values.get("nofollow") == 'true'
 
-	elif request.values.get("marsify", v.marsify) != v.marsify and v.marsify <= 1:
-		updated = True
-		v.marsify = int(request.values.get("marsify") == 'true')
-		if v.marsify: badge_grant(user=v, badge_id=170)
-		else: 
-			badge = v.has_badge(170)
-			if badge: g.db.delete(badge)
-
 	elif request.values.get("spider", v.spider) != v.spider and v.spider <= 1:
 		updated = True
 		v.spider = int(request.values.get("spider") == 'true')
 		if v.spider: badge_grant(user=v, badge_id=179)
 		else: 
-			badge = v.has_badge(170)
+			badge = v.has_badge(179)
 			if badge: g.db.delete(badge)
 
 	elif request.values.get("bio") == "":
@@ -358,7 +350,7 @@ def gumroad(v):
 		return {"error": f"You must have a verified email to verify {patron} status and claim your rewards!"}, 400
 
 	data = {'access_token': GUMROAD_TOKEN, 'email': v.email}
-	response = requests.get('https://api.gumroad.com/v2/sales', data=data, timeout=5, proxies=proxies).json()["sales"]
+	response = requests.get('https://api.gumroad.com/v2/sales', data=data, timeout=5).json()["sales"]
 
 	if len(response) == 0: return {"error": "Email not found"}, 404
 
@@ -824,7 +816,7 @@ def settings_song_change(v):
 		return redirect("/settings/profile")
 		
 	
-	req = requests.get(f"https://www.googleapis.com/youtube/v3/videos?id={id}&key={YOUTUBE_KEY}&part=contentDetails", timeout=5, proxies=proxies).json()
+	req = requests.get(f"https://www.googleapis.com/youtube/v3/videos?id={id}&key={YOUTUBE_KEY}&part=contentDetails", timeout=5).json()
 	duration = req['items'][0]['contentDetails']['duration']
 	if duration == 'P0D':
 		return render_template("settings_profile.html", v=v, error="Can't use a live youtube video!")

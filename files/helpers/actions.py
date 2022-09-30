@@ -4,7 +4,6 @@ from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *
 from files.helpers.get import *
 from files.helpers.sanitize import *
-from files.helpers.slots import *
 import random
 from urllib.parse import quote
 
@@ -30,13 +29,13 @@ def badge_grant(user, badge_id, description=None, url=None, notify=True):
 
 
 def archiveorg(url):
-	try: requests.get(f'https://web.archive.org/save/{url}', headers={'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}, timeout=100, proxies=proxies)
+	try: requests.get(f'https://web.archive.org/save/{url}', headers={'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}, timeout=100)
 	except: pass
 
 def archive_url(url):	
 	gevent.spawn(archiveorg, url)
 	if url.startswith('https://twitter.com/'):
-		url = url.replace('https://twitter.com/', 'https://nitter.42l.fr/')
+		url = url.replace('https://twitter.com/', 'https://nitter.lacontrevoie.fr/')
 		gevent.spawn(archiveorg, url)
 	if url.startswith('https://instagram.com/'):
 		url = url.replace('https://instagram.com/', 'https://imginn.com/')
