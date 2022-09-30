@@ -954,7 +954,7 @@ def redditor_moment_redirect(username, v):
 @auth_required
 def followers(username, v):
 	u = get_user(username, v=v, include_shadowbanned=False)
-	if u.id == CARP_ID: abort(403)
+	if u.id == CARP_ID and SITE == 'watchpeopledie.co': abort(403)
 
 	if not (v.id == u.id or v.admin_level >= PERMS['USER_FOLLOWS_VISIBLE']):
 		abort(403)
