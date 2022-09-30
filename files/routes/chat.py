@@ -1,3 +1,5 @@
+from copy import copy
+import enum
 import time
 import uuid
 from files.helpers.jinja2 import timestamp
@@ -123,6 +125,7 @@ def connect(v):
 	emit('typing', typing)
 	return '', 204
 
+
 @socketio.on('disconnect')
 @is_not_permabanned
 def disconnect(v):
@@ -139,6 +142,7 @@ def disconnect(v):
 
 	emit('typing', typing, broadcast=True)
 	return '', 204
+
 
 @socketio.on('typing')
 @is_not_permabanned
@@ -169,3 +173,169 @@ def close_running_threads():
 	cache.set(f'{SITE}_total', total)
 	cache.set(f'{SITE}_muted', muted)
 atexit.register(close_running_threads)
+
+
+#region Casino
+class CasinoRooms(str, Enum):
+	Slots = "slots"
+	Blackjack = "blackjack"
+	Roulette = "roulette"
+	Racing = "racing"
+	Crossing = "crossing"
+
+
+class CasinoActions(str, Enum):
+	USER_CONNECTED = "USER_CONNECTED"
+	USER_DISCONNECTED = "USER_DISCONNECTED"
+	USER_SENT_MESSAGE = "USER_SENT_MESSAGE"
+
+
+class CasinoManager():
+	@staticmethod
+	def select_user(from_state, user_id):
+		return from_state['users']['by_id'].get(user_id)
+
+	@staticmethod
+	def select_client_state(from_state):
+		client_state = deepcopy(from_state)
+		users = client_state['users']
+
+		for user_id in users['all']:
+			user = users['by_id'][user_id]
+			del user['account']
+			del user['request_id']
+
+		return client_state
+
+	@staticmethod
+	def get_initial_state():
+		return {
+			'users': {
+				'all': [],
+				'by_id': {}
+			},
+			'messages': {
+				'all': [],
+				'by_id': {}
+			}
+		}
+
+	def __init__(self):
+		self.state = CasinoManager.get_initial_state()
+		self.state_history = []
+		self.middleware = []
+
+		if app.config["SERVER_NAME"] == 'localhost':
+			self.middleware.append(self.log_middleware)
+
+		self.action_handlers = {
+			CasinoActions.USER_CONNECTED: self.handle_user_connected,
+			CasinoActions.USER_DISCONNECTED: self.handle_user_disconnected,
+			CasinoActions.USER_SENT_MESSAGE: self.handle_user_sent_message,
+		}
+
+	def dispatch(self, action, payload=None):
+		for middleware in self.middleware:
+			action, payload = middleware(action, payload)
+
+		handler = self.action_handlers[action]
+
+		if not handler:
+			raise Exception(f"Invalid action {action} passed to CasinoManager#dispatch")
+
+		self.state_history.append(copy(self.state))
+		next_state = copy(self.state)
+		self.state = handler(next_state, payload)
+
+		emit(CasinoEvents.StateChanged, CasinoManager.select_client_state(self.state))
+
+	# Middleware
+	def log_middleware(self, action, payload):
+		print(
+			f'Casino Manager) {action} dispatched with a payload of {json.dumps(payload)}')
+		return action, payload
+
+	# Action Handlers
+	def handle_user_connected(self, next_state, payload):
+		user_id = payload['user_id']
+		request_id = payload['request_id']
+		existing_user = CasinoManager.select_user(next_state, user_id)
+
+		if not existing_user:
+			user_account = get_account(user_id, graceful=True)
+			user_data = {
+				'id': user_id,
+				'request_id': request_id,
+				'account': user_account,
+				'messages': []
+			}
+			next_state['users']['all'].append(user_id)
+			next_state['users']['by_id'][user_id] = user_data
+
+		return next_state
+
+	def handle_user_disconnected(self, next_state, payload):
+		user_id = payload
+		next_state['users']['all'].remove(user_id)
+		del next_state['users']['by_id'][user_id]
+		return next_state
+
+	def handle_user_sent_message(self, next_state, payload):
+		user_id = payload['user_id']
+		text = payload['text']
+		message_id = str(uuid.uuid4())
+		message_data = {
+			'id': message_id,
+			'user_id': user_id,
+			'text': text
+		}
+
+		user = CasinoManager.select_user(next_state, user_id)
+		user['messages'].append(message_id)
+
+		next_state['messages']['all'].append(message_id)
+		next_state['messages']['by_id'][message_id] = message_data
+		return next_state
+
+
+casino_manager = CasinoManager()
+
+
+class CasinoEvents(str, Enum):
+	# Incoming
+	Connect = "connect"
+	Disconnect = "disconnect"
+	UserSentMessage = "user-sent-message"
+
+	# Outgoing
+	StateChanged = "state-changed"
+
+
+MESSAGE_MAX_LENGTH = 1000
+
+
+@socketio.on(CasinoEvents.Connect)
+@is_not_permabanned
+def connect_to_casino(v):
+	payload = {'user_id': v.id, 'request_id': request.sid}
+	casino_manager.dispatch(CasinoActions.USER_CONNECTED, payload)
+	return '', 200
+
+
+@socketio.on(CasinoEvents.Disconnect)
+@is_not_permabanned
+def disconnect_from_casino(v):
+	payload = v.id
+	casino_manager.dispatch(CasinoActions.USER_DISCONNECTED, payload)
+	return '', 200
+
+
+@socketio.on(CasinoEvents.UserSentMessage)
+@is_not_permabanned
+def user_sent_message(data, v):
+	# TODO: Formatting helper to implement sanitization.
+	text = data['message'][:MESSAGE_MAX_LENGTH].strip()
+	payload = {'user_id': v.id, 'text': text}
+	casino_manager.dispatch(CasinoActions.USER_SENT_MESSAGE, payload)
+	return '', 200
+	#endregion

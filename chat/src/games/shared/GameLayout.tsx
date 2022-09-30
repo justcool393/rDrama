@@ -1,16 +1,21 @@
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, SendOutlined, SmileOutlined } from "@ant-design/icons";
 import {
   Affix,
   Avatar,
+  Button,
+  Col,
   Input,
   Layout,
   Menu,
   MenuProps,
+  Row,
   Select,
   Space,
   Tabs,
+  Tooltip,
 } from "antd";
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { io, Socket } from "socket.io-client";
 import { Feed } from "./Feed";
 import { Game } from "./Game";
 import { Wager } from "./Wager";
@@ -48,7 +53,49 @@ const items: MenuItem[] = [
   ]),
 ];
 
+enum CasinoHandlers {
+  Ping = "ping",
+  StateChanged = "state-changed",
+  UserSentMessage = "user-sent-message"
+}
+
 export const GameLayout: React.FC = () => {
+  const socket = useRef<null | Socket>(null);
+
+  useEffect(() => {
+    if (!socket.current) {
+      socket.current = io();
+
+      socket.current.on(CasinoHandlers.Ping, console.info);
+
+      socket.current.emit(CasinoHandlers.UserSentMessage, {
+        message: "This is a message."
+      });
+
+      socket.current.on(CasinoHandlers.StateChanged, console.info);
+    }
+  });
+
+  function GameSelect() {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Select defaultValue="slots" style={{ width: 180 }}>
+          <Option value="slots">Slots</Option>
+          <Option value="blackjack">Blackjack</Option>
+          <Option value="roulette">Roulette</Option>
+          <Option value="racing">Racing</Option>
+          <Option value="crossing">Crossing</Option>
+        </Select>
+      </div>
+    );
+  }
+
   return (
     <Layout>
       <Affix offsetTop={80}>
@@ -57,15 +104,7 @@ export const GameLayout: React.FC = () => {
             <Tabs defaultActiveKey="game" centered={true}>
               <Tabs.TabPane tab="Games" key="games">
                 <Space direction="vertical" style={{ width: "100%" }}>
-                  <Space style={{ width: "100%" }} align="end">
-                    <Select defaultValue="slots" style={{ width: 180 }}>
-                      <Option value="slots">Slots</Option>
-                      <Option value="blackjack">Blackjack</Option>
-                      <Option value="roulette">Roulette</Option>
-                      <Option value="racing">Racing</Option>
-                      <Option value="crossing">Crossing</Option>
-                    </Select>
-                  </Space>
+                  <GameSelect />
                   <Game />
                   <Wager />
                   <YourStats />
@@ -78,7 +117,7 @@ export const GameLayout: React.FC = () => {
               </Tabs.TabPane>
               <Tabs.TabPane tab="Leaderboards" key="leaderboard">
                 <Space direction="vertical" style={{ width: "100%" }}>
-                  Leaderboards
+                  <GameSelect />
                 </Space>
               </Tabs.TabPane>
             </Tabs>
@@ -89,7 +128,24 @@ export const GameLayout: React.FC = () => {
         <Content style={{ paddingBottom: "20rem" }}></Content>
         <Affix offsetBottom={0}>
           <Footer style={{ textAlign: "center", margin: "3rem 0" }}>
-            <TextArea showCount={true} maxLength={1000} />
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Tooltip title="emojis">
+                <Button
+                  type="primary"
+                  shape="circle"
+                  icon={<SmileOutlined />}
+                />
+              </Tooltip>
+              <TextArea
+                allowClear={true}
+                showCount={true}
+                maxLength={1000}
+                style={{ height: 60, flex: 1, margin: "0 1rem" }}
+              />
+              <Tooltip title="send">
+                <Button type="primary" shape="circle" icon={<SendOutlined />} />
+              </Tooltip>
+            </div>
           </Footer>
         </Affix>
       </Layout>
