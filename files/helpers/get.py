@@ -85,10 +85,13 @@ def get_users(usernames, graceful=False):
 
 	return users
 
-def get_account(id, v=None, graceful=False, include_shadowbanned=True):
+def get_account(id, v=None, graceful=False, include_blocks=False, include_shadowbanned=True):
 
-	try: id = int(id)
-	except: abort(404)
+	try: 
+		id = int(id)
+	except:
+		if not graceful: abort(404)
+		else: return None
 
 	user = g.db.get(User, id)
 
@@ -96,7 +99,7 @@ def get_account(id, v=None, graceful=False, include_shadowbanned=True):
 		if not graceful: abort(404)
 		else: return None
 
-	if v:
+	if v and include_blocks:
 		block = g.db.query(UserBlock).filter(
 			or_(
 				and_(

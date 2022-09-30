@@ -1189,7 +1189,7 @@ def u_username_info(username, v=None):
 @auth_required
 def u_user_id_info(id, v=None):
 
-	user=get_account(id, v=v, include_shadowbanned=False)
+	user=get_account(id, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
 		return {"error": "You're blocking this user."}, 401
