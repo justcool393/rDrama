@@ -1203,8 +1203,8 @@ extensions = (
 )
 
 @app.get("/submit/title")
-@limiter.limit("6/minute")
-@limiter.limit("6/minute", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit("3/minute")
+@limiter.limit("3/minute", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def get_post_title(v):
 
