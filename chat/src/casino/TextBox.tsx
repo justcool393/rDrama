@@ -3,23 +3,36 @@ import { Button, Input, Tooltip } from "antd";
 import React from "react";
 import { useCasino } from "../hooks";
 
+const TEXTAREA_ROW_COUNT = 3;
+const TEXTAREA_CHARACTER_LIMIT = 1000;
+
 const { TextArea } = Input;
 
 export function TextBox() {
   const { draft, setDraft, userSentMessage } = useCasino();
 
   return (
-    <div style={{ display: "flex", alignItems: "center", paddingBottom: "2rem" }}>
+    <div
+      style={{ display: "flex", alignItems: "center", paddingBottom: "2rem" }}
+    >
       <Tooltip title="emojis">
         <Button type="primary" shape="circle" icon={<SmileOutlined />} />
       </Tooltip>
       <TextArea
+        autoSize={{
+          minRows: TEXTAREA_ROW_COUNT,
+          maxRows: TEXTAREA_ROW_COUNT,
+        }}
         allowClear={true}
         showCount={true}
-        maxLength={1000}
+        maxLength={TEXTAREA_CHARACTER_LIMIT}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
-        style={{ height: 60, flex: 1, margin: "0 2rem" }}
+        onPressEnter={userSentMessage}
+        style={{
+          flex: 1,
+          margin: "0 2rem",
+        }}
       />
       <Tooltip title="send">
         <Button

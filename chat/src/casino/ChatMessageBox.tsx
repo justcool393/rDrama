@@ -1,12 +1,11 @@
 import React from "react";
 import { Avatar, Comment } from "antd";
+import { formatTimeAgo } from "../helpers";
 import { useCasino } from "../hooks";
 
 export function ChatMessageBox() {
   const { state, selectors } = useCasino();
   const chatMessages = selectors.selectChatMessages(state);
-
-  console.log({chatMessages})
 
   return (
     <>
@@ -21,7 +20,7 @@ export function ChatMessageBox() {
               />
             }
             author={chatMessage.author.account.username}
-            datetime={chatMessage.message.timestamp}
+            datetime={formatTimeAgo(chatMessage.message.timestamp)}
             content={chatMessage.message.text}
           />
         );
