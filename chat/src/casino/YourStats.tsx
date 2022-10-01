@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Space } from "antd";
-import { useCasino, useRootContext } from "../../hooks";
+import { useCasino, useRootContext } from "../hooks";
 
 export function YourStats() {
   const { id } = useRootContext();

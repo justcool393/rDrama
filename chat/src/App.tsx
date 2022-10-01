@@ -3,8 +3,7 @@ import throttle from "lodash.throttle";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { DndProvider, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Col, Row } from "antd";
-import { Chat, Feed, Game, GameLayout, Wager } from "./games";
+import "./App.css";
 import {
   ChatHeading,
   ChatMessageList,
@@ -13,36 +12,23 @@ import {
   UserList,
   UsersTyping,
 } from "./features";
-import { ChatProvider, DrawerProvider, useChat, useDrawer } from "./hooks";
-import "./App.css";
+import { Casino } from "./casino";
+import {
+  CasinoProvider,
+  ChatProvider,
+  DrawerProvider,
+  useChat,
+  useDrawer,
+} from "./hooks";
 
 const SCROLL_CANCEL_THRESHOLD = 500;
 const WINDOW_RESIZE_THROTTLE_WAIT = 250;
 
 export function App() {
-  return <GameLayout />
-
   return (
-    <Row gutter={[16, 16]} justify="center" style={{ margin: "auto" }}>
-
-      <Col xs={24} sm={24} md={18}>
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={24} md={12} lg={18}>
-            <Game />
-          </Col>
-          <Col xs={24} sm={24} md={12}>
-            <Feed />
-          </Col>
-          <Col xs={24} sm={24} md={12}>
-            <Wager />
-          </Col>
-        </Row>
-      </Col>
-      
-      <Col xs={24} sm={24} md={12} lg={6} flex={1}>
-        <Chat />
-      </Col>
-    </Row>
+    <CasinoProvider>
+      <Casino />
+    </CasinoProvider>
   );
 
   return (

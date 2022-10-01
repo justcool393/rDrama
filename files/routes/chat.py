@@ -344,8 +344,13 @@ class CasinoManager():
 
 	def handle_user_disconnected(self, next_state, payload):
 		user_id = payload
-		next_state['users']['all'].remove(user_id)
-		del next_state['users']['by_id'][user_id]
+
+		if user_id in next_state['users']['all']:
+			next_state['users']['all'].remove(user_id)
+		
+		if next_state['users']['by_id'].get(user_id):
+			del next_state['users']['by_id'][user_id]
+			
 		return next_state
 
 	def handle_user_sent_message(self, next_state, payload):

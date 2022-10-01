@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { ExclamationCircleOutlined} from "@ant-design/icons"
 import { Card, InputNumber, Radio, Space, Typography } from "antd";
-import { MINIMUM_WAGER, useCasino, useRootContext } from "../../hooks";
+import { MINIMUM_WAGER, useCasino, useRootContext } from "../hooks";
 
 const { Text } = Typography;
 
