@@ -16,6 +16,7 @@ import {
 } from "antd";
 import React, { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
+import { useRootContext } from "../../hooks";
 import { Feed } from "./Feed";
 import { Game } from "./Game";
 import { Wager } from "./Wager";
@@ -61,6 +62,7 @@ enum CasinoHandlers {
 
 export const GameLayout: React.FC = () => {
   const socket = useRef<null | Socket>(null);
+  const { id } = useRootContext();
 
   useEffect(() => {
     if (!socket.current) {
@@ -70,6 +72,10 @@ export const GameLayout: React.FC = () => {
 
       socket.current.emit(CasinoHandlers.UserSentMessage, {
         message: "This is a message."
+      });
+      socket.current.emit(CasinoHandlers.UserSentMessage, {
+        message: "This is a direct message.",
+        recipient: "5"
       });
 
       socket.current.on(CasinoHandlers.StateChanged, console.info);
