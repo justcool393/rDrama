@@ -9,6 +9,8 @@ import React, {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import { diff } from "deep-diff";
+import cloneDeep from "lodash.clonedeep";
 
 enum CasinoHandlers {
   Ping = "ping",
@@ -43,7 +45,9 @@ export const MINIMUM_WAGER = 5;
 
 const selectors = {
   selectUsersOnline: (state: CasinoState) =>
-    state.users.all.map((userId) => state.users.by_id[userId]),
+    state.users.all
+      .map((userId) => state.users.by_id[userId])
+      .filter((user) => user.online),
   selectChatMessages: (state: CasinoState) =>
     state.messages.all.map((messageId) => {
       const message = state.messages.by_id[messageId];
@@ -61,6 +65,7 @@ const selectors = {
 };
 
 interface CasinoProviderContext {
+  loaded: boolean;
   state: CasinoState;
   selectors: typeof selectors;
   wager: number;
@@ -76,6 +81,7 @@ interface CasinoProviderContext {
 }
 
 const CasinoContext = createContext<CasinoProviderContext>({
+  loaded: false,
   state: CASINO_INITIAL_STATE,
   selectors,
   wager: MINIMUM_WAGER,
@@ -92,6 +98,8 @@ const CasinoContext = createContext<CasinoProviderContext>({
 
 export function CasinoProvider({ children }: PropsWithChildren) {
   const socket = useRef<null | Socket>(null);
+  const prevState = useRef(CASINO_INITIAL_STATE);
+  const [loaded, setLoaded] = useState(false);
   const [state, setState] = useState(CASINO_INITIAL_STATE);
   const [wager, setWager] = useState(MINIMUM_WAGER);
   const [currency, setCurrency] = useState<CasinoCurrency>("coins");
@@ -112,6 +120,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   // Memoized Value
   const value = useMemo<CasinoProviderContext>(
     () => ({
+      loaded,
       state,
       selectors,
       wager,
@@ -125,16 +134,30 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       setRecipient,
       userSentMessage,
     }),
-    [state, wager, currency, recipient, draft, userSentMessage]
+    [loaded, state, wager, currency, recipient, draft, userSentMessage]
   );
 
   // Effects
   useEffect(() => {
     if (!socket.current) {
       socket.current = io();
-      socket.current.on(CasinoHandlers.StateChanged, setState);
+      socket.current.on(CasinoHandlers.StateChanged, (nextState) => {
+        prevState.current = cloneDeep(state);
+        setState(nextState);
+
+        if (!loaded) {
+          setLoaded(true);
+        }
+      });
     }
   });
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      const stateDiff = diff(prevState.current, state);
+      console.info("Casino State Updated", stateDiff);
+    }
+  }, [state]);
 
   return (
     <CasinoContext.Provider value={value}>{children}</CasinoContext.Provider>

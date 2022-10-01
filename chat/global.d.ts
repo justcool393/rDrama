@@ -55,6 +55,7 @@ declare interface UserAccountJson {
 declare interface UserEntity {
   id: string;
   account: UserAccountJson;
+  online: boolean;
   balances: Record<CasinoCurrency, number>;
 }
 

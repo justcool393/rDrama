@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  Affix,
-  Layout,
-} from "antd";
+import { Affix, Layout } from "antd";
 import { useCasino } from "../hooks";
 import { ChatMessageBox } from "./ChatMessageBox";
 import { InformationPanel } from "./InformationPanel";
@@ -16,9 +13,9 @@ const INFORMATION_SIDER_WIDTH = 320;
 const { Content, Footer, Sider } = Layout;
 
 export function Casino() {
-  useCasino()
+  const { loaded } = useCasino();
 
-  return (
+  return loaded ? (
     <Layout>
       {/* Interactions */}
       <Affix offsetTop={PANEL_OFFSET_TOP}>
@@ -49,5 +46,7 @@ export function Casino() {
         </Sider>
       </Affix>
     </Layout>
+  ) : (
+    <div>Loading...</div>
   );
 }

@@ -3,22 +3,6 @@ import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { Avatar, Menu, MenuProps, Space } from "antd";
 import { useCasino } from "../hooks";
 
-type MenuItem = Required<MenuProps>["items"][number];
-
-function getMenuItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
-
 export function InformationPanel() {
   const { state, selectors } = useCasino();
   const usersOnline = selectors.selectUsersOnline(state);
@@ -26,7 +10,7 @@ export function InformationPanel() {
     `${usersOnline.length} Users Online`,
     "sub1",
     <UserOutlined />,
-    usersOnline.map((user) =>
+    usersOnline.sort(alphabeticalSort).map((user) =>
       getMenuItem(
         <Space>
           <Avatar src={user.account.profile_url} />
@@ -47,4 +31,24 @@ export function InformationPanel() {
       items={[usersOnlineMenu, feedMenu]}
     />
   );
+}
+
+type MenuItem = Required<MenuProps>["items"][number];
+
+function getMenuItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
+}
+
+function alphabeticalSort(a: UserEntity, b: UserEntity) {
+  return a.account.username.localeCompare(b.account.username);
 }
