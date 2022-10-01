@@ -175,11 +175,11 @@ export function CasinoProvider({ children }: PropsWithChildren) {
         })
         .on(CasinoHandlers.ErrorOccurred, (error) => {
           console.error(`Error Occurred: ${error}`);
-          message.error(error);
+          setTimeout(() => message.error(error), 0);
         })
         .on(CasinoHandlers.ConfirmationReceived, (confirmation) => {
           console.info(`Confirmation Received: ${confirmation}`);
-          message.success(confirmation);
+          setTimeout(() => message.success(confirmation), 0);
         });
     }
   });
