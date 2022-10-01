@@ -28,6 +28,7 @@ else:
 		async_mode='gevent',
 	)
 
+#region Chat
 typing = []
 online = []
 cache.set(ONLINE_STR, len(online), timeout=0)
@@ -173,7 +174,7 @@ def close_running_threads():
 	cache.set(f'{SITE}_total', total)
 	cache.set(f'{SITE}_muted', muted)
 atexit.register(close_running_threads)
-
+#endregion
 
 #region Casino
 class CasinoRooms(str, Enum):
@@ -191,9 +192,70 @@ class CasinoActions(str, Enum):
 
 
 class CasinoManager():
+	# Builders
+	@staticmethod
+	def build_user_entity(user_id, request_id):
+		user_account = get_account(user_id, graceful=True)
+		
+		return {
+			'id': user_id,
+			'request_id': request_id,
+			'account': user_account.json,
+			'balances': {
+				'coins': user_account.coins,
+				'procoins': user_account.procoins
+			}
+		}
+
+	@staticmethod
+	def build_message_entity(user_id, text):
+		message_id = str(uuid.uuid4())
+
+		return {
+			'id': message_id,
+			'user_id': user_id,
+			'text': text,
+			'timestamp': int(time.time())
+		}
+
+	@staticmethod
+	def build_conversation_key(user_id_a, user_id_b):
+		participants = sorted((str(user_id_a), str(user_id_b)))
+		return '#'.join(participants)
+
+	@staticmethod
+	def build_conversation_entity(conversation_key, participant_a, participant_b):
+		return {
+			'id': conversation_key,
+			'participants': (participant_a, participant_b),
+			'messages': {
+				'all': [],
+				'by_id': {}
+			}
+		}
+
+	@staticmethod
+	def build_feed_entity(user_id, game, currency, amount, description):
+		feed_id = str(uuid.uuid4())
+
+		return {
+			'id': feed_id,
+			'user_id': user_id,
+			'game': game,
+			'currency': currency,
+			'amount': amount,
+			'description': description,
+			'timestamp': int(time.time())
+		}
+
+	# Selectors
 	@staticmethod
 	def select_user(from_state, user_id):
 		return from_state['users']['by_id'].get(user_id)
+
+	@staticmethod
+	def select_conversation(from_state, conversation_key):
+		return from_state['conversations']['by_id'].get(conversation_key)
 
 	@staticmethod
 	def select_client_state(from_state):
@@ -202,7 +264,6 @@ class CasinoManager():
 
 		for user_id in users['all']:
 			user = users['by_id'][user_id]
-			del user['account']
 			del user['request_id']
 
 		return client_state
@@ -217,8 +278,27 @@ class CasinoManager():
 			'messages': {
 				'all': [],
 				'by_id': {}
+			},
+			'conversations': {
+				'all': [],
+				'by_id': {}
+			},
+			'feed': {
+				'all': [],
+				'by_id': {}
+			},
+			'leaderboards': {
+				'all': [],
+				'by_id': {}
 			}
 		}
+
+	# Middleware
+	@staticmethod
+	def log_middleware(action, payload):
+		print(
+			f'Casino Manager) {action} dispatched with a payload of {json.dumps(payload)}')
+		return action, payload
 
 	def __init__(self):
 		self.state = CasinoManager.get_initial_state()
@@ -226,7 +306,7 @@ class CasinoManager():
 		self.middleware = []
 
 		if app.config["SERVER_NAME"] == 'localhost':
-			self.middleware.append(self.log_middleware)
+			self.middleware.append(CasinoManager.log_middleware)
 
 		self.action_handlers = {
 			CasinoActions.USER_CONNECTED: self.handle_user_connected,
@@ -249,12 +329,6 @@ class CasinoManager():
 
 		emit(CasinoEvents.StateChanged, CasinoManager.select_client_state(self.state))
 
-	# Middleware
-	def log_middleware(self, action, payload):
-		print(
-			f'Casino Manager) {action} dispatched with a payload of {json.dumps(payload)}')
-		return action, payload
-
 	# Action Handlers
 	def handle_user_connected(self, next_state, payload):
 		user_id = payload['user_id']
@@ -262,15 +336,9 @@ class CasinoManager():
 		existing_user = CasinoManager.select_user(next_state, user_id)
 
 		if not existing_user:
-			user_account = get_account(user_id, graceful=True)
-			user_data = {
-				'id': user_id,
-				'request_id': request_id,
-				'account': user_account,
-				'messages': []
-			}
+			user = CasinoManager.build_user_entity(user_id, request_id)
 			next_state['users']['all'].append(user_id)
-			next_state['users']['by_id'][user_id] = user_data
+			next_state['users']['by_id'][user_id] = user
 
 		return next_state
 
@@ -281,20 +349,36 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_sent_message(self, next_state, payload):
+		recipient = payload['recipient']
+
+		if recipient:
+			# Direct Message
+			return self.handle_user_conversed(next_state, payload)
+		else:
+			user_id = payload['user_id']
+			text = payload['text']
+			message = CasinoManager.build_message_entity(user_id, text)
+			next_state['messages']['all'].append(message['id'])
+			next_state['messages']['by_id'][message['id']] = message
+		
+		return next_state
+
+	def handle_user_conversed(self, next_state, payload):
 		user_id = payload['user_id']
+		recipient = payload['recipient']
 		text = payload['text']
-		message_id = str(uuid.uuid4())
-		message_data = {
-			'id': message_id,
-			'user_id': user_id,
-			'text': text
-		}
+		message = CasinoManager.build_message_entity(user_id, text)
+		conversation_key = CasinoManager.build_conversation_key(user_id, recipient)
+		conversation = CasinoManager.select_conversation(next_state, conversation_key)
 
-		user = CasinoManager.select_user(next_state, user_id)
-		user['messages'].append(message_id)
+		if not conversation:
+			conversation = CasinoManager.build_conversation_entity(conversation_key, user_id, recipient)
+			next_state['conversations']['all'].append(conversation['id'])
+			next_state['conversations']['by_id'][conversation['id']] = conversation
+		
+		conversation['messages']['all'].append(message['id'])
+		conversation['messages']['by_id'].append(message)
 
-		next_state['messages']['all'].append(message_id)
-		next_state['messages']['by_id'][message_id] = message_data
 		return next_state
 
 
@@ -335,7 +419,10 @@ def disconnect_from_casino(v):
 def user_sent_message(data, v):
 	# TODO: Formatting helper to implement sanitization.
 	text = data['message'][:MESSAGE_MAX_LENGTH].strip()
-	payload = {'user_id': v.id, 'text': text}
+	recipient = data.get('recipient')
+	payload = {'user_id': v.id, 'text': text, 'recipient': recipient}
 	casino_manager.dispatch(CasinoActions.USER_SENT_MESSAGE, payload)
 	return '', 200
-	#endregion
+
+
+#endregion

@@ -1,23 +1,25 @@
-import { UserOutlined, SendOutlined, SmileOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  UnorderedListOutlined,
+  SendOutlined,
+  SmileOutlined,
+} from "@ant-design/icons";
 import {
   Affix,
   Avatar,
   Button,
-  Col,
+  Comment,
   Input,
   Layout,
   Menu,
   MenuProps,
-  Row,
   Select,
   Space,
   Tabs,
   Tooltip,
 } from "antd";
-import React, { useEffect, useRef } from "react";
-import { io, Socket } from "socket.io-client";
-import { useRootContext } from "../../hooks";
-import { Feed } from "./Feed";
+import React from "react";
+import { useCasino } from "../../hooks";
 import { Game } from "./Game";
 import { Wager } from "./Wager";
 import { YourStats } from "./YourStats";
@@ -42,45 +44,25 @@ function getItem(
   } as MenuItem;
 }
 
-const items: MenuItem[] = [
-  getItem("Users Online", "sub1", <UserOutlined />, [
-    getItem(
-      <Space>
-        <Avatar src="http://localhost/e/marseyheavymetal.webp" />
-        <span>@McCoxmaul</span>
-      </Space>,
-      "3"
-    ),
-  ]),
-];
-
-enum CasinoHandlers {
-  Ping = "ping",
-  StateChanged = "state-changed",
-  UserSentMessage = "user-sent-message"
-}
-
 export const GameLayout: React.FC = () => {
-  const socket = useRef<null | Socket>(null);
-  const { id } = useRootContext();
-
-  useEffect(() => {
-    if (!socket.current) {
-      socket.current = io();
-
-      socket.current.on(CasinoHandlers.Ping, console.info);
-
-      socket.current.emit(CasinoHandlers.UserSentMessage, {
-        message: "This is a message."
-      });
-      socket.current.emit(CasinoHandlers.UserSentMessage, {
-        message: "This is a direct message.",
-        recipient: "5"
-      });
-
-      socket.current.on(CasinoHandlers.StateChanged, console.info);
-    }
-  });
+  const { state, selectors, userSentMessage } = useCasino();
+  const chatMessages = selectors.selectChatMessages(state);
+  const usersOnline = selectors.selectUsersOnline(state);
+  const usersOnlineMenu = getItem(
+    `${usersOnline.length} Users Online`,
+    "sub1",
+    <UserOutlined />,
+    usersOnline.map((user) =>
+      getItem(
+        <Space>
+          <Avatar src={user.account.profile_url} />
+          <span>@{user.account.username}</span>
+        </Space>,
+        user.id
+      )
+    )
+  );
+  const feedMenu = getItem("Feed", "sub2", <UnorderedListOutlined />);
 
   function GameSelect() {
     return (
@@ -107,33 +89,59 @@ export const GameLayout: React.FC = () => {
       <Affix offsetTop={80}>
         <Sider width={600} style={{ height: "95vh", padding: "1rem" }}>
           <Space direction="vertical" style={{ width: "100%" }}>
-            <Tabs defaultActiveKey="game" centered={true}>
-              <Tabs.TabPane tab="Games" key="games">
-                <Space direction="vertical" style={{ width: "100%" }}>
-                  <GameSelect />
-                  <Game />
-                  <Wager />
-                  <YourStats />
-                </Space>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="Feed" key="feed">
-                <Space direction="vertical" style={{ width: "100%" }}>
-                  <Feed />
-                </Space>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="Leaderboards" key="leaderboard">
-                <Space direction="vertical" style={{ width: "100%" }}>
-                  <GameSelect />
-                </Space>
-              </Tabs.TabPane>
-            </Tabs>
+            <Tabs
+              defaultActiveKey="games"
+              centered={true}
+              items={[
+                {
+                  label: "Games",
+                  key: "games",
+                  children: (
+                    <Space direction="vertical" style={{ width: "100%" }}>
+                      <GameSelect />
+                      <Game />
+                      <Wager />
+                      <YourStats />
+                    </Space>
+                  ),
+                },
+                {
+                  label: "Leaderboards",
+                  key: "leaderboards",
+                  children: (
+                    <Space direction="vertical" style={{ width: "100%" }}>
+                      <GameSelect />
+                    </Space>
+                  ),
+                },
+              ]}
+            ></Tabs>
           </Space>
         </Sider>
       </Affix>
       <Layout>
-        <Content style={{ paddingBottom: "20rem" }}></Content>
+        <Content style={{ padding: "0 2rem 6rem 2rem" }}>
+          <div style={{ marginBottom: "3rem" }}>
+            {JSON.stringify(state, null, 4)}
+          </div>
+          {chatMessages.map((chatMessage) => {
+            return (
+              <Comment
+                avatar={
+                  <Avatar
+                    src={chatMessage.author.account.profile_url}
+                    alt={chatMessage.author.account.username}
+                  />
+                }
+                author={chatMessage.author.account.username}
+                datetime={chatMessage.message.timestamp}
+                content={chatMessage.message.text}
+              />
+            );
+          })}
+        </Content>
         <Affix offsetBottom={0}>
-          <Footer style={{ textAlign: "center", margin: "3rem 0" }}>
+          <Footer style={{ textAlign: "center" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <Tooltip title="emojis">
                 <Button
@@ -149,7 +157,12 @@ export const GameLayout: React.FC = () => {
                 style={{ height: 60, flex: 1, margin: "0 1rem" }}
               />
               <Tooltip title="send">
-                <Button type="primary" shape="circle" icon={<SendOutlined />} />
+                <Button
+                  type="primary"
+                  shape="circle"
+                  icon={<SendOutlined />}
+                  onClick={() => userSentMessage("Hello.")}
+                />
               </Tooltip>
             </div>
           </Footer>
@@ -158,11 +171,11 @@ export const GameLayout: React.FC = () => {
       <Affix offsetTop={90}>
         <Sider width={320} style={{ height: "95vh" }}>
           <Menu
+            selectable={false}
             theme="dark"
-            defaultSelectedKeys={["1"]}
             defaultOpenKeys={["sub1"]}
             mode="inline"
-            items={items}
+            items={[usersOnlineMenu, feedMenu]}
           />
         </Sider>
       </Affix>

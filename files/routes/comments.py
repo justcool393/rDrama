@@ -547,7 +547,6 @@ def comment(v):
 
 	g.db.add(vote)
 	
-
 	cache.delete_memoized(comment_idlist)
 
 	v.comment_count = g.db.query(Comment).filter(
