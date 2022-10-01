@@ -189,6 +189,7 @@ class CasinoActions(str, Enum):
 	USER_CONNECTED = "USER_CONNECTED"
 	USER_DISCONNECTED = "USER_DISCONNECTED"
 	USER_SENT_MESSAGE = "USER_SENT_MESSAGE"
+	USER_DELETED_MESSAGE = "USER_DELETED_MESSAGE"
 
 
 class CasinoManager():
@@ -201,6 +202,7 @@ class CasinoManager():
 			'id': user_id,
 			'request_id': request_id,
 			'account': user_account.json,
+			'online': True,
 			'balances': {
 				'coins': user_account.coins,
 				'procoins': user_account.procoins
@@ -252,6 +254,10 @@ class CasinoManager():
 	@staticmethod
 	def select_user(from_state, user_id):
 		return from_state['users']['by_id'].get(user_id)
+
+	@staticmethod
+	def select_message(from_state, message_id):
+		return from_state['messages']['by_id'].get(message_id)
 
 	@staticmethod
 	def select_conversation(from_state, conversation_key):
@@ -312,6 +318,7 @@ class CasinoManager():
 			CasinoActions.USER_CONNECTED: self.handle_user_connected,
 			CasinoActions.USER_DISCONNECTED: self.handle_user_disconnected,
 			CasinoActions.USER_SENT_MESSAGE: self.handle_user_sent_message,
+			CasinoActions.USER_DELETED_MESSAGE: self.handle_user_deleted_message,
 		}
 
 	def dispatch(self, action, payload=None):
@@ -327,7 +334,7 @@ class CasinoManager():
 		next_state = copy(self.state)
 		self.state = handler(next_state, payload)
 
-		emit(CasinoEvents.StateChanged, CasinoManager.select_client_state(self.state))
+		emit(CasinoEvents.StateChanged, CasinoManager.select_client_state(self.state), broadcast=True)
 
 	# Action Handlers
 	def handle_user_connected(self, next_state, payload):
@@ -335,7 +342,10 @@ class CasinoManager():
 		request_id = payload['request_id']
 		existing_user = CasinoManager.select_user(next_state, user_id)
 
-		if not existing_user:
+		if existing_user:
+			existing_user['request_id'] = request_id
+			existing_user['online'] = True
+		else:
 			user = CasinoManager.build_user_entity(user_id, request_id)
 			next_state['users']['all'].append(user_id)
 			next_state['users']['by_id'][user_id] = user
@@ -344,12 +354,10 @@ class CasinoManager():
 
 	def handle_user_disconnected(self, next_state, payload):
 		user_id = payload
+		user = next_state['users']['by_id'].get(user_id)
 
-		if user_id in next_state['users']['all']:
-			next_state['users']['all'].remove(user_id)
-		
-		if next_state['users']['by_id'].get(user_id):
-			del next_state['users']['by_id'][user_id]
+		if user:
+			user['online'] = False
 			
 		return next_state
 
@@ -386,6 +394,16 @@ class CasinoManager():
 
 		return next_state
 
+	def handle_user_deleted_message(self, next_state, payload):
+		message_id = payload
+
+		try:
+			next_state['messages']['all'].remove(message_id)
+			del next_state['messages']['by_id'][message_id]
+		except:
+			pass # The message did not exist.
+
+		return next_state
 
 casino_manager = CasinoManager()
 
@@ -395,9 +413,12 @@ class CasinoEvents(str, Enum):
 	Connect = "connect"
 	Disconnect = "disconnect"
 	UserSentMessage = "user-sent-message"
+	UserDeletedMessage = "user-deleted-message"
 
 	# Outgoing
 	StateChanged = "state-changed"
+	ErrorOccurred = "error-occurred"
+	ConfirmationReceived = "confirmation-received"
 
 
 MESSAGE_MAX_LENGTH = 1000
@@ -429,5 +450,24 @@ def user_sent_message(data, v):
 	casino_manager.dispatch(CasinoActions.USER_SENT_MESSAGE, payload)
 	return '', 200
 
+
+@socketio.on(CasinoEvents.UserDeletedMessage)
+@is_not_permabanned
+def user_deleted_message(data, v):
+	message_id = data
+	message = CasinoManager.select_message(casino_manager.state, message_id)
+
+	if not message:
+		emit(CasinoEvents.ErrorOccurred, "That message does not exist.")
+		return '', 404
+
+	if message['user_id'] != v.id and v.admin_level < 2:
+		emit(CasinoEvents.ErrorOccurred, "You do not have permission to delete that message.")
+		return '', 403
+
+	payload = message_id
+	casino_manager.dispatch(CasinoActions.USER_DELETED_MESSAGE, payload)
+	emit(CasinoEvents.ConfirmationReceived, "Successfully deleted a message.")
+	return '', 200
 
 #endregion

@@ -1,15 +1,29 @@
 import React from "react";
-import { Avatar, Comment } from "antd";
+import { Avatar, Button, Comment, Tooltip } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import { formatTimeAgo } from "../helpers";
 import { useCasino } from "../hooks";
 
 export function ChatMessageBox() {
-  const { state, selectors } = useCasino();
+  const { state, selectors, userDeletedMessage } = useCasino();
   const chatMessages = selectors.selectChatMessages(state);
 
   return (
     <>
       {chatMessages.map((chatMessage) => {
+        const actions: React.ReactNode[] = [];
+
+        actions.push(
+          <Tooltip key="delete" title="Delete message">
+            <Button
+              type="ghost"
+              shape="circle"
+              icon={<DeleteOutlined />}
+              onClick={() => userDeletedMessage(chatMessage.message.id)}
+            />
+          </Tooltip>
+        );
+
         return (
           <Comment
             key={chatMessage.message.id}
@@ -22,6 +36,7 @@ export function ChatMessageBox() {
             author={chatMessage.author.account.username}
             datetime={formatTimeAgo(chatMessage.message.timestamp)}
             content={chatMessage.message.text}
+            actions={actions}
           />
         );
       })}

@@ -15,7 +15,7 @@ export function TextBox() {
     <div
       style={{ display: "flex", alignItems: "center", paddingBottom: "2rem" }}
     >
-      <Tooltip title="emojis">
+      <Tooltip title="View emojis">
         <Button type="primary" shape="circle" icon={<SmileOutlined />} />
       </Tooltip>
       <TextArea
@@ -34,7 +34,7 @@ export function TextBox() {
           margin: "0 2rem",
         }}
       />
-      <Tooltip title="send">
+      <Tooltip title="Send message">
         <Button
           type="primary"
           shape="circle"
