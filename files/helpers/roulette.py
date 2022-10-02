@@ -112,9 +112,8 @@ def gambler_placed_roulette_bet(gambler, bet, which, amount, currency):
     g.db.commit()
 
 
-def get_roulette_bets_and_betters():
-    participants = []
-    bets = {
+def get_roulette_empty_bets():
+    return {
         RouletteAction.STRAIGHT_UP_BET: [],
         RouletteAction.LINE_BET: [],
         RouletteAction.COLUMN_BET: [],
@@ -123,6 +122,11 @@ def get_roulette_bets_and_betters():
         RouletteAction.RED_BLACK_BET: [],
         RouletteAction.HIGH_LOW_BET: [],
     }
+
+
+def get_roulette_bets_and_betters():
+    participants = []
+    bets = get_roulette_empty_bets()
     active_games = get_active_roulette_games()
 
     for game in active_games:
@@ -295,3 +299,24 @@ def determine_roulette_winners(number, bets):
 
 def get_roulette_bets():
     return get_roulette_bets_and_betters()[1]
+
+
+def format_roulette_bet_feed_item(username, bet, which, currency, amount):
+    item = f'{username} bet {amount} {currency} that the number will be'
+
+    if bet == RouletteAction.STRAIGHT_UP_BET:
+        return f'{item} {which}.'
+    elif bet == RouletteAction.LINE_BET:
+        return f'{item} within line {which}.'
+    elif bet == RouletteAction.COLUMN_BET:
+        return f'{item} within columns {which}.'
+    elif bet == RouletteAction.DOZEN_BET:
+        return f'{item} within dozen {which}.'
+    elif bet == RouletteAction.EVEN_ODD_BET:
+        return f'{item} {which.lower()}.'
+    elif bet == RouletteAction.RED_BLACK_BET:
+        return f'{item} {which.lower()}.'
+    else:
+        condition = "higher than 18" if which == "HIGH" else "lower than 19"
+        return f'{item} {condition}.'
+    

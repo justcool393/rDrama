@@ -14,13 +14,27 @@ import { diff } from "deep-diff";
 import cloneDeep from "lodash.clonedeep";
 
 enum CasinoHandlers {
+  // Outgoing
   UserSentMessage = "user-sent-message",
   UserDeletedMessage = "user-deleted-message",
   UserStartedGame = "user-started-game",
   UserPulledSlots = "user-pulled-slots",
+  UserPlayedRoulette = "user-played-roulette",
+
+  // Incoming
   StateChanged = "state-changed",
   ErrorOccurred = "error-occurred",
   ConfirmationReceived = "confirmation-received",
+}
+
+export enum RouletteBet {
+  STRAIGHT_UP_BET = "STRAIGHT_UP_BET",
+  LINE_BET = "LINE_BET",
+  COLUMN_BET = "COLUMN_BET",
+  DOZEN_BET = "DOZEN_BET",
+  EVEN_ODD_BET = "EVEN_ODD_BET",
+  RED_BLACK_BET = "RED_BLACK_BET",
+  HIGH_LOW_BET = "HIGH_LOW_BET",
 }
 
 const CASINO_INITIAL_STATE: CasinoState = {
@@ -45,8 +59,31 @@ const CASINO_INITIAL_STATE: CasinoState = {
     by_id: {},
   },
   games: {
-    all: [],
-    by_id: {},
+    all: ["slots", "roulette"],
+    by_id: {
+      slots: {
+        id: "slots",
+        name: "Slots",
+        user_ids: [],
+        state: null,
+      },
+      roulette: {
+        id: "roulette",
+        name: "Roulette",
+        user_ids: [],
+        state: {
+          bets: {
+            [RouletteBet.STRAIGHT_UP_BET]: [],
+            [RouletteBet.LINE_BET]: [],
+            [RouletteBet.COLUMN_BET]: [],
+            [RouletteBet.DOZEN_BET]: [],
+            [RouletteBet.EVEN_ODD_BET]: [],
+            [RouletteBet.RED_BLACK_BET]: [],
+            [RouletteBet.HIGH_LOW_BET]: [],
+          },
+        },
+      },
+    },
   },
   sessions: {
     all: [],
@@ -85,8 +122,15 @@ const selectors = {
     return null;
   },
   selectAvailableGames: (state: CasinoState) => state.games.all,
-  selectGameSession: (state: CasinoState, user_id: string, game: CasinoGame) =>
-    state.sessions.by_id[`${user_id}#${game}`] ?? null,
+  selectGameSession: (state: CasinoState, user_id: string, game: CasinoGame) => {
+    const sharedStateGames: CasinoGame[] = ['roulette', 'racing'];
+
+    if (sharedStateGames.includes(game)) {
+      return state.games.by_id[game].state;
+    } else {
+      return state.sessions.by_id[`${user_id}#${game}`] ?? null
+    }
+  }
 };
 
 interface CasinoProviderContext {
@@ -106,6 +150,7 @@ interface CasinoProviderContext {
   userDeletedMessage(messageId: string): void;
   userStartedGame(game: CasinoGame): void;
   userPulledSlots(): void;
+  userPlayedRoulette(bet: RouletteBet, which: string): void;
 }
 
 const CasinoContext = createContext<CasinoProviderContext>({
@@ -125,6 +170,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
   userDeletedMessage() {},
   userStartedGame() {},
   userPulledSlots() {},
+  userPlayedRoulette() {},
 });
 
 export function CasinoProvider({ children }: PropsWithChildren) {
@@ -164,6 +210,18 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       wager,
     });
   }, [currency, wager]);
+  
+  const userPlayedRoulette = useCallback(
+    (bet: RouletteBet, which: string) => {
+      socket.current?.emit(CasinoHandlers.UserPlayedRoulette, {
+        bet,
+        which,
+        currency,
+        wager,
+      });
+    },
+    [currency, wager]
+  );
 
   // Memoized Value
   const value = useMemo<CasinoProviderContext>(
@@ -184,6 +242,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userDeletedMessage,
       userStartedGame,
       userPulledSlots,
+      userPlayedRoulette
     }),
     [
       loaded,
@@ -195,6 +254,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userSentMessage,
       userDeletedMessage,
       userPulledSlots,
+      userPlayedRoulette
     ]
   );
 

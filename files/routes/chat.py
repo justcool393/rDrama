@@ -9,6 +9,7 @@ from files.helpers.const import *
 from files.helpers.alerts import *
 from files.helpers.regex import *
 from files.helpers.slots import casino_slot_pull
+from files.helpers.roulette import gambler_placed_roulette_bet, get_roulette_bets, format_roulette_bet_feed_item, get_roulette_empty_bets
 from flask_socketio import SocketIO, emit
 from files.__main__ import app, limiter, cache
 from flask import render_template
@@ -211,7 +212,8 @@ class CasinoActions(str, Enum):
 	USER_SENT_MESSAGE = "USER_SENT_MESSAGE"
 	USER_DELETED_MESSAGE = "USER_DELETED_MESSAGE"
 	USER_STARTED_GAME = "USER_STARTED_GAME"
-	USER_PULLED_SLOTS = "USER_PULLED_SLOTS",
+	USER_PULLED_SLOTS = "USER_PULLED_SLOTS"
+	USER_PLAYED_ROULETTE = "USER_PLAYED_ROULETTE"
 
 
 class CasinoEvents(str, Enum):
@@ -222,6 +224,7 @@ class CasinoEvents(str, Enum):
 	UserDeletedMessage = "user-deleted-message"
 	UserStartedGame = "user-started-game"
 	UserPulledSlots = "user-pulled-slots"
+	UserPlayedRoulette = "user-played-roulette"
 
 	# Outgoing
 	StateChanged = "state-changed"
@@ -291,7 +294,8 @@ class CasinoManager():
 			'id': name,
 			'name': name,
 			'user_ids': [],
-			'session_ids': []
+			'session_ids': [],
+			'state': {}
 		}
 
 	@staticmethod
@@ -345,13 +349,17 @@ class CasinoManager():
 
 	@staticmethod
 	def get_initial_state():
-		[slots, blackjack, roulette, racing, crossing] = [
+		slots, blackjack, roulette, racing, crossing = [
 			CasinoManager.build_game_entity(CasinoGames.Slots),
 			CasinoManager.build_game_entity(CasinoGames.Blackjack),
 			CasinoManager.build_game_entity(CasinoGames.Roulette),
 			CasinoManager.build_game_entity(CasinoGames.Racing),
 			CasinoManager.build_game_entity(CasinoGames.Crossing),
 		]
+
+		slots['state'] = {
+			'bets': get_roulette_empty_bets()
+		}
 
 		return {
 			'users': {
@@ -420,7 +428,8 @@ class CasinoManager():
 			CasinoActions.USER_SENT_MESSAGE,
 			CasinoActions.USER_DELETED_MESSAGE,
 			CasinoActions.USER_STARTED_GAME,
-			CasinoActions.USER_PULLED_SLOTS
+			CasinoActions.USER_PULLED_SLOTS,
+			CasinoActions.USER_PLAYED_ROULETTE
 		]
 
 		if action in requires_interaction:
@@ -432,6 +441,13 @@ class CasinoManager():
 
 		return next_state, action, payload
 
+	@staticmethod
+	def load_game_state_middleware(next_state, action, payload):
+		if payload.get('game_state'):
+			payload['game_state'] = json.loads(payload['game_state'])
+
+		return next_state, action, payload
+
 	def __init__(self):
 		self.state = CasinoManager.get_initial_state()
 		self.state_history = []
@@ -439,6 +455,7 @@ class CasinoManager():
 			CasinoManager.stringify_user_id_middleware,
 			CasinoManager.update_balance_middleware,
 			CasinoManager.update_user_last_active_middleware,
+			CasinoManager.load_game_state_middleware
 		]
 
 		if app.config["SERVER_NAME"] == 'localhost':
@@ -451,6 +468,7 @@ class CasinoManager():
 			CasinoActions.USER_DELETED_MESSAGE: self.handle_user_deleted_message,
 			CasinoActions.USER_STARTED_GAME: self.handle_user_started_game,
 			CasinoActions.USER_PULLED_SLOTS: self.handle_user_pulled_slots,
+			CasinoActions.USER_PLAYED_ROULETTE: self.handle_user_played_roulette,
 		}
 
 	def dispatch(self, action, payload=None):
@@ -492,6 +510,35 @@ class CasinoManager():
 
 		return next_state
 
+	def _handle_feed_updated(self, next_state, payload):
+		feed = payload['feed']
+		feed_id = feed['id']
+		grab(next_state, 'feed/all').append(feed_id)
+		grab(next_state, 'feed/by_id')[feed_id] = feed
+
+		return next_state
+
+	def _handle_user_session_updated(self, next_state, payload):
+		game = payload['game']
+		session = payload['session']
+
+		# Update the main session entities.
+		all_sessions = grab(next_state, 'sessions/all')
+		session_id = session['id']
+
+		if not session_id in all_sessions:
+			all_sessions.append(session_id)
+
+		grab(next_state, 'sessions/by_id')[session_id] = session
+
+		# Update the game to show the user is playing.
+		game_sessions = grab(
+			next_state, f'games/by_id/{game}/session_ids')
+		if not session_id in game_sessions:
+			game_sessions.append(session_id)
+
+		return next_state
+
 	# == "Public"
 	def handle_user_connected(self, next_state, payload):
 		user_id = payload['user_id']
@@ -509,8 +556,8 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_disconnected(self, next_state, payload):
-		user_id = str(payload)
-		user = next_state['users']['by_id'].get(user_id)
+		user_id = payload['user_id']
+		user = grab(next_state, 'users/by_id').get(user_id)
 
 		if user:
 			user['online'] = False
@@ -539,7 +586,7 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_deleted_message(self, next_state, payload):
-		message_id = payload
+		message_id = payload['message_id']
 
 		try:
 			grab(next_state, 'messages/all').remove(message_id)
@@ -572,27 +619,59 @@ class CasinoManager():
 
 	def handle_user_pulled_slots(self, next_state, payload):
 		user_id = payload['user_id']
-		game_state = json.loads(payload['game_state'])
+		game_state = payload['game_state']
 
+		# Feed
 		feed = CasinoManager.build_feed_entity(user_id, game_state['text'])
-		feed_id = feed['id']
-		grab(next_state, 'feed/all').append(feed_id)
-		grab(next_state, 'feed/by_id')[feed_id] = feed
+		feed_update_payload = {'feed': feed}
+		next_state = self._handle_feed_updated(next_state, feed_update_payload)
 
+		# Session
 		session = CasinoManager.build_session_entity(
 			user_id, CasinoGames.Slots, game_state)
-		all_sessions = grab(next_state, 'sessions/all')
-		game_sessions = grab(
-			next_state, f'games/by_id/{CasinoGames.Slots}/session_ids')
-		session_id = session['id']
+		session_update_payload = {
+			'game': CasinoGames.Slots,
+			'session': session
+		}
+		next_state = self._handle_user_session_updated(
+			next_state, session_update_payload)
 
-		if not session_id in all_sessions:
-			all_sessions.append(session_id)
+		return next_state
 
-		grab(next_state, 'sessions/by_id')[session_id] = session
+	def handle_user_played_roulette(self, next_state, payload):
+		user_id = payload['user_id']
+		game_state = payload['game_state']
+		placed_bet = payload['placed_bet']
 
-		if not session_id in game_sessions:
-			game_sessions.append(session_id)
+		grab(next_state, f'games/by_id/{CasinoGames.Roulette}')['state'] = game_state
+
+		# Feed
+		bet = placed_bet['bet']
+		which = placed_bet['which']
+		currency = placed_bet['currency']
+		wager = placed_bet['wager']
+		user = CasinoManager.select_user(next_state, user_id)
+		username = grab(user, 'account/username')
+		text = format_roulette_bet_feed_item(
+			username=username,
+			bet=bet,
+			which=which,
+			currency=currency,
+			amount=wager
+		)
+		feed = CasinoManager.build_feed_entity(user_id, text)
+		feed_update_payload = {'feed': feed}
+		next_state = self._handle_feed_updated(next_state, feed_update_payload)
+
+		# Session
+		session = CasinoManager.build_session_entity(
+			user_id, CasinoGames.Roulette, None)
+		session_update_payload = {
+			'game': CasinoGames.Roulette,
+			'session': session
+		}
+		next_state = self._handle_user_session_updated(
+			next_state, session_update_payload)
 
 		return next_state
 
@@ -601,7 +680,10 @@ casino_manager = CasinoManager()
 
 
 MESSAGE_MAX_LENGTH = 1000
+MINIMUM_WAGER = 5
 
+
+# Socket Handlers
 
 @socketio.on(CasinoEvents.Connect)
 @is_not_permabanned
@@ -614,7 +696,7 @@ def connect_to_casino(v):
 @socketio.on(CasinoEvents.Disconnect)
 @is_not_permabanned
 def disconnect_from_casino(v):
-	payload = v.id
+	payload = {'user_id': v.id}
 	casino_manager.dispatch(CasinoActions.USER_DISCONNECTED, payload)
 	return '', 200
 
@@ -645,7 +727,7 @@ def user_deleted_message(data, v):
 		     "You do not have permission to delete that message.")
 		return '', 403
 
-	payload = message_id
+	payload = {'message_id': message_id}
 	casino_manager.dispatch(CasinoActions.USER_DELETED_MESSAGE, payload)
 	emit(CasinoEvents.ConfirmationReceived, "Successfully deleted a message.")
 	return '', 200
@@ -671,6 +753,10 @@ def user_pulled_slots(data, v):
 	currency = data['currency']
 	wager = int(data['wager'])
 
+	if not wager >= MINIMUM_WAGER:
+		emit(CasinoEvents.ErrorOccurred, "You must bet at least 5 {currency}.")
+		return '', 400
+
 	if not can_user_afford(v, currency, wager):
 		emit(CasinoEvents.ErrorOccurred, "You cannot afford that bet.")
 		return '', 400
@@ -685,5 +771,50 @@ def user_pulled_slots(data, v):
 	else:
 		emit(CasinoEvents.ErrorOccurred, "Unable to pull the lever.")
 		return '', 400
-		
+
+
+@socketio.on(CasinoEvents.UserPlayedRoulette)
+@is_not_permabanned
+def user_played_roulette(data, v):
+	bet = data['bet']
+	which = data['which']
+	currency = data['currency']
+	wager = int(data['wager'])
+
+	if not wager >= MINIMUM_WAGER:
+		emit(CasinoEvents.ErrorOccurred, "You must bet at least 5 {currency}.")
+		return '', 400
+
+	if not can_user_afford(v, currency, wager):
+		emit(CasinoEvents.ErrorOccurred, "You cannot afford that bet.")
+		return '', 400
+
+	try:
+		gambler_placed_roulette_bet(v, bet, which, wager, currency)
+		game_state = json.dumps({
+			'bets': get_roulette_bets()
+		})
+		balances = {
+			'coins': v.coins,
+			'procoins': v.procoins
+		}
+		placed_bet = {
+			'bet': bet,
+			'which': which,
+			'currency': currency,
+			'wager': wager
+		}
+		payload = {
+			'user_id': v.id,
+			'balances': balances,
+			'game_state': game_state,
+			'placed_bet': placed_bet
+		}
+		casino_manager.dispatch(CasinoActions.USER_PLAYED_ROULETTE, payload)
+		return '', 200
+	except:
+		emit(CasinoEvents.ErrorOccurred, "Unable to place bet.")
+		return '', 400
+
+
 #endregion

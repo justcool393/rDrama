@@ -34,6 +34,11 @@ declare interface Normalized<T> {
   by_id: Record<string, T>;
 }
 
+declare interface Wager {
+  amount: number;
+  currency: CasinoCurrency;
+}
+
 declare interface UserAccountJson {
   username: string;
   url: string;
@@ -98,22 +103,50 @@ declare interface LeaderboardEntity {
   };
 }
 
-declare interface GameEntity {
+declare interface GameEntity<T> {
   id: string;
   name: string;
   user_ids: string[];
-}
-
-declare interface SessionEntity<T> {
-  id: string;
-  user_id: string;
-  game: CasinoGame;
-  game_state: T;
+  state: T
 }
 
 declare interface SlotsGameState {
   symbols: [string, string, string];
   text: string;
+}
+
+declare type SlotsGameEntity = GameEntity<null>
+
+declare type RouletteBet = 
+  'STRAIGHT_UP_BET' |
+  'LINE_BET' |
+  'COLUMN_BET' |
+  'DOZEN_BET' |
+  'EVEN_ODD_BET' |
+  'RED_BLACK_BET' |
+  'HIGH_LOW_BET'
+
+declare interface RouletteBetData {
+  game_id: string;
+  gambler: string;
+  gambler_username: string;
+  gambler_profile_url: string;
+  bet: RouletteBet,
+  which: string;
+  wager: Wager;
+}
+
+declare interface RouletteGameState {
+  bets: Record<RouletteBet, RouletteBetData[]>
+}
+
+declare type RouletteGameEntity = GameEntity<RouletteGameState>
+
+declare interface SessionEntity {
+  id: string;
+  user_id: string;
+  game: CasinoGame;
+  game_state: any;
 }
 
 declare interface CasinoState {
@@ -122,6 +155,12 @@ declare interface CasinoState {
   conversations: Normalized<ConversationEntity>
   feed: Normalized<FeedEntity>
   leaderboards: Normalized<LeaderboardEntity>
-  games: Normalized<GameEntity>
-  sessions: Normalized<SessionEntity<SlotsGameState>>
+  games: {
+    all: ['slots', 'roulette'],
+    by_id: {
+      slots: SlotsGameEntity
+      roulette: RouletteGameEntity
+    }
+  }
+  sessions: Normalized<SessionEntity>
 }
