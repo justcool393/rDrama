@@ -9,6 +9,7 @@ from .selectors import CasinoSelectors
 
 
 class CasinoManager():
+    instance = None
     state = CasinoBuilders.build_initial_state()
     state_history = []
     middleware = [
@@ -44,3 +45,6 @@ class CasinoManager():
 
         emit(CasinoEvents.StateChanged, CasinoSelectors.select_client_state(
             self.state), broadcast=True)
+
+
+CasinoManager.instance = CasinoManager()

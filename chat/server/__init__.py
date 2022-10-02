@@ -5,4 +5,5 @@ from .handlers import *
 from .helpers import *
 from .manager import *
 from .middleware import *
+from .requests import *
 from .selectors import *
