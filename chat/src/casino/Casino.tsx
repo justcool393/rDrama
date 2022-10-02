@@ -18,7 +18,7 @@ import { TextBox } from "./TextBox";
 import { GameSelect } from "./GameSelect";
 
 const PANEL_OFFSET_TOP = 70;
-const MOBILE_DRAWER_BUTTON_PADDING = 12;
+const MOBILE_DRAWER_BUTTON_PADDING = 20;
 const INTERACTION_PANEL_WIDTH = 560;
 const INFORMATION_SIDER_WIDTH = 340;
 const MESSAGE_TOP = 100;

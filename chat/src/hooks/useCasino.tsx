@@ -18,6 +18,7 @@ enum CasinoHandlers {
   StateChanged = "state-changed",
   UserSentMessage = "user-sent-message",
   UserDeletedMessage = "user-deleted-message",
+  UserStartedGame = "user-started-game",
   ErrorOccurred = "error-occurred",
   ConfirmationReceived = "confirmation-received",
 }
@@ -40,6 +41,10 @@ const CASINO_INITIAL_STATE: CasinoState = {
     by_id: {},
   },
   leaderboards: {
+    all: [],
+    by_id: {},
+  },
+  games: {
     all: [],
     by_id: {},
   },
@@ -66,6 +71,15 @@ const selectors = {
       coins: 0,
       procoins: 0,
     },
+  selectUserActiveGame: (state: CasinoState, userId: string) => {
+    for (const gameName of state.games.all) {
+      if (state.games.by_id[gameName].user_ids.includes(userId)) {
+        return gameName;
+      }
+    }
+
+    return null;
+  }
 };
 
 interface CasinoProviderContext {
@@ -83,6 +97,7 @@ interface CasinoProviderContext {
   setRecipient: React.Dispatch<React.SetStateAction<null | string>>;
   userSentMessage(): void;
   userDeletedMessage(messageId: string): void;
+  userStartedGame(game: CasinoGame): void;
 }
 
 const CasinoContext = createContext<CasinoProviderContext>({
@@ -100,6 +115,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
   setRecipient() {},
   userSentMessage() {},
   userDeletedMessage() {},
+  userStartedGame() {},
 });
 
 export function CasinoProvider({ children }: PropsWithChildren) {
@@ -129,6 +145,10 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     []
   );
 
+  const userStartedGame = useCallback((game: CasinoGame) => {
+    socket.current?.emit(CasinoHandlers.UserStartedGame, game);
+  }, []);
+
   // Memoized Value
   const value = useMemo<CasinoProviderContext>(
     () => ({
@@ -146,6 +166,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       setRecipient,
       userSentMessage,
       userDeletedMessage,
+      userStartedGame
     }),
     [
       loaded,
@@ -187,7 +208,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     if (process.env.NODE_ENV === "development") {
       const stateDiff = diff(prevState.current, state);
-      console.info("Casino State Updated", stateDiff);
+      console.info("Casino State Updated", state, stateDiff);
     }
   }, [state]);
 

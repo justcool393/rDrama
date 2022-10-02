@@ -1,9 +1,14 @@
 import { Select } from "antd";
 import React from "react";
+import { useCasino, useRootContext } from "../hooks";
 
 const { Option } = Select;
 
 export function GameSelect() {
+  const { id } = useRootContext();
+  const { state, selectors, userStartedGame } = useCasino();
+  const activeGame = selectors.selectUserActiveGame(state, id) || "";
+
   return (
     <div
       style={{
@@ -12,7 +17,16 @@ export function GameSelect() {
         justifyContent: "flex-end",
       }}
     >
-      <Select defaultValue="slots" style={{ width: 180 }}>
+      <Select
+        value={activeGame}
+        style={{ width: 180 }}
+        onChange={(value) => {
+          if (value) {
+            userStartedGame(value as CasinoGame);
+          }
+        }}
+      >
+        <Option value="">Select a game</Option>
         <Option value="slots">Slots</Option>
         <Option value="blackjack">Blackjack</Option>
         <Option value="roulette">Roulette</Option>

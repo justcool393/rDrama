@@ -100,10 +100,17 @@ declare interface LeaderboardEntity {
   };
 }
 
+declare interface GameEntity {
+  id: string;
+  name: string;
+  user_ids: string[];
+}
+
 declare interface CasinoState {
   users: Normalized<UserEntity>
   messages: Normalized<MessageEntity>
   conversations: Normalized<ConversationEntity>
   feed: Normalized<FeedEntity>
   leaderboards: Normalized<LeaderboardEntity>
+  games: Normalized<GameEntity>
 }

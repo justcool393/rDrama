@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Avatar,
-  Comment,
-  Dropdown,
-  Menu,
-  Popconfirm,
-  Typography,
-} from "antd";
+import { Avatar, Comment, Dropdown, Menu, Popconfirm, Typography } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import type { ItemType } from "antd/lib/menu/hooks/useItems";
 import { formatTimeAgo } from "../helpers";
@@ -68,20 +61,22 @@ export function ChatMessageBox() {
         const menu = <Menu items={items} />;
 
         return (
-          <Dropdown overlay={menu} trigger={["click", "contextMenu"]}>
-            <Comment
-              key={chatMessage.message.id}
-              avatar={
-                <Avatar
-                  src={chatMessage.author.account.profile_url}
-                  alt={chatMessage.author.account.username}
-                />
-              }
-              author={chatMessage.author.account.username}
-              datetime={formatTimeAgo(chatMessage.message.timestamp)}
-              content={chatMessage.message.text}
-            />
-          </Dropdown>
+          <div style={{ minHeight: "100vh" }}>
+            <Dropdown overlay={menu} trigger={["click", "contextMenu"]}>
+              <Comment
+                key={chatMessage.message.id}
+                avatar={
+                  <Avatar
+                    src={chatMessage.author.account.profile_url}
+                    alt={chatMessage.author.account.username}
+                  />
+                }
+                author={chatMessage.author.account.username}
+                datetime={formatTimeAgo(chatMessage.message.timestamp)}
+                content={chatMessage.message.text}
+              />
+            </Dropdown>
+          </div>
         );
       })}
     </>

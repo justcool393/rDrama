@@ -177,7 +177,9 @@ atexit.register(close_running_threads)
 #endregion
 
 #region Casino
-class CasinoRooms(str, Enum):
+
+
+class CasinoGames(str, Enum):
 	Slots = "slots"
 	Blackjack = "blackjack"
 	Roulette = "roulette"
@@ -190,6 +192,7 @@ class CasinoActions(str, Enum):
 	USER_DISCONNECTED = "USER_DISCONNECTED"
 	USER_SENT_MESSAGE = "USER_SENT_MESSAGE"
 	USER_DELETED_MESSAGE = "USER_DELETED_MESSAGE"
+	USER_STARTED_GAME = "USER_STARTED_GAME"
 
 
 class CasinoManager():
@@ -197,9 +200,9 @@ class CasinoManager():
 	@staticmethod
 	def build_user_entity(user_id, request_id):
 		user_account = get_account(user_id, graceful=True)
-		
+
 		return {
-			'id': user_id,
+			'id': str(user_id),
 			'request_id': request_id,
 			'account': user_account.json,
 			'online': True,
@@ -250,7 +253,23 @@ class CasinoManager():
 			'timestamp': int(time.time())
 		}
 
+	@staticmethod
+	def build_game_entity(name):
+		return {
+			'id': name,
+			'name': name,
+			'user_ids': []
+		}
+
 	# Selectors
+	@staticmethod
+	def select_available_games(from_state):
+		return from_state['games']['all']
+
+	@staticmethod
+	def select_user_in_game(from_state, game, user_id):
+		return user_id in from_state['games']['by_id'][game]['user_ids']
+
 	@staticmethod
 	def select_user(from_state, user_id):
 		return from_state['users']['by_id'].get(user_id)
@@ -276,6 +295,14 @@ class CasinoManager():
 
 	@staticmethod
 	def get_initial_state():
+		[slots, blackjack, roulette, racing, crossing] = [
+			CasinoManager.build_game_entity(CasinoGames.Slots),
+			CasinoManager.build_game_entity(CasinoGames.Blackjack),
+			CasinoManager.build_game_entity(CasinoGames.Roulette),
+			CasinoManager.build_game_entity(CasinoGames.Racing),
+			CasinoManager.build_game_entity(CasinoGames.Crossing),
+		]
+
 		return {
 			'users': {
 				'all': [],
@@ -296,6 +323,16 @@ class CasinoManager():
 			'leaderboards': {
 				'all': [],
 				'by_id': {}
+			},
+			'games': {
+				'all': [slots['id'], blackjack['id'], roulette['id'], racing['id'], crossing['id']],
+				'by_id': {
+					CasinoGames.Slots: slots,
+					CasinoGames.Blackjack: blackjack,
+					CasinoGames.Roulette: roulette,
+					CasinoGames.Racing: racing,
+					CasinoGames.Crossing: crossing,
+				}
 			}
 		}
 
@@ -319,6 +356,7 @@ class CasinoManager():
 			CasinoActions.USER_DISCONNECTED: self.handle_user_disconnected,
 			CasinoActions.USER_SENT_MESSAGE: self.handle_user_sent_message,
 			CasinoActions.USER_DELETED_MESSAGE: self.handle_user_deleted_message,
+			CasinoActions.USER_STARTED_GAME: self.handle_user_started_game
 		}
 
 	def dispatch(self, action, payload=None):
@@ -334,11 +372,12 @@ class CasinoManager():
 		next_state = copy(self.state)
 		self.state = handler(next_state, payload)
 
-		emit(CasinoEvents.StateChanged, CasinoManager.select_client_state(self.state), broadcast=True)
+		emit(CasinoEvents.StateChanged,
+		     CasinoManager.select_client_state(self.state), broadcast=True)
 
 	# Action Handlers
 	def handle_user_connected(self, next_state, payload):
-		user_id = payload['user_id']
+		user_id = str(payload['user_id'])
 		request_id = payload['request_id']
 		existing_user = CasinoManager.select_user(next_state, user_id)
 
@@ -353,12 +392,12 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_disconnected(self, next_state, payload):
-		user_id = payload
+		user_id = str(payload)
 		user = next_state['users']['by_id'].get(user_id)
 
 		if user:
 			user['online'] = False
-			
+
 		return next_state
 
 	def handle_user_sent_message(self, next_state, payload):
@@ -373,22 +412,24 @@ class CasinoManager():
 			message = CasinoManager.build_message_entity(user_id, text)
 			next_state['messages']['all'].append(message['id'])
 			next_state['messages']['by_id'][message['id']] = message
-		
+
 		return next_state
 
 	def handle_user_conversed(self, next_state, payload):
-		user_id = payload['user_id']
+		user_id = str(payload['user_id'])
 		recipient = payload['recipient']
 		text = payload['text']
 		message = CasinoManager.build_message_entity(user_id, text)
 		conversation_key = CasinoManager.build_conversation_key(user_id, recipient)
-		conversation = CasinoManager.select_conversation(next_state, conversation_key)
+		conversation = CasinoManager.select_conversation(
+			next_state, conversation_key)
 
 		if not conversation:
-			conversation = CasinoManager.build_conversation_entity(conversation_key, user_id, recipient)
+			conversation = CasinoManager.build_conversation_entity(
+				conversation_key, user_id, recipient)
 			next_state['conversations']['all'].append(conversation['id'])
 			next_state['conversations']['by_id'][conversation['id']] = conversation
-		
+
 		conversation['messages']['all'].append(message['id'])
 		conversation['messages']['by_id'].append(message)
 
@@ -401,9 +442,29 @@ class CasinoManager():
 			next_state['messages']['all'].remove(message_id)
 			del next_state['messages']['by_id'][message_id]
 		except:
-			pass # The message did not exist.
+			pass  # The message did not exist.
 
 		return next_state
+
+	def handle_user_started_game(self, next_state, payload):
+		user_id = str(payload['user_id'])
+		game = payload['game']
+		existing_user_in_game = CasinoManager.select_user_in_game(next_state, game, user_id)
+
+		if not existing_user_in_game:
+			next_state['games']['by_id'][game]['user_ids'].append(user_id)
+
+		remaining_games = list(copy(next_state['games']['all']))
+		remaining_games.remove(game)
+
+		for remaining_game in remaining_games:
+			users_in_game = next_state['games']['by_id'][remaining_game]['user_ids']
+			
+			if user_id in users_in_game:
+				users_in_game.remove(user_id)
+
+		return next_state
+
 
 casino_manager = CasinoManager()
 
@@ -414,6 +475,7 @@ class CasinoEvents(str, Enum):
 	Disconnect = "disconnect"
 	UserSentMessage = "user-sent-message"
 	UserDeletedMessage = "user-deleted-message"
+	UserStartedGame = "user-started-game"
 
 	# Outgoing
 	StateChanged = "state-changed"
@@ -462,7 +524,8 @@ def user_deleted_message(data, v):
 		return '', 404
 
 	if message['user_id'] != v.id and v.admin_level < 2:
-		emit(CasinoEvents.ErrorOccurred, "You do not have permission to delete that message.")
+		emit(CasinoEvents.ErrorOccurred,
+		     "You do not have permission to delete that message.")
 		return '', 403
 
 	payload = message_id
@@ -470,4 +533,17 @@ def user_deleted_message(data, v):
 	emit(CasinoEvents.ConfirmationReceived, "Successfully deleted a message.")
 	return '', 200
 
+
+@socketio.on(CasinoEvents.UserStartedGame)
+@is_not_permabanned
+def user_started_game(data, v):
+	game = data
+
+	if not game in CasinoManager.select_available_games(casino_manager.state):
+		emit(CasinoEvents.ErrorOccurred, "That game does not exist.")
+		return '', 400
+
+	payload = {'user_id': v.id, 'game': game}
+	casino_manager.dispatch(CasinoActions.USER_STARTED_GAME, payload)
+	return '', 200
 #endregion
