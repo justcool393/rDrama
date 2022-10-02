@@ -1,8 +1,6 @@
 from copy import copy
-from files.helpers.roulette import format_roulette_bet_feed_item
 from .builders import CasinoBuilders
 from .enums import CasinoActions, CasinoGames
-from .helpers import grab
 from .selectors import CasinoSelectors
 
 
@@ -21,153 +19,161 @@ class CasinoHandlers():
 
     # == "Private"
     @staticmethod
-    def _handle_user_conversed(next_state, payload):
+    def _handle_user_conversed(state, payload):
         user_id = payload['user_id']
         recipient = payload['recipient']
         text = payload['text']
-        message = CasinoBuilders.build_message_entity(user_id, text)
         conversation_key = CasinoBuilders.build_conversation_key(
             user_id, recipient)
         conversation = CasinoSelectors.select_conversation(
-            next_state, conversation_key)
+            state, conversation_key)
 
         if not conversation:
             conversation = CasinoBuilders.build_conversation_entity(
-                conversation_key, user_id, recipient)
-            next_state['conversations']['all'].append(conversation['id'])
-            next_state['conversations']['by_id'][conversation['id']
-                                                 ] = conversation
+                conversation_key,
+                user_id,
+                recipient
+            )
+            conversation_key = conversation['id']
+            CasinoSelectors.select_conversation_keys(state).append(conversation_key)
+            CasinoSelectors.select_conversation_lookup(state)[conversation_key] = conversation
 
-        grab(conversation, 'messages/all').append(message['id'])
-        grab(conversation, 'messages/by_id')[message['id']] = message
+        message = CasinoBuilders.build_message_entity(user_id, text)
+        message_id = message['id']
+        CasinoSelectors.select_conversation_message_ids(state, conversation_key).append(message_id)
+        CasinoSelectors.select_conversation_message_lookup(state, conversation_key)[message_id] = message
 
-        return next_state
+        return state
 
     @staticmethod
-    def _handle_feed_updated(next_state, payload):
+    def _handle_feed_updated(state, payload):
         feed = payload['feed']
         feed_id = feed['id']
-        grab(next_state, 'feed/all').append(feed_id)
-        grab(next_state, 'feed/by_id')[feed_id] = feed
+        
+        CasinoSelectors.select_feed_ids(state).append(feed_id)
+        CasinoSelectors.select_feed_lookup(state)[feed_id] = feed
 
-        return next_state
+        return state
 
     @staticmethod
-    def _handle_user_session_updated(next_state, payload):
+    def _handle_user_session_updated(state, payload):
         game = payload['game']
         session = payload['session']
-
-        # Update the main session entities.
-        all_sessions = grab(next_state, 'sessions/all')
         session_id = session['id']
+
+        all_sessions = CasinoSelectors.select_session_ids(state)
 
         if not session_id in all_sessions:
             all_sessions.append(session_id)
 
-        grab(next_state, 'sessions/by_id')[session_id] = session
+        CasinoSelectors.select_session_lookup(state)[session_id] = session
 
-        # Update the game to show the user is playing.
-        game_sessions = grab(
-            next_state, f'games/by_id/{game}/session_ids')
+        game_sessions = CasinoSelectors.select_game_sessions(state, game)
+        
         if not session_id in game_sessions:
             game_sessions.append(session_id)
 
-        return next_state
+        return state
 
     # == "Public"
     @staticmethod
-    def handle_user_connected(next_state, payload):
+    def handle_user_connected(state, payload):
         user_id = payload['user_id']
         request_id = payload['request_id']
-        existing_user = CasinoSelectors.select_user(next_state, user_id)
+        existing_user = CasinoSelectors.select_user(state, user_id)
 
         if existing_user:
             existing_user['request_id'] = request_id
             existing_user['online'] = True
         else:
-            user = CasinoBuilders.build_user_entity(user_id, request_id)
-            grab(next_state, 'users/all').append(user_id)
-            grab(next_state, 'users/by_id')[user_id] = user
+            all_user_ids = CasinoSelectors.select_user_ids(state)
 
-        return next_state
+            if not user_id in all_user_ids:
+                all_user_ids.append(user_id)
+
+            user = CasinoBuilders.build_user_entity(user_id, request_id)
+            CasinoSelectors.select_user_lookup(state)[user_id] = user
+
+        return state
 
     @staticmethod
-    def handle_user_disconnected(next_state, payload):
+    def handle_user_disconnected(state, payload):
         user_id = payload['user_id']
-        user = grab(next_state, 'users/by_id').get(user_id)
+        user = CasinoSelectors.select_user(state, user_id)
 
         if user:
             user['online'] = False
 
-            for game in CasinoSelectors.select_available_games(next_state):
-                users_in_game = grab(
-                    next_state, f'games/by_id/{game}/user_ids')
+            for game in CasinoSelectors.select_game_names(state):
+                users_in_game = CasinoSelectors.select_user_in_game(state, game)
 
                 if user_id in users_in_game:
                     users_in_game.remove(user_id)
 
-        return next_state
+        return state
 
     @staticmethod
-    def handle_user_sent_message(next_state, payload):
+    def handle_user_sent_message(state, payload):
         recipient = payload['recipient']
 
         if recipient:
             # Direct Message
-            return CasinoHandlers._handle_user_conversed(next_state, payload)
+            return CasinoHandlers._handle_user_conversed(state, payload)
         else:
             user_id = payload['user_id']
             text = payload['text']
             message = CasinoBuilders.build_message_entity(user_id, text)
-            grab(next_state, 'messages/all').append(message['id'])
-            grab(next_state, 'messages/by_id')[message['id']] = message
+            message_id = message['id']
+            
+            CasinoSelectors.select_message_ids(state).append(message_id)
+            CasinoSelectors.select_message_lookup(state)[message_id] = message
 
-        return next_state
+        return state
 
     @staticmethod
-    def handle_user_deleted_message(next_state, payload):
+    def handle_user_deleted_message(state, payload):
         message_id = payload['message_id']
+        all_messages = CasinoSelectors.select_message_ids(state)
+        message_lookup = CasinoSelectors.select_message_lookup(state)
 
-        try:
-            grab(next_state, 'messages/all').remove(message_id)
-            del grab(next_state, 'messages/by_id')[message_id]
-        except:
-            pass  # The message did not exist.
+        if message_id in all_messages:
+            all_messages.remove(message_id)
 
-        return next_state
+        if message_lookup.get(message_id):
+            del message_lookup[message_id]
+
+        return state
 
     @staticmethod
-    def handle_user_started_game(next_state, payload):
+    def handle_user_started_game(state, payload):
         user_id = payload['user_id']
         game = payload['game']
-        existing_user_in_game = CasinoSelectors.select_user_in_game(
-            next_state, game, user_id)
+        users_in_game = CasinoSelectors.select_game_users(state, game)
 
-        if not existing_user_in_game:
-            grab(next_state, f'games/by_id/{game}/user_ids').append(user_id)
+        if not user_id in users_in_game:
+            users_in_game.append(user_id)
 
-        remaining_games = list(copy(grab(next_state, 'games/all')))
+        remaining_games = list(copy(CasinoSelectors.select_game_names(state)))
         remaining_games.remove(game)
 
         for remaining_game in remaining_games:
-            users_in_game = CasinoSelectors.select_users_in_game(
-                next_state, remaining_game)
+            users_in_game = CasinoSelectors.select_game_users(state, remaining_game)
 
             if user_id in users_in_game:
                 users_in_game.remove(user_id)
 
-        return next_state
+        return state
 
     @staticmethod
-    def handle_user_pulled_slots(next_state, payload):
+    def handle_user_pulled_slots(state, payload):
         user_id = payload['user_id']
         game_state = payload['game_state']
 
         # Feed
         feed = CasinoBuilders.build_feed_entity(user_id, game_state['text'])
         feed_update_payload = {'feed': feed}
-        next_state = CasinoHandlers._handle_feed_updated(
-            next_state, feed_update_payload)
+        state = CasinoHandlers._handle_feed_updated(
+            state, feed_update_payload)
 
         # Session
         session = CasinoBuilders.build_session_entity(
@@ -176,38 +182,36 @@ class CasinoHandlers():
             'game': CasinoGames.Slots,
             'session': session
         }
-        next_state = CasinoHandlers._handle_user_session_updated(
-            next_state, session_update_payload)
+        state = CasinoHandlers._handle_user_session_updated(
+            state, session_update_payload)
 
-        return next_state
+        return state
 
     @staticmethod
-    def handle_user_played_roulette(next_state, payload):
+    def handle_user_played_roulette(state, payload):
         user_id = payload['user_id']
         game_state = payload['game_state']
         placed_bet = payload['placed_bet']
-
-        grab(next_state,
-             f'games/by_id/{CasinoGames.Roulette}')['state'] = game_state
+        
+        CasinoSelectors.select_game(state, CasinoGames.Roulette)['state'] = game_state
 
         # Feed
         bet = placed_bet['bet']
         which = placed_bet['which']
         currency = placed_bet['currency']
         wager = placed_bet['wager']
-        user = CasinoSelectors.select_user(next_state, user_id)
-        username = grab(user, 'account/username')
-        text = format_roulette_bet_feed_item(
-            username=username,
-            bet=bet,
-            which=which,
-            currency=currency,
-            amount=wager
+        text = CasinoSelectors.select_roulette_bet_feed_item(
+            state,
+            user_id,
+            bet,
+            which,
+            currency,
+            wager
         )
+
         feed = CasinoBuilders.build_feed_entity(user_id, text)
         feed_update_payload = {'feed': feed}
-        next_state = CasinoHandlers._handle_feed_updated(
-            next_state, feed_update_payload)
+        state = CasinoHandlers._handle_feed_updated(state, feed_update_payload)
 
         # Session
         session = CasinoBuilders.build_session_entity(
@@ -216,7 +220,7 @@ class CasinoHandlers():
             'game': CasinoGames.Roulette,
             'session': session
         }
-        next_state = CasinoHandlers._handle_user_session_updated(
-            next_state, session_update_payload)
+        state = CasinoHandlers._handle_user_session_updated(
+            state, session_update_payload)
 
-        return next_state
+        return state

@@ -39,12 +39,14 @@ class CasinoManager():
 
         for middleware in self.middleware:
             next_state, action, payload = middleware(
-                next_state, action, payload)
+                next_state,
+                action,
+                payload
+            )
 
         self.state = handler(next_state, payload)
 
         emit(CasinoEvents.StateChanged, CasinoSelectors.select_client_state(
             self.state), broadcast=True)
-
 
 CasinoManager.instance = CasinoManager()

@@ -1,4 +1,5 @@
 from enum import Enum
+from .config import MINIMUM_WAGER
 
 class CasinoGames(str, Enum):
 	Slots = "slots"
@@ -32,3 +33,13 @@ class CasinoEvents(str, Enum):
 	StateChanged = "state-changed"
 	ErrorOccurred = "error-occurred"
 	ConfirmationReceived = "confirmation-received"
+
+class CasinoMessages(str, Enum):
+	InsufficientPermissions = "You do not have permission to perform that action."
+	MessageNotFound = "That message does not exist."
+	MessageDeleteSuccess = "Successfully deleted a message."
+	GameNotFound = "That game does not exist."
+	MinimumWagerNotMet = f"You must bet at least {MINIMUM_WAGER} coins or procoins."
+	CannotAffordBet = "You cannot afford that bet."
+	CannotPullLever = "Unable to pull the lever."
+	CannotPlaceBet = "Unable to place bet."
