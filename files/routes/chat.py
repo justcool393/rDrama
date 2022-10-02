@@ -210,7 +210,7 @@ class CasinoActions(str, Enum):
 	USER_DISCONNECTED = "USER_DISCONNECTED"
 	USER_SENT_MESSAGE = "USER_SENT_MESSAGE"
 	USER_DELETED_MESSAGE = "USER_DELETED_MESSAGE"
-	USER_STARTED_GAME = "USER_STARTED_GAME",
+	USER_STARTED_GAME = "USER_STARTED_GAME"
 	USER_PULLED_SLOTS = "USER_PULLED_SLOTS",
 
 
@@ -534,7 +534,7 @@ class CasinoManager():
 			text = payload['text']
 			message = CasinoManager.build_message_entity(user_id, text)
 			grab(next_state, 'messages/all').append(message['id'])
-			grab(next_state, f'messages/by_id')[message['id']] = message
+			grab(next_state, 'messages/by_id')[message['id']] = message
 
 		return next_state
 
@@ -589,7 +589,7 @@ class CasinoManager():
 		if not session_id in all_sessions:
 			all_sessions.append(session_id)
 
-		grab(next_state, f'sessions/by_id')[session_id] = session
+		grab(next_state, 'sessions/by_id')[session_id] = session
 
 		if not session_id in game_sessions:
 			game_sessions.append(session_id)
