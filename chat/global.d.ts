@@ -76,9 +76,6 @@ declare interface ConversationEntity {
 declare interface FeedEntity {
   id: string;
   user_id: string;
-  game: CasinoGame;
-  currency: CasinoCurrency;
-  amount: number;
   description: string;
   timestamp: number;
 }

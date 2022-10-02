@@ -178,6 +178,8 @@ atexit.register(close_running_threads)
 #endregion
 
 #region Casino
+
+
 def grab(object, path, delimiter='/', fallback=None):
     try:
         result = object
@@ -193,6 +195,7 @@ def grab(object, path, delimiter='/', fallback=None):
 
 def can_user_afford(user, currency, amount):
 	return getattr(user, currency, 0) >= amount
+
 
 class CasinoGames(str, Enum):
 	Slots = "slots"
@@ -272,15 +275,12 @@ class CasinoManager():
 		}
 
 	@staticmethod
-	def build_feed_entity(user_id, game, currency, amount, description):
+	def build_feed_entity(user_id, description):
 		feed_id = str(uuid.uuid4())
 
 		return {
 			'id': feed_id,
 			'user_id': user_id,
-			'game': game,
-			'currency': currency,
-			'amount': amount,
 			'description': description,
 			'timestamp': int(time.time())
 		}
@@ -392,15 +392,54 @@ class CasinoManager():
 
 	# Middleware
 	@staticmethod
-	def log_middleware(action, payload):
+	def log_middleware(next_state, action, payload):
 		print(
 			f'Casino Manager) {action} dispatched with a payload of {json.dumps(payload)}')
-		return action, payload
+		return next_state, action, payload
+
+	@staticmethod
+	def stringify_user_id_middleware(next_state, action, payload):
+		if payload.get('user_id'):
+			payload['user_id'] = str(payload['user_id'])
+
+		return next_state, action, payload
+
+	@staticmethod
+	def update_balance_middleware(next_state, action, payload):
+		if payload.get('user_id') and payload.get('balances'):
+			user_id = payload['user_id']
+			balances = payload['balances']
+
+			grab(next_state, f'users/by_id/{user_id}')['balances'] = balances
+
+		return next_state, action, payload
+
+	@staticmethod
+	def update_user_last_active_middleware(next_state, action, payload):
+		requires_interaction = [
+			CasinoActions.USER_SENT_MESSAGE,
+			CasinoActions.USER_DELETED_MESSAGE,
+			CasinoActions.USER_STARTED_GAME,
+			CasinoActions.USER_PULLED_SLOTS
+		]
+
+		if action in requires_interaction:
+			user_id = payload['user_id']
+			user = CasinoManager.select_user(next_state, user_id)
+
+			if user:
+				user['last_active'] = int(time.time())
+
+		return next_state, action, payload
 
 	def __init__(self):
 		self.state = CasinoManager.get_initial_state()
 		self.state_history = []
-		self.middleware = []
+		self.middleware = [
+			CasinoManager.stringify_user_id_middleware,
+			CasinoManager.update_balance_middleware,
+			CasinoManager.update_user_last_active_middleware,
+		]
 
 		if app.config["SERVER_NAME"] == 'localhost':
 			self.middleware.append(CasinoManager.log_middleware)
@@ -415,9 +454,6 @@ class CasinoManager():
 		}
 
 	def dispatch(self, action, payload=None):
-		for middleware in self.middleware:
-			action, payload = middleware(action, payload)
-
 		handler = self.action_handlers[action]
 
 		if not handler:
@@ -425,6 +461,10 @@ class CasinoManager():
 
 		self.state_history.append(copy(self.state))
 		next_state = copy(self.state)
+
+		for middleware in self.middleware:
+			next_state, action, payload = middleware(next_state, action, payload)
+
 		self.state = handler(next_state, payload)
 
 		emit(CasinoEvents.StateChanged,
@@ -433,7 +473,7 @@ class CasinoManager():
 	# Action Handlers
 	# == "Private"
 	def _handle_user_conversed(self, next_state, payload):
-		user_id = str(payload['user_id'])
+		user_id = payload['user_id']
 		recipient = payload['recipient']
 		text = payload['text']
 		message = CasinoManager.build_message_entity(user_id, text)
@@ -452,26 +492,9 @@ class CasinoManager():
 
 		return next_state
 
-	def _handle_user_interacted(self, next_state, payload):
-		user_id = str(payload['user_id'])
-		user = CasinoManager.select_user(next_state, user_id)
-
-		if user:
-			user['last_active'] = int(time.time())
-
-		return next_state
-
-	def _handle_user_balance_updated(self, next_state, payload):
-		user_id = str(payload['user_id'])
-		balances = payload['balances']
-
-		grab(next_state, f'users/by_id/{user_id}')['balances'] = balances
-
-		return next_state
-
 	# == "Public"
 	def handle_user_connected(self, next_state, payload):
-		user_id = str(payload['user_id'])
+		user_id = payload['user_id']
 		request_id = payload['request_id']
 		existing_user = CasinoManager.select_user(next_state, user_id)
 
@@ -501,14 +524,13 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_sent_message(self, next_state, payload):
-		next_state = self._handle_user_interacted(next_state, payload)
 		recipient = payload['recipient']
 
 		if recipient:
 			# Direct Message
 			return self._handle_user_conversed(next_state, payload)
 		else:
-			user_id = str(payload['user_id'])
+			user_id = payload['user_id']
 			text = payload['text']
 			message = CasinoManager.build_message_entity(user_id, text)
 			grab(next_state, 'messages/all').append(message['id'])
@@ -517,7 +539,6 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_deleted_message(self, next_state, payload):
-		next_state = self._handle_user_interacted(next_state, payload)
 		message_id = payload
 
 		try:
@@ -529,8 +550,7 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_started_game(self, next_state, payload):
-		next_state = self._handle_user_interacted(next_state, payload)
-		user_id = str(payload['user_id'])
+		user_id = payload['user_id']
 		game = payload['game']
 		existing_user_in_game = CasinoManager.select_user_in_game(
 			next_state, game, user_id)
@@ -542,7 +562,8 @@ class CasinoManager():
 		remaining_games.remove(game)
 
 		for remaining_game in remaining_games:
-			users_in_game = CasinoManager.select_users_in_game(next_state, remaining_game)
+			users_in_game = CasinoManager.select_users_in_game(
+				next_state, remaining_game)
 
 			if user_id in users_in_game:
 				users_in_game.remove(user_id)
@@ -550,27 +571,31 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_pulled_slots(self, next_state, payload):
-		next_state = self._handle_user_balance_updated(next_state, payload)
-		user_id = str(payload['user_id'])
-		game_state = payload['game_state']
+		user_id = payload['user_id']
+		game_state = json.loads(payload['game_state'])
 
-		# Add to feed
-		
-		session = CasinoManager.build_session_entity(user_id, CasinoGames.Slots, game_state)
+		feed = CasinoManager.build_feed_entity(user_id, game_state['text'])
+		feed_id = feed['id']
+		grab(next_state, 'feed/all').append(feed_id)
+		grab(next_state, 'feed/by_id')[feed_id] = feed
+
+		session = CasinoManager.build_session_entity(
+			user_id, CasinoGames.Slots, game_state)
 		all_sessions = grab(next_state, 'sessions/all')
-		game_sessions = grab(next_state, f'games/by_id/{CasinoGames.Slots}/session_ids')
+		game_sessions = grab(
+			next_state, f'games/by_id/{CasinoGames.Slots}/session_ids')
 		session_id = session['id']
 
 		if not session_id in all_sessions:
 			all_sessions.append(session_id)
-		
+
 		grab(next_state, f'sessions/by_id')[session_id] = session
-		
+
 		if not session_id in game_sessions:
 			game_sessions.append(session_id)
 
 		return next_state
-		
+
 
 casino_manager = CasinoManager()
 
@@ -660,4 +685,5 @@ def user_pulled_slots(data, v):
 	else:
 		emit(CasinoEvents.ErrorOccurred, "Unable to pull the lever.")
 		return '', 400
+		
 #endregion
