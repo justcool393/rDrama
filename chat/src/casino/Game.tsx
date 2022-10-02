@@ -1,8 +1,13 @@
 import React from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, Space, Tooltip } from "antd";
+import { useCasino, useRootContext } from "../hooks";
 
 export function Game() {
+  const { id } = useRootContext();
+  const { state, selectors, userPulledSlots } = useCasino();
+  const result = selectors.selectGameSession(state, id, "slots");
+
   return (
     <Card
       title="Game"
@@ -28,7 +33,11 @@ export function Game() {
         </Space>
       }
     >
-      <Space direction="vertical">Hi</Space>
+      <Space direction="vertical">
+        <div>Result</div>
+        <div>{JSON.stringify(result, null, 2)}</div>
+        <Button type="default" onClick={userPulledSlots}>Pull</Button>
+      </Space>
     </Card>
   );
 }

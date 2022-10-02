@@ -23,7 +23,6 @@ def casino_slot_pull(gambler, wager_value, currency):
 	if (over_min and under_max and charged):
 		payout = determine_payout()
 		reward = wager_value * payout
-
 		gambler.pay_account(currency, reward)
 
 		symbols = build_symbols(payout)
@@ -41,6 +40,7 @@ def casino_slot_pull(gambler, wager_value, currency):
 		casino_game.kind = 'slots'
 		casino_game.game_state = json.dumps(game_state)
 		g.db.add(casino_game)
+		g.db.commit()
 
 		return True, casino_game.game_state
 	else:

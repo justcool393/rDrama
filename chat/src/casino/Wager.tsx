@@ -40,7 +40,7 @@ export function Wager() {
           value={wager}
           status={balanceError ? "error" : ""}
           onChange={(value) => setWager(value)}
-          prefix={balanceError ? <ExclamationCircleOutlined /> : null}
+          prefix={balanceError ? <ExclamationCircleOutlined /> : <span />}
           addonAfter={
             <Radio.Group
               value={currency}

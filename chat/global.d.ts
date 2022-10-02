@@ -107,6 +107,18 @@ declare interface GameEntity {
   user_ids: string[];
 }
 
+declare interface SessionEntity<T> {
+  id: string;
+  user_id: string;
+  game: CasinoGame;
+  game_state: T;
+}
+
+declare interface SlotsGameState {
+  symbols: [string, string, string];
+  text: string;
+}
+
 declare interface CasinoState {
   users: Normalized<UserEntity>
   messages: Normalized<MessageEntity>
@@ -114,4 +126,5 @@ declare interface CasinoState {
   feed: Normalized<FeedEntity>
   leaderboards: Normalized<LeaderboardEntity>
   games: Normalized<GameEntity>
+  sessions: Normalized<SessionEntity<SlotsGameState>>
 }

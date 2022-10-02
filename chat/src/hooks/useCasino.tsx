@@ -14,11 +14,11 @@ import { diff } from "deep-diff";
 import cloneDeep from "lodash.clonedeep";
 
 enum CasinoHandlers {
-  Ping = "ping",
-  StateChanged = "state-changed",
   UserSentMessage = "user-sent-message",
   UserDeletedMessage = "user-deleted-message",
   UserStartedGame = "user-started-game",
+  UserPulledSlots = "user-pulled-slots",
+  StateChanged = "state-changed",
   ErrorOccurred = "error-occurred",
   ConfirmationReceived = "confirmation-received",
 }
@@ -45,6 +45,10 @@ const CASINO_INITIAL_STATE: CasinoState = {
     by_id: {},
   },
   games: {
+    all: [],
+    by_id: {},
+  },
+  sessions: {
     all: [],
     by_id: {},
   },
@@ -80,7 +84,9 @@ const selectors = {
 
     return null;
   },
-  selectAvailableGames: (state: CasinoState) => state.games.all
+  selectAvailableGames: (state: CasinoState) => state.games.all,
+  selectGameSession: (state: CasinoState, user_id: string, game: CasinoGame) =>
+    state.sessions.by_id[`${user_id}#${game}`] ?? null,
 };
 
 interface CasinoProviderContext {
@@ -99,6 +105,7 @@ interface CasinoProviderContext {
   userSentMessage(): void;
   userDeletedMessage(messageId: string): void;
   userStartedGame(game: CasinoGame): void;
+  userPulledSlots(): void;
 }
 
 const CasinoContext = createContext<CasinoProviderContext>({
@@ -117,6 +124,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
   userSentMessage() {},
   userDeletedMessage() {},
   userStartedGame() {},
+  userPulledSlots() {},
 });
 
 export function CasinoProvider({ children }: PropsWithChildren) {
@@ -124,8 +132,8 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   const prevState = useRef(CASINO_INITIAL_STATE);
   const [loaded, setLoaded] = useState(false);
   const [state, setState] = useState(CASINO_INITIAL_STATE);
-  const [wager, setWager] = useState(MINIMUM_WAGER);
   const [currency, setCurrency] = useState<CasinoCurrency>("coins");
+  const [wager, setWager] = useState(MINIMUM_WAGER);
   const [draft, setDraft] = useState("");
   const [recipient, setRecipient] = useState<null | string>(null);
 
@@ -150,6 +158,13 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     socket.current?.emit(CasinoHandlers.UserStartedGame, game);
   }, []);
 
+  const userPulledSlots = useCallback(() => {
+    socket.current?.emit(CasinoHandlers.UserPulledSlots, {
+      currency,
+      wager,
+    });
+  }, [currency, wager]);
+
   // Memoized Value
   const value = useMemo<CasinoProviderContext>(
     () => ({
@@ -167,7 +182,8 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       setRecipient,
       userSentMessage,
       userDeletedMessage,
-      userStartedGame
+      userStartedGame,
+      userPulledSlots,
     }),
     [
       loaded,
@@ -178,6 +194,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       draft,
       userSentMessage,
       userDeletedMessage,
+      userPulledSlots,
     ]
   );
 
