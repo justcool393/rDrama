@@ -4,7 +4,6 @@ from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *
 from files.helpers.get import *
 from files.helpers.sanitize import *
-from files.helpers.slots import *
 import random
 from urllib.parse import quote
 
@@ -36,7 +35,7 @@ def archiveorg(url):
 def archive_url(url):	
 	gevent.spawn(archiveorg, url)
 	if url.startswith('https://twitter.com/'):
-		url = url.replace('https://twitter.com/', 'https://nitter.42l.fr/')
+		url = url.replace('https://twitter.com/', 'https://nitter.lacontrevoie.fr/')
 		gevent.spawn(archiveorg, url)
 	if url.startswith('https://instagram.com/'):
 		url = url.replace('https://instagram.com/', 'https://imginn.com/')
@@ -168,6 +167,23 @@ def execute_snappy(post, v):
 		if FEATURES['PINS'] and (body.startswith(':#marseypin:') or body.startswith(':#marseypin2:')):
 			post.stickied = "Snappy"
 			post.stickied_utc = int(time.time()) + 3600
+
+		elif SITE_NAME == 'rDrama' and body.startswith(':#marseyban:'):
+			days = 0.01
+			reason = f'<a href="/post/{post.id}">/post/{post.id}</a>'
+			v.ban(admin=snappy, reason=reason, days=days)
+			text = f"@Snappy has banned you for **{days}** days for the following reason:\n\n> {reason}"
+			send_repeatable_notification(v.id, text)
+			duration = f"for {days} days"
+			note = f'reason: "{reason}", duration: {duration}'
+			ma=ModAction(
+				kind="ban_user",
+				user_id=snappy.id,
+				target_user_id=v.id,
+				_note=note
+				)
+			g.db.add(ma)
+			post.bannedfor = f'{duration} by @Snappy'
 
 		g.db.flush()
 

@@ -212,7 +212,7 @@ def distribute(v, option_id):
 
 	pool = 0
 	for o in post.options:
-		if o.exclusive > 2: pool += o.upvotes
+		if o.exclusive >= 2: pool += o.upvotes
 	pool *= 200
 
 	autojanny.coins -= pool
@@ -300,10 +300,7 @@ def revert_actions(v, username):
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @admin_level_required(2)
 def club_allow(v, username):
-
 	u = get_user(username, v=v)
-
-	if not u: abort(404)
 
 	if u.admin_level >= v.admin_level: return {"error": "noob"}, 400
 
@@ -327,10 +324,7 @@ def club_allow(v, username):
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @admin_level_required(2)
 def club_ban(v, username):
-
 	u = get_user(username, v=v)
-
-	if not u: abort(404)
 
 	if u.admin_level >= v.admin_level: return {"error": "noob"}, 400
 
@@ -862,7 +856,7 @@ def agendaposter(user_id, v):
 		kind="agendaposter",
 		user_id=v.id,
 		target_user_id=user.id,
-		note=note
+		_note=note
 	)
 	g.db.add(ma)
 
@@ -910,23 +904,28 @@ def shadowban(user_id, v):
 	user = get_account(user_id)
 	if user.admin_level != 0: abort(403)
 	user.shadowbanned = v.username
+	reason = request.values.get("reason").strip()[:256]
+	user.ban_reason = reason
 	g.db.add(user)
 
-	for alt in user.alts:
-		if alt.admin_level: continue
-		alt.shadowbanned = v.username
-		g.db.add(alt)
+	if request.values.get("alts"):
+		for alt in user.alts:
+			if alt.admin_level: continue
+			alt.shadowbanned = v.username
+			alt.ban_reason = reason
+			g.db.add(alt)
 
 	ma = ModAction(
 		kind="shadowban",
 		user_id=v.id,
 		target_user_id=user.id,
+		_note=f'reason: "{reason}"'
 	)
 	g.db.add(ma)
 	
 	cache.delete_memoized(frontlist)
-	return {"message": f"@{user.username} has been shadowbanned!"}
 
+	return redirect(user.url)
 
 @app.post("/unshadowban/<user_id>")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
@@ -934,9 +933,11 @@ def shadowban(user_id, v):
 def unshadowban(user_id, v):
 	user = get_account(user_id)
 	user.shadowbanned = None
+	if not user.is_banned: user.ban_reason = None
 	g.db.add(user)
 	for alt in user.alts:
 		alt.shadowbanned = None
+		if not alt.is_banned: alt.ban_reason = None
 		g.db.add(alt)
 
 	ma = ModAction(
@@ -948,7 +949,7 @@ def unshadowban(user_id, v):
 	
 	cache.delete_memoized(frontlist)
 
-	return {"message": f"@{user.username} has been unshadowbanned!"}
+	return redirect(user.url)
 
 
 @app.post("/admin/title_change/<user_id>")
@@ -996,7 +997,7 @@ def ban_user(user_id, v):
 
 	days = float(request.values.get("days")) if request.values.get('days') else 0
 
-	reason = request.values.get("reason", "").strip()[:256]
+	reason = request.values.get("reason").strip()[:256]
 	reason = filter_emojis_only(reason)
 
 	if reason.startswith("/") and '\\' not in reason: 
@@ -1114,12 +1115,7 @@ def mute_user(v, user_id, mute_status):
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @admin_level_required(2)
 def remove_post(post_id, v):
-
 	post = get_post(post_id)
-
-	if not post:
-		abort(400)
-
 	post.is_banned = True
 	post.is_approved = None
 	post.stickied = None
@@ -1157,9 +1153,6 @@ def approve_post(post_id, v):
 	if post.author.id == v.id and post.author.agendaposter and AGENDAPOSTER_PHRASE not in post.body.lower() and post.sub != 'chudrama':
 		return {"error": "You can't bypass the chud award!"}, 400
 
-	if not post:
-		abort(400)
-
 	if post.is_banned:
 		ma=ModAction(
 			kind="unban_post",
@@ -1185,10 +1178,7 @@ def approve_post(post_id, v):
 @app.post("/distinguish/<post_id>")
 @admin_level_required(1)
 def distinguish_post(post_id, v):
-
 	post = get_post(post_id)
-
-	if not post: abort(404)
 
 	if post.author_id != v.id and v.admin_level < 2 : abort(403)
 
@@ -1220,7 +1210,7 @@ def sticky_post(post_id, v):
 		abort(403)
 
 	post = get_post(post_id)
-	if post and not post.stickied:
+	if not post.stickied:
 		pins = g.db.query(Submission).filter(Submission.stickied != None, Submission.is_banned == False).count()
 		if pins >= PIN_LIMIT:
 			if v.admin_level > 2:
@@ -1248,7 +1238,7 @@ def sticky_post(post_id, v):
 def unsticky_post(post_id, v):
 
 	post = get_post(post_id)
-	if post and post.stickied:
+	if post.stickied:
 		if post.stickied.endswith('(pin award)'): return {"error": "Can't unpin award pins!"}, 403
 
 		post.stickied = None
@@ -1322,10 +1312,7 @@ def unsticky_comment(cid, v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @admin_level_required(2)
 def remove_comment(c_id, v):
-
 	comment = get_comment(c_id)
-	if not comment:
-		abort(404)
 
 	comment.is_banned = True
 	comment.is_approved = None
@@ -1429,7 +1416,7 @@ def admin_toggle_ban_domain(v):
 	domain=request.values.get("domain", "").strip()
 	if not domain: abort(400)
 
-	reason=request.values.get("reason", "").strip()
+	reason=request.values.get("reason").strip()
 
 	d = g.db.query(BannedDomain).filter_by(domain=domain).one_or_none()
 	if d:

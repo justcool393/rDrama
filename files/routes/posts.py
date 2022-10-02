@@ -87,7 +87,7 @@ def publish(pid, v):
 @app.get("/h/<sub>/submit")
 @auth_required
 def submit_get(v, sub=None):
-	if sub: sub = g.db.query(Sub).filter_by(name=sub.strip().lower()).one_or_none()
+	if sub: sub = g.db.get(Sub, sub.strip().lower())
 	
 	if request.path.startswith('/h/') and not sub: abort(404)
 
@@ -105,16 +105,7 @@ def submit_get(v, sub=None):
 @app.get("/logged_out/h/<sub>/post/<pid>/<anything>")
 @auth_desired_with_logingate
 def post_id(pid, anything=None, v=None, sub=None):
-
-	try: pid = int(pid)
-	except Exception as e: pass
-
-
-	try: pid = int(pid)
-	except: abort(404)
-
 	post = get_post(pid, v=v)
-
 	if not post.can_see(v): abort(403)
 
 	if post.over_18 and not (v and v.over_18) and session.get('over_18', 0) < int(time.time()):
@@ -243,8 +234,6 @@ def post_id(pid, anything=None, v=None, sub=None):
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @auth_desired_with_logingate
 def viewmore(v, pid, sort, offset):
-	try: pid = int(pid)
-	except: abort(400)
 	post = get_post(pid, v=v)
 	if post.club and not (v and (v.paid_dues or v.id == post.author_id)): abort(403)
 
@@ -1206,25 +1195,29 @@ def pin_post(post_id, v):
 
 
 extensions = (
-	'.webp','.jpg','.png','.jpeg','.gif',
+	'.webp','.jpg','.png','.jpeg','.gif','.gifv','.tif', '.tiff',
 	'.mp4','.webm','.mov',
 	'.mp3','.wav','.ogg','.aac','.m4a','.flac'
 )
 
 @app.get("/submit/title")
-@limiter.limit("6/minute")
-@limiter.limit("6/minute", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit("3/minute")
+@limiter.limit("3/minute", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def get_post_title(v):
 
 	url = request.values.get("url")
 	if not url or '\\' in url: abort(400)
 
-	if any((url.lower().endswith(x) for x in extensions)):
+	checking_url = url.lower().rstrip('%3F').rstrip('?')
+	if any((checking_url.endswith(x) for x in extensions)):
 		abort(400)
 
 	try: x = requests.get(url, headers=titleheaders, timeout=5, proxies=proxies)
 	except: abort(400)
+		
+	content_type = x.headers.get("Content-Type")
+	if not content_type or "text/html" not in content_type: abort(400)
 
 	soup = BeautifulSoup(x.content, 'lxml')
 

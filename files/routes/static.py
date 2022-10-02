@@ -4,12 +4,13 @@ from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.actions import *
 from files.classes.award import AWARDS
-from sqlalchemy import func
+from sqlalchemy import func, nullslast
 import os
 from files.classes.mod_logs import ACTIONTYPES, ACTIONTYPES2
 from files.classes.badges import BadgeDef
 import files.helpers.stats as statshelper
 from shutil import move, copyfile
+
 
 @app.get("/r/drama/comments/<id>/<title>")
 @app.get("/r/Drama/comments/<id>/<title>")
@@ -24,8 +25,12 @@ def marseys(v):
 	if SITE == 'rdrama.net':
 		marseys = g.db.query(Marsey, User).join(User, Marsey.author_id == User.id).filter(Marsey.submitter_id==None)
 		sort = request.values.get("sort", "usage")
-		if sort == "usage": marseys = marseys.order_by(Marsey.count.desc(), User.username).all()
-		else: marseys = marseys.order_by(User.username, Marsey.count.desc()).all()
+		if sort == "usage":
+			marseys = marseys.order_by(Marsey.count.desc(), User.username).all()
+		elif sort == "added":
+			marseys = marseys.order_by(nullslast(Marsey.created_utc.desc()), User.username).all()
+		else: # implied sort == "author"
+			marseys = marseys.order_by(User.username, Marsey.count.desc()).all()
 
 		original = os.listdir("/asset_submissions/marseys/original")
 		for marsey, user in marseys:
@@ -104,7 +109,7 @@ def daily_chart(v):
 @app.get("/paypigs")
 @admin_level_required(3)
 def patrons(v):
-	if AEVANN_ID and v.id != AEVANN_ID: abort(404)
+	if AEVANN_ID and v.id not in (AEVANN_ID, CARP_ID, SNAKES_ID): abort(404)
 
 	users = g.db.query(User).filter(User.patron > 0).order_by(User.patron.desc(), User.id).all()
 
@@ -196,7 +201,7 @@ def api(v):
 @app.get("/contact_us")
 @app.get("/press")
 @app.get("/media")
-@auth_required
+@auth_desired
 def contact(v):
 	return render_template("contact.html", v=v)
 
@@ -453,15 +458,14 @@ if SITE == 'pcmemes.net':
 		if '"videoDetails":{"videoId"' in text:
 			y = live_regex.search(text)
 			count = y.group(3)
+
+			if count == '1 παρακολουθεί τώρα':
+				count = "1"
+
 			if 'περιμένει' in count:
 				return process_streamer(id, '')
 
-			try: count = int(count.replace('.', ''))
-			except Exception as e:
-				print(e)
-				with open('files/assets/count.txt', 'w', encoding='utf-8') as f:
-					f.write(text)
-				return None
+			count = int(count.replace('.', ''))
 
 			t = live_thumb_regex.search(text)
 
@@ -472,6 +476,8 @@ if SITE == 'pcmemes.net':
 			return (True, (id, req.url, thumb, name, title, count))
 		else:
 			t = offline_regex.search(text)
+			if not t: return process_streamer(id, '')
+
 			y = offline_details_regex.search(text)
 
 			if y:
@@ -479,16 +485,19 @@ if SITE == 'pcmemes.net':
 				quantity = int(y.group(1))
 				unit = y.group(2)
 
-				if unit.startswith('λεπτ'):
+				if unit.startswith('δε'):
+					unit = 'second'
+					modifier = 1/60
+				elif unit.startswith('λεπτ'):
 					unit = 'minute'
 					modifier = 1
-				if unit.startswith('ώρ'):
+				elif unit.startswith('ώρ'):
 					unit = 'hour'
 					modifier = 60
-				if unit.startswith('ημέρ'):
+				elif unit.startswith('ημέρ'):
 					unit = 'day'
 					modifier = 1440
-				if unit.startswith('εβδομάδ'):
+				elif unit.startswith('εβδομάδ'):
 					unit = 'week'
 					modifier = 10080
 				elif unit.startswith('μήν'):
@@ -507,13 +516,7 @@ if SITE == 'pcmemes.net':
 				actual = '???'
 				views = 0
 
-			print(req.url, flush=True)
-			try: thumb = t.group(2)
-			except Exception as e:
-				print(e)
-				with open('files/assets/thumb.txt', 'w', encoding='utf-8') as f:
-					f.write(text)
-				return None
+			thumb = t.group(2)
 
 			name = t.group(1)
 

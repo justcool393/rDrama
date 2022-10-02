@@ -189,7 +189,7 @@ def with_sigalrm_timeout(timeout: int):
 	return inner
 
 
-@with_sigalrm_timeout(2)
+@with_sigalrm_timeout(5)
 def sanitize(sanitized, golden=True, limit_pings=0, showmore=True, count_marseys=False, torture=False):
 	sanitized = sanitized.strip()
 
@@ -323,8 +323,8 @@ def sanitize(sanitized, golden=True, limit_pings=0, showmore=True, count_marseys
 
 		sanitized = sanitized.replace(i.group(0), htmlsource)
 
-	sanitized = video_sub_regex.sub(r'\1<video controls preload="metadata"><source src="\2"></video>', sanitized)
-	sanitized = audio_sub_regex.sub(r'\1<audio controls preload="metadata" src="\2"></audio>', sanitized)
+	sanitized = video_sub_regex.sub(r'\1<video controls preload="none"><source src="\2"></video>', sanitized)
+	sanitized = audio_sub_regex.sub(r'\1<audio controls preload="none" src="\2"></audio>', sanitized)
 
 	if count_marseys:
 		for marsey in g.db.query(Marsey).filter(Marsey.submitter_id==None, Marsey.name.in_(marseys_used)).all():
@@ -443,7 +443,10 @@ def normalize_url(url):
 			 .replace("https://streamable.com/", "https://streamable.com/e/") \
 			 .replace("https://streamable.com/e/e/", "https://streamable.com/e/") \
 			 .replace("https://search.marsey.cat/#", "https://camas.unddit.com/#") \
-			 .replace("https://imgur.com/", "https://i.imgur.com/")
+			 .replace("https://imgur.com/", "https://i.imgur.com/") \
+			 .replace("https://nitter.net/", "https://twitter.com/") \
+			 .replace("https://nitter.42l.fr/", "https://twitter.com/") \
+			 .replace("https://nitter.lacontrevoie.fr/", "https://twitter.com/")
 
 	url = imgur_regex.sub(r'\1_d.webp?maxwidth=9999&fidelity=high', url)
 	url = giphy_regex.sub(r'\1.webp', url)

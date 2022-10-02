@@ -273,7 +273,7 @@ def sign_up_post(v):
 
 		args = {"error": error}
 		if request.values.get("referred_by"):
-			user = get_account(request.values.get("referred_by"))
+			user = get_account(request.values.get("referred_by"), include_shadowbanned=False)
 			if user: args["ref"] = user.username
 
 		return redirect(f"/signup?{urlencode(args)}")
@@ -372,7 +372,7 @@ def sign_up_post(v):
 
 	session["lo_user"] = new_user.id
 	
-	if CARP_ID:
+	if SITE == 'watchpeopledie.co':
 		carp = get_account(CARP_ID)
 		new_follow = Follow(user_id=new_user.id, target_id=carp.id)
 		g.db.add(new_follow)

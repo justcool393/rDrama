@@ -6,7 +6,6 @@ from files.helpers.discord import remove_user
 from files.helpers.media import *
 from files.helpers.const import *
 from files.classes.casino_game import Casino_Game
-from files.helpers.twentyone import get_active_twentyone_game_state
 from files.helpers.sorting_and_time import *
 from .alts import Alt
 from .saves import *
@@ -282,6 +281,7 @@ class User(Base):
 
 	@lazy
 	def mods(self, sub):
+		if self.is_suspended_permanently or self.shadowbanned: return False
 		return self.admin_level > 2 or bool(g.db.query(Mod.user_id).filter_by(user_id=self.id, sub=sub).one_or_none())
 
 	@lazy
@@ -929,11 +929,6 @@ class User(Base):
 		if self.agendaposter: return True
 		if self.patron: return True
 		return False
-
-	@property
-	@lazy
-	def active_blackjack_game(self):
-		return json.dumps(get_active_twentyone_game_state(self))
 
 	@property
 	@lazy

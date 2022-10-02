@@ -71,8 +71,7 @@ def searchposts(v):
 
 	if 'author' in criteria:
 		posts = posts.filter(Submission.ghost == False)
-		author = get_user(criteria['author'])
-		if not author: return {"error": "User not found"}, 400
+		author = get_user(criteria['author'], v=v, include_shadowbanned=False)
 		if author.is_private and author.id != v.id and v.admin_level < 2 and not v.eye:
 			if request.headers.get("Authorization"):
 				return {"error": f"@{author.username}'s profile is private; You can't use the 'author' syntax on them"}, 400
@@ -185,6 +184,7 @@ def searchposts(v):
 @auth_required
 def searchcomments(v):
 
+	return {"error": "Searching comments is disabled temporarily."}, 403
 
 	query = request.values.get("q", '').strip()
 
@@ -208,8 +208,7 @@ def searchcomments(v):
 
 	if 'author' in criteria:
 		comments = comments.filter(Comment.ghost == False)
-		author = get_user(criteria['author'])
-		if not author: return {"error": "User not found"}, 400
+		author = get_user(criteria['author'], v=v, include_shadowbanned=False)
 		if author.is_private and author.id != v.id and v.admin_level < 2 and not v.eye:
 			if request.headers.get("Authorization"):
 				return {"error": f"@{author.username}'s profile is private; You can't use the 'author' syntax on them"}, 400
