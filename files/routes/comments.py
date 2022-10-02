@@ -327,6 +327,7 @@ def comment(v):
 
 	if blackjack and any(i in c.body.lower() for i in blackjack.split()):
 		v.shadowbanned = 'AutoJanny'
+		if not v.is_banned: v.ban_reason = 'Blackjack'
 		notif = Notification(comment_id=c.id, user_id=CARP_ID)
 		g.db.add(notif)
 
@@ -561,6 +562,7 @@ def comment(v):
 	if v.id == PIZZASHILL_ID:
 		for uid in PIZZA_VOTERS:
 			autovote = CommentVote(user_id=uid, comment_id=c.id, vote_type=1)
+			autovote.created_utc += 1
 			g.db.add(autovote)
 		v.coins += 3
 		v.truecoins += 3
@@ -690,6 +692,7 @@ def edit_comment(cid, v):
 
 		if blackjack and any(i in c.body.lower() for i in blackjack.split()):
 			v.shadowbanned = 'AutoJanny'
+			if not v.is_banned: v.ban_reason = 'Blackjack'
 			g.db.add(v)
 			notif = g.db.query(Notification).filter_by(comment_id=c.id, user_id=CARP_ID).one_or_none()
 			if not notif:

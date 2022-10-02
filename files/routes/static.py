@@ -113,7 +113,7 @@ def patrons(v):
 
 	users = g.db.query(User).filter(User.patron > 0).order_by(User.patron.desc(), User.id).all()
 
-	return render_template("patrons.html", v=v, users=users)
+	return render_template("patrons.html", v=v, users=users, benefactor_def=AWARDS['benefactor'])
 
 @app.get("/admins")
 @app.get("/badmins")
@@ -154,6 +154,7 @@ def log(v):
 		if admin_id:
 			actions = actions.filter_by(user_id=admin_id)
 			kinds = set([x.kind for x in actions])
+			kinds.add(kind)
 			types2 = {}
 			for k,val in types.items():
 				if k in kinds: types2[k] = val
@@ -296,6 +297,10 @@ def static_service(path):
 
 	return resp
 
+### BEGIN FALLBACK ASSET SERVING
+# In production, we have nginx serve these locations now.
+# These routes stay for local testing. Requests don't reach them on prod.
+
 @app.get('/images/<path>')
 @app.get('/hostedimages/<path>')
 @app.get("/static/images/<path>")
@@ -323,6 +328,8 @@ def audio(path):
 	resp.headers.remove("Cache-Control")
 	resp.headers.add("Cache-Control", "public, max-age=3153600")
 	return resp
+
+### END FALLBACK ASSET SERVING
 
 @app.get("/robots.txt")
 def robots_txt():
