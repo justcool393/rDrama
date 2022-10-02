@@ -79,7 +79,8 @@ const selectors = {
     }
 
     return null;
-  }
+  },
+  selectAvailableGames: (state: CasinoState) => state.games.all
 };
 
 interface CasinoProviderContext {

@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "jsx": "react",
     "lib": ["es2015", "dom", "ESNext"],
-    "noEmit": true
+    "noEmit": true,
+    "downlevelIteration": true
   }
 }

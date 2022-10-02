@@ -206,6 +206,7 @@ class CasinoManager():
 			'request_id': request_id,
 			'account': user_account.json,
 			'online': True,
+			'last_active': int(time.time()),
 			'balances': {
 				'coins': user_account.coins,
 				'procoins': user_account.procoins
@@ -398,16 +399,32 @@ class CasinoManager():
 		if user:
 			user['online'] = False
 
+			for game in CasinoManager.select_available_games(self.state):
+				users_in_game = next_state['games']['by_id'][game]['user_ids']
+
+				if user_id in users_in_game:
+					users_in_game.remove(user_id)
+
+		return next_state
+
+	def handle_user_interacted(self, next_state, payload):
+		user_id = str(payload['user_id'])
+		user = CasinoManager.select_user(next_state, user_id)
+
+		if user:
+			user['last_active'] = int(time.time())
+
 		return next_state
 
 	def handle_user_sent_message(self, next_state, payload):
+		next_state = self.handle_user_interacted(next_state, payload)
 		recipient = payload['recipient']
 
 		if recipient:
 			# Direct Message
 			return self.handle_user_conversed(next_state, payload)
 		else:
-			user_id = payload['user_id']
+			user_id = str(payload['user_id'])
 			text = payload['text']
 			message = CasinoManager.build_message_entity(user_id, text)
 			next_state['messages']['all'].append(message['id'])
@@ -436,6 +453,7 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_deleted_message(self, next_state, payload):
+		next_state = self.handle_user_interacted(next_state, payload)
 		message_id = payload
 
 		try:
@@ -447,9 +465,11 @@ class CasinoManager():
 		return next_state
 
 	def handle_user_started_game(self, next_state, payload):
+		next_state = self.handle_user_interacted(next_state, payload)
 		user_id = str(payload['user_id'])
 		game = payload['game']
-		existing_user_in_game = CasinoManager.select_user_in_game(next_state, game, user_id)
+		existing_user_in_game = CasinoManager.select_user_in_game(
+			next_state, game, user_id)
 
 		if not existing_user_in_game:
 			next_state['games']['by_id'][game]['user_ids'].append(user_id)
@@ -459,7 +479,7 @@ class CasinoManager():
 
 		for remaining_game in remaining_games:
 			users_in_game = next_state['games']['by_id'][remaining_game]['user_ids']
-			
+
 			if user_id in users_in_game:
 				users_in_game.remove(user_id)
 

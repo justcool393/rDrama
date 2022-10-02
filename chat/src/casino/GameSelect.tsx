@@ -1,5 +1,6 @@
 import { Select } from "antd";
 import React from "react";
+import { capitalize } from "../helpers";
 import { useCasino, useRootContext } from "../hooks";
 
 const { Option } = Select;
@@ -8,6 +9,7 @@ export function GameSelect() {
   const { id } = useRootContext();
   const { state, selectors, userStartedGame } = useCasino();
   const activeGame = selectors.selectUserActiveGame(state, id) || "";
+  const availableGames = selectors.selectAvailableGames(state);
 
   return (
     <div
@@ -27,11 +29,11 @@ export function GameSelect() {
         }}
       >
         <Option value="">Select a game</Option>
-        <Option value="slots">Slots</Option>
-        <Option value="blackjack">Blackjack</Option>
-        <Option value="roulette">Roulette</Option>
-        <Option value="racing">Racing</Option>
-        <Option value="crossing">Crossing</Option>
+        {availableGames.map((game) => (
+          <Option key={game} value={game}>
+            {capitalize(game)}
+          </Option>
+        ))}
       </Select>
     </div>
   );
