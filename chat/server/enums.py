@@ -20,17 +20,6 @@ class CasinoActions(str, Enum):
 	USER_PLAYED_ROULETTE = "USER_PLAYED_ROULETTE"
 
 
-class CasinoClientActions(str, Enum):
-  USER_UPDATED = "USER_UPDATED"
-  MESSAGE_UPDATED = "MESSAGE_UPDATED"
-  MESSAGE_DELETED = "MESSAGE_DELETED"
-  CONVERSATION_UPDATED = "CONVERSATION_UPDATED"
-  FEED_UPDATED = "FEED_UPDATED"
-  LEADERBOARD_UPDATED = "LEADERBOARD_UPDATED"
-  GAME_UPDATED = "GAME_UPDATED"
-  SESSION_UPDATED = "SESSION_UPDATED"
-
-
 class CasinoEvents(str, Enum):
 	# Incoming
 	Connect = "connect"
@@ -46,6 +35,7 @@ class CasinoEvents(str, Enum):
 	StateChanged = "state-changed"
 	ErrorOccurred = "error-occurred"
 	ConfirmationReceived = "confirmation-received"
+	InitialStateProvided = "initial-state-provided"
 	ConversationUpdated = "conversation-updated"
 	FeedUpdated = "feed-updated"
 	GameUpdated = "game-updated"

@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CasinoClientActions } from "../enums";
+import { initialStateProvided } from "../actions";
 
 type FeedUpdatedPayload = {
   feed: FeedEntity;
@@ -18,6 +19,12 @@ const initialState: FeedState = {
 export const feedSlice = createSlice({
   name: "feed",
   initialState,
+  extraReducers: (builder) =>
+    builder.addCase(initialStateProvided, (state, action) => {
+      const initialState = action.payload;
+      state.all = initialState.feed.all;
+      state.by_id = initialState.feed.by_id;
+    }),
   reducers: {
     [CasinoClientActions.FEED_UPDATED]: (
       state,

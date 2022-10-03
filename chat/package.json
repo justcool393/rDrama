@@ -38,7 +38,7 @@
   },
   "scripts": {
     "chat": "yarn check && yarn build && yarn css:move",
-    "chat:watch": "run-when-changed --watch \"src/**/*.*\" --exec \"yarn chat\"",
+    "chat:watch": "run-when-changed --watch \"src/**/*.ts\" --watch \"src/**/*.tsx\" --exec \"yarn chat\"",
     "check": "tsc",
     "build": "node ./build",
     "css:move": "mv ../files/assets/js/chat_done.css ../files/assets/css/chat_done.css"

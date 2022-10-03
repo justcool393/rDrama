@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CasinoClientActions } from "../enums";
+import { initialStateProvided } from "../actions";
 
 type LeaderboardUpdatedPayload = {
   leaderboard: LeaderboardEntity;
@@ -18,6 +19,12 @@ const initialState: LeaderboardState = {
 export const leaderboardSlice = createSlice({
   name: "leaderboard",
   initialState,
+  extraReducers: (builder) =>
+    builder.addCase(initialStateProvided, (state, action) => {
+      const initialState = action.payload;
+      state.all = initialState.leaderboards.all;
+      state.by_id = initialState.leaderboards.by_id;
+    }),
   reducers: {
     [CasinoClientActions.LEADERBOARD_UPDATED]: (
       state,

@@ -16,6 +16,7 @@ import {
   conversationUpdated,
   feedUpdated,
   gameUpdated,
+  initialStateProvided,
   leaderboardUpdated,
   messageUpdated,
   messageDeleted,
@@ -158,6 +159,9 @@ export function CasinoProvider({ children }: PropsWithChildren) {
           console.info(`Confirmation Received: ${confirmation}`);
           setTimeout(() => message.success(confirmation), 0);
         })
+        .on(CasinoHandlers.InitialStateProvided, (state: CasinoState) =>
+          dispatch(initialStateProvided(state))
+        )
         .on(
           CasinoHandlers.ConversationUpdated,
           (conversation: ConversationEntity) =>

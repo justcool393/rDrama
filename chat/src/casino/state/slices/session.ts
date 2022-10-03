@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CasinoClientActions } from "../enums";
+import { initialStateProvided } from "../actions";
 
 type SessionUpdatedPayload = {
   session: SessionEntity;
@@ -18,6 +19,12 @@ const initialState: SessionState = {
 export const sessionSlice = createSlice({
   name: "session",
   initialState,
+  extraReducers: (builder) =>
+    builder.addCase(initialStateProvided, (state, action) => {
+      const initialState = action.payload;
+      state.all = initialState.sessions.all;
+      state.by_id = initialState.sessions.by_id;
+    }),
   reducers: {
     [CasinoClientActions.SESSION_UPDATED]: (
       state,

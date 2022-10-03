@@ -17,7 +17,7 @@ export const store = configureStore({
     leaderboard,
     message,
     session,
-    user
+    user,
   },
 });
 

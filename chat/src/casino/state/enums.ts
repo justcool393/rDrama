@@ -10,6 +10,7 @@ export enum CasinoHandlers {
   // Incoming
   StateChanged = "state-changed",
   ErrorOccurred = "error-occurred",
+  InitialStateProvided = "initial-state-provided",
   ConfirmationReceived = "confirmation-received",
   ConversationUpdated = "conversation-updated",
 	FeedUpdated = "feed-updated",
@@ -22,6 +23,7 @@ export enum CasinoHandlers {
 }
 
 export enum CasinoClientActions {
+  INITIAL_STATE_PROVIDED = "INITIAL_STATE_PROVIDED",
   USER_UPDATED = "USER_UPDATED",
   MESSAGE_UPDATED = "MESSAGE_UPDATED",
   MESSAGE_DELETED = "MESSAGE_DELETED",
