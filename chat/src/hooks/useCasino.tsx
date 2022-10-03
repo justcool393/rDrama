@@ -50,7 +50,7 @@ interface CasinoProviderContext {
   userSentMessage(): void;
   userDeletedMessage(messageId: string): void;
   userStartedGame(game: CasinoGame): void;
-  userPulledSlots(): void;
+  UserPlayedSlots(): void;
   userPlayedRoulette(bet: RouletteBet, which: string): void;
 }
 
@@ -67,7 +67,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
   userSentMessage() {},
   userDeletedMessage() {},
   userStartedGame() {},
-  userPulledSlots() {},
+  UserPlayedSlots() {},
   userPlayedRoulette() {},
 });
 
@@ -105,8 +105,8 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     socket.current?.emit(CasinoHandlers.UserStartedGame, game);
   }, []);
 
-  const userPulledSlots = useCallback(() => {
-    socket.current?.emit(CasinoHandlers.UserPulledSlots, {
+  const UserPlayedSlots = useCallback(() => {
+    socket.current?.emit(CasinoHandlers.UserPlayedSlots, {
       currency,
       wager,
     });
@@ -139,7 +139,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userSentMessage,
       userDeletedMessage,
       userStartedGame,
-      userPulledSlots,
+      UserPlayedSlots,
       userPlayedRoulette,
     }),
     [
@@ -150,7 +150,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userKickedOwnClient,
       userSentMessage,
       userDeletedMessage,
-      userPulledSlots,
+      UserPlayedSlots,
       userPlayedRoulette,
     ]
   );

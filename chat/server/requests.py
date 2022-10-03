@@ -126,9 +126,9 @@ def user_started_game(data, v):
     return '', 200
 
 
-@socketio.on(E.UserPulledSlots)
+@socketio.on(E.UserPlayedSlots)
 @is_not_permabanned
-def user_pulled_slots(data, v):
+def user_played_slots(data, v):
     currency = data['currency']
     wager = int(data['wager'])
 
@@ -153,7 +153,7 @@ def user_pulled_slots(data, v):
             'game_state': game_state
         }
 
-        C.dispatch(A.USER_PULLED_SLOTS, payload)
+        C.dispatch(A.USER_PLAYED_SLOTS, payload)
         session_key = B.build_session_key(str(v.id), CasinoGames.Slots)
         session = S.select_session(C.state, session_key)
         feed = S.select_newest_feed(C.state)

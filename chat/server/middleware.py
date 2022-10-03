@@ -38,7 +38,7 @@ class CasinoMiddleware():
             CasinoActions.USER_SENT_MESSAGE,
             CasinoActions.USER_DELETED_MESSAGE,
             CasinoActions.USER_STARTED_GAME,
-            CasinoActions.USER_PULLED_SLOTS,
+            CasinoActions.USER_PLAYED_SLOTS,
             CasinoActions.USER_PLAYED_ROULETTE
         ]
 

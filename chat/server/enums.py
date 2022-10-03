@@ -16,7 +16,7 @@ class CasinoActions(str, Enum):
 	USER_DELETED_MESSAGE = "USER_DELETED_MESSAGE"
 	USER_CONVERSED = "USER_CONVERSED"
 	USER_STARTED_GAME = "USER_STARTED_GAME"
-	USER_PULLED_SLOTS = "USER_PULLED_SLOTS"
+	USER_PLAYED_SLOTS = "user_played_slots"
 	USER_PLAYED_ROULETTE = "USER_PLAYED_ROULETTE"
 
 
@@ -29,7 +29,7 @@ class CasinoEvents(str, Enum):
 	UserDeletedMessage = "user-deleted-message"
 	UserConversed = "user-conversed"
 	UserStartedGame = "user-started-game"
-	UserPulledSlots = "user-pulled-slots"
+	UserPlayedSlots = "user-played-slots"
 	UserPlayedRoulette = "user-played-roulette"
 
 	# Outgoing

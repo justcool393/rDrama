@@ -5,7 +5,7 @@ export enum CasinoHandlers {
   UserDeletedMessage = "user-deleted-message",
   UserConversed = "user-convered",
   UserStartedGame = "user-started-game",
-  UserPulledSlots = "user-pulled-slots",
+  UserPlayedSlots = "user-played-slots",
   UserPlayedRoulette = "user-played-roulette",
 
   // Incoming

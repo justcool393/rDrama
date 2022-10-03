@@ -15,7 +15,7 @@ class CasinoHandlers():
             CasinoActions.USER_DELETED_MESSAGE: CasinoHandlers.handle_user_deleted_message,
             CasinoActions.USER_CONVERSED: CasinoHandlers.handle_user_conversed,
             CasinoActions.USER_STARTED_GAME: CasinoHandlers.handle_user_started_game,
-            CasinoActions.USER_PULLED_SLOTS: CasinoHandlers.handle_user_pulled_slots,
+            CasinoActions.USER_PLAYED_SLOTS: CasinoHandlers.handle_user_played_slots,
             CasinoActions.USER_PLAYED_ROULETTE: CasinoHandlers.handle_user_played_roulette,
         }[action] or None
 
@@ -169,7 +169,7 @@ class CasinoHandlers():
         return state
 
     @staticmethod
-    def handle_user_pulled_slots(state, payload):
+    def handle_user_played_slots(state, payload):
         user_id = payload['user_id']
         game_state = payload['game_state']
 
