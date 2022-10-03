@@ -9,7 +9,7 @@ from files.helpers.slots import casino_slot_pull
 from files.helpers.roulette import gambler_placed_roulette_bet, get_roulette_bets
 from .config import MESSAGE_MAX_LENGTH
 from .enums import CasinoActions as A, CasinoEvents as E, CasinoMessages as M
-from .helpers import meets_minimum_wager, can_user_afford
+from .helpers import meets_minimum_wager, can_user_afford, sanitize_chat_message
 from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
 
@@ -38,10 +38,8 @@ def disconnect_from_casino(v):
 @socketio.on(E.UserSentMessage)
 @is_not_permabanned
 def user_sent_message(data, v):
-    # TODO: Formatting helper to implement sanitization.
-    text = data['message'][:MESSAGE_MAX_LENGTH].strip()
-    recipient = data.get('recipient')
-    payload = {'user_id': v.id, 'text': text, 'recipient': recipient}
+    text = sanitize_chat_message(data['message'])
+    payload = {'user_id': v.id, 'text': text}
 
     C.dispatch(A.USER_SENT_MESSAGE, payload)
 
@@ -67,6 +65,18 @@ def user_deleted_message(data, v):
     C.dispatch(A.USER_DELETED_MESSAGE, payload)
 
     emit(E.ConfirmationReceived, M.MessageDeleteSuccess)
+    return '', 200
+
+
+@socketio.on(E.UserConversed)
+@is_not_permabanned
+def user_conversed(data, v):
+    text = sanitize_chat_message(data['message'])
+    recipient = data['recipient']
+    payload = {'user_id': v.id, 'text': text, 'recipient': recipient}
+
+    C.dispatch(A.USER_CONVERSED, payload)
+
     return '', 200
 
 

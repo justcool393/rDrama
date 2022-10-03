@@ -14,9 +14,20 @@ class CasinoActions(str, Enum):
 	USER_DISCONNECTED = "USER_DISCONNECTED"
 	USER_SENT_MESSAGE = "USER_SENT_MESSAGE"
 	USER_DELETED_MESSAGE = "USER_DELETED_MESSAGE"
+	USER_CONVERSED = "USER_CONVERSED"
 	USER_STARTED_GAME = "USER_STARTED_GAME"
 	USER_PULLED_SLOTS = "USER_PULLED_SLOTS"
 	USER_PLAYED_ROULETTE = "USER_PLAYED_ROULETTE"
+
+
+class CasinoClientActions(str, Enum):
+  USER_UPDATED = "USER_UPDATED"
+  MESSAGE_UPDATED = "MESSAGE_UPDATED"
+  CONVERSATION_UPDATED = "CONVERSATION_UPDATED"
+  FEED_UPDATED = "FEED_UPDATED"
+  LEADERBOARD_UPDATED = "LEADERBOARD_UPDATED"
+  GAME_UPDATED = "GAME_UPDATED"
+  SESSION_UPDATED = "SESSION_UPDATED"
 
 
 class CasinoEvents(str, Enum):
@@ -25,6 +36,7 @@ class CasinoEvents(str, Enum):
 	Disconnect = "disconnect"
 	UserSentMessage = "user-sent-message"
 	UserDeletedMessage = "user-deleted-message"
+	UserConversed = "user-conversed"
 	UserStartedGame = "user-started-game"
 	UserPulledSlots = "user-pulled-slots"
 	UserPlayedRoulette = "user-played-roulette"

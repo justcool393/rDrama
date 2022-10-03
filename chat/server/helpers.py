@@ -1,4 +1,4 @@
-from .config import MINIMUM_WAGER
+from .config import MESSAGE_MAX_LENGTH, MINIMUM_WAGER
 
 def grab(object, path, delimiter='/', fallback=None):
     try:
@@ -19,3 +19,7 @@ def can_user_afford(user, currency, amount):
 
 def meets_minimum_wager(wager):
     return wager >= MINIMUM_WAGER
+
+
+def sanitize_chat_message(text):
+    return text[:MESSAGE_MAX_LENGTH].strip()

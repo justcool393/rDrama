@@ -1,6 +1,7 @@
 import cx from "classnames";
 import throttle from "lodash.throttle";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Provider } from "react-redux";
 import { DndProvider, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "./App.css";
@@ -12,7 +13,7 @@ import {
   UserList,
   UsersTyping,
 } from "./features";
-import { Casino } from "./casino";
+import { Casino, store } from "./casino";
 import {
   CasinoProvider,
   ChatProvider,
@@ -26,9 +27,11 @@ const WINDOW_RESIZE_THROTTLE_WAIT = 250;
 
 export function App() {
   return (
-    <CasinoProvider>
-      <Casino />
-    </CasinoProvider>
+    <Provider store={store}>
+      <CasinoProvider>
+        <Casino />
+      </CasinoProvider>
+    </Provider>
   );
 
   return (

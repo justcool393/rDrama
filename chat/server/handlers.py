@@ -12,39 +12,13 @@ class CasinoHandlers():
             CasinoActions.USER_DISCONNECTED: CasinoHandlers.handle_user_disconnected,
             CasinoActions.USER_SENT_MESSAGE: CasinoHandlers.handle_user_sent_message,
             CasinoActions.USER_DELETED_MESSAGE: CasinoHandlers.handle_user_deleted_message,
+            CasinoActions.USER_CONVERSED: CasinoHandlers.handle_user_conversed,
             CasinoActions.USER_STARTED_GAME: CasinoHandlers.handle_user_started_game,
             CasinoActions.USER_PULLED_SLOTS: CasinoHandlers.handle_user_pulled_slots,
             CasinoActions.USER_PLAYED_ROULETTE: CasinoHandlers.handle_user_played_roulette,
         }[action] or None
 
     # == "Private"
-    @staticmethod
-    def _handle_user_conversed(state, payload):
-        user_id = payload['user_id']
-        recipient = payload['recipient']
-        text = payload['text']
-        conversation_key = CasinoBuilders.build_conversation_key(
-            user_id, recipient)
-        conversation = CasinoSelectors.select_conversation(
-            state, conversation_key)
-
-        if not conversation:
-            conversation = CasinoBuilders.build_conversation_entity(
-                conversation_key,
-                user_id,
-                recipient
-            )
-            conversation_key = conversation['id']
-            CasinoSelectors.select_conversation_keys(state).append(conversation_key)
-            CasinoSelectors.select_conversation_lookup(state)[conversation_key] = conversation
-
-        message = CasinoBuilders.build_message_entity(user_id, text)
-        message_id = message['id']
-        CasinoSelectors.select_conversation_message_ids(state, conversation_key).append(message_id)
-        CasinoSelectors.select_conversation_message_lookup(state, conversation_key)[message_id] = message
-
-        return state
-
     @staticmethod
     def _handle_feed_updated(state, payload):
         feed = payload['feed']
@@ -114,19 +88,13 @@ class CasinoHandlers():
 
     @staticmethod
     def handle_user_sent_message(state, payload):
-        recipient = payload['recipient']
-
-        if recipient:
-            # Direct Message
-            return CasinoHandlers._handle_user_conversed(state, payload)
-        else:
-            user_id = payload['user_id']
-            text = payload['text']
-            message = CasinoBuilders.build_message_entity(user_id, text)
-            message_id = message['id']
-            
-            CasinoSelectors.select_message_ids(state).append(message_id)
-            CasinoSelectors.select_message_lookup(state)[message_id] = message
+        user_id = payload['user_id']
+        text = payload['text']
+        message = CasinoBuilders.build_message_entity(user_id, text)
+        message_id = message['id']
+        
+        CasinoSelectors.select_message_ids(state).append(message_id)
+        CasinoSelectors.select_message_lookup(state)[message_id] = message
 
         return state
 
@@ -141,6 +109,33 @@ class CasinoHandlers():
 
         if message_lookup.get(message_id):
             del message_lookup[message_id]
+
+        return state
+
+    @staticmethod
+    def handle_user_conversed(state, payload):
+        user_id = payload['user_id']
+        recipient = payload['recipient']
+        text = payload['text']
+        conversation_key = CasinoBuilders.build_conversation_key(
+            user_id, recipient)
+        conversation = CasinoSelectors.select_conversation(
+            state, conversation_key)
+
+        if not conversation:
+            conversation = CasinoBuilders.build_conversation_entity(
+                conversation_key,
+                user_id,
+                recipient
+            )
+            conversation_key = conversation['id']
+            CasinoSelectors.select_conversation_keys(state).append(conversation_key)
+            CasinoSelectors.select_conversation_lookup(state)[conversation_key] = conversation
+
+        message = CasinoBuilders.build_message_entity(user_id, text)
+        message_id = message['id']
+        CasinoSelectors.select_conversation_message_ids(state, conversation_key).append(message_id)
+        CasinoSelectors.select_conversation_message_lookup(state, conversation_key)[message_id] = message
 
         return state
 
