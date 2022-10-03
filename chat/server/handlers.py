@@ -17,6 +17,7 @@ class CasinoHandlers():
             CasinoActions.USER_STARTED_GAME: CasinoHandlers.handle_user_started_game,
             CasinoActions.USER_PLAYED_SLOTS: CasinoHandlers.handle_user_played_slots,
             CasinoActions.USER_PLAYED_ROULETTE: CasinoHandlers.handle_user_played_roulette,
+            CasinoActions.USER_PLAYED_BLACKJACK: CasinoHandlers.handle_user_played_blackjack,
         }[action] or None
 
     # == "Private"
@@ -219,6 +220,22 @@ class CasinoHandlers():
             user_id, CasinoGames.Roulette, None)
         session_update_payload = {
             'game': CasinoGames.Roulette,
+            'session': session
+        }
+        state = CasinoHandlers._handle_user_session_updated(
+            state, session_update_payload)
+
+        return state
+
+    @staticmethod
+    def handle_user_played_blackjack(state, payload):
+        user_id = payload['user_id']
+        game_state = payload['game_state']
+
+        session = CasinoBuilders.build_session_entity(
+            user_id, CasinoGames.Blackjack, game_state)
+        session_update_payload = {
+            'game': CasinoGames.Blackjack,
             'session': session
         }
         state = CasinoHandlers._handle_user_session_updated(

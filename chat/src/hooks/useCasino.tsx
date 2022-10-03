@@ -24,6 +24,14 @@ import {
   userUpdated,
 } from "../casino";
 
+export enum BlackjackAction {
+  DEAL = "DEAL",
+  HIT = "HIT",
+  STAY = "STAY",
+  DOUBLE_DOWN = "DOUBLE_DOWN",
+  BUY_INSURANCE = "BUY_INSURANCE"
+}
+
 export enum RouletteBet {
   STRAIGHT_UP_BET = "STRAIGHT_UP_BET",
   LINE_BET = "LINE_BET",
@@ -50,8 +58,9 @@ interface CasinoProviderContext {
   userSentMessage(): void;
   userDeletedMessage(messageId: string): void;
   userStartedGame(game: CasinoGame): void;
-  UserPlayedSlots(): void;
+  userPlayedSlots(): void;
   userPlayedRoulette(bet: RouletteBet, which: string): void;
+  userPlayedBlackjack(action: BlackjackAction): void;
 }
 
 const CasinoContext = createContext<CasinoProviderContext>({
@@ -67,8 +76,9 @@ const CasinoContext = createContext<CasinoProviderContext>({
   userSentMessage() {},
   userDeletedMessage() {},
   userStartedGame() {},
-  UserPlayedSlots() {},
+  userPlayedSlots() {},
   userPlayedRoulette() {},
+  userPlayedBlackjack() {},
 });
 
 export function CasinoProvider({ children }: PropsWithChildren) {
@@ -105,7 +115,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     socket.current?.emit(CasinoHandlers.UserStartedGame, game);
   }, []);
 
-  const UserPlayedSlots = useCallback(() => {
+  const userPlayedSlots = useCallback(() => {
     socket.current?.emit(CasinoHandlers.UserPlayedSlots, {
       currency,
       wager,
@@ -124,6 +134,12 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     [currency, wager]
   );
 
+  const userPlayedBlackjack = useCallback((action: BlackjackAction) => {
+    const payload = action === BlackjackAction.DEAL ? { action, currency, wager  } : { action }
+
+    socket.current?.emit(CasinoHandlers.UserPlayedBlackjack, payload);
+  }, [currency, wager]);
+
   // Memoized Value
   const value = useMemo<CasinoProviderContext>(
     () => ({
@@ -139,8 +155,9 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userSentMessage,
       userDeletedMessage,
       userStartedGame,
-      UserPlayedSlots,
+      userPlayedSlots,
       userPlayedRoulette,
+      userPlayedBlackjack
     }),
     [
       wager,
@@ -150,8 +167,9 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userKickedOwnClient,
       userSentMessage,
       userDeletedMessage,
-      UserPlayedSlots,
+      userPlayedSlots,
       userPlayedRoulette,
+      userPlayedBlackjack
     ]
   );
 

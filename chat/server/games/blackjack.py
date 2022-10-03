@@ -82,7 +82,7 @@ def get_active_twentyone_game_state(gambler):
 
 def charge_gambler(gambler, amount, currency):
     charged = gambler.charge_account(currency, amount)
-    
+
     if not charged:
         raise Exception("Gambler cannot afford charge.")
 
@@ -243,7 +243,7 @@ def handle_payout(gambler, state, game):
         raise Exception("Attempted to payout a game that has not finished.")
 
     gambler.pay_account(game.currency, payout)
-    
+
     if game.currency == 'coins':
         if status in (BlackjackStatus.BLACKJACK, BlackjackStatus.WON):
             distribute_wager_badges(gambler, game.wager, won=True)
@@ -258,7 +258,7 @@ def handle_payout(gambler, state, game):
 
 def remove_exploitable_information(state):
     safe_state = state
-    
+
     if len(safe_state['dealer']) >= 2:
         safe_state['dealer'][1] = '?'
 

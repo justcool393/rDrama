@@ -7,6 +7,7 @@ export enum CasinoHandlers {
   UserStartedGame = "user-started-game",
   UserPlayedSlots = "user-played-slots",
   UserPlayedRoulette = "user-played-roulette",
+  UserPlayedBlackjack = "user-played-blackjack",
 
   // Incoming
   Disconnect = "disconnect",

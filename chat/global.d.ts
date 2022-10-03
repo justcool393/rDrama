@@ -142,6 +142,12 @@ declare interface RouletteGameState {
 
 declare type RouletteGameEntity = GameEntity<RouletteGameState>
 
+declare interface BlackjackGameState {
+
+}
+
+declare type BlackjackGameEntity = GameEntity<null>
+
 declare interface SessionEntity {
   id: string;
   user_id: string;
@@ -155,12 +161,13 @@ declare interface CasinoState {
   conversations: Normalized<ConversationEntity>
   feed: Normalized<FeedEntity>
   leaderboards: Normalized<LeaderboardEntity>
+  sessions: Normalized<SessionEntity>
   games: {
-    all: ['slots', 'roulette'],
+    all: ['slots', 'roulette', 'blackjack'],
     by_id: {
       slots: SlotsGameEntity
       roulette: RouletteGameEntity
+      blackjack: BlackjackGameEntity
     }
   }
-  sessions: Normalized<SessionEntity>
 }

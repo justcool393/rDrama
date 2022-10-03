@@ -18,6 +18,7 @@ class CasinoActions(str, Enum):
 	USER_STARTED_GAME = "USER_STARTED_GAME"
 	USER_PLAYED_SLOTS = "user_played_slots"
 	USER_PLAYED_ROULETTE = "USER_PLAYED_ROULETTE"
+	USER_PLAYED_BLACKJACK = "USER_PLAYED_BLACKJACK"
 
 
 class CasinoEvents(str, Enum):
@@ -31,6 +32,7 @@ class CasinoEvents(str, Enum):
 	UserStartedGame = "user-started-game"
 	UserPlayedSlots = "user-played-slots"
 	UserPlayedRoulette = "user-played-roulette"
+	UserPlayedBlackjack = "user-played-blackjack"
 
 	# Outgoing
 	StateChanged = "state-changed"
@@ -58,3 +60,7 @@ class CasinoMessages(str, Enum):
 	CannotPullLever = "Unable to pull the lever."
 	CannotPlaceBet = "Unable to place bet."
 	AlreadyInside = "You are already inside the casino."
+	BlackjackGameInProgress = "You already have a blackjack game in progress."
+	BlackjackUnableToDeal = "Unable to deal a hand."
+	BlackjackUnableToTakeAction = "Unable to take that action."
+	BlackjackNoGameInProgress = "You do not have a blackjack game in progress."

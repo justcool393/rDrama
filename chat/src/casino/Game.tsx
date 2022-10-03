@@ -1,12 +1,21 @@
 import React from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, Space, Tooltip } from "antd";
-import { RouletteBet, useCasino } from "../hooks";
+import {
+  BlackjackAction,
+  useCasino,
+  useRootContext,
+} from "../hooks";
 import { useCasinoSelector } from "./state";
 
 export function Game() {
-  const { userPlayedRoulette } = useCasino();
-  const result = useCasinoSelector(state => state.game.by_id.roulette?.state)
+  const { id } = useRootContext();
+  const { userPlayedBlackjack } = useCasino();
+  const result = useCasinoSelector((state) => {
+    const sessionKey = `${id}#blackjack`;
+
+    return state.session.by_id[sessionKey]?.game_state ?? null;
+  });
 
   return (
     <Card
@@ -38,9 +47,9 @@ export function Game() {
         <div>{JSON.stringify(result, null, 2)}</div>
         <Button
           type="default"
-          onClick={() => userPlayedRoulette(RouletteBet.STRAIGHT_UP_BET, "4")}
+          onClick={() => userPlayedBlackjack(BlackjackAction.DEAL)}
         >
-          Pull
+          Deal
         </Button>
       </Space>
     </Card>

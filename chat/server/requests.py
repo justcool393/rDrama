@@ -1,10 +1,19 @@
 from json import dumps
 from flask_socketio import emit, disconnect
+from files.helpers.twentyone import BlackjackAction
 from files.routes.chat import socketio
 from files.helpers.wrappers import *
+from files.helpers.const import *
+from files.helpers.alerts import *
+from files.helpers.regex import *
 from .builders import CasinoBuilders as B
 from .enums import CasinoActions as A, CasinoEvents as E, CasinoGames, CasinoMessages as M
-from .games import casino_slot_pull, gambler_placed_roulette_bet, get_roulette_bets
+from .games import casino_slot_pull, \
+    gambler_placed_roulette_bet, \
+    get_roulette_bets, \
+    get_active_twentyone_game, \
+    create_new_game as create_new_blackjack_game, \
+    dispatch_action as dispatch_blackjack_action
 from .helpers import meets_minimum_wager, can_user_afford, sanitize_chat_message
 from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
@@ -23,8 +32,8 @@ def connect_to_casino(v):
 
     C.dispatch(A.USER_CONNECTED, payload)
 
-    user = S.select_user(C.state, str(v.id))
-    emit(E.UserUpdated, user, broadcast=True)
+    v = S.select_user(C.state, str(v.id))
+    emit(E.UserUpdated, v, broadcast=True)
 
     feed = S.select_newest_feed(C.state)
     emit(E.FeedUpdated, feed, broadcast=True)
@@ -40,8 +49,8 @@ def disconnect_from_casino(v):
 
     C.dispatch(A.USER_DISCONNECTED, payload)
 
-    user = S.select_user(C.state, str(v.id))
-    emit(E.UserUpdated, user, broadcast=True)
+    v = S.select_user(C.state, str(v.id))
+    emit(E.UserUpdated, v, broadcast=True)
     return '', 200
 
 
@@ -75,7 +84,7 @@ def user_sent_message(data, v):
 def user_deleted_message(data, v):
     message_id = data
     message = S.select_message(C.state, message_id)
-    own_message = message['user_id'] == v.id
+    own_message = message['user_id'] == str(v.id)
     payload = {'message_id': message_id}
 
     if not message:
@@ -198,7 +207,7 @@ def user_played_roulette(data, v):
             'wager': wager
         }
         payload = {
-            'user_id': v.id,
+            'user_id': str(v.id),
             'balances': balances,
             'game_state': game_state,
             'placed_bet': placed_bet
@@ -217,3 +226,84 @@ def user_played_roulette(data, v):
     except:
         emit(E.ErrorOccurred, M.CannotPlaceBet)
         return '', 400
+
+
+@socketio.on(E.UserPlayedBlackjack)
+@is_not_permabanned
+def user_played_blackjack(data, v):
+    action = data['action']
+    active_game = get_active_twentyone_game(v)
+    balances = {
+        'coins': v.coins,
+        'procoins': v.procoins
+    }
+
+    if action == BlackjackAction.DEAL:
+        currency = data['currency']
+        wager = int(data['wager'])
+
+        if active_game:
+            emit(E.ErrorOccurred, M.BlackjackGameInProgress)
+            return '', 400
+
+        if not meets_minimum_wager(wager):
+            emit(E.ErrorOccurred, M.MinimumWagerNotMet)
+            return '', 400
+
+        if not can_user_afford(v, currency, wager):
+            emit(E.ErrorOccurred, M.CannotAffordBet)
+            return '', 400
+
+        try:
+            create_new_blackjack_game(v, wager, currency)
+
+            game_state = dumps(
+                dispatch_blackjack_action(v, BlackjackAction.DEAL))
+            placed_bet = {
+                'currency': currency,
+                'wager': wager
+            }
+            payload = {
+                'user_id': str(v.id),
+                'balances': balances,
+                'game_state': game_state,
+                'placed_bet': placed_bet
+            }
+
+            C.dispatch(A.USER_PLAYED_BLACKJACK, payload)
+
+            game = S.select_game(C.state, CasinoGames.Blackjack)
+            session_key = B.build_session_key(str(v.id), CasinoGames.Blackjack)
+            session = S.select_session(C.state, session_key)
+
+            emit(E.GameUpdated, game, broadcast=True)
+            emit(E.SessionUpdated, session, broadcast=True)
+            return '', 200
+        except:
+            emit(E.ErrorOccurred, M.BlackjackUnableToDeal)
+            return '', 400
+    else:
+        if not active_game:
+            emit(E.ErrorOccurred, M.BlackjackNoGameInProgress)
+            return '', 400
+
+        try:
+            game_state = dumps(dispatch_blackjack_action(v, action))
+            payload = {
+                'user_id': str(v.id),
+                'balances': balances,
+                'game_state': game_state,
+            }
+
+            C.dispatch(A.USER_PLAYED_BLACKJACK, payload)
+
+            game = S.select_game(C.state, CasinoGames.Blackjack)
+            session_key = B.build_session_key(str(v.id), CasinoGames.Blackjack)
+            session = S.select_session(C.state, session_key)
+
+            emit(E.GameUpdated, game, broadcast=True)
+            emit(E.SessionUpdated, session, broadcast=True)
+            return '', 200
+        except:
+            emit(E.ErrorOccurred, M.BlackjackUnableToTakeAction)
+            return '', 400
