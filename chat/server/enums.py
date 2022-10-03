@@ -24,6 +24,7 @@ class CasinoEvents(str, Enum):
 	# Incoming
 	Connect = "connect"
 	Disconnect = "disconnect"
+	UserKickedOwnClient = "user-kicked-own-client"
 	UserSentMessage = "user-sent-message"
 	UserDeletedMessage = "user-deleted-message"
 	UserConversed = "user-conversed"
@@ -34,6 +35,8 @@ class CasinoEvents(str, Enum):
 	# Outgoing
 	StateChanged = "state-changed"
 	ErrorOccurred = "error-occurred"
+	JoinedAgain = "joined-again"
+	Refresh = "refresh"
 	ConfirmationReceived = "confirmation-received"
 	InitialStateProvided = "initial-state-provided"
 	ConversationUpdated = "conversation-updated"
@@ -54,3 +57,4 @@ class CasinoMessages(str, Enum):
 	CannotAffordBet = "You cannot afford that bet."
 	CannotPullLever = "Unable to pull the lever."
 	CannotPlaceBet = "Unable to place bet."
+	AlreadyInside = "You are already inside the casino."

@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { message } from "antd";
+import { Alert, Button, Empty, message } from "antd";
 import { io, Socket } from "socket.io-client";
 import {
   CasinoHandlers,
@@ -35,6 +35,7 @@ export enum RouletteBet {
 }
 
 export const MINIMUM_WAGER = 5;
+export const JOINED_AGAIN_EMPTY_IMAGE_URL = "/e/marseyrain.webp";
 
 interface CasinoProviderContext {
   wager: number;
@@ -45,6 +46,7 @@ interface CasinoProviderContext {
   setCurrency: React.Dispatch<React.SetStateAction<CasinoCurrency>>;
   setDraft: React.Dispatch<React.SetStateAction<string>>;
   setRecipient: React.Dispatch<React.SetStateAction<null | string>>;
+  userKickedOwnClient(): void;
   userSentMessage(): void;
   userDeletedMessage(messageId: string): void;
   userStartedGame(game: CasinoGame): void;
@@ -61,6 +63,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
   setCurrency() {},
   setDraft() {},
   setRecipient() {},
+  userKickedOwnClient() {},
   userSentMessage() {},
   userDeletedMessage() {},
   userStartedGame() {},
@@ -70,6 +73,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
 
 export function CasinoProvider({ children }: PropsWithChildren) {
   const socket = useRef<null | Socket>(null);
+  const [joinedAgain, setJoinedAgain] = useState(false);
   const [currency, setCurrency] = useState<CasinoCurrency>("coins");
   const [wager, setWager] = useState(MINIMUM_WAGER);
   const [draft, setDraft] = useState("");
@@ -77,6 +81,10 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   const dispatch = useCasinoDispatch();
 
   // Callbacks
+  const userKickedOwnClient = useCallback(() => {
+    socket.current?.emit(CasinoHandlers.UserKickedOwnClient);
+  }, []);
+
   const userSentMessage = useCallback(() => {
     socket.current?.emit(CasinoHandlers.UserSentMessage, {
       message: draft,
@@ -127,6 +135,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       setCurrency,
       setDraft,
       setRecipient,
+      userKickedOwnClient,
       userSentMessage,
       userDeletedMessage,
       userStartedGame,
@@ -138,6 +147,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       currency,
       recipient,
       draft,
+      userKickedOwnClient,
       userSentMessage,
       userDeletedMessage,
       userPulledSlots,
@@ -159,6 +169,13 @@ export function CasinoProvider({ children }: PropsWithChildren) {
           console.info(`Confirmation Received: ${confirmation}`);
           setTimeout(() => message.success(confirmation), 0);
         })
+        .on(CasinoHandlers.Disconnect, () => {
+          window.location.href = "/";
+        })
+        .on(CasinoHandlers.Refresh, () =>
+          setTimeout(() => window.location.reload(), 2000)
+        )
+        .on(CasinoHandlers.JoinedAgain, () => setJoinedAgain(true))
         .on(CasinoHandlers.InitialStateProvided, (state: CasinoState) =>
           dispatch(initialStateProvided(state))
         )
@@ -193,9 +210,38 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     }
   });
 
-  return (
-    <CasinoContext.Provider value={value}>{children}</CasinoContext.Provider>
-  );
+  if (joinedAgain) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 90,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Empty
+          description={
+            <Alert
+              type="error"
+              message="You are already signed into the casino from somewhere else."
+            />
+          }
+          image={JOINED_AGAIN_EMPTY_IMAGE_URL}
+        >
+          <Button type="primary" onClick={userKickedOwnClient}>I want to sign in here</Button>
+        </Empty>
+      </div>
+    );
+  } else {
+    return (
+      <CasinoContext.Provider value={value}>{children}</CasinoContext.Provider>
+    );
+  }
 }
 
 export function useCasino() {

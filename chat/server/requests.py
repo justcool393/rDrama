@@ -1,6 +1,5 @@
 from json import dumps
-from flask_socketio import emit
-from numpy import broadcast
+from flask_socketio import emit, disconnect
 from files.routes.chat import socketio
 from files.helpers.wrappers import *
 from files.helpers.const import *
@@ -21,6 +20,11 @@ C = CasinoManager.instance
 def connect_to_casino(v):
     payload = {'user_id': v.id, 'request_id': request.sid}
 
+    if S.select_user_is_online(C.state, str(v.id)):
+        emit(E.ErrorOccurred, M.AlreadyInside)
+        emit(E.JoinedAgain)
+        return '', 403
+
     C.dispatch(A.USER_CONNECTED, payload)
 
     user = S.select_user(C.state, str(v.id))
@@ -39,6 +43,18 @@ def disconnect_from_casino(v):
     user = S.select_user(C.state, str(v.id))
     emit(E.UserUpdated, user, broadcast=True)
     return '', 200
+
+
+@socketio.on(E.UserKickedOwnClient)
+@is_not_permabanned
+def user_kicked_own_client(v):
+    try:
+        request_id = S.select_user_request_id(C.state, str(v.id))
+        disconnect(request_id)
+        emit(E.Refresh)
+        return '', 200
+    except:
+        return '', 400
 
 
 @socketio.on(E.UserSentMessage)

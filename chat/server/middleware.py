@@ -4,6 +4,10 @@ from .enums import CasinoActions
 from .helpers import grab
 from .selectors import CasinoSelectors
 
+recent_state = None
+next_action = {'action': None, 'payload': None}
+action_history = []
+
 class CasinoMiddleware():
     @staticmethod
     def log_middleware(next_state, action, payload):
@@ -51,5 +55,22 @@ class CasinoMiddleware():
     def load_game_state_middleware(next_state, action, payload):
         if payload.get('game_state'):
             payload['game_state'] = loads(payload['game_state'])
+
+        return next_state, action, payload
+
+    @staticmethod
+    def log_to_file_middleware(next_state, action, payload):
+        recent_state = next_state
+        next_action = {'action': action, 'payload': payload}
+
+        logfile = open("chat/server/log.json", "w+")
+        logfile.write(dumps({
+            'recent_state': recent_state,
+            'next_action': next_action,
+            'action_history': action_history
+        }, indent=4))
+        logfile.close()
+
+        action_history.append(next_action)
 
         return next_state, action, payload

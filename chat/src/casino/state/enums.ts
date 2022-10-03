@@ -1,5 +1,6 @@
 export enum CasinoHandlers {
   // Outgoing
+  UserKickedOwnClient = "user-kicked-own-client",
   UserSentMessage = "user-sent-message",
   UserDeletedMessage = "user-deleted-message",
   UserConversed = "user-convered",
@@ -8,8 +9,11 @@ export enum CasinoHandlers {
   UserPlayedRoulette = "user-played-roulette",
 
   // Incoming
+  Disconnect = "disconnect",
   StateChanged = "state-changed",
   ErrorOccurred = "error-occurred",
+  JoinedAgain = "joined-again",
+  Refresh = "refresh",
   InitialStateProvided = "initial-state-provided",
   ConfirmationReceived = "confirmation-received",
   ConversationUpdated = "conversation-updated",

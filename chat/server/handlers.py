@@ -79,7 +79,7 @@ class CasinoHandlers():
             user['online'] = False
 
             for game in CasinoSelectors.select_game_names(state):
-                users_in_game = CasinoSelectors.select_user_in_game(state, game)
+                users_in_game = CasinoSelectors.select_game_users(state, game)
 
                 if user_id in users_in_game:
                     users_in_game.remove(user_id)
@@ -203,7 +203,6 @@ class CasinoHandlers():
             currency,
             wager
         )
-
         feed = CasinoBuilders.build_feed_entity(user_id, text)
         feed_update_payload = {'feed': feed}
         state = CasinoHandlers._handle_feed_updated(state, feed_update_payload)

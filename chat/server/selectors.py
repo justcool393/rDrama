@@ -50,6 +50,14 @@ class CasinoSelectors():
     def select_user_username(state, user_id):
         return grab(CasinoSelectors.select_user(state, user_id), 'account/username')
 
+    @staticmethod
+    def select_user_is_online(state, user_id):
+        return grab(CasinoSelectors.select_user(state, user_id), 'online')
+
+    @staticmethod
+    def select_user_request_id(state, user_id):
+        return grab(CasinoSelectors.select_user(state, user_id), 'request_id')
+
     # Message
     @staticmethod
     def select_message_ids(state):

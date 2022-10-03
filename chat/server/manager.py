@@ -16,12 +16,13 @@ class CasinoManager():
         CasinoMiddleware.stringify_user_id_middleware,
         CasinoMiddleware.update_balance_middleware,
         CasinoMiddleware.update_user_last_active_middleware,
-        CasinoMiddleware.load_game_state_middleware,
+        CasinoMiddleware.load_game_state_middleware
     ]
 
     def __init__(self):
         if app.config["SERVER_NAME"] == 'localhost':
             self.middleware.append(CasinoMiddleware.log_middleware)
+            self.middleware.append(CasinoMiddleware.log_to_file_middleware)
 
     def dispatch(self, action, payload):
         handler = CasinoHandlers.get_handler_for_action(action)
@@ -45,8 +46,5 @@ class CasinoManager():
             )
 
         self.state = handler(next_state, payload)
-
-        # emit(CasinoEvents.StateChanged, CasinoSelectors.select_client_state(
-        #     self.state), broadcast=True)
 
 CasinoManager.instance = CasinoManager()
