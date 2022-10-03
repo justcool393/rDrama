@@ -18,7 +18,7 @@ tags
 chat/node_modules
 chat/build
 chat/.env
-chat/server/log.json
+chat/server/state.json
 
 # Chat artifacts
 files/assets/css/chat_done.css

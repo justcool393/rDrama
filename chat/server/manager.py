@@ -1,17 +1,18 @@
+from json import dumps
 from copy import deepcopy
 from files.__main__ import app
-from flask_socketio import emit
 from .builders import CasinoBuilders
-from .enums import CasinoEvents
 from .handlers import CasinoHandlers
 from .middleware import CasinoMiddleware
-from .selectors import CasinoSelectors
+
+IN_DEVELOPMENT_MODE = app.config["SERVER_NAME"] == 'localhost'
+STATE_LOG_PATH = "chat/server/state.json"
 
 
 class CasinoManager():
     instance = None
     state = CasinoBuilders.build_initial_state()
-    state_history = []
+    action_history = []
     middleware = [
         CasinoMiddleware.stringify_user_id_middleware,
         CasinoMiddleware.update_balance_middleware,
@@ -20,9 +21,16 @@ class CasinoManager():
     ]
 
     def __init__(self):
-        if app.config["SERVER_NAME"] == 'localhost':
+        if IN_DEVELOPMENT_MODE:
             self.middleware.append(CasinoMiddleware.log_middleware)
-            self.middleware.append(CasinoMiddleware.log_to_file_middleware)
+
+    def _log_state(self):
+        logfile = open(STATE_LOG_PATH, "w+", encoding="utf-8")
+        logfile.write(dumps({
+            'state': self.state,
+            'action_history': self.action_history,
+        }, indent=2))
+        logfile.close()
 
     def dispatch(self, action, payload):
         handler = CasinoHandlers.get_handler_for_action(action)
@@ -35,7 +43,6 @@ class CasinoManager():
             raise Exception(
                 f"Invalid payload {payload} passed to CasinoManager#dispatch (must be dict)")
 
-        self.state_history.append(deepcopy(self.state))
         next_state = deepcopy(self.state)
 
         for middleware in self.middleware:
@@ -46,5 +53,10 @@ class CasinoManager():
             )
 
         self.state = handler(next_state, payload)
+        self.action_history.append({'action': action, 'payload': payload})
+
+        if IN_DEVELOPMENT_MODE:
+            self._log_state()
+
 
 CasinoManager.instance = CasinoManager()
