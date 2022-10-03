@@ -25,6 +25,10 @@ def connect_to_casino(v):
 
     user = S.select_user(C.state, str(v.id))
     emit(E.UserUpdated, user, broadcast=True)
+
+    feed = S.select_newest_feed(C.state)
+    emit(E.FeedUpdated, feed, broadcast=True)
+    
     emit(E.InitialStateProvided, C.state)
     return '', 200
 

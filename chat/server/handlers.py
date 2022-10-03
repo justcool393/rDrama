@@ -1,6 +1,7 @@
 from copy import copy
 from .builders import CasinoBuilders
 from .enums import CasinoActions, CasinoGames
+from .helpers import grab
 from .selectors import CasinoSelectors
 
 
@@ -21,7 +22,9 @@ class CasinoHandlers():
     # == "Private"
     @staticmethod
     def _handle_feed_updated(state, payload):
-        feed = payload['feed']
+        user_id = payload['user_id']
+        text = payload['text']
+        feed = CasinoBuilders.build_feed_entity(user_id, text)
         feed_id = feed['id']
         
         CasinoSelectors.select_feed_ids(state).append(feed_id)
@@ -59,6 +62,7 @@ class CasinoHandlers():
         if existing_user:
             existing_user['request_id'] = request_id
             existing_user['online'] = True
+            user = existing_user
         else:
             all_user_ids = CasinoSelectors.select_user_ids(state)
 
@@ -67,6 +71,11 @@ class CasinoHandlers():
 
             user = CasinoBuilders.build_user_entity(user_id, request_id)
             CasinoSelectors.select_user_lookup(state)[user_id] = user
+
+        username = grab(user, 'account/username')
+        feed_update_payload = {'user_id': user_id, 'text': f'{username} has entered the casino.'}
+        state = CasinoHandlers._handle_feed_updated(
+            state, feed_update_payload)
 
         return state
 
@@ -165,8 +174,7 @@ class CasinoHandlers():
         game_state = payload['game_state']
 
         # Feed
-        feed = CasinoBuilders.build_feed_entity(user_id, game_state['text'])
-        feed_update_payload = {'feed': feed}
+        feed_update_payload = {'user_id': user_id, 'text': game_state['text']}
         state = CasinoHandlers._handle_feed_updated(
             state, feed_update_payload)
 
@@ -203,8 +211,7 @@ class CasinoHandlers():
             currency,
             wager
         )
-        feed = CasinoBuilders.build_feed_entity(user_id, text)
-        feed_update_payload = {'feed': feed}
+        feed_update_payload = {'user_id': user_id, 'text': text}
         state = CasinoHandlers._handle_feed_updated(state, feed_update_payload)
 
         # Session
