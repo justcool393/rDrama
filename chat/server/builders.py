@@ -1,7 +1,7 @@
 from time import time
 import uuid
 from files.helpers.get import get_account
-from files.helpers.roulette import get_roulette_empty_bets
+from .games import get_roulette_empty_bets
 from .enums import CasinoGames
 
 
