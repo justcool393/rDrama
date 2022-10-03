@@ -1,16 +1,25 @@
 import React from "react";
 import { Avatar, Comment, Dropdown, Menu, Popconfirm, Typography } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
 import type { ItemType } from "antd/lib/menu/hooks/useItems";
 import { formatTimeAgo } from "../helpers";
 import { useCasino, useRootContext } from "../hooks";
+import { useCasinoSelector } from "./state";
 
 const { Text } = Typography;
 
 export function ChatMessageBox() {
   const { id, admin } = useRootContext();
-  const { state, selectors, userDeletedMessage } = useCasino();
-  const chatMessages = selectors.selectChatMessages(state);
+  const { userDeletedMessage } = useCasino();
+  const chatMessages = useCasinoSelector((state) =>
+    state.message.all.map((messageId) => {
+      const message = state.message.by_id[messageId];
+
+      return {
+        message,
+        author: state.user.by_id[message.user_id],
+      };
+    })
+  );
 
   return (
     <>

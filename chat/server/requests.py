@@ -1,5 +1,6 @@
 from json import dumps
 from flask_socketio import emit
+from numpy import broadcast
 from files.routes.chat import socketio
 from files.helpers.wrappers import *
 from files.helpers.const import *
@@ -7,8 +8,8 @@ from files.helpers.alerts import *
 from files.helpers.regex import *
 from files.helpers.slots import casino_slot_pull
 from files.helpers.roulette import gambler_placed_roulette_bet, get_roulette_bets
-from .config import MESSAGE_MAX_LENGTH
-from .enums import CasinoActions as A, CasinoEvents as E, CasinoMessages as M
+from .builders import CasinoBuilders as B
+from .enums import CasinoActions as A, CasinoEvents as E, CasinoGames, CasinoMessages as M
 from .helpers import meets_minimum_wager, can_user_afford, sanitize_chat_message
 from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
@@ -22,6 +23,8 @@ def connect_to_casino(v):
 
     C.dispatch(A.USER_CONNECTED, payload)
 
+    user = S.select_user(C.state, str(v.id))
+    emit(E.UserUpdated, user, broadcast=True)
     return '', 200
 
 
@@ -32,6 +35,8 @@ def disconnect_from_casino(v):
 
     C.dispatch(A.USER_DISCONNECTED, payload)
 
+    user = S.select_user(C.state, str(v.id))
+    emit(E.UserUpdated, user, broadcast=True)
     return '', 200
 
 
@@ -43,6 +48,8 @@ def user_sent_message(data, v):
 
     C.dispatch(A.USER_SENT_MESSAGE, payload)
 
+    message = S.select_newest_message(C.state)
+    emit(E.MessageUpdated, message, broadcast=True)
     return '', 200
 
 
@@ -64,6 +71,7 @@ def user_deleted_message(data, v):
 
     C.dispatch(A.USER_DELETED_MESSAGE, payload)
 
+    emit(E.MessageDeleted, message_id, broadcast=True)
     emit(E.ConfirmationReceived, M.MessageDeleteSuccess)
     return '', 200
 
@@ -77,6 +85,10 @@ def user_conversed(data, v):
 
     C.dispatch(A.USER_CONVERSED, payload)
 
+    conversation_key = B.build_conversation_key(str(v.id), recipient)
+    conversation = S.select_conversation(C.state, conversation_key)
+    emit(E.ConversationUpdated, conversation)
+    # TODO: Also emit to the recipient.
     return '', 200
 
 
@@ -92,6 +104,8 @@ def user_started_game(data, v):
 
     C.dispatch(A.USER_STARTED_GAME, payload)
 
+    game = S.select_game(C.state, game)
+    emit(E.GameUpdated, game)
     return '', 200
 
 
@@ -123,7 +137,11 @@ def user_pulled_slots(data, v):
         }
 
         C.dispatch(A.USER_PULLED_SLOTS, payload)
-
+        session_key = B.build_session_key(str(v.id), CasinoGames.Slots)
+        session = S.select_session(C.state, session_key)
+        feed = S.select_newest_feed(C.state)
+        emit(E.SessionUpdated, session)
+        emit(E.FeedUpdated, feed)
         return '', 200
     else:
         emit(E.ErrorOccurred, M.CannotPullLever)
@@ -171,6 +189,13 @@ def user_played_roulette(data, v):
 
         C.dispatch(A.USER_PLAYED_ROULETTE, payload)
 
+        game = S.select_game(C.state, CasinoGames.Roulette)
+        session_key = B.build_session_key(str(v.id), CasinoGames.Roulette)
+        session = S.select_session(C.state, session_key)
+        feed = S.select_newest_feed(C.state)
+        emit(E.GameUpdated, game, broadcast=True)
+        emit(E.SessionUpdated, session, broadcast=True)
+        emit(E.FeedUpdated, feed, broadcast=True)
         return '', 200
     except:
         emit(E.ErrorOccurred, M.CannotPlaceBet)

@@ -4,19 +4,21 @@ import { Card, InputNumber, Radio, Space, Typography } from "antd";
 import { MINIMUM_WAGER, useCasino, useRootContext } from "../hooks";
 import { Balances } from "./Balances";
 import { Currency } from "./Currency";
+import { useCasinoSelector } from "./state";
 
 const { Title, Text } = Typography;
 
 export function Wager() {
   const { id } = useRootContext();
-  const { state, selectors, wager, currency, setWager, setCurrency } =
-    useCasino();
+  const { wager, currency, setWager, setCurrency } = useCasino();
+  const balances = useCasinoSelector((state) => state.user.by_id[id]?.balances ?? {
+    coins: 0,
+    procoins: 0
+  });
   const balanceError = useMemo(() => {
-    const balances = selectors.selectUserBalances(state, id);
     const maximumWager = balances[currency];
-
     return wager > maximumWager ? "Insufficient balance." : "";
-  }, [state, wager, currency]);
+  }, [balances, wager, currency]);
 
   return (
     <Card

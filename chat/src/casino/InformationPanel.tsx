@@ -1,10 +1,13 @@
 import React from "react";
 import { Avatar, Menu, MenuProps, Space } from "antd";
-import { useCasino } from "../hooks";
+import { useCasinoSelector } from "./state";
 
 export function InformationPanel() {
-  const { state, selectors } = useCasino();
-  const usersOnline = selectors.selectUsersOnline(state);
+  const usersOnline = useCasinoSelector((state) =>
+    state.user.all
+      .map((id) => state.user.by_id[id])
+      .filter((user) => user.online)
+  );
 
   return (
     <Menu

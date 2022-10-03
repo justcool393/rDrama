@@ -44,7 +44,7 @@ class CasinoSelectors():
 
     @staticmethod
     def select_user(state, user_id):
-        return CasinoSelectors.select_game_lookup(state).get(user_id)
+        return CasinoSelectors.select_user_lookup(state).get(user_id)
 
     @staticmethod
     def select_user_username(state, user_id):
@@ -62,6 +62,11 @@ class CasinoSelectors():
     @staticmethod
     def select_message(state, message_id):
         return CasinoSelectors.select_message_lookup(state).get(message_id)
+
+    @staticmethod
+    def select_newest_message(state):
+        message_id = CasinoSelectors.select_message_ids(state)[-1]
+        return CasinoSelectors.select_message(state, message_id)
 
     # Conversation
     @staticmethod
@@ -102,6 +107,11 @@ class CasinoSelectors():
         return CasinoSelectors.select_feed_lookup(state).get(feed_id)
 
     @staticmethod
+    def select_newest_feed(state):
+        feed_id = CasinoSelectors.select_feed_ids(state)[-1]
+        return CasinoSelectors.select_feed(state, feed_id)
+
+    @staticmethod
     def select_roulette_bet_feed_item(state, user_id, bet, which, currency, wager):
         username = CasinoSelectors.select_user_username(state, user_id)
 
@@ -121,6 +131,10 @@ class CasinoSelectors():
     @staticmethod
     def select_session_lookup(state):
         return grab(state, 'sessions/by_id')
+
+    @staticmethod
+    def select_session(state, session_id):
+        return CasinoSelectors.select_session_lookup(state).get(session_id)
 
     @staticmethod
     def select_client_state(state):

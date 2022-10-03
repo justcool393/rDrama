@@ -46,7 +46,7 @@ class CasinoManager():
 
         self.state = handler(next_state, payload)
 
-        emit(CasinoEvents.StateChanged, CasinoSelectors.select_client_state(
-            self.state), broadcast=True)
+        # emit(CasinoEvents.StateChanged, CasinoSelectors.select_client_state(
+        #     self.state), broadcast=True)
 
 CasinoManager.instance = CasinoManager()

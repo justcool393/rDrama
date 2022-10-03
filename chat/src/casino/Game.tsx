@@ -1,13 +1,12 @@
 import React from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, Space, Tooltip } from "antd";
-import { RouletteBet, useCasino, useRootContext } from "../hooks";
+import { RouletteBet, useCasino } from "../hooks";
+import { useCasinoSelector } from "./state";
 
 export function Game() {
-  const { id } = useRootContext();
-  const { state, selectors, userPulledSlots, userPlayedRoulette } = useCasino();
-  // const result = selectors.selectGameSession(state, id, "slots");
-  const result = selectors.selectGameSession(state, id, "roulette");
+  const { userPlayedRoulette } = useCasino();
+  const result = useCasinoSelector(state => state.game.by_id.roulette?.state)
 
   return (
     <Card

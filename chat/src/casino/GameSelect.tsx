@@ -2,14 +2,23 @@ import { Select } from "antd";
 import React from "react";
 import { capitalize } from "../helpers";
 import { useCasino, useRootContext } from "../hooks";
+import { useCasinoSelector } from "./state";
 
 const { Option } = Select;
 
 export function GameSelect() {
   const { id } = useRootContext();
-  const { state, selectors, userStartedGame } = useCasino();
-  const activeGame = selectors.selectUserActiveGame(state, id) || "";
-  const availableGames = selectors.selectAvailableGames(state);
+  const { userStartedGame } = useCasino();
+  const activeGame = useCasinoSelector(state => {
+    for (const gameName of state.game.all) {
+      if (state.game.by_id[gameName].user_ids.includes(id)) {
+        return gameName;
+      }
+    }
+
+    return null;
+  })
+  const availableGames = useCasinoSelector(state => state.game.all)
 
   return (
     <div

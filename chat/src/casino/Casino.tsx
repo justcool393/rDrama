@@ -10,12 +10,12 @@ import {
   Space,
   Typography,
 } from "antd";
-import { useCasino } from "../hooks";
 import { ChatMessageBox } from "./ChatMessageBox";
 import { InformationPanel } from "./InformationPanel";
 import { InteractionPanel } from "./InteractionPanel";
 import { TextBox } from "./TextBox";
 import { GameSelect } from "./GameSelect";
+import { useCasinoSelector } from "./state";
 
 const PANEL_OFFSET_TOP = 70;
 const MOBILE_DRAWER_BUTTON_PADDING = 20;
@@ -29,10 +29,13 @@ const { useBreakpoint } = Grid;
 
 export function Casino() {
   const breakpoints = useBreakpoint();
-  const { state, selectors, loaded } = useCasino();
   const [showingInteractionPanel, setShowingInteractionPanel] = useState(false);
   const [showingInformationPanel, setShowingInformationPanel] = useState(false);
-  const usersOnline = selectors.selectUsersOnline(state);
+  const usersOnline = useCasinoSelector((state) =>
+    state.user.all
+      .map((id) => state.user.by_id[id])
+      .filter((user) => user.online)
+  );
 
   useEffect(() => {
     message.config({
@@ -41,7 +44,7 @@ export function Casino() {
     });
   }, []);
 
-  return loaded ? (
+  return (
     <Layout>
       {/* Interactions */}
       {/* == Mobile */}
@@ -135,7 +138,5 @@ export function Casino() {
         </Affix>
       )}
     </Layout>
-  ) : (
-    <div>Loading...</div>
   );
 }

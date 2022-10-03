@@ -5,6 +5,10 @@ type MessageUpdatedPayload = {
   message: MessageEntity;
 };
 
+type MessageDeletedPayload = {
+  message_id: string;
+};
+
 export interface MessageState {
   all: string[];
   by_id: Record<string, MessageEntity>;
@@ -28,10 +32,22 @@ export const messageSlice = createSlice({
       state.all = Array.from(new Set(state.all.concat(message.id)));
       state.by_id[message.id] = message;
     },
+    [CasinoClientActions.MESSAGE_DELETED]: (
+      state,
+      action: PayloadAction<MessageDeletedPayload>
+    ) => {
+      const { message_id } = action.payload;
+
+      state.all = state.all.filter((id) => id !== message_id);
+      delete state.by_id[message_id];
+    },
   },
 });
 
 export const {
-  actions: { [CasinoClientActions.MESSAGE_UPDATED]: messageUpdated },
+  actions: {
+    [CasinoClientActions.MESSAGE_UPDATED]: messageUpdated,
+    [CasinoClientActions.MESSAGE_DELETED]: messageDeleted,
+  },
   reducer: message,
 } = messageSlice;
