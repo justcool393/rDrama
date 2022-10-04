@@ -1117,11 +1117,13 @@ def toggle_comment_nsfw(cid, v):
 	g.db.add(comment)
 
 	if comment.author_id != v.id:
-		ma = ModAction(
-				kind = "set_nsfw_comment" if comment.over_18 else "unset_nsfw_comment",
+		if v.admin_level >= 2:
+			ma = ModAction(
+				kind = "set_nsfw" if comment.over_18 else "unset_nsfw",
 				user_id = v.id,
-				target_comment_id = comment.id,
+				target_submission_id = comment.id,
 				)
+			g.db.add(ma)
 		g.db.add(ma)
 
 	if comment.over_18: return {"message": "Comment has been marked as +18!"}
@@ -1132,19 +1134,29 @@ def toggle_comment_nsfw(cid, v):
 def toggle_post_nsfw(pid, v):
 	post = get_post(pid)
 
-	if post.author_id != v.id and not v.admin_level > 1:
+	if post.author_id != v.id and not v.admin_level >= 2:
+		abort(403)
+	if post.hole and not v.mods(post.hole):
 		abort(403)
 
 	post.over_18 = not post.over_18
 	g.db.add(post)
 
 	if post.author_id != v.id:
-		ma = ModAction(
+		if v.admin_level >= 2:
+			ma = ModAction(
 				kind = "set_nsfw" if post.over_18 else "unset_nsfw",
 				user_id = v.id,
 				target_submission_id = post.id,
 				)
-		g.db.add(ma)
+			g.db.add(ma)
+		elif post.hole:
+			sa = SubAction(
+				kind = "set_nsfw" if post.over_18 else "unset_nsfw",
+				user_id = v.id,
+				target_submission_id = post.id
+			)
+			g.db.add(sa)
 
 	if post.over_18: return {"message": "Post has been marked as +18!"}
 	else: return {"message": "Post has been unmarked as +18!"}
