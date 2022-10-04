@@ -1,8 +1,8 @@
 import React from "react";
 import { Space } from "antd";
-import { Currency } from "./Currency";
-import { useRootContext } from "../hooks";
+import { useRootContext } from "../../hooks";
 import { useCasinoSelector } from "./state";
+import { Currency } from "./Currency";
 
 export function Balances() {
   const { id } = useRootContext();

@@ -16,6 +16,9 @@ import { InteractionPanel } from "./InteractionPanel";
 import { TextBox } from "./TextBox";
 import { GameSelect } from "./GameSelect";
 import { useCasinoSelector } from "./state";
+import "antd/dist/antd.css";
+import "antd/dist/antd.dark.css";
+import "./Casino.css";
 
 const PANEL_OFFSET_TOP = 70;
 const MOBILE_DRAWER_BUTTON_PADDING = 20;

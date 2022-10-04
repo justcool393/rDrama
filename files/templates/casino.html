@@ -1,45 +1,51 @@
-{% extends "default.html" %}
+{%- import 'util/helpers.html' as help -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script defer src="{{'js/bootstrap.js' | asset}}"></script>
+	<meta name="description" content="{{DESCRIPTION}}">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; connect-src 'self'; object-src 'none';">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="">
 
-{# Title (~25char max), Description (~80char max),
-Icon (fa-foo-bar), Color (#ff0000), URL (/post/12345/) #}
-{%- set GAME_INDEX = [
-	(
-		'Roulette',
-		'Round and round the wheel of fate turns',
-		'fa-circle', '#777',
-		'/casino/roulette',
-	),
-	(
-		'Slots',
-		'Today\'s your lucky day',
-		'fa-dollar-sign', '#777',
-		'/casino/slots',
-	),
-	(
-		'Blackjack',
-		'Twenty one ways to change your life',
-		'fa-cards', '#777',
-		'/casino/blackjack',
-	),
-	(
-		'Lottershe',
-		'Can\'t win if you don\'t play',
-		'fa-ticket', '#777',
-		'/lottershe',
-	)
-]-%}
+	<link id="favicon" rel="icon" type="image/webp" href="{{'icon.webp' | asset_siteimg}}">
+	<title>Casino</title>
 
-{% block content %}
-<h2 style="text-transform: uppercase; text-align: center; letter-spacing: 3px; margin-top: 2rem;">Casino</h2>
-<div id="directory--wrapper">
-	{% for game in GAME_INDEX %}
-	<a role="button" class="directory--link" href="{{game[4]}}">
-		<div class="directory--link-content">
-			<i class="directory--link--icon fas {{game[2]}}" style="color:{{game[3]}}"></i>
-			<div class="directory--link--title">{{game[0]|safe}}</div>
-			<div class="directory--link--description">{{game[1]|safe}}</div>
-		</div>
-	</a>
-	{% endfor %}
-</div>
-{% endblock %}
+	<style>:root{--primary:#{{v.themecolor}}}</style>
+	<link rel="stylesheet" href="{{'css/chat_done.css' | asset}}">
+	<link rel="stylesheet" href="{{'css/main.css' | asset}}">
+	<link rel="stylesheet" href="{{('css/'~v.theme~'.css') | asset}}">
+	<link rel="stylesheet" type="text/css" href="{{'css/cards.min.css' | asset}}" />
+	{% if v.css %}
+		<style>
+			{{v.css | safe}}
+		</style>
+	{% endif %}
+</head>
+
+<body>
+	{% include "header.html" %}
+	{% include "expanded_image_modal.html" %}
+	{% include "emoji_modal.html" %}
+
+	<div
+		id="root"
+		data-mode="casino"
+		data-id="{{v.id}}"
+		data-username="{{v.username}}"
+		data-admin="{{v.admin_level > 1}}"
+		data-censored="{{v.slurreplacer}}"
+		data-sitename="{{SITE_NAME}}"
+		data-themecolor="{{v.themecolor}}"
+		data-namecolor="{{v.namecolor}}"
+		data-avatar="{{v.profile_url}}"
+		data-hat="{{v.hat_active}}">
+	</div>
+	<script>window.global = window</script>
+	<script defer src="{{'js/chat_done.js' | asset}}"></script>
+	<script defer src="{{'js/lozad.js' | asset}}"></script>
+	<script defer src="{{'js/lite-youtube.js' | asset}}"></script>
+	<script src="{{'js/cards.min.js' | asset}}" type="text/javascript"></script>
+</body>
+

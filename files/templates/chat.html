@@ -16,6 +16,7 @@
 	<link rel="stylesheet" href="{{'css/chat_done.css' | asset}}">
 	<link rel="stylesheet" href="{{'css/main.css' | asset}}">
 	<link rel="stylesheet" href="{{('css/'~v.theme~'.css') | asset}}">
+	<link rel="stylesheet" type="text/css" href="{{'css/cards.min.css' | asset}}" />
 	{% if v.css %}
 		<style>
 			{{v.css | safe}}
@@ -30,6 +31,7 @@
 
 	<div
 		id="root"
+		data-mode="chat"
 		data-id="{{v.id}}"
 		data-username="{{v.username}}"
 		data-admin="{{v.admin_level > 1}}"
@@ -44,5 +46,6 @@
 	<script defer src="{{'js/chat_done.js' | asset}}"></script>
 	<script defer src="{{'js/lozad.js' | asset}}"></script>
 	<script defer src="{{'js/lite-youtube.js' | asset}}"></script>
+	<script src="{{'js/cards.min.js' | asset}}" type="text/javascript"></script>
 </body>
 

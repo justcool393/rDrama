@@ -1,7 +1,7 @@
 import { Select } from "antd";
 import React from "react";
-import { capitalize } from "../helpers";
-import { useRootContext } from "../hooks";
+import { capitalize } from "../../helpers";
+import { useRootContext } from "../../hooks";
 import { useCasinoSelector } from "./state";
 import { useCasino } from "./useCasino";
 

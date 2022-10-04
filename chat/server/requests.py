@@ -35,10 +35,10 @@ def connect_to_casino(v):
     user_id = str(v.id)
     payload = {'user_id': v.id, 'request_id': request.sid}
 
-    if S.select_user_is_online(C.state, user_id):
-        emit(E.ErrorOccurred, M.AlreadyInside)
-        emit(E.JoinedAgain)
-        return '', 403
+    # if S.select_user_is_online(C.state, user_id):
+    #     emit(E.ErrorOccurred, M.AlreadyInside)
+    #     emit(E.JoinedAgain)
+    #     return '', 403
 
     private_rooms = [user_id]
     private_rooms.extend(S.select_user_conversation_keys(C.state, user_id))

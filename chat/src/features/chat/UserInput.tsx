@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import cx from "classnames";
 import { useChat, useEmojis } from "../../hooks";
-import { QuickEmojis } from "../emoji";
+import { QuickEmojis } from "./QuickEmojis";
 import "./UserInput.css";
 
 interface Props {

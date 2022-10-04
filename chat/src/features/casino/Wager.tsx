@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Card, InputNumber, Radio, Space, Typography } from "antd";
-import { useRootContext } from "../hooks";
+import { useRootContext } from "../../hooks";
 import { Balances } from "./Balances";
 import { Currency } from "./Currency";
 import { useCasinoSelector } from "./state";
