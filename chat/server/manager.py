@@ -1,16 +1,15 @@
 from json import dumps
 from copy import deepcopy
-from files.__main__ import app
 from .builders import CasinoBuilders
+from .config import IN_DEVELOPMENT_MODE, STATE_LOG_PATH
+from .games import MarseyRacingManager
 from .handlers import CasinoHandlers
 from .middleware import CasinoMiddleware
-
-IN_DEVELOPMENT_MODE = app.config["SERVER_NAME"] == 'localhost'
-STATE_LOG_PATH = "chat/server/state.json"
 
 
 class CasinoManager():
     instance = None
+    racing_manager = MarseyRacingManager()
     state = CasinoBuilders.build_initial_state()
     action_history = []
     middleware = [

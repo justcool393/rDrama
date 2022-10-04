@@ -242,3 +242,39 @@ class CasinoHandlers():
             state, session_update_payload)
 
         return state
+
+    @staticmethod
+    def handle_user_played_racing(state, payload):
+        user_id = payload['user_id']
+        game_state = payload['game_state']
+        placed_bet = payload['placed_bet']
+        
+        CasinoSelectors.select_game(state, CasinoGames.Racing)['state'] = game_state
+
+        # Feed
+        kind = placed_bet['kind']
+        selection = placed_bet['selection']
+        currency = placed_bet['currency']
+        wager = placed_bet['wager']
+        text = CasinoSelectors.select_racing_bet_feed_item(
+            state,
+            user_id,
+            kind,
+            selection,
+            currency,
+            wager
+        )
+        feed_update_payload = {'user_id': user_id, 'text': text}
+        state = CasinoHandlers._handle_feed_updated(state, feed_update_payload)
+
+        # Session
+        session = CasinoBuilders.build_session_entity(
+            user_id, CasinoGames.Racing, None)
+        session_update_payload = {
+            'game': CasinoGames.Racing,
+            'session': session
+        }
+        state = CasinoHandlers._handle_user_session_updated(
+            state, session_update_payload)
+
+        return state

@@ -335,3 +335,69 @@ def user_played_blackjack(data, v):
         except:
             emit(E.ErrorOccurred, M.BlackjackUnableToTakeAction)
             return '', 400
+
+
+@socketio.on(E.UserPlayedRacing)
+@is_not_permabanned
+def user_played_racing(data, v):
+    currency = data['currency']
+    wager = int(data['wager'])
+
+    if not meets_minimum_wager(wager):
+        emit(E.ErrorOccurred, M.MinimumWagerNotMet)
+        return '', 400
+
+    if not can_user_afford(v, currency, wager):
+        emit(E.ErrorOccurred, M.CannotAffordBet)
+        return '', 400
+
+    try:
+        user_id = str(v.id)
+        kind = data['kind']
+        selection = data['selection']
+        racing_bet = {
+            'kind': kind,
+            'selection': selection,
+            'wager': {
+                'amount': wager,
+                'currency': currency
+            }
+        }
+        successful = C.racing_manager.handler_player_bet(racing_bet, v)
+
+        if successful:
+            game_state = dumps(C.racing_manager.state)
+            balances = {
+                'coins': v.coins,
+                'procoins': v.procoins
+            }
+            placed_bet = {
+                'kind': kind,
+                'selection': selection,
+                'currency': currency,
+                'wager': wager
+            }
+            payload = {
+                'user_id': user_id,
+                'balances': balances,
+                'game_state': game_state,
+                'placed_bet': placed_bet
+            }
+
+            C.dispatch(A.USER_PLAYED_RACING, payload)
+
+            game = S.select_game(C.state, CasinoGames.Racing)
+            session_key = B.build_session_key(user_id, CasinoGames.Racing)
+            session = S.select_session(C.state, session_key)
+            feed = S.select_newest_feed(C.state)
+            emit(E.GameUpdated, game, broadcast=True)
+            emit(E.SessionUpdated, session, broadcast=True)
+            emit(E.FeedUpdated, feed, broadcast=True)
+            emit(E.ConfirmationReceived, M.RacingBetPlacedSuccessfully)
+            return 200, ''
+        else:
+            emit(E.ErrorOccurred, M.CannotPlaceBet)
+            return 400, ''
+    except:
+        emit(E.ErrorOccurred, M.CannotPlaceBet)
+        return 400, ''

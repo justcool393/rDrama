@@ -1,5 +1,5 @@
 from copy import deepcopy
-from files.helpers.roulette import format_roulette_bet_feed_item
+from .games import format_roulette_bet_feed_item, format_racing_bet_feed_item
 from .helpers import grab
 
 
@@ -131,6 +131,18 @@ class CasinoSelectors():
             username=username,
             bet=bet,
             which=which,
+            currency=currency,
+            amount=wager
+        )
+
+    @staticmethod
+    def select_racing_bet_feed_item(state, user_id, kind, selection, currency, wager):
+        username = CasinoSelectors.select_user_username(state, user_id)
+
+        return format_racing_bet_feed_item(
+            username=username,
+            kind=kind,
+            selection=selection,
             currency=currency,
             amount=wager
         )
