@@ -2,14 +2,13 @@ from json import dumps
 from copy import deepcopy
 from .builders import CasinoBuilders
 from .config import IN_DEVELOPMENT_MODE, STATE_LOG_PATH
-from .games import MarseyRacingManager
 from .handlers import CasinoHandlers
 from .middleware import CasinoMiddleware
 
 
 class CasinoManager():
     instance = None
-    racing_manager = MarseyRacingManager()
+    racing_manager = None
     state = CasinoBuilders.build_initial_state()
     action_history = []
     middleware = [

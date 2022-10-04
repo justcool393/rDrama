@@ -18,6 +18,8 @@ class CasinoHandlers():
             CasinoActions.USER_PLAYED_SLOTS: CasinoHandlers.handle_user_played_slots,
             CasinoActions.USER_PLAYED_ROULETTE: CasinoHandlers.handle_user_played_roulette,
             CasinoActions.USER_PLAYED_BLACKJACK: CasinoHandlers.handle_user_played_blackjack,
+            CasinoActions.USER_PLAYED_RACING: CasinoHandlers.handle_user_played_racing,
+            CasinoActions.RACING_STATE_INITIALIZED: CasinoHandlers.handle_racing_state_initialized,
         }[action] or None
 
     # == "Private"
@@ -276,5 +278,13 @@ class CasinoHandlers():
         }
         state = CasinoHandlers._handle_user_session_updated(
             state, session_update_payload)
+
+        return state
+
+    @staticmethod
+    def handle_racing_state_initialized(state, payload):
+        game_state = payload['game_state']
+        
+        CasinoSelectors.select_game(state, CasinoGames.Racing)['state'] = game_state
 
         return state

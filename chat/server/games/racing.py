@@ -432,7 +432,8 @@ def format_racing_bet_feed_item(username, kind, selection, currency, wager):
 # Manager
 
 class MarseyRacingManager():
-    state = create_initial_state()
+    def __init__(self):
+        self.state = create_initial_state()
 
     def start_race(self):
         self.state = handle_start_race(self.state)

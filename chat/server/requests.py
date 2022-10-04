@@ -1,5 +1,6 @@
 from json import dumps
 from flask_socketio import emit, disconnect, join_room, leave_room
+from chat.server.games.racing import MarseyRacingManager
 from files.helpers.twentyone import BlackjackAction
 from files.routes.chat import socketio
 from files.helpers.wrappers import *
@@ -8,7 +9,8 @@ from files.helpers.alerts import *
 from files.helpers.regex import *
 from .builders import CasinoBuilders as B
 from .enums import CasinoActions as A, CasinoEvents as E, CasinoGames, CasinoMessages as M
-from .games import casino_slot_pull, \
+from .games import MarseyRacingManager, \
+    casino_slot_pull, \
     gambler_placed_roulette_bet, \
     get_roulette_bets, \
     get_active_twentyone_game, \
@@ -20,9 +22,15 @@ from .selectors import CasinoSelectors as S
 
 C = CasinoManager.instance
 
+
 @socketio.on(E.Connect)
 @is_not_permabanned
 def connect_to_casino(v):
+    if not C.instance.racing_manager:
+        C.instance.racing_manager = MarseyRacingManager()
+        C.dispatch(A.RACING_STATE_INITIALIZED, {
+                   'game_state': dumps(C.instance.racing_manager.state)})
+
     user_id = str(v.id)
     payload = {'user_id': v.id, 'request_id': request.sid}
 
@@ -44,7 +52,7 @@ def connect_to_casino(v):
 
     feed = S.select_newest_feed(C.state)
     emit(E.FeedUpdated, feed, broadcast=True)
-    
+
     emit(E.InitialStateProvided, C.state)
     return '', 200
 
@@ -363,7 +371,7 @@ def user_played_racing(data, v):
                 'currency': currency
             }
         }
-        successful = C.racing_manager.handler_player_bet(racing_bet, v)
+        successful = C.racing_manager.handle_player_bet(racing_bet, v)
 
         if successful:
             game_state = dumps(C.racing_manager.state)
@@ -398,6 +406,10 @@ def user_played_racing(data, v):
         else:
             emit(E.ErrorOccurred, M.CannotPlaceBet)
             return 400, ''
-    except:
+    except Exception as e:
+        print("\n\n\n\n\n")
+        print("\n\n\n\n\n")
+        print("\n\n\n\n\n")
+        print(e)
         emit(E.ErrorOccurred, M.CannotPlaceBet)
         return 400, ''

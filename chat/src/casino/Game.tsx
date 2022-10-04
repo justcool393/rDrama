@@ -8,11 +8,6 @@ import { useCasino } from "./useCasino";
 export function Game() {
   const { id } = useRootContext();
   const { userPlayedRacing } = useCasino();
-  // const result = useCasinoSelector((state) => {
-  //   const sessionKey = `${id}#blackjack`;
-
-  //   return state.session.by_id[sessionKey]?.game_state ?? null;
-  // });
   const result = useCasinoSelector((state) => state.game.by_id.racing?.state ?? null);
 
   return (
@@ -45,7 +40,7 @@ export function Game() {
         <div>{JSON.stringify(result, null, 2)}</div>
         <Button
           type="default"
-          onClick={() => userPlayedRacing('WIN', [''])}
+          onClick={() => userPlayedRacing('WIN', ['marseyschizobyolove'])}
         >
           Race
         </Button>
