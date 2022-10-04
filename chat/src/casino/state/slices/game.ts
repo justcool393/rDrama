@@ -2,7 +2,11 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CasinoClientActions } from "../enums";
 import { initialStateProvided } from "../actions";
 
-type PossibleGameEntity = SlotsGameEntity | RouletteGameEntity;
+type PossibleGameEntity =
+  | SlotsGameEntity
+  | RouletteGameEntity
+  | BlackjackGameEntity
+  | RacingGameEntity;
 
 type GameUpdatedPayload = {
   game: PossibleGameEntity;

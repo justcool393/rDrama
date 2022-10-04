@@ -1,15 +1,9 @@
 import React from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, Space, Tooltip } from "antd";
-import { useRootContext } from "../hooks";
-import { useCasinoSelector } from "./state";
-import { useCasino } from "./useCasino";
+import { PlayingCardDeck } from "./PlayingCard";
 
 export function Game() {
-  const { id } = useRootContext();
-  const { userPlayedRacing } = useCasino();
-  const result = useCasinoSelector((state) => state.game.by_id.racing?.state ?? null);
-
   return (
     <Card
       title="Game"
@@ -35,16 +29,7 @@ export function Game() {
         </Space>
       }
     >
-      <Space direction="vertical">
-        <div>Result</div>
-        <div>{JSON.stringify(result, null, 2)}</div>
-        <Button
-          type="default"
-          onClick={() => userPlayedRacing('WIN', ['marseyschizobyolove'])}
-        >
-          Race
-        </Button>
-      </Space>
+      <PlayingCardDeck count={10} />
     </Card>
   );
 }
