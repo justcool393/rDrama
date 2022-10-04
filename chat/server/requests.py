@@ -1,4 +1,5 @@
 from json import dumps
+from copy import copy
 from flask_socketio import emit, disconnect, join_room, leave_room
 from chat.server.games.racing import MarseyRacingManager
 from files.helpers.twentyone import BlackjackAction
@@ -67,8 +68,9 @@ def disconnect_from_casino(v):
         emit(E.ErrorOccurred, M.NotInsideYet)
         return '', 403
 
-    private_rooms = [user_id].extend(
-        S.select_user_conversation_keys(C.state, user_id))
+    private_rooms = [user_id]
+    private_rooms.extend(S.select_user_conversation_keys(C.state, user_id))
+    private_rooms.extend(S.select_game_names(C.state))
 
     for room in private_rooms:
         leave_room(room)
@@ -143,7 +145,6 @@ def user_conversed(data, v):
     C.dispatch(A.USER_CONVERSED, payload)
 
     conversation_key = B.build_conversation_key(user_id, recipient)
-    
     user_request_id = S.select_user_request_id(C.state, user_id)
     recipient_request_id = S.select_user_request_id(C.state, recipient)
     join_room(conversation_key, user_request_id)
@@ -165,6 +166,14 @@ def user_started_game(data, v):
         return '', 400
 
     C.dispatch(A.USER_STARTED_GAME, payload)
+
+    join_room(game)
+
+    remaining_games = list(copy(S.select_game_names(C.state)))
+    remaining_games.remove(game)
+
+    for remaining_game in remaining_games:
+        leave_room(remaining_game)
 
     game = S.select_game(C.state, game)
     emit(E.GameUpdated, game)
