@@ -57,6 +57,7 @@ interface CasinoProviderContext {
   userKickedOwnClient(): void;
   userSentMessage(): void;
   userDeletedMessage(messageId: string): void;
+  userConversed(): void;
   userStartedGame(game: CasinoGame): void;
   userPlayedSlots(): void;
   userPlayedRoulette(bet: RouletteBet, which: string): void;
@@ -75,6 +76,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
   userKickedOwnClient() {},
   userSentMessage() {},
   userDeletedMessage() {},
+  userConversed() {},
   userStartedGame() {},
   userPlayedSlots() {},
   userPlayedRoulette() {},
@@ -98,17 +100,29 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   const userSentMessage = useCallback(() => {
     socket.current?.emit(CasinoHandlers.UserSentMessage, {
       message: draft,
-      recipient,
     });
 
-    setRecipient(null);
     setTimeout(() => setDraft(""), 0);
-  }, [draft, recipient]);
+  }, [draft]);
 
   const userDeletedMessage = useCallback(
     (messageId: string) =>
       socket.current?.emit(CasinoHandlers.UserDeletedMessage, messageId),
     []
+  );
+
+  const userConversed = useCallback(
+    () => {
+      if (recipient) {
+        socket.current?.emit(CasinoHandlers.UserConversed, {
+          message: draft,
+          recipient
+        })
+        
+        setTimeout(() => setDraft(""), 0);
+      }
+    },
+    [draft, recipient]
   );
 
   const userStartedGame = useCallback((game: CasinoGame) => {
@@ -154,6 +168,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userKickedOwnClient,
       userSentMessage,
       userDeletedMessage,
+      userConversed,
       userStartedGame,
       userPlayedSlots,
       userPlayedRoulette,
@@ -167,6 +182,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userKickedOwnClient,
       userSentMessage,
       userDeletedMessage,
+      userConversed,
       userPlayedSlots,
       userPlayedRoulette,
       userPlayedBlackjack

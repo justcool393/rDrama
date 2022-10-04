@@ -9,20 +9,33 @@ const { Text } = Typography;
 
 export function ChatMessageBox() {
   const { id, admin } = useRootContext();
-  const { userDeletedMessage } = useCasino();
-  const chatMessages = useCasinoSelector((state) =>
-    state.message.all.map((messageId) => {
-      const message = state.message.by_id[messageId];
+  const { recipient, setRecipient, userDeletedMessage } = useCasino();
+  const chatMessages = useCasinoSelector((state) => {
+    let messages = state.message.all.map((messageId) => state.message.by_id[messageId]);
 
+    if (recipient) {
+      const conversationKey = state.conversation.all.find(
+        (key) => key.includes(id) && key.includes(recipient)
+      );
+
+      if (conversationKey) {
+        const conversationMessages = state.conversation.by_id[conversationKey].messages;
+        
+        messages = conversationMessages.all.map(messageId => conversationMessages.by_id[messageId]);
+      }
+    }
+
+    return messages.map((message) => {
       return {
         message,
         author: state.user.by_id[message.user_id],
       };
     })
-  );
+  });
 
   return (
     <>
+      {recipient && <h3 onClick={() => setRecipient("")}>{recipient}</h3>}
       {chatMessages.map((chatMessage) => {
         const items: ItemType[] = [
           {

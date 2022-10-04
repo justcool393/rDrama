@@ -1,8 +1,11 @@
 import React from "react";
 import { Avatar, Menu, MenuProps, Space } from "antd";
 import { useCasinoSelector } from "./state";
+import { useCasino, useRootContext } from "../hooks";
 
 export function InformationPanel() {
+  const { id } = useRootContext();
+  const { setRecipient } = useCasino();
   const usersOnline = useCasinoSelector((state) =>
     state.user.all
       .map((id) => state.user.by_id[id])
@@ -17,7 +20,13 @@ export function InformationPanel() {
       mode="inline"
       items={usersOnline.sort(alphabeticalSort).map((user) =>
         getMenuItem(
-          <Space>
+          <Space
+            onClick={() => {
+              if (user.id !== id) {
+                setRecipient(user.id);
+              }
+            }}
+          >
             <Avatar src={user.account.profile_url} />
             <span>@{user.account.username}</span>
           </Space>,

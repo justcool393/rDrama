@@ -101,6 +101,10 @@ class CasinoSelectors():
     def select_conversation_message(state, conversation_key, message_id):
         return CasinoSelectors.select_conversation_message_lookup(state, conversation_key).get(message_id)
 
+    @staticmethod
+    def select_user_conversation_keys(state, user_id):
+        return [key for key in CasinoSelectors.select_conversation_keys(state) if user_id in key]
+
     # Feed
     @staticmethod
     def select_feed_ids(state):

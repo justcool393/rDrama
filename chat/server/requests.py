@@ -1,5 +1,5 @@
 from json import dumps
-from flask_socketio import emit, disconnect
+from flask_socketio import emit, disconnect, join_room, leave_room
 from files.helpers.twentyone import BlackjackAction
 from files.routes.chat import socketio
 from files.helpers.wrappers import *
@@ -23,17 +23,24 @@ C = CasinoManager.instance
 @socketio.on(E.Connect)
 @is_not_permabanned
 def connect_to_casino(v):
+    user_id = str(v.id)
     payload = {'user_id': v.id, 'request_id': request.sid}
 
-    if S.select_user_is_online(C.state, str(v.id)):
+    if S.select_user_is_online(C.state, user_id):
         emit(E.ErrorOccurred, M.AlreadyInside)
         emit(E.JoinedAgain)
         return '', 403
 
+    private_rooms = [user_id]
+    private_rooms.extend(S.select_user_conversation_keys(C.state, user_id))
+
+    for room in private_rooms:
+        join_room(room)
+
     C.dispatch(A.USER_CONNECTED, payload)
 
-    v = S.select_user(C.state, str(v.id))
-    emit(E.UserUpdated, v, broadcast=True)
+    user = S.select_user(C.state, str(v.id))
+    emit(E.UserUpdated, user, broadcast=True)
 
     feed = S.select_newest_feed(C.state)
     emit(E.FeedUpdated, feed, broadcast=True)
@@ -45,12 +52,23 @@ def connect_to_casino(v):
 @socketio.on(E.Disconnect)
 @is_not_permabanned
 def disconnect_from_casino(v):
+    user_id = str(v.id)
     payload = {'user_id': v.id}
+
+    if not S.select_user_is_online(C.state, user_id):
+        emit(E.ErrorOccurred, M.NotInsideYet)
+        return '', 403
+
+    private_rooms = [user_id].extend(
+        S.select_user_conversation_keys(C.state, user_id))
+
+    for room in private_rooms:
+        leave_room(room)
 
     C.dispatch(A.USER_DISCONNECTED, payload)
 
-    v = S.select_user(C.state, str(v.id))
-    emit(E.UserUpdated, v, broadcast=True)
+    user = S.select_user(C.state, str(v.id))
+    emit(E.UserUpdated, user, broadcast=True)
     return '', 200
 
 
@@ -105,16 +123,26 @@ def user_deleted_message(data, v):
 @socketio.on(E.UserConversed)
 @is_not_permabanned
 def user_conversed(data, v):
+    user_id = str(v.id)
     text = sanitize_chat_message(data['message'])
     recipient = data['recipient']
     payload = {'user_id': v.id, 'text': text, 'recipient': recipient}
 
+    if not S.select_user(C.state, recipient):
+        emit(E.ErrorOccurred, M.UserNotFound)
+        return '', 404
+
     C.dispatch(A.USER_CONVERSED, payload)
 
-    conversation_key = B.build_conversation_key(str(v.id), recipient)
+    conversation_key = B.build_conversation_key(user_id, recipient)
+    
+    user_request_id = S.select_user_request_id(C.state, user_id)
+    recipient_request_id = S.select_user_request_id(C.state, recipient)
+    join_room(conversation_key, user_request_id)
+    join_room(conversation_key, recipient_request_id)
+
     conversation = S.select_conversation(C.state, conversation_key)
-    emit(E.ConversationUpdated, conversation)
-    # TODO: Also emit to the recipient.
+    emit(E.ConversationUpdated, conversation, to=conversation_key)
     return '', 200
 
 

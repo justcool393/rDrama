@@ -1,6 +1,6 @@
 import { SendOutlined, SmileOutlined } from "@ant-design/icons";
 import { Button, Input, Tooltip } from "antd";
-import React from "react";
+import React, { useMemo } from "react";
 import { useCasino } from "../hooks";
 
 const TEXTAREA_ROW_COUNT = 3;
@@ -9,7 +9,12 @@ const TEXTAREA_CHARACTER_LIMIT = 1000;
 const { TextArea } = Input;
 
 export function TextBox() {
-  const { draft, setDraft, userSentMessage } = useCasino();
+  const { draft, recipient, setDraft, userSentMessage, userConversed } =
+    useCasino();
+  const handleSend = useMemo(
+    () => (recipient ? userConversed : userSentMessage),
+    [recipient, userConversed, userSentMessage]
+  );
 
   return (
     <div
@@ -28,7 +33,7 @@ export function TextBox() {
         maxLength={TEXTAREA_CHARACTER_LIMIT}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
-        onPressEnter={userSentMessage}
+        onPressEnter={handleSend}
         style={{
           flex: 1,
           margin: "0 2rem",
@@ -39,7 +44,7 @@ export function TextBox() {
           type="primary"
           shape="circle"
           icon={<SendOutlined />}
-          onClick={userSentMessage}
+          onClick={handleSend}
         />
       </Tooltip>
     </div>
