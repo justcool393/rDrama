@@ -133,9 +133,11 @@ if app.config["SERVER_NAME"] == 'localhost':
 	from files.routes import *
 	from files.routes.chat import *
 	from chat.server.requests import *
+	from chat.server.greenlets import *
 elif "load_chat" in argv:
 	from files.routes.chat import *
 	from chat.server.requests import *
+	from chat.server.greenlets import *
 else:
 	from files.routes import *
 
