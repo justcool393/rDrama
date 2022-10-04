@@ -13,9 +13,8 @@ import {
   UserList,
   UsersTyping,
 } from "./features";
-import { Casino, store } from "./casino";
+import { Casino, CasinoProvider, store } from "./casino";
 import {
-  CasinoProvider,
   ChatProvider,
   DrawerProvider,
   useChat,

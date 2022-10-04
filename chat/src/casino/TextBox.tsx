@@ -1,7 +1,7 @@
 import { SendOutlined, SmileOutlined } from "@ant-design/icons";
 import { Button, Input, Tooltip } from "antd";
 import React, { useMemo } from "react";
-import { useCasino } from "../hooks";
+import { useCasino } from "./useCasino";
 
 const TEXTAREA_ROW_COUNT = 3;
 const TEXTAREA_CHARACTER_LIMIT = 1000;

@@ -107,7 +107,7 @@ declare interface GameEntity<T> {
   id: string;
   name: string;
   user_ids: string[];
-  state: T
+  state: T;
 }
 
 declare interface SlotsGameState {
@@ -115,38 +115,124 @@ declare interface SlotsGameState {
   text: string;
 }
 
-declare type SlotsGameEntity = GameEntity<null>
+declare type SlotsGameEntity = GameEntity<null>;
 
-declare type RouletteBet = 
-  'STRAIGHT_UP_BET' |
-  'LINE_BET' |
-  'COLUMN_BET' |
-  'DOZEN_BET' |
-  'EVEN_ODD_BET' |
-  'RED_BLACK_BET' |
-  'HIGH_LOW_BET'
+declare type RouletteBet =
+  | "STRAIGHT_UP_BET"
+  | "LINE_BET"
+  | "COLUMN_BET"
+  | "DOZEN_BET"
+  | "EVEN_ODD_BET"
+  | "RED_BLACK_BET"
+  | "HIGH_LOW_BET";
 
 declare interface RouletteBetData {
   game_id: string;
   gambler: string;
   gambler_username: string;
   gambler_profile_url: string;
-  bet: RouletteBet,
+  bet: RouletteBet;
   which: string;
   wager: Wager;
 }
 
 declare interface RouletteGameState {
-  bets: Record<RouletteBet, RouletteBetData[]>
+  bets: Record<RouletteBet, RouletteBetData[]>;
 }
 
-declare type RouletteGameEntity = GameEntity<RouletteGameState>
+declare type RouletteGameEntity = GameEntity<RouletteGameState>;
 
-declare interface BlackjackGameState {
+declare type BlackjackAction =
+  | "DEAL"
+  | "HIT"
+  | "STAY"
+  | "DOUBLE_DOWN"
+  | "BUY_INSURANCE";
 
+declare interface BlackjackGameState {}
+
+declare type BlackjackGameEntity = GameEntity<null>;
+
+declare type RacingBet =
+  | "WIN"
+  | "PLACE"
+  | "SHOW"
+  | "QUINELLA"
+  | "EXACTA"
+  | "TRIFECTA"
+  | "TRIFECTA_BOX"
+  | "SUPERFECTA"
+  | "SUPERFECTA_BOX";
+
+declare type RacingHealth =
+  | "EXCELLENT"
+  | "GREAT"
+  | "GOOD"
+  | "AVERAGE"
+  | "POOR"
+  | "DEVASTATING"
+  | "CATASTROPHIC";
+
+declare type RacingSpirit =
+  | "EMANATING"
+  | "PULSING"
+  | "THROBBING"
+  | "TWITCHING"
+  | "FLICKERING"
+  | "NONEXISTENT"
+  | "SOREN";
+
+declare interface RacingBetData {
+  id: string;
+  user_id: string;
+  bet: RacingBet;
+  selections: string[];
+  amount: number;
+  currency: CasinoCurrency;
+  succeeded: boolean;
 }
 
-declare type BlackjackGameEntity = GameEntity<null>
+declare interface RacingUserData {
+  id: string;
+  username: string;
+  bets: string[];
+  payouts: string[];
+}
+
+declare interface RacingPayoutData {
+  id: string;
+  bet_id: string;
+  user_id: string;
+  currency: CasinoCurrency;
+  refund: number;
+  reward: number;
+  total: number;
+  paid: boolean;
+}
+
+declare interface Racer {
+  name: string;
+  health: RacingHealth;
+  spirit: RacingSpirit;
+  speed: number;
+  placement: number;
+}
+
+declare type PodiumRacer = null | string;
+
+declare interface RacingGameState {
+  marseys: Normalized<Racer>;
+  betting_open: boolean;
+  race_started: boolean;
+  podium: [PodiumRacer, PodiumRacer, PodiumRacer, PodiumRacer];
+  biggest_loser: null | string;
+  odds: Record<RacingBet, number>;
+  bets: Normalized<RacingBetData>;
+  users: Normalized<RacingUserData>;
+  payouts: Normalized<RacingPayoutData>;
+}
+
+declare type RacingGameEntity = GameEntity<RacingGameState>;
 
 declare interface SessionEntity {
   id: string;
@@ -156,18 +242,19 @@ declare interface SessionEntity {
 }
 
 declare interface CasinoState {
-  users: Normalized<UserEntity>
-  messages: Normalized<MessageEntity>
-  conversations: Normalized<ConversationEntity>
-  feed: Normalized<FeedEntity>
-  leaderboards: Normalized<LeaderboardEntity>
-  sessions: Normalized<SessionEntity>
+  users: Normalized<UserEntity>;
+  messages: Normalized<MessageEntity>;
+  conversations: Normalized<ConversationEntity>;
+  feed: Normalized<FeedEntity>;
+  leaderboards: Normalized<LeaderboardEntity>;
+  sessions: Normalized<SessionEntity>;
   games: {
-    all: ['slots', 'roulette', 'blackjack'],
+    all: ["slots", "roulette", "blackjack", "racing"];
     by_id: {
-      slots: SlotsGameEntity
-      roulette: RouletteGameEntity
-      blackjack: BlackjackGameEntity
-    }
-  }
+      slots: SlotsGameEntity;
+      roulette: RouletteGameEntity;
+      blackjack: BlackjackGameEntity;
+      racing: RacingGameEntity;
+    };
+  };
 }

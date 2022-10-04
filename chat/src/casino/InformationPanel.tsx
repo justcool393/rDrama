@@ -1,7 +1,8 @@
 import React from "react";
 import { Avatar, Menu, MenuProps, Space } from "antd";
 import { useCasinoSelector } from "./state";
-import { useCasino, useRootContext } from "../hooks";
+import { useCasino } from "./useCasino";
+import { useRootContext } from "../hooks";
 
 export function InformationPanel() {
   const { id } = useRootContext();

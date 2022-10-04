@@ -2,7 +2,8 @@ import React from "react";
 import { Avatar, Comment, Dropdown, Menu, Popconfirm, Typography } from "antd";
 import type { ItemType } from "antd/lib/menu/hooks/useItems";
 import { formatTimeAgo } from "../helpers";
-import { useCasino, useRootContext } from "../hooks";
+import { useRootContext } from "../hooks";
+import { useCasino } from "./useCasino";
 import { useCasinoSelector } from "./state";
 
 const { Text } = Typography;

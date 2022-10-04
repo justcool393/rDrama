@@ -13,34 +13,16 @@ import { io, Socket } from "socket.io-client";
 import {
   CasinoHandlers,
   useCasinoDispatch,
+  initialStateProvided,
   conversationUpdated,
   feedUpdated,
   gameUpdated,
-  initialStateProvided,
   leaderboardUpdated,
   messageUpdated,
   messageDeleted,
   sessionUpdated,
   userUpdated,
-} from "../casino";
-
-export enum BlackjackAction {
-  DEAL = "DEAL",
-  HIT = "HIT",
-  STAY = "STAY",
-  DOUBLE_DOWN = "DOUBLE_DOWN",
-  BUY_INSURANCE = "BUY_INSURANCE"
-}
-
-export enum RouletteBet {
-  STRAIGHT_UP_BET = "STRAIGHT_UP_BET",
-  LINE_BET = "LINE_BET",
-  COLUMN_BET = "COLUMN_BET",
-  DOZEN_BET = "DOZEN_BET",
-  EVEN_ODD_BET = "EVEN_ODD_BET",
-  RED_BLACK_BET = "RED_BLACK_BET",
-  HIGH_LOW_BET = "HIGH_LOW_BET",
-}
+} from "./state";
 
 export const MINIMUM_WAGER = 5;
 export const JOINED_AGAIN_EMPTY_IMAGE_URL = "/e/marseyrain.webp";
@@ -62,6 +44,7 @@ interface CasinoProviderContext {
   userPlayedSlots(): void;
   userPlayedRoulette(bet: RouletteBet, which: string): void;
   userPlayedBlackjack(action: BlackjackAction): void;
+  userPlayedRacing(kind: RacingBet, selection: string[]): void;
 }
 
 const CasinoContext = createContext<CasinoProviderContext>({
@@ -81,6 +64,7 @@ const CasinoContext = createContext<CasinoProviderContext>({
   userPlayedSlots() {},
   userPlayedRoulette() {},
   userPlayedBlackjack() {},
+  userPlayedRacing() {},
 });
 
 export function CasinoProvider({ children }: PropsWithChildren) {
@@ -111,19 +95,16 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     []
   );
 
-  const userConversed = useCallback(
-    () => {
-      if (recipient) {
-        socket.current?.emit(CasinoHandlers.UserConversed, {
-          message: draft,
-          recipient
-        })
-        
-        setTimeout(() => setDraft(""), 0);
-      }
-    },
-    [draft, recipient]
-  );
+  const userConversed = useCallback(() => {
+    if (recipient) {
+      socket.current?.emit(CasinoHandlers.UserConversed, {
+        message: draft,
+        recipient,
+      });
+
+      setTimeout(() => setDraft(""), 0);
+    }
+  }, [draft, recipient]);
 
   const userStartedGame = useCallback((game: CasinoGame) => {
     socket.current?.emit(CasinoHandlers.UserStartedGame, game);
@@ -148,11 +129,29 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     [currency, wager]
   );
 
-  const userPlayedBlackjack = useCallback((action: BlackjackAction) => {
-    const payload = action === BlackjackAction.DEAL ? { action, currency, wager  } : { action }
+  const userPlayedBlackjack = useCallback(
+    (action: BlackjackAction) => {
+      const payload =
+        action === 'DEAL'
+          ? { action, currency, wager }
+          : { action };
 
-    socket.current?.emit(CasinoHandlers.UserPlayedBlackjack, payload);
-  }, [currency, wager]);
+      socket.current?.emit(CasinoHandlers.UserPlayedBlackjack, payload);
+    },
+    [currency, wager]
+  );
+
+  const userPlayedRacing = useCallback(
+    (kind: RacingBet, selection: string[]) => {
+      socket.current?.emit(CasinoHandlers.UserPlayedRacing, {
+        kind,
+        selection,
+        currency,
+        wager,
+      });
+    },
+    [currency, wager]
+  );
 
   // Memoized Value
   const value = useMemo<CasinoProviderContext>(
@@ -172,7 +171,8 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userStartedGame,
       userPlayedSlots,
       userPlayedRoulette,
-      userPlayedBlackjack
+      userPlayedBlackjack,
+      userPlayedRacing,
     }),
     [
       wager,
@@ -185,7 +185,8 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       userConversed,
       userPlayedSlots,
       userPlayedRoulette,
-      userPlayedBlackjack
+      userPlayedBlackjack,
+      userPlayedRacing,
     ]
   );
 
@@ -267,7 +268,9 @@ export function CasinoProvider({ children }: PropsWithChildren) {
           }
           image={JOINED_AGAIN_EMPTY_IMAGE_URL}
         >
-          <Button type="primary" onClick={userKickedOwnClient}>I want to sign in here</Button>
+          <Button type="primary" onClick={userKickedOwnClient}>
+            I want to sign in here
+          </Button>
         </Empty>
       </div>
     );
