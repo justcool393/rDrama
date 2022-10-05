@@ -1,21 +1,48 @@
 import React, { PropsWithChildren } from "react";
-import { Avatar, Comment, Dropdown, Menu, Popconfirm, Typography } from "antd";
+import {
+  Avatar,
+  Comment,
+  Dropdown,
+  Menu,
+  PageHeader,
+  Popconfirm,
+  Space,
+  Typography,
+} from "antd";
 import type { ItemType } from "antd/lib/menu/hooks/useItems";
 import key from "weak-key";
 import { formatTimeAgo } from "../../helpers";
 import { useRootContext } from "../../hooks";
 import { useCasino } from "./useCasino";
-import { useChatMessageGroups } from "./state";
+import { useCasinoUser, useChatMessages } from "./state";
+import { Username } from "./Username";
 
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
 export function ChatMessageBox() {
   const { recipient, setRecipient } = useCasino();
-  const chatMessageGroups = useChatMessageGroups();
+  const recipientUser = useCasinoUser(recipient);
+  const chatMessageGroups = useChatMessages();
 
   return (
-    <>
-      {recipient && <h3 onClick={() => setRecipient("")}>{recipient}</h3>}
+    <div
+      style={{
+        backgroundImage: recipientUser
+          ? recipientUser.account.bannerurl
+          : "initial",
+      }}
+    >
+      {recipientUser && (
+        <PageHeader
+          onBack={() => setRecipient("")}
+          title={
+            <Space>
+              <Username user={recipientUser.account} />
+              <Title level={4}>'s Suite</Title>
+            </Space>
+          }
+        />
+      )}
 
       {chatMessageGroups.map((chatMessageGroup) => (
         <ChatMessageGroup
@@ -24,7 +51,7 @@ export function ChatMessageBox() {
           messages={chatMessageGroup.messages}
         />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -83,7 +110,7 @@ interface ChatMessageMenuProps {
 
 export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   const { id, admin } = useRootContext();
-  const { userDeletedMessage } = useCasino();
+  const { recipient, setRecipient, userDeletedMessage } = useCasino();
   const items: ItemType[] = [
     {
       key: "react",
@@ -94,18 +121,19 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   const isOwnMessage = id.toString() === author.id.toString();
 
   if (!isOwnMessage) {
-    items.unshift(
-      {
-        key: "reply",
-        label: "Reply",
-        disabled: true,
-      },
-      {
+    items.unshift({
+      key: "reply",
+      label: "Reply",
+      disabled: true,
+    });
+
+    if (!recipient) {
+      items.push({
         key: "dm",
         label: "DM",
-        disabled: true,
-      }
-    );
+        onClick: () => setRecipient(author.id),
+      });
+    }
   }
 
   if (isOwnMessage || admin) {

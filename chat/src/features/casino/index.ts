@@ -10,4 +10,5 @@ export * from "./InformationPanel";
 export * from "./InteractionPanel";
 export * from "./TextBox";
 export * from "./useCasino";
+export * from "./Username";
 export * from "./Wager";

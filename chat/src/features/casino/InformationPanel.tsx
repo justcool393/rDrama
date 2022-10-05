@@ -6,25 +6,35 @@ import { useCasino } from "./useCasino";
 
 export function InformationPanel() {
   const { id } = useRootContext();
-  const { setRecipient } = useCasino();
+  const { recipient, setRecipient } = useCasino();
   const usersOnline = useCasinoSelector((state) =>
     state.user.all
       .map((id) => state.user.by_id[id])
       .filter((user) => user.online)
   );
+  const handleItemSelect = (event) => {
+    const userId = event.key;
+    console.log("Selected", userId, "recipient is", recipient);
+
+    if (userId !== id) {
+      const nextRecipient = userId === recipient ? "" : userId;
+      setRecipient(nextRecipient);
+    }
+  };
 
   return (
     <Menu
-      selectable={false}
       theme="dark"
       defaultOpenKeys={["sub1"]}
+      selectedKeys={[recipient]}
       mode="inline"
+      onSelect={handleItemSelect}
       items={usersOnline.sort(alphabeticalSort).map((user) =>
         getMenuItem(
           <Space
             onClick={() => {
-              if (user.id !== id) {
-                setRecipient(user.id);
+              if (user.id === recipient) {
+                setRecipient("");
               }
             }}
           >
