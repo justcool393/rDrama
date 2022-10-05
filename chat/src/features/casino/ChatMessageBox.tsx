@@ -12,7 +12,9 @@ export function ChatMessageBox() {
   const { id, admin } = useRootContext();
   const { recipient, setRecipient, userDeletedMessage } = useCasino();
   const chatMessages = useCasinoSelector((state) => {
-    let messages = state.message.all.map((messageId) => state.message.by_id[messageId]);
+    let messages = state.message.all.map(
+      (messageId) => state.message.by_id[messageId]
+    );
 
     if (recipient) {
       const conversationKey = state.conversation.all.find(
@@ -20,9 +22,12 @@ export function ChatMessageBox() {
       );
 
       if (conversationKey) {
-        const conversationMessages = state.conversation.by_id[conversationKey].messages;
-        
-        messages = conversationMessages.all.map(messageId => conversationMessages.by_id[messageId]);
+        const conversationMessages =
+          state.conversation.by_id[conversationKey].messages;
+
+        messages = conversationMessages.all.map(
+          (messageId) => conversationMessages.by_id[messageId]
+        );
       }
     }
 
@@ -31,7 +36,7 @@ export function ChatMessageBox() {
         message,
         author: state.user.by_id[message.user_id],
       };
-    })
+    });
   });
 
   return (
@@ -84,8 +89,8 @@ export function ChatMessageBox() {
         const menu = <Menu items={items} />;
 
         return (
-          <div style={{ minHeight: "100vh" }}>
-            <Dropdown overlay={menu} trigger={["click", "contextMenu"]}>
+          <div key={chatMessage.message.id}>
+            <Dropdown overlay={menu} trigger={["click"]}>
               <Comment
                 key={chatMessage.message.id}
                 avatar={

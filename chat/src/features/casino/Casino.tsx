@@ -48,7 +48,7 @@ export function Casino() {
   }, []);
 
   return (
-    <Layout>
+    <Layout style={{minHeight: "100vh"}}>
       {/* Interactions */}
       {/* == Mobile */}
       {!breakpoints.lg && !showingInteractionPanel && (
