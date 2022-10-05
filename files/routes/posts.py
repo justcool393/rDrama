@@ -666,9 +666,7 @@ def submit_post(v, sub=None):
 
 	title = sanitize_raw_title(request.values.get("title", ""))
 	
-	body = request.values.get("body", "").strip().replace('‎','')
-
-	body = body.replace('\r\n', '\n')[:20000]
+	body = sanitize_raw_body(request.values.get("body", ""))
 
 	def error(error):
 		if request.headers.get("Authorization") or request.headers.get("xhr"): return {"error": error}, 403
@@ -785,7 +783,7 @@ def submit_post(v, sub=None):
 			embed = str(int(id))
 
 
-	if not url and not request.values.get("body") and not request.files.get("file") and not request.files.get("file-url"):
+	if not url and not body and not request.files.get("file") and not request.files.get("file-url"):
 		return error("Please enter a url or some text.")
 
 	dup = g.db.query(Submission).filter(
@@ -862,7 +860,6 @@ def submit_post(v, sub=None):
 		body = body.replace(i.group(0), "")
 
 	body += process_files()
-
 	body = body.strip()
 
 	torture = (v.agendaposter and not v.marseyawarded and sub != 'chudrama')
@@ -899,7 +896,7 @@ def submit_post(v, sub=None):
 		app_id=v.client.application.id if v.client else None,
 		is_bot = is_bot,
 		url=url,
-		body=body[:20000],
+		body=body,
 		body_html=body_html,
 		embed_url=embed,
 		title=title,
