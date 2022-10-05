@@ -110,10 +110,11 @@ def user_sent_message(data, v):
 @socketio.on(E.UserDeletedMessage)
 @is_not_permabanned
 def user_deleted_message(data, v):
+    user_id = str(v.id)
     message_id = data
     message = S.select_message(C.state, message_id)
-    own_message = message['user_id'] == str(v.id)
-    payload = {'message_id': message_id}
+    own_message = message['user_id'] == user_id
+    payload = {'user_id': user_id, 'message_id': message_id}
 
     if not message:
         emit(E.ErrorOccurred, M.MessageNotFound)
