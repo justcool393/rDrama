@@ -1,13 +1,17 @@
 import React from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, Space, Tooltip } from "antd";
-import { PlayingCardDeck } from "./PlayingCard";
+import { Slots, PlayingCard, PlayingCardDeck } from "./games";
 
 export function Game() {
   return (
     <Card
       title="Game"
-      style={{ height: 400 }}
+      bodyStyle={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
       extra={
         <Space>
           <Tooltip title="How to play">
@@ -29,7 +33,10 @@ export function Game() {
         </Space>
       }
     >
-      <PlayingCardDeck count={10} />
+      {/* <Slots /> */}
+      <PlayingCardDeck count={20} />
+      <PlayingCard rank="K" suit="C" />
+      <PlayingCard rank="A" suit="S" />
     </Card>
   );
 }

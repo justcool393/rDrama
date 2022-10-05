@@ -1,0 +1,38 @@
+.Slots {
+  display: flex;
+  align-items: center;
+}
+
+.Slots-reel {
+  width: 128px;
+  height: 128px;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes changing {
+  from {
+    top: 0;
+  }
+  to {
+    top: -512px;
+  }
+}
+
+.Slots-reel > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.Slots-reel--1 {
+  animation: linear changing 1.15s infinite;
+}
+
+.Slots-reel--2 {
+  animation: linear changing 1.05s infinite reverse;
+}
+
+.Slots-reel--3 {
+  animation: linear changing 1.1s infinite;
+}

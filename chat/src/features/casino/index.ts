@@ -1,3 +1,4 @@
+export * from "./games";
 export * from "./state";
 export * from "./Balances";
 export * from "./Casino";
@@ -7,7 +8,6 @@ export * from "./Game";
 export * from "./GameSelect";
 export * from "./InformationPanel";
 export * from "./InteractionPanel";
-export * from "./PlayingCard";
 export * from "./TextBox";
 export * from "./useCasino";
 export * from "./Wager";

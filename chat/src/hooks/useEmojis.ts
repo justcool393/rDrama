@@ -114,6 +114,7 @@ export function useEmojis() {
   }, []);
 
   return {
+    emojis,
     error,
     ready: emojis.length > 0,
     visible,
