@@ -6,6 +6,7 @@ import {
   GiLever,
 } from "react-icons/gi";
 import { Button, Space } from "antd";
+import { useCasino } from "./useCasino";
 
 interface Props {
   direction: "horizontal" | "vertical";
@@ -13,7 +14,9 @@ interface Props {
 }
 
 export function GameIconSider({ direction, onLoadGame }: Props) {
+  const { userStartedGame } = useCasino();
   const handleLoadGame = useCallback((game: CasinoGame) => {
+    userStartedGame(game);
     onLoadGame(game);
   }, []);
 

@@ -1,6 +1,7 @@
 import { Divider, PageHeader } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useChance } from "../../../hooks";
+import { useCasino } from "../useCasino";
 import "./Slots.css";
 
 const REEL_SIZE = 128;
@@ -31,11 +32,14 @@ export function Slots({ onBack }: Props) {
   const leverRef = useRef<HTMLDivElement>(null);
   const leverBallRef = useRef<HTMLDivElement>(null);
   const pullingLever = useRef(false);
+  const { userPlayedSlots } = useCasino();
   const [active, setActive] = useState(false);
   const [rolling, setRolling] = useState([false, false, false]);
   const [finishing, setFinishing] = useState(false);
   const handleLeverPull = useCallback(() => {
     if (!active && !pullingLever.current) {
+      userPlayedSlots();
+
       // Staggered slots
       setActive(true);
 
