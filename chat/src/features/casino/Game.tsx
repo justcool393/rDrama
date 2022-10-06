@@ -1,18 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { Button, Card, List, Space, Tooltip } from "antd";
-import { Slots } from "./games";
+import { Card, List } from "antd";
 import { useFeedItems } from "./state";
-
-const data = Array.from({ length: 23 }).map((_, i) => ({
-  href: "https://ant.design",
-  title: `ant design part ${i}`,
-  avatar: "https://joeschmoe.io/api/v1/random",
-  description:
-    "Ant Design, a design language for background applications, is refined by Ant UED Team.",
-  content:
-    "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-}));
 
 export function Game() {
   const windowRef = useRef<HTMLDivElement>(null);
@@ -62,7 +50,7 @@ export function Game() {
             size="small"
             dataSource={feed}
             renderItem={(item) => (
-              <List.Item key={item.id}>{item.description}</List.Item>
+              <List.Item key={item.id}>{item.text}</List.Item>
             )}
           />
         )}

@@ -9,6 +9,7 @@ class CasinoHandlers():
     @staticmethod
     def get_handler_for_action(action):
         return {
+            CasinoActions.FEED_ADDED: CasinoHandlers.handle_feed_added,
             CasinoActions.USER_CONNECTED: CasinoHandlers.handle_user_connected,
             CasinoActions.USER_DISCONNECTED: CasinoHandlers.handle_user_disconnected,
             CasinoActions.USER_SENT_MESSAGE: CasinoHandlers.handle_user_sent_message,
@@ -22,21 +23,8 @@ class CasinoHandlers():
             CasinoActions.RACING_STATE_INITIALIZED: CasinoHandlers.handle_racing_state_initialized,
         }[action] or None
 
-    # == "Private"
     @staticmethod
-    def _handle_feed_updated(state, payload):
-        user_id = payload['user_id']
-        text = payload['text']
-        feed = CasinoBuilders.build_feed_entity(user_id, text)
-        feed_id = feed['id']
-
-        CasinoSelectors.select_feed_ids(state).append(feed_id)
-        CasinoSelectors.select_feed_lookup(state)[feed_id] = feed
-
-        return state
-
-    @staticmethod
-    def _handle_user_session_updated(state, payload):
+    def handle_user_session_updated(state, payload):
         game = payload['game']
         session = payload['session']
         session_id = session['id']
@@ -55,7 +43,18 @@ class CasinoHandlers():
 
         return state
 
-    # == "Public"
+    @staticmethod
+    def handle_feed_added(state, payload):
+        feed_id = payload['id']
+        channels = payload['channels']
+        text = payload['text']
+        feed = CasinoBuilders.build_feed_entity(feed_id, channels, text)
+
+        CasinoSelectors.select_feed_ids(state).append(feed_id)
+        CasinoSelectors.select_feed_lookup(state)[feed_id] = feed
+
+        return state
+
     @staticmethod
     def handle_user_connected(state, payload):
         user_id = payload['user_id']
@@ -74,12 +73,6 @@ class CasinoHandlers():
 
             user = CasinoBuilders.build_user_entity(user_id, request_id)
             CasinoSelectors.select_user_lookup(state)[user_id] = user
-
-        username = grab(user, 'account/username')
-        feed_update_payload = {'user_id': user_id,
-                               'text': f'{username} has entered the casino.'}
-        state = CasinoHandlers._handle_feed_updated(
-            state, feed_update_payload)
 
         return state
 
@@ -175,23 +168,12 @@ class CasinoHandlers():
             if user_id in users_in_game:
                 users_in_game.remove(user_id)
 
-        username = CasinoSelectors.select_user_username(state, user_id)
-        feed_update_payload = {'user_id': user_id,
-                               'text': f'{username} started playing {game}.'}
-        state = CasinoHandlers._handle_feed_updated(
-            state, feed_update_payload)
-
         return state
 
     @staticmethod
     def handle_user_played_slots(state, payload):
         user_id = payload['user_id']
         game_state = payload['game_state']
-
-        # Feed
-        feed_update_payload = {'user_id': user_id, 'text': game_state['text']}
-        state = CasinoHandlers._handle_feed_updated(
-            state, feed_update_payload)
 
         # Session
         session = CasinoBuilders.build_session_entity(
@@ -209,26 +191,9 @@ class CasinoHandlers():
     def handle_user_played_roulette(state, payload):
         user_id = payload['user_id']
         game_state = payload['game_state']
-        placed_bet = payload['placed_bet']
 
         CasinoSelectors.select_game(state, CasinoGames.Roulette)[
             'state'] = game_state
-
-        # Feed
-        bet = placed_bet['bet']
-        which = placed_bet['which']
-        currency = placed_bet['currency']
-        wager = placed_bet['wager']
-        text = CasinoSelectors.select_roulette_bet_feed_item(
-            state,
-            user_id,
-            bet,
-            which,
-            currency,
-            wager
-        )
-        feed_update_payload = {'user_id': user_id, 'text': text}
-        state = CasinoHandlers._handle_feed_updated(state, feed_update_payload)
 
         # Session
         session = CasinoBuilders.build_session_entity(
@@ -262,26 +227,9 @@ class CasinoHandlers():
     def handle_user_played_racing(state, payload):
         user_id = payload['user_id']
         game_state = payload['game_state']
-        placed_bet = payload['placed_bet']
 
         CasinoSelectors.select_game(state, CasinoGames.Racing)[
             'state'] = game_state
-
-        # Feed
-        kind = placed_bet['kind']
-        selection = placed_bet['selection']
-        currency = placed_bet['currency']
-        wager = placed_bet['wager']
-        text = CasinoSelectors.select_racing_bet_feed_item(
-            state,
-            user_id,
-            kind,
-            selection,
-            currency,
-            wager
-        )
-        feed_update_payload = {'user_id': user_id, 'text': text}
-        state = CasinoHandlers._handle_feed_updated(state, feed_update_payload)
 
         # Session
         session = CasinoBuilders.build_session_entity(

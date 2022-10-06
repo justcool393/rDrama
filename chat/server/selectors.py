@@ -119,11 +119,6 @@ class CasinoSelectors():
         return CasinoSelectors.select_feed_lookup(state).get(feed_id)
 
     @staticmethod
-    def select_newest_feed(state):
-        feed_id = CasinoSelectors.select_feed_ids(state)[-1]
-        return CasinoSelectors.select_feed(state, feed_id)
-
-    @staticmethod
     def select_roulette_bet_feed_item(state, user_id, bet, which, currency, wager):
         username = CasinoSelectors.select_user_username(state, user_id)
 

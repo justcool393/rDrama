@@ -16,6 +16,7 @@ class CasinoCurrency(str, Enum):
 
 
 class CasinoActions(str, Enum):
+    FEED_ADDED = "FEED_ADDED"
     USER_CONNECTED = "USER_CONNECTED"
     USER_DISCONNECTED = "USER_DISCONNECTED"
     USER_SENT_MESSAGE = "USER_SENT_MESSAGE"

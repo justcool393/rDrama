@@ -196,7 +196,7 @@ export function SlotReel({ rolling }: SlotReelProps) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 64,
+          fontSize: 80,
           background:
             "radial-gradient(circle, rgba(248,248,250,1) 0%, rgba(214,206,255,1) 100%)",
         }}

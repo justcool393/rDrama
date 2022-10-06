@@ -27,10 +27,10 @@ C = CasinoManager.instance
 @socketio.on(E.Connect)
 @is_not_permabanned
 def connect_to_casino(v):
-    if not C.instance.racing_manager:
-        C.instance.racing_manager = MarseyRacingManager()
+    if not C.racing_manager:
+        C.racing_manager = MarseyRacingManager()
         C.dispatch(A.RACING_STATE_INITIALIZED, {
-                   'game_state': dumps(C.instance.racing_manager.state)})
+                   'game_state': dumps(C.racing_manager.state)})
 
     user_id = str(v.id)
     payload = {'user_id': v.id, 'request_id': request.sid}
@@ -51,8 +51,13 @@ def connect_to_casino(v):
     user = S.select_user(C.state, str(v.id))
     emit(E.UserUpdated, user, broadcast=True)
 
-    feed = S.select_newest_feed(C.state)
-    emit(E.FeedUpdated, feed, broadcast=True)
+    channels = ['lobby']
+    username = S.select_user_username(C.state, user_id)
+    text = f'{username} has entered the casino.'
+    feed = C.add_feed(channels, text)
+
+    for channel in channels:
+        emit(E.FeedUpdated, feed, to=channel)
 
     emit(E.InitialStateProvided, C.state)
     return '', 200
@@ -79,6 +84,15 @@ def disconnect_from_casino(v):
 
     user = S.select_user(C.state, str(v.id))
     emit(E.UserUpdated, user, broadcast=True)
+
+    channels = ['lobby']
+    username = S.select_user_username(C.state, user_id)
+    text = f'{username} has exited the casino.'
+    feed = C.add_feed(channels, text)
+
+    for channel in channels:
+        emit(E.FeedUpdated, feed, to=channel)
+
     return '', 200
 
 
@@ -180,8 +194,13 @@ def user_started_game(data, v):
     for remaining_game in remaining_games:
         leave_room(remaining_game)
 
-    feed = S.select_newest_feed(C.state)
-    emit(E.FeedUpdated, feed, broadcast=True)
+    channels = [game]
+    username = S.select_user_username(C.state, str(v.id))
+    text = f'{username} started playing {game}.'
+    feed = C.add_feed(channels, text)
+
+    for channel in channels:
+        emit(E.FeedUpdated, feed, to=channel)
 
     game = S.select_game(C.state, game)
     emit(E.GameUpdated, game)
@@ -218,9 +237,16 @@ def user_played_slots(data, v):
         C.dispatch(A.USER_PLAYED_SLOTS, payload)
         session_key = B.build_session_key(str(v.id), CasinoGames.Slots)
         session = S.select_session(C.state, session_key)
-        feed = S.select_newest_feed(C.state)
         emit(E.SessionUpdated, session)
-        emit(E.FeedUpdated, feed)
+
+        channels = ['slots']
+        username = S.select_user_username(C.state, str(v.id))
+        text = f'{username} <change me>'
+        feed = C.add_feed(channels, text)
+
+        for channel in channels:
+            emit(E.FeedUpdated, feed, to=channel)
+
         return '', 200
     else:
         emit(E.ErrorOccurred, M.CannotPullLever)
@@ -269,12 +295,26 @@ def user_played_roulette(data, v):
         C.dispatch(A.USER_PLAYED_ROULETTE, payload)
 
         game = S.select_game(C.state, CasinoGames.Roulette)
+        emit(E.GameUpdated, game, broadcast=True)
+
         session_key = B.build_session_key(str(v.id), CasinoGames.Roulette)
         session = S.select_session(C.state, session_key)
-        feed = S.select_newest_feed(C.state)
-        emit(E.GameUpdated, game, broadcast=True)
         emit(E.SessionUpdated, session, broadcast=True)
-        emit(E.FeedUpdated, feed, broadcast=True)
+
+        channels = ['roulette']
+        text = S.select_roulette_bet_feed_item(
+            C.state,
+            str(v.id),
+            bet,
+            which,
+            currency,
+            wager
+        )
+        feed = C.add_feed(channels, text)
+
+        for channel in channels:
+            emit(E.FeedUpdated, feed, to=channel)
+
         return '', 200
     except:
         emit(E.ErrorOccurred, M.CannotPlaceBet)
@@ -326,10 +366,10 @@ def user_played_blackjack(data, v):
             C.dispatch(A.USER_PLAYED_BLACKJACK, payload)
 
             game = S.select_game(C.state, CasinoGames.Blackjack)
+            emit(E.GameUpdated, game, broadcast=True)
+
             session_key = B.build_session_key(str(v.id), CasinoGames.Blackjack)
             session = S.select_session(C.state, session_key)
-
-            emit(E.GameUpdated, game, broadcast=True)
             emit(E.SessionUpdated, session, broadcast=True)
             return '', 200
         except:
@@ -412,21 +452,31 @@ def user_played_racing(data, v):
             C.dispatch(A.USER_PLAYED_RACING, payload)
 
             game = S.select_game(C.state, CasinoGames.Racing)
+            emit(E.GameUpdated, game, broadcast=True)
+
             session_key = B.build_session_key(user_id, CasinoGames.Racing)
             session = S.select_session(C.state, session_key)
-            feed = S.select_newest_feed(C.state)
-            emit(E.GameUpdated, game, broadcast=True)
             emit(E.SessionUpdated, session, broadcast=True)
-            emit(E.FeedUpdated, feed, broadcast=True)
+
+            channels = ['roulette']
+            text = S.select_racing_bet_feed_item(
+                C.state,
+                str(v.id),
+                kind,
+                selection,
+                currency,
+                wager
+            )
+            feed = C.add_feed(channels, text)
+
+            for channel in channels:
+                emit(E.FeedUpdated, feed, to=channel)
+
             emit(E.ConfirmationReceived, M.RacingBetPlacedSuccessfully)
             return 200, ''
         else:
             emit(E.ErrorOccurred, M.CannotPlaceBet)
             return 400, ''
-    except Exception as e:
-        print("\n\n\n\n\n")
-        print("\n\n\n\n\n")
-        print("\n\n\n\n\n")
-        print(e)
+    except:
         emit(E.ErrorOccurred, M.CannotPlaceBet)
         return 400, ''

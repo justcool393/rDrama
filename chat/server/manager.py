@@ -1,7 +1,9 @@
+from uuid import uuid4
 from json import dumps
 from copy import deepcopy
 from .builders import CasinoBuilders
 from .config import IN_DEVELOPMENT_MODE, STATE_LOG_PATH
+from .enums import CasinoActions
 from .handlers import CasinoHandlers
 from .middleware import CasinoMiddleware
 
@@ -55,6 +57,14 @@ class CasinoManager():
 
         if IN_DEVELOPMENT_MODE:
             self._log_state()
+
+    def add_feed(self, channels, text):
+        feed_id = str(uuid4())
+        payload = {'id': feed_id, 'channels': channels, 'text': text}
+
+        self.dispatch(CasinoActions.FEED_ADDED, payload)
+
+        return payload
 
 
 CasinoManager.instance = CasinoManager()

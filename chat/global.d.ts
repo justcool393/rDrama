@@ -80,8 +80,8 @@ declare interface ConversationEntity {
 
 declare interface FeedEntity {
   id: string;
-  user_id: string;
-  description: string;
+  channels: string[];
+  text: string;
   timestamp: number;
 }
 

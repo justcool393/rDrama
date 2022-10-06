@@ -51,13 +51,11 @@ class CasinoBuilders():
         }
 
     @staticmethod
-    def build_feed_entity(user_id, description):
-        feed_id = str(uuid.uuid4())
-
+    def build_feed_entity(id, channels, text):
         return {
-            'id': feed_id,
-            'user_id': user_id,
-            'description': description,
+            'id': id,
+            'channels': channels,
+            'text': text,
             'timestamp': int(time())
         }
 
