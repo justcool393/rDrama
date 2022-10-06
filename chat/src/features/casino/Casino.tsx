@@ -15,7 +15,6 @@ import { GameIconSider } from "./GameIconSider";
 import { InformationPanel } from "./InformationPanel";
 import { InteractionPanel } from "./InteractionPanel";
 import { TextBox } from "./TextBox";
-import { GameSelect } from "./GameSelect";
 import { useCasinoSelector } from "./state";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
@@ -82,7 +81,7 @@ export function Casino() {
       )}
       <Drawer
         placement="left"
-        title={<GameSelect />}
+        headerStyle={{display: "none"}}
         onClose={() => setShowingInteractionPanel(false)}
         open={showingInteractionPanel && !breakpoints.lg}
         style={{ top: PANEL_OFFSET_TOP }}

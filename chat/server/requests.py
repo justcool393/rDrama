@@ -100,6 +100,10 @@ def user_sent_message(data, v):
     text = sanitize_chat_message(data['message'])
     payload = {'user_id': v.id, 'text': text}
 
+    if len(text) == 0:
+        emit(E.ErrorOccurred, M.CannotSendEmptyMessage)
+        return '', 400
+
     C.dispatch(A.USER_SENT_MESSAGE, payload)
 
     message = S.select_newest_message(C.state)

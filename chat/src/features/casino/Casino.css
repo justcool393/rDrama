@@ -1,3 +1,13 @@
+/* ANT OVERRIDES */
+.ant-layout-sider {
+  background: var(--gray-600) !important;
+}
+
+.ant-menu.ant-menu-dark {
+  background: var(--background) !important;
+}
+/* ANT OVERRIDES */
+
 html,
 body {
   overscroll-behavior-y: none;
@@ -16,6 +26,7 @@ body {
 
 .App {
   position: fixed;
+  min-width: 500px;
   width: 100vw;
   display: flex;
   overflow: hidden;

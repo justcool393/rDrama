@@ -1,6 +1,7 @@
-import { SendOutlined, SmileOutlined } from "@ant-design/icons";
-import { Button, Input, Tooltip } from "antd";
-import React, { useMemo } from "react";
+import React, { useCallback } from "react";
+import { BsEmojiSmileFill } from "react-icons/bs";
+import { FiSend } from "react-icons/fi";
+import { Button, Input, Tabs, Tooltip } from "antd";
 import { useCasino } from "./useCasino";
 
 const TEXTAREA_ROW_COUNT = 3;
@@ -11,18 +12,13 @@ const { TextArea } = Input;
 export function TextBox() {
   const { draft, recipient, setDraft, userSentMessage, userConversed } =
     useCasino();
-  const handleSend = useMemo(
+  const handleSend = useCallback(
     () => (recipient ? userConversed : userSentMessage),
     [recipient, userConversed, userSentMessage]
   );
 
   return (
-    <div
-      style={{ display: "flex", alignItems: "center", paddingBottom: "2rem" }}
-    >
-      <Tooltip title="View emojis">
-        <Button type="primary" shape="circle" icon={<SmileOutlined />} />
-      </Tooltip>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <TextArea
         autoSize={{
           minRows: TEXTAREA_ROW_COUNT,
@@ -39,14 +35,39 @@ export function TextBox() {
           margin: "0 2rem",
         }}
       />
-      <Tooltip title="Send message">
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<SendOutlined />}
-          onClick={handleSend}
-        />
-      </Tooltip>
+      <Tabs
+        tabPosition="right"
+        items={[
+          {
+            key: "send",
+            label: (
+              <Tooltip title="Send">
+                <Button
+                  size="large"
+                  type="ghost"
+                  shape="circle"
+                  icon={<FiSend />}
+                  onClick={handleSend}
+                />
+              </Tooltip>
+            ),
+          },
+          {
+            key: "emojis",
+            label: (
+              <Tooltip title="Emojis">
+                <Button
+                  size="large"
+                  type="ghost"
+                  shape="circle"
+                  icon={<BsEmojiSmileFill />}
+                  onClick={handleSend}
+                />
+              </Tooltip>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }

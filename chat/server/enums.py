@@ -77,3 +77,4 @@ class CasinoMessages(str, Enum):
     BlackjackUnableToTakeAction = "Unable to take that action."
     BlackjackNoGameInProgress = "You do not have a blackjack game in progress."
     RacingBetPlacedSuccessfully = "Your bet was successfully placed."
+    CannotSendEmptyMessage = "Please enter a message."
