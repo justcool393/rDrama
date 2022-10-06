@@ -210,6 +210,7 @@ def user_started_game(data, v):
 @socketio.on(E.UserPlayedSlots)
 @is_not_permabanned
 def user_played_slots(data, v):
+    user_id = str(v.id)
     currency = data['currency']
     wager = int(data['wager'])
 
@@ -235,17 +236,20 @@ def user_played_slots(data, v):
         }
 
         C.dispatch(A.USER_PLAYED_SLOTS, payload)
-        session_key = B.build_session_key(str(v.id), CasinoGames.Slots)
+        session_key = B.build_session_key(user_id, CasinoGames.Slots)
         session = S.select_session(C.state, session_key)
         emit(E.SessionUpdated, session)
 
         channels = ['slots']
-        username = S.select_user_username(C.state, str(v.id))
+        username = S.select_user_username(C.state, user_id)
         text = f'{username} <change me>'
         feed = C.add_feed(channels, text)
 
         for channel in channels:
             emit(E.FeedUpdated, feed, to=channel)
+
+        user = S.select_user(C.state, user_id)
+        emit(E.UserUpdated, user, broadcast=True)
 
         return '', 200
     else:
