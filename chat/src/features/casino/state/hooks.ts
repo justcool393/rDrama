@@ -61,3 +61,16 @@ export function useFeedItems() {
     state.feed.all.map((feedId) => state.feed.by_id[feedId])
   );
 }
+
+export function useCasinoGames() {
+  return useCasinoSelector((state) =>
+    state.game.all.map((id) => state.game.by_id[id])
+  );
+}
+
+export function useActiveCasinoGame() {
+  const { id } = useRootContext();
+  const games = useCasinoGames();
+
+  return games.find((game) => game.user_ids.includes(id)) || null;
+}

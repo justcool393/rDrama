@@ -29,7 +29,7 @@ class CasinoHandlers():
         text = payload['text']
         feed = CasinoBuilders.build_feed_entity(user_id, text)
         feed_id = feed['id']
-        
+
         CasinoSelectors.select_feed_ids(state).append(feed_id)
         CasinoSelectors.select_feed_lookup(state)[feed_id] = feed
 
@@ -49,7 +49,7 @@ class CasinoHandlers():
         CasinoSelectors.select_session_lookup(state)[session_id] = session
 
         game_sessions = CasinoSelectors.select_game_sessions(state, game)
-        
+
         if not session_id in game_sessions:
             game_sessions.append(session_id)
 
@@ -76,7 +76,8 @@ class CasinoHandlers():
             CasinoSelectors.select_user_lookup(state)[user_id] = user
 
         username = grab(user, 'account/username')
-        feed_update_payload = {'user_id': user_id, 'text': f'{username} has entered the casino.'}
+        feed_update_payload = {'user_id': user_id,
+                               'text': f'{username} has entered the casino.'}
         state = CasinoHandlers._handle_feed_updated(
             state, feed_update_payload)
 
@@ -104,7 +105,7 @@ class CasinoHandlers():
         text = payload['text']
         message = CasinoBuilders.build_message_entity(user_id, text)
         message_id = message['id']
-        
+
         CasinoSelectors.select_message_ids(state).append(message_id)
         CasinoSelectors.select_message_lookup(state)[message_id] = message
 
@@ -141,13 +142,17 @@ class CasinoHandlers():
                 recipient
             )
             conversation_key = conversation['id']
-            CasinoSelectors.select_conversation_keys(state).append(conversation_key)
-            CasinoSelectors.select_conversation_lookup(state)[conversation_key] = conversation
+            CasinoSelectors.select_conversation_keys(
+                state).append(conversation_key)
+            CasinoSelectors.select_conversation_lookup(
+                state)[conversation_key] = conversation
 
         message = CasinoBuilders.build_message_entity(user_id, text)
         message_id = message['id']
-        CasinoSelectors.select_conversation_message_ids(state, conversation_key).append(message_id)
-        CasinoSelectors.select_conversation_message_lookup(state, conversation_key)[message_id] = message
+        CasinoSelectors.select_conversation_message_ids(
+            state, conversation_key).append(message_id)
+        CasinoSelectors.select_conversation_message_lookup(
+            state, conversation_key)[message_id] = message
 
         return state
 
@@ -164,10 +169,17 @@ class CasinoHandlers():
         remaining_games.remove(game)
 
         for remaining_game in remaining_games:
-            users_in_game = CasinoSelectors.select_game_users(state, remaining_game)
+            users_in_game = CasinoSelectors.select_game_users(
+                state, remaining_game)
 
             if user_id in users_in_game:
                 users_in_game.remove(user_id)
+
+        username = CasinoSelectors.select_user_username(state, user_id)
+        feed_update_payload = {'user_id': user_id,
+                               'text': f'{username} started playing {game}.'}
+        state = CasinoHandlers._handle_feed_updated(
+            state, feed_update_payload)
 
         return state
 
@@ -198,8 +210,9 @@ class CasinoHandlers():
         user_id = payload['user_id']
         game_state = payload['game_state']
         placed_bet = payload['placed_bet']
-        
-        CasinoSelectors.select_game(state, CasinoGames.Roulette)['state'] = game_state
+
+        CasinoSelectors.select_game(state, CasinoGames.Roulette)[
+            'state'] = game_state
 
         # Feed
         bet = placed_bet['bet']
@@ -250,8 +263,9 @@ class CasinoHandlers():
         user_id = payload['user_id']
         game_state = payload['game_state']
         placed_bet = payload['placed_bet']
-        
-        CasinoSelectors.select_game(state, CasinoGames.Racing)['state'] = game_state
+
+        CasinoSelectors.select_game(state, CasinoGames.Racing)[
+            'state'] = game_state
 
         # Feed
         kind = placed_bet['kind']
@@ -284,7 +298,8 @@ class CasinoHandlers():
     @staticmethod
     def handle_racing_state_initialized(state, payload):
         game_state = payload['game_state']
-        
-        CasinoSelectors.select_game(state, CasinoGames.Racing)['state'] = game_state
+
+        CasinoSelectors.select_game(state, CasinoGames.Racing)[
+            'state'] = game_state
 
         return state

@@ -15,10 +15,11 @@ import { GameIconSider } from "./GameIconSider";
 import { InformationPanel } from "./InformationPanel";
 import { InteractionPanel } from "./InteractionPanel";
 import { TextBox } from "./TextBox";
-import { useCasinoSelector } from "./state";
+import { useActiveCasinoGame, useCasinoSelector } from "./state";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";
+import { useCasino } from "./useCasino";
 
 const PANEL_OFFSET_TOP = 70;
 const MOBILE_DRAWER_BUTTON_PADDING = 20;
@@ -32,7 +33,8 @@ const { useBreakpoint } = Grid;
 
 export function Casino() {
   const breakpoints = useBreakpoint();
-  const [showingInteractionPanel, setShowingInteractionPanel] = useState(false);
+  const { userStartedGame } = useCasino();
+  const activeGame = useActiveCasinoGame();
   const [showingInformationPanel, setShowingInformationPanel] = useState(false);
   const usersOnline = useCasinoSelector((state) =>
     state.user.all
@@ -51,7 +53,7 @@ export function Casino() {
     <Layout style={{ minHeight: "100vh" }}>
       {/* Interactions */}
       {/* == Mobile */}
-      {!breakpoints.lg && !showingInteractionPanel && (
+      {/* {!breakpoints.lg && !activeGame && (
         <Affix
           offsetTop={PANEL_OFFSET_TOP}
           style={{
@@ -66,7 +68,7 @@ export function Casino() {
               type="ghost"
               shape="circle"
               icon={<CaretLeftOutlined />}
-              onClick={() => setShowingInteractionPanel(true)}
+              // onClick={() => setShowingInteractionPanel(true)}
             />
             <Button
               type="ghost"
@@ -81,36 +83,37 @@ export function Casino() {
       )}
       <Drawer
         placement="left"
-        headerStyle={{display: "none"}}
+        headerStyle={{ display: "none" }}
         onClose={() => setShowingInteractionPanel(false)}
         open={showingInteractionPanel && !breakpoints.lg}
         style={{ top: PANEL_OFFSET_TOP }}
       >
         <InteractionPanel onClose={() => setShowingInteractionPanel(false)} />
-      </Drawer>
+      </Drawer> */}
 
       {/* == Desktop */}
       {breakpoints.lg && (
         <Affix offsetTop={PANEL_OFFSET_TOP}>
           <Sider
             collapsible={true}
-            collapsed={!showingInteractionPanel}
+            collapsed={!activeGame}
             collapsedWidth={64}
-            onCollapse={(showing) => setShowingInteractionPanel(!showing)}
+            // onCollapse={(showing) => setShowingInteractionPanel(!showing)}
             trigger={null}
             width={INTERACTION_PANEL_WIDTH}
             style={{ height: "95vh", padding: "1rem" }}
           >
-            {showingInteractionPanel ? (
+            {activeGame ? (
               <div className="Casino-fade">
                 <InteractionPanel
-                  onClose={() => setShowingInteractionPanel(false)}
+                  // onClose={() => setShowingInteractionPanel(false)}
+                  onClose={() => {}}
                 />
               </div>
             ) : (
               <GameIconSider
                 direction="vertical"
-                onLoadGame={() => setShowingInteractionPanel(true)}
+                onLoadGame={userStartedGame}
               />
             )}
           </Sider>

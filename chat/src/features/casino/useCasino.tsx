@@ -132,9 +132,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   const userPlayedBlackjack = useCallback(
     (action: BlackjackAction) => {
       const payload =
-        action === 'DEAL'
-          ? { action, currency, wager }
-          : { action };
+        action === "DEAL" ? { action, currency, wager } : { action };
 
       socket.current?.emit(CasinoHandlers.UserPlayedBlackjack, payload);
     },

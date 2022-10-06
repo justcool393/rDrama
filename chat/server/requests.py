@@ -180,6 +180,9 @@ def user_started_game(data, v):
     for remaining_game in remaining_games:
         leave_room(remaining_game)
 
+    feed = S.select_newest_feed(C.state)
+    emit(E.FeedUpdated, feed, broadcast=True)
+
     game = S.select_game(C.state, game)
     emit(E.GameUpdated, game)
     return '', 200

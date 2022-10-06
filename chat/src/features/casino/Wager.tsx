@@ -28,6 +28,7 @@ export function Wager() {
       <div style={{ flex: 1, maxWidth: 300 }}>
         <Title level={5}>Wager</Title>
         <InputNumber
+          bordered={false}
           placeholder="Enter your wager..."
           min={MINIMUM_WAGER}
           value={wager}
@@ -35,6 +36,7 @@ export function Wager() {
           onChange={(value) => setWager(value)}
           prefix={balanceError ? <ExclamationCircleOutlined /> : <span />}
           size="large"
+          style={{ padding: 0 }}
         />
         <Text
           style={{
@@ -47,6 +49,9 @@ export function Wager() {
       </div>
       <Tabs
         tabPosition="right"
+        onChange={(tab) => {
+          const handlers = {};
+        }}
         items={[
           {
             key: "procoins",

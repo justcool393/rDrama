@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, List, Space, Tooltip } from "antd";
 import { Slots } from "./games";
@@ -15,8 +15,13 @@ const data = Array.from({ length: 23 }).map((_, i) => ({
 }));
 
 export function Game() {
+  const windowRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState("feed");
   const feed = useFeedItems();
+
+  useEffect(() => {
+    windowRef.current.scrollTop = windowRef.current.scrollHeight;
+  });
 
   return (
     <Card
@@ -45,26 +50,23 @@ export function Game() {
           tab: "Stats",
         },
       ]}
-      bodyStyle={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: 250,
-        overflow: "auto",
-        paddingTop: "6rem",
-      }}
     >
-      {activeTab === "feed" && (
-        <List
-          style={{ flex: 1 }}
-          itemLayout="vertical"
-          size="small"
-          dataSource={feed}
-          renderItem={(item) => (
-            <List.Item key={item.id}>{item.description}</List.Item>
-          )}
-        />
-      )}
+      <div
+        ref={windowRef}
+        style={{ height: 250, overflow: "auto", paddingTop: "6rem" }}
+      >
+        {activeTab === "feed" && (
+          <List
+            style={{ flex: 1 }}
+            itemLayout="vertical"
+            size="small"
+            dataSource={feed}
+            renderItem={(item) => (
+              <List.Item key={item.id}>{item.description}</List.Item>
+            )}
+          />
+        )}
+      </div>
     </Card>
   );
 }
