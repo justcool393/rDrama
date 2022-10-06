@@ -5,6 +5,7 @@ export * from "./Casino";
 export * from "./ChatMessageBox";
 export * from "./Currency";
 export * from "./Game";
+export * from "./GameIconSider";
 export * from "./GameSelect";
 export * from "./InformationPanel";
 export * from "./InteractionPanel";

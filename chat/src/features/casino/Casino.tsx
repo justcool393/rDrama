@@ -11,6 +11,7 @@ import {
   Typography,
 } from "antd";
 import { ChatMessageBox } from "./ChatMessageBox";
+import { GameIconSider } from "./GameIconSider";
 import { InformationPanel } from "./InformationPanel";
 import { InteractionPanel } from "./InteractionPanel";
 import { TextBox } from "./TextBox";
@@ -23,7 +24,7 @@ import "./Casino.css";
 const PANEL_OFFSET_TOP = 70;
 const MOBILE_DRAWER_BUTTON_PADDING = 20;
 const INTERACTION_PANEL_WIDTH = 560;
-const INFORMATION_SIDER_WIDTH = 340;
+const INFORMATION_SIDER_WIDTH = 300;
 const MESSAGE_TOP = 100;
 const MESSAGE_DURATION = 2;
 
@@ -48,7 +49,7 @@ export function Casino() {
   }, []);
 
   return (
-    <Layout style={{minHeight: "100vh"}}>
+    <Layout style={{ minHeight: "100vh" }}>
       {/* Interactions */}
       {/* == Mobile */}
       {!breakpoints.lg && !showingInteractionPanel && (
@@ -86,18 +87,33 @@ export function Casino() {
         open={showingInteractionPanel && !breakpoints.lg}
         style={{ top: PANEL_OFFSET_TOP }}
       >
-        <InteractionPanel />
+        <InteractionPanel onClose={() => setShowingInteractionPanel(false)} />
       </Drawer>
 
       {/* == Desktop */}
       {breakpoints.lg && (
         <Affix offsetTop={PANEL_OFFSET_TOP}>
           <Sider
+            collapsible={true}
+            collapsed={!showingInteractionPanel}
+            collapsedWidth={64}
+            onCollapse={(showing) => setShowingInteractionPanel(!showing)}
+            trigger={null}
             width={INTERACTION_PANEL_WIDTH}
             style={{ height: "95vh", padding: "1rem" }}
           >
-            <GameSelect />
-            <InteractionPanel />
+            {showingInteractionPanel ? (
+              <div className="Casino-fade">
+                <InteractionPanel
+                  onClose={() => setShowingInteractionPanel(false)}
+                />
+              </div>
+            ) : (
+              <GameIconSider
+                direction="vertical"
+                onLoadGame={() => setShowingInteractionPanel(true)}
+              />
+            )}
           </Sider>
         </Affix>
       )}
