@@ -1,7 +1,6 @@
 from copy import copy
 from .builders import CasinoBuilders
 from .enums import CasinoActions, CasinoGames
-from .helpers import grab
 from .selectors import CasinoSelectors
 
 
@@ -182,7 +181,7 @@ class CasinoHandlers():
             'game': CasinoGames.Slots,
             'session': session
         }
-        state = CasinoHandlers._handle_user_session_updated(
+        state = CasinoHandlers.handle_user_session_updated(
             state, session_update_payload)
 
         return state
@@ -202,7 +201,7 @@ class CasinoHandlers():
             'game': CasinoGames.Roulette,
             'session': session
         }
-        state = CasinoHandlers._handle_user_session_updated(
+        state = CasinoHandlers.handle_user_session_updated(
             state, session_update_payload)
 
         return state
@@ -218,7 +217,7 @@ class CasinoHandlers():
             'game': CasinoGames.Blackjack,
             'session': session
         }
-        state = CasinoHandlers._handle_user_session_updated(
+        state = CasinoHandlers.handle_user_session_updated(
             state, session_update_payload)
 
         return state
@@ -238,7 +237,7 @@ class CasinoHandlers():
             'game': CasinoGames.Racing,
             'session': session
         }
-        state = CasinoHandlers._handle_user_session_updated(
+        state = CasinoHandlers.handle_user_session_updated(
             state, session_update_payload)
 
         return state

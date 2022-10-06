@@ -2,6 +2,7 @@ import { Divider, PageHeader } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useChance } from "../../../hooks";
 import { useCasino } from "../useCasino";
+import { useUserGameSession } from "../state";
 import "./Slots.css";
 
 const REEL_SIZE = 128;
@@ -33,32 +34,14 @@ export function Slots({ onBack }: Props) {
   const leverBallRef = useRef<HTMLDivElement>(null);
   const pullingLever = useRef(false);
   const { userPlayedSlots } = useCasino();
+  const session = useUserGameSession("slots");
   const [active, setActive] = useState(false);
   const [rolling, setRolling] = useState([false, false, false]);
   const [finishing, setFinishing] = useState(false);
+  const [result, setResult] = useState([null, null, null]);
   const handleLeverPull = useCallback(() => {
     if (!active && !pullingLever.current) {
       userPlayedSlots();
-
-      // Staggered slots
-      setActive(true);
-
-      // Lever animation
-      pullingLever.current = true;
-
-      leverRef.current?.classList.add("Slots-lever__pulled");
-      leverBallRef.current?.classList.add("Slots-leverBall__pulled");
-
-      const removingClass = setTimeout(() => {
-        pullingLever.current = false;
-
-        leverRef.current?.classList.remove("Slots-lever__pulled");
-        leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
-      }, 1000);
-
-      return () => {
-        clearTimeout(removingClass);
-      };
     }
   }, []);
 
@@ -90,23 +73,24 @@ export function Slots({ onBack }: Props) {
   useEffect(() => {
     if (active && finishing) {
       let stagger;
+      const symbols = (session?.game_state.symbols ?? ",,").split(",");
       const [first, second, third] = rolling;
 
       if (first) {
-        stagger = setTimeout(
-          () => setRolling([false, true, true]),
-          REEL_DURATION
-        );
+        stagger = setTimeout(() => {
+          setRolling([false, true, true]);
+          setResult([symbols[0], null, null]);
+        }, REEL_DURATION);
       } else if (second) {
-        stagger = setTimeout(
-          () => setRolling([false, false, true]),
-          REEL_DELAY
-        );
+        stagger = setTimeout(() => {
+          setRolling([false, false, true]);
+          setResult([symbols[0], symbols[1], null]);
+        }, REEL_DELAY);
       } else if (third) {
-        stagger = setTimeout(
-          () => setRolling([false, false, false]),
-          REEL_DELAY
-        );
+        stagger = setTimeout(() => {
+          setRolling([false, false, false]);
+          setResult(symbols);
+        }, REEL_DELAY);
       } else {
         setFinishing(false);
         setActive(false);
@@ -116,7 +100,35 @@ export function Slots({ onBack }: Props) {
         clearTimeout(stagger);
       };
     }
-  }, [active, rolling, finishing]);
+  }, [session, active, rolling, finishing]);
+
+  // Effect: When the session changes, it means a new game has been decided.
+  const firstSessionLoaded = useRef(false);
+  useEffect(() => {
+    if (firstSessionLoaded.current) {
+      // Staggered slots
+      setActive(true);
+
+      // Lever animation
+      pullingLever.current = true;
+
+      leverRef.current?.classList.add("Slots-lever__pulled");
+      leverBallRef.current?.classList.add("Slots-leverBall__pulled");
+
+      const removingClass = setTimeout(() => {
+        pullingLever.current = false;
+
+        leverRef.current?.classList.remove("Slots-lever__pulled");
+        leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
+      }, 1000);
+
+      return () => {
+        clearTimeout(removingClass);
+      };
+    } else if (session) {
+      firstSessionLoaded.current = true;
+    }
+  }, [session]);
 
   return (
     <>
@@ -136,9 +148,9 @@ export function Slots({ onBack }: Props) {
           position: "relative",
         }}
       >
-        <SlotReel rolling={rolling[0]} />
-        <SlotReel rolling={rolling[1]} />
-        <SlotReel rolling={rolling[2]} />
+        <SlotReel result={result[0]} rolling={rolling[0]} />
+        <SlotReel result={result[1]} rolling={rolling[1]} />
+        <SlotReel result={result[2]} rolling={rolling[2]} />
         <div
           ref={leverBallRef}
           className="Slots-leverBall"
@@ -152,10 +164,11 @@ export function Slots({ onBack }: Props) {
 }
 
 interface SlotReelProps {
+  result: string;
   rolling: boolean;
 }
 
-export function SlotReel({ rolling }: SlotReelProps) {
+export function SlotReel({ result, rolling }: SlotReelProps) {
   const chance = useChance();
   const order = useRef(chance.shuffle(REEL_SYMBOLS));
   const [which, setWhich] = useState(0);
@@ -201,7 +214,7 @@ export function SlotReel({ rolling }: SlotReelProps) {
             "radial-gradient(circle, rgba(248,248,250,1) 0%, rgba(214,206,255,1) 100%)",
         }}
       >
-        {order.current[which]}
+        {rolling ? order.current[which] : result || order.current[which]}
       </div>
     </div>
   );

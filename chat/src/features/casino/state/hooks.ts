@@ -74,3 +74,11 @@ export function useActiveCasinoGame() {
 
   return games.find((game) => game.user_ids.includes(id)) || null;
 }
+
+export function useUserGameSession(game: CasinoGame) {
+  const { id } = useRootContext();
+
+  return (
+    useCasinoSelector((state) => state.session.by_id[`${id}#${game}`]) || null
+  );
+}
