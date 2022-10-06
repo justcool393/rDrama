@@ -4,6 +4,7 @@ import { Button, Space } from "antd";
 import { Game } from "./Game";
 import { GameIconSider } from "./GameIconSider";
 import { Wager } from "./Wager";
+import { Slots } from "./games";
 
 interface Props {
   onClose(): void;
@@ -29,8 +30,10 @@ export function InteractionPanel({ onClose }: Props) {
           onClick={onClose}
         />
       </div>
-      <Game />
-      <Wager />
+      <Slots />
+      <div style={{ padding: "0 2rem" }}>
+        <Wager />
+      </div>
     </Space>
   );
 }

@@ -6,6 +6,11 @@
 .ant-menu.ant-menu-dark {
   background: var(--background) !important;
 }
+
+.ant-input-number,
+.ant-input-number-affix-wrapper {
+  width: 100% !important;
+}
 /* ANT OVERRIDES */
 
 html,
@@ -83,7 +88,6 @@ body {
   height: 100%;
 }
 
-
 .App-center {
   display: flex;
   align-items: flex-start;
@@ -103,7 +107,7 @@ body {
 }
 
 .App-bottom-extra {
-  padding: .25rem;
+  padding: 0.25rem;
 }
 
 /* On mobile, hide the sidebar and make the input full-width. */

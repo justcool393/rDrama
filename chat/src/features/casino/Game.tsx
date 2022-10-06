@@ -1,7 +1,7 @@
 import React from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, Space, Tooltip } from "antd";
-import { PlayingCard } from "./games";
+import { Slots } from "./games";
 
 export function Game() {
   return (
@@ -33,9 +33,6 @@ export function Game() {
         </Space>
       }
     >
-      {/* <Slots /> */}
-      <PlayingCard rank="K" suit="C" />
-      <PlayingCard rank="A" suit="S" />
     </Card>
   );
 }
