@@ -23,7 +23,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: red;
+  background: var(--primary);
   border: 2px solid black;
   cursor: pointer;
   z-index: 100;

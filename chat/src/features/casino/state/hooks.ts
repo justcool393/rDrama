@@ -55,3 +55,9 @@ export function useChatMessages() {
 
   return formatMessageGroups(users, messages);
 }
+
+export function useFeedItems() {
+  return useCasinoSelector((state) =>
+    state.feed.all.map((feedId) => state.feed.by_id[feedId])
+  );
+}

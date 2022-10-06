@@ -1,3 +1,4 @@
+import { Divider, PageHeader } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useChance } from "../../../hooks";
 import "./Slots.css";
@@ -22,7 +23,11 @@ const REEL_SWITCH_SPEED = 66;
 const REEL_DELAY = 250;
 const REEL_DURATION = 3000;
 
-export function Slots() {
+interface Props {
+  onBack(): void;
+}
+
+export function Slots({ onBack }: Props) {
   const leverRef = useRef<HTMLDivElement>(null);
   const leverBallRef = useRef<HTMLDivElement>(null);
   const pullingLever = useRef(false);
@@ -110,27 +115,35 @@ export function Slots() {
   }, [active, rolling, finishing]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        margin: "3rem 0",
-        paddingRight: "3rem",
-        gap: 12,
-        position: "relative",
-      }}
-    >
-      <SlotReel rolling={rolling[0]} />
-      <SlotReel rolling={rolling[1]} />
-      <SlotReel rolling={rolling[2]} />
-      <div
-        ref={leverBallRef}
-        className="Slots-leverBall"
-        onClick={handleLeverPull}
+    <>
+      <PageHeader
+        title="Slots"
+        subTitle="Lorem ipsum dolor sit amet"
+        onBack={onBack}
       />
-      <div ref={leverRef} className="Slots-lever" />
-    </div>
+      <Divider />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          paddingRight: "3rem",
+          gap: 12,
+          position: "relative",
+        }}
+      >
+        <SlotReel rolling={rolling[0]} />
+        <SlotReel rolling={rolling[1]} />
+        <SlotReel rolling={rolling[2]} />
+        <div
+          ref={leverBallRef}
+          className="Slots-leverBall"
+          onClick={handleLeverPull}
+        />
+        <div ref={leverRef} className="Slots-lever" />
+      </div>
+      <Divider />
+    </>
   );
 }
 

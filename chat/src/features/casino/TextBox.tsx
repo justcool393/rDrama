@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { FiSend } from "react-icons/fi";
-import { Button, Input, Tabs, Tooltip } from "antd";
+import { Button, Input, Space, Tooltip } from "antd";
 import { useCasino } from "./useCasino";
 
 const TEXTAREA_ROW_COUNT = 3;
@@ -12,7 +12,7 @@ const { TextArea } = Input;
 export function TextBox() {
   const { draft, recipient, setDraft, userSentMessage, userConversed } =
     useCasino();
-  const handleSend = useCallback(
+  const handleSend = useMemo(
     () => (recipient ? userConversed : userSentMessage),
     [recipient, userConversed, userSentMessage]
   );
@@ -35,39 +35,26 @@ export function TextBox() {
           margin: "0 2rem",
         }}
       />
-      <Tabs
-        tabPosition="right"
-        items={[
-          {
-            key: "send",
-            label: (
-              <Tooltip title="Send">
-                <Button
-                  size="large"
-                  type="ghost"
-                  shape="circle"
-                  icon={<FiSend />}
-                  onClick={handleSend}
-                />
-              </Tooltip>
-            ),
-          },
-          {
-            key: "emojis",
-            label: (
-              <Tooltip title="Emojis">
-                <Button
-                  size="large"
-                  type="ghost"
-                  shape="circle"
-                  icon={<BsEmojiSmileFill />}
-                  onClick={handleSend}
-                />
-              </Tooltip>
-            ),
-          },
-        ]}
-      />
+      <Space direction="vertical">
+        <Tooltip title="Send">
+          <Button
+            size="large"
+            type="ghost"
+            shape="circle"
+            icon={<FiSend />}
+            onClick={handleSend}
+          />
+        </Tooltip>
+        <Tooltip title="Emojis">
+          <Button
+            size="large"
+            type="ghost"
+            shape="circle"
+            icon={<BsEmojiSmileFill />}
+            onClick={handleSend}
+          />
+        </Tooltip>
+      </Space>
     </div>
   );
 }

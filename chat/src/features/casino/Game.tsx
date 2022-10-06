@@ -1,38 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
 import { TrophyOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Space, Tooltip } from "antd";
+import { Button, Card, List, Space, Tooltip } from "antd";
 import { Slots } from "./games";
+import { useFeedItems } from "./state";
+
+const data = Array.from({ length: 23 }).map((_, i) => ({
+  href: "https://ant.design",
+  title: `ant design part ${i}`,
+  avatar: "https://joeschmoe.io/api/v1/random",
+  description:
+    "Ant Design, a design language for background applications, is refined by Ant UED Team.",
+  content:
+    "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
+}));
 
 export function Game() {
+  const [activeTab, setActiveTab] = useState("feed");
+  const feed = useFeedItems();
+
   return (
     <Card
-      title="Game"
+      activeTabKey={activeTab}
+      onTabChange={setActiveTab}
+      tabProps={{ centered: true }}
+      tabList={[
+        {
+          key: "feed",
+          tab: "Feed",
+        },
+        {
+          key: "leaderboards",
+          tab: "Leaderboards",
+        },
+        {
+          key: "sessions",
+          tab: "Sessions",
+        },
+        {
+          key: "guide",
+          tab: "Guide",
+        },
+        {
+          key: "stats",
+          tab: "Stats",
+        },
+      ]}
       bodyStyle={{
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        height: 250,
+        overflow: "auto",
+        paddingTop: "6rem",
       }}
-      extra={
-        <Space>
-          <Tooltip title="How to play">
-            <Button
-              type="default"
-              shape="circle"
-              icon={<QuestionCircleOutlined />}
-              onClick={() => {}}
-            />
-          </Tooltip>
-          <Tooltip title="Leaderboard">
-            <Button
-              type="default"
-              shape="circle"
-              icon={<TrophyOutlined />}
-              onClick={() => {}}
-            />
-          </Tooltip>
-        </Space>
-      }
     >
+      {activeTab === "feed" && (
+        <List
+          style={{ flex: 1 }}
+          itemLayout="vertical"
+          size="small"
+          dataSource={feed}
+          renderItem={(item) => (
+            <List.Item key={item.id}>{item.description}</List.Item>
+          )}
+        />
+      )}
     </Card>
   );
 }

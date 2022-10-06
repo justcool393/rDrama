@@ -1,8 +1,8 @@
 import React from "react";
 import { ImExit } from "react-icons/im";
-import { Button, Space } from "antd";
-import { Game } from "./Game";
+import { Button, Divider, Space } from "antd";
 import { GameIconSider } from "./GameIconSider";
+import { Game } from "./Game";
 import { Wager } from "./Wager";
 import { Slots } from "./games";
 
@@ -30,9 +30,13 @@ export function InteractionPanel({ onClose }: Props) {
           onClick={onClose}
         />
       </div>
-      <Slots />
+      <Slots onBack={onClose} />
       <div style={{ padding: "0 2rem" }}>
         <Wager />
+      </div>
+      <Divider />
+      <div style={{ padding: "0 1rem" }}>
+        <Game />
       </div>
     </Space>
   );
