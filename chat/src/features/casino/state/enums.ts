@@ -19,13 +19,13 @@ export enum CasinoHandlers {
   InitialStateProvided = "initial-state-provided",
   ConfirmationReceived = "confirmation-received",
   ConversationUpdated = "conversation-updated",
-	FeedUpdated = "feed-updated",
-	GameUpdated = "game-updated",
-	LeaderboardUpdated = "leaderboard-updated",
-	MessageUpdated = "message-updated",
+  FeedUpdated = "feed-updated",
+  GameUpdated = "game-updated",
+  LeaderboardUpdated = "leaderboard-updated",
+  MessageUpdated = "message-updated",
   MessageDeleted = "message-deleted",
-	SessionUpdated = "session-updated",
-	UserUpdated = "user-updated"
+  SessionUpdated = "session-updated",
+  UserUpdated = "user-updated",
 }
 
 export enum CasinoClientActions {
@@ -37,5 +37,5 @@ export enum CasinoClientActions {
   FEED_UPDATED = "FEED_UPDATED",
   LEADERBOARD_UPDATED = "LEADERBOARD_UPDATED",
   GAME_UPDATED = "GAME_UPDATED",
-  SESSION_UPDATED = "SESSION_UPDATED"
+  SESSION_UPDATED = "SESSION_UPDATED",
 }

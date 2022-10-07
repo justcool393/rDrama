@@ -12,7 +12,7 @@ class CasinoMiddleware():
     @staticmethod
     def log_middleware(next_state, action, payload):
         print(
-            f'Casino Manager) {action} dispatched with a payload of {dumps(payload)}')
+            f'Casino Manager) {action} dispatched.')
         return next_state, action, payload
 
     @staticmethod

@@ -8,6 +8,10 @@ import { ChatProvider, DrawerProvider, useRootContext } from "./hooks";
 export function App() {
   const { mode } = useRootContext();
 
+  if (!mode) {
+    return null;
+  }
+
   return mode === "casino" ? (
     <Provider store={store}>
       <CasinoProvider>

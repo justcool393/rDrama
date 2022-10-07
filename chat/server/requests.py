@@ -1,3 +1,4 @@
+from flask_socketio import emit
 from json import dumps
 from copy import copy
 from flask_socketio import emit, disconnect, join_room, leave_room
@@ -22,9 +23,16 @@ from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
 
 C = CasinoManager.instance
+CASINO_NAMESPACE = "/casino"
 
 
-@socketio.on(E.Connect)
+@socketio.on_error(CASINO_NAMESPACE)
+def casino_error(error):
+    # TODO: This.
+    pass
+
+
+@socketio.on(E.Connect, CASINO_NAMESPACE)
 @is_not_permabanned
 def connect_to_casino(v):
     if not C.racing_manager:
@@ -35,10 +43,10 @@ def connect_to_casino(v):
     user_id = str(v.id)
     payload = {'user_id': v.id, 'request_id': request.sid}
 
-    # if S.select_user_is_online(C.state, user_id):
-    #     emit(E.ErrorOccurred, M.AlreadyInside)
-    #     emit(E.JoinedAgain)
-    #     return '', 403
+    if S.select_user_is_online(C.state, user_id):
+        emit(E.ErrorOccurred, M.AlreadyInside)
+        emit(E.JoinedAgain)
+        return '', 403
 
     private_rooms = [user_id]
     private_rooms.extend(S.select_user_conversation_keys(C.state, user_id))
@@ -57,13 +65,14 @@ def connect_to_casino(v):
     feed = C.add_feed(channels, text)
 
     for channel in channels:
-        emit(E.FeedUpdated, feed, to=channel)
+        emit(E.FeedUpdated, feed, broadcast=False, to=channel)
 
-    emit(E.InitialStateProvided, C.state)
+    initial_client_state = S.select_initial_client_state(C.state, user_id)
+    emit(E.InitialStateProvided, initial_client_state)
     return '', 200
 
 
-@socketio.on(E.Disconnect)
+@socketio.on(E.Disconnect, CASINO_NAMESPACE)
 @is_not_permabanned
 def disconnect_from_casino(v):
     user_id = str(v.id)
@@ -96,7 +105,7 @@ def disconnect_from_casino(v):
     return '', 200
 
 
-@socketio.on(E.UserKickedOwnClient)
+@socketio.on(E.UserKickedOwnClient, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_kicked_own_client(v):
     try:
@@ -108,7 +117,7 @@ def user_kicked_own_client(v):
         return '', 400
 
 
-@socketio.on(E.UserSentMessage)
+@socketio.on(E.UserSentMessage, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_sent_message(data, v):
     text = sanitize_chat_message(data['message'])
@@ -125,7 +134,7 @@ def user_sent_message(data, v):
     return '', 200
 
 
-@socketio.on(E.UserDeletedMessage)
+@socketio.on(E.UserDeletedMessage, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_deleted_message(data, v):
     user_id = str(v.id)
@@ -149,7 +158,7 @@ def user_deleted_message(data, v):
     return '', 200
 
 
-@socketio.on(E.UserConversed)
+@socketio.on(E.UserConversed, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_conversed(data, v):
     user_id = str(v.id)
@@ -174,7 +183,7 @@ def user_conversed(data, v):
     return '', 200
 
 
-@socketio.on(E.UserStartedGame)
+@socketio.on(E.UserStartedGame, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_started_game(data, v):
     game = data
@@ -207,7 +216,7 @@ def user_started_game(data, v):
     return '', 200
 
 
-@socketio.on(E.UserPlayedSlots)
+@socketio.on(E.UserPlayedSlots, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_slots(data, v):
     user_id = str(v.id)
@@ -250,14 +259,13 @@ def user_played_slots(data, v):
 
         user = S.select_user(C.state, user_id)
         emit(E.UserUpdated, user, broadcast=True)
-
         return '', 200
     else:
         emit(E.ErrorOccurred, M.CannotPullLever)
         return '', 400
 
 
-@socketio.on(E.UserPlayedRoulette)
+@socketio.on(E.UserPlayedRoulette, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_roulette(data, v):
     bet = data['bet']
@@ -325,7 +333,7 @@ def user_played_roulette(data, v):
         return '', 400
 
 
-@socketio.on(E.UserPlayedBlackjack)
+@socketio.on(E.UserPlayedBlackjack, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_blackjack(data, v):
     action = data['action']
@@ -406,7 +414,7 @@ def user_played_blackjack(data, v):
             return '', 400
 
 
-@socketio.on(E.UserPlayedRacing)
+@socketio.on(E.UserPlayedRacing, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_racing(data, v):
     currency = data['currency']

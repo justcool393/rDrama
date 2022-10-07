@@ -14,9 +14,7 @@ if SITE == 'localhost':
 	socketio = SocketIO(
 		app,
 		async_mode='gevent',
-		logger=True,
-		engineio_logger=True,
-		debug=True
+		allow_upgrades=False
 	)
 else:
 	socketio = SocketIO(

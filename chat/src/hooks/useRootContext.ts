@@ -18,7 +18,7 @@ export function useRootContext() {
     },
     setContext,
   ] = useState({
-    mode: 'chat' as ChatMode,
+    mode: null,
     id: "",
     username: "",
     admin: false,

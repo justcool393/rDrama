@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { CaretLeftOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import {
   Affix,
-  Button,
   Drawer,
   Grid,
   Layout,
   message,
+  notification,
   Space,
   Typography,
 } from "antd";
@@ -16,10 +16,10 @@ import { InformationPanel } from "./InformationPanel";
 import { InteractionPanel } from "./InteractionPanel";
 import { TextBox } from "./TextBox";
 import { useActiveCasinoGame, useCasinoSelector } from "./state";
+import { useCasino } from "./useCasino";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";
-import { useCasino } from "./useCasino";
 
 const PANEL_OFFSET_TOP = 70;
 const MOBILE_DRAWER_BUTTON_PADDING = 20;
@@ -46,6 +46,12 @@ export function Casino() {
     message.config({
       duration: MESSAGE_DURATION,
       top: MESSAGE_TOP,
+    });
+  }, []);
+
+  useEffect(() => {
+    notification.config({
+      top: 120,
     });
   }, []);
 

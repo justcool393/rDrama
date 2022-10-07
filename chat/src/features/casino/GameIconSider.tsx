@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
   GiCardAceSpades,
   GiCartwheel,
@@ -6,7 +6,6 @@ import {
   GiLever,
 } from "react-icons/gi";
 import { Button, Space } from "antd";
-import { useCasino } from "./useCasino";
 
 interface Props {
   direction: "horizontal" | "vertical";
@@ -14,34 +13,28 @@ interface Props {
 }
 
 export function GameIconSider({ direction, onLoadGame }: Props) {
-  const { userStartedGame } = useCasino();
-  const handleLoadGame = useCallback((game: CasinoGame) => {
-    userStartedGame(game);
-    onLoadGame(game);
-  }, []);
-
   return (
     <Space direction={direction} align="center" style={{ width: "100%" }}>
       {[
         {
           key: "slots",
           icon: <GiLever />,
-          onClick: () => handleLoadGame("slots"),
+          onClick: () => onLoadGame("slots"),
         },
         {
           key: "blackjack",
           icon: <GiCardAceSpades />,
-          onClick: () => handleLoadGame("blackjack"),
+          onClick: () => onLoadGame("blackjack"),
         },
         {
           key: "roulette",
           icon: <GiCartwheel />,
-          onClick: () => handleLoadGame("roulette"),
+          onClick: () => onLoadGame("roulette"),
         },
         {
           key: "racing",
           icon: <GiHorseHead />,
-          onClick: () => handleLoadGame("racing"),
+          onClick: () => onLoadGame("racing"),
         },
       ].map(({ key, icon, onClick }, index) => (
         <Button

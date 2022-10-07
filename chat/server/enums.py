@@ -32,6 +32,7 @@ class CasinoActions(str, Enum):
 
 class CasinoEvents(str, Enum):
     # Incoming
+    Error = "error"
     Connect = "connect"
     Disconnect = "disconnect"
     UserKickedOwnClient = "user-kicked-own-client"

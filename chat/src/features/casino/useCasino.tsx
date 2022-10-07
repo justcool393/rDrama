@@ -191,7 +191,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   // Effects
   useEffect(() => {
     if (!socket.current) {
-      socket.current = io();
+      socket.current = io("/casino");
 
       socket.current
         .on(CasinoHandlers.ErrorOccurred, (error) => {

@@ -41,7 +41,14 @@ export function Game() {
     >
       <div
         ref={windowRef}
-        style={{ height: 250, overflow: "auto", paddingTop: "6rem" }}
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "flex-end",
+          height: 250,
+          overflow: "auto",
+          paddingTop: "6rem",
+        }}
       >
         {activeTab === "feed" && (
           <List

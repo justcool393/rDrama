@@ -1,10 +1,24 @@
 from copy import deepcopy
+from functools import reduce
 from .games import format_roulette_bet_feed_item, format_racing_bet_feed_item
 from .helpers import grab
 
 
 class CasinoSelectors():
+    @staticmethod
+    def select_initial_client_state(state, user_id):
+        # Only conversations they are a part of.
+        conversation_keys = CasinoSelectors.select_user_conversation_keys(
+            state, user_id)
+        conversations = CasinoSelectors.select_user_conversations(state)
+        state['conversations'] = {
+            'all': conversation_keys, 'by_id': conversations}
+
+        # No feeds.
+        state['feeds'] = {'all': [], 'by_id': {}}
+
     # Games
+
     @staticmethod
     def select_game_names(state):
         return grab(state, 'games/all')
@@ -104,6 +118,18 @@ class CasinoSelectors():
     @staticmethod
     def select_user_conversation_keys(state, user_id):
         return [key for key in CasinoSelectors.select_conversation_keys(state) if user_id in key]
+
+    @staticmethod
+    def select_user_conversations(state, user_id):
+        lookup = CasinoSelectors.select_conversation_lookup(state)
+        conversation_keys = CasinoSelectors.select_user_conversation_keys(
+            state, user_id)
+        conversations = {}
+
+        for key in conversation_keys:
+            conversations[key] = lookup[key]
+
+        return conversations
 
     # Feed
     @staticmethod

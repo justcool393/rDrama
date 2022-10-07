@@ -1,4 +1,4 @@
-import { Divider, PageHeader } from "antd";
+import { Divider, notification } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useChance } from "../../../hooks";
 import { useCasino } from "../useCasino";
@@ -24,6 +24,7 @@ const REEL_SYMBOLS = [
 const REEL_SWITCH_SPEED = 66;
 const REEL_DELAY = 250;
 const REEL_DURATION = 3000;
+const LEVER_PULL_DURATION = 1000;
 
 interface Props {
   onBack(): void;
@@ -103,41 +104,36 @@ export function Slots({ onBack }: Props) {
   }, [session, active, rolling, finishing]);
 
   // Effect: When the session changes, it means a new game has been decided.
-  const firstSessionLoaded = useRef(false);
   useEffect(() => {
-    if (firstSessionLoaded.current) {
-      // Staggered slots
-      setActive(true);
+    notification.info({
+      message: "Hi",
+      description: "Hi",
+    });
 
-      // Lever animation
-      pullingLever.current = true;
+    // Staggered slots
+    setActive(true);
 
-      leverRef.current?.classList.add("Slots-lever__pulled");
-      leverBallRef.current?.classList.add("Slots-leverBall__pulled");
+    // Lever animation
+    pullingLever.current = true;
 
-      const removingClass = setTimeout(() => {
-        pullingLever.current = false;
+    leverRef.current?.classList.add("Slots-lever__pulled");
+    leverBallRef.current?.classList.add("Slots-leverBall__pulled");
 
-        leverRef.current?.classList.remove("Slots-lever__pulled");
-        leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
-      }, 1000);
+    const removingClass = setTimeout(() => {
+      pullingLever.current = false;
 
-      return () => {
-        clearTimeout(removingClass);
-      };
-    } else if (session) {
-      firstSessionLoaded.current = true;
-    }
+      leverRef.current?.classList.remove("Slots-lever__pulled");
+      leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
+    }, LEVER_PULL_DURATION);
+
+    return () => {
+      clearTimeout(removingClass);
+    };
   }, [session]);
 
   return (
     <>
-      <PageHeader
-        title="Slots"
-        subTitle="Lorem ipsum dolor sit amet"
-        onBack={onBack}
-      />
-      <Divider />
+      <Divider>Slots</Divider>
       <div
         style={{
           display: "flex",
