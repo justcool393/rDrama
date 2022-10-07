@@ -174,32 +174,35 @@ class User(Base):
 		return f"<User(id={self.id}, username={self.username})>"
 
 	def pay_account(self, currency, amount):
-		if currency == 'coins':
-			g.db.query(User).filter(User.id == self.id).update({ User.coins: User.coins + amount })
-		else:
-			g.db.query(User).filter(User.id == self.id).update({ User.procoins: User.procoins + amount })
+		db = db_session()
 
-		g.db.flush()
+		if currency == 'coins':
+			db.query(User).filter(User.id == self.id).update({ User.coins: User.coins + amount })
+		else:
+			db.query(User).filter(User.id == self.id).update({ User.procoins: User.procoins + amount })
+
+		db.flush()
 		
 
 	def charge_account(self, currency, amount):
-		in_db = g.db.query(User).filter(User.id == self.id).one()
+		db = db_session()
+		in_db = db.query(User).filter(User.id == self.id).one()
 		succeeded = False
 
 		if currency == 'coins':
 			account_balance = in_db.coins
 			
 			if account_balance >= amount:
-				g.db.query(User).filter(User.id == self.id).update({ User.coins: User.coins - amount })
+				db.query(User).filter(User.id == self.id).update({ User.coins: User.coins - amount })
 				succeeded = True
 		elif currency == 'procoins':
 			account_balance = in_db.procoins
 			
 			if account_balance >= amount:
-				g.db.query(User).filter(User.id == self.id).update({ User.procoins: User.procoins - amount })
+				db.query(User).filter(User.id == self.id).update({ User.procoins: User.procoins - amount })
 				succeeded = True
 
-		if succeeded: g.db.flush()
+		if succeeded: db.flush()
 		
 		return succeeded
 

@@ -1,6 +1,7 @@
-from flask_socketio import emit
+from time import time
 from json import dumps
 from copy import copy
+from flask import copy_current_request_context
 from flask_socketio import emit, disconnect, join_room, leave_room
 from chat.server.games.racing import MarseyRacingManager
 from files.helpers.twentyone import BlackjackAction
@@ -9,6 +10,7 @@ from files.helpers.wrappers import *
 from files.helpers.const import *
 from files.helpers.alerts import *
 from files.helpers.regex import *
+from gevent import sleep
 from .builders import CasinoBuilders as B
 from .enums import CasinoActions as A, CasinoEvents as E, CasinoGames, CasinoMessages as M
 from .games import MarseyRacingManager, \
@@ -17,7 +19,8 @@ from .games import MarseyRacingManager, \
     get_roulette_bets, \
     get_active_twentyone_game, \
     create_new_game as create_new_blackjack_game, \
-    dispatch_action as dispatch_blackjack_action
+    dispatch_action as dispatch_blackjack_action, \
+    build_start_state as build_slots_start_state
 from .helpers import meets_minimum_wager, can_user_afford, sanitize_chat_message
 from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
@@ -25,6 +28,13 @@ from .selectors import CasinoSelectors as S
 C = CasinoManager.instance
 CASINO_NAMESPACE = "/casino"
 
+def copy_current_app_context(f):
+    from flask.globals import _app_ctx_stack
+    appctx = _app_ctx_stack.top
+    def _(*args, **kwargs):
+        with appctx:
+            return f(*args, **kwargs)
+    return _
 
 @socketio.on_error(CASINO_NAMESPACE)
 def casino_error(error):
@@ -34,6 +44,7 @@ def casino_error(error):
     print(error)
     print("Casino Manager) [ERROR]")
     print("\n\n")
+    raise error
 
 
 @socketio.on(E.Connect, CASINO_NAMESPACE)
@@ -115,7 +126,6 @@ def user_kicked_own_client(v):
     try:
         request_id = S.select_user_request_id(C.state, str(v.id))
         disconnect(request_id)
-        emit(E.Refresh)
         return '', 200
     except:
         return '', 400
@@ -235,38 +245,64 @@ def user_played_slots(data, v):
         emit(E.ErrorOccurred, M.CannotAffordBet)
         return '', 400
 
-    success, game_state = casino_slot_pull(v, wager, currency)
+    # 1. The user sees the lever pull and the slots begin.
+    payload = {
+        'user_id': user_id,
+        'game_state': dumps(build_slots_start_state())
+    }
+    C.dispatch(A.USER_STARTED_SLOTS, payload)
 
-    if success:
-        balances = {
-            'coins': v.coins,
-            'procoins': v.procoins
-        }
-        payload = {
-            'user_id': v.id,
-            'balances': balances,
-            'game_state': game_state
-        }
+    session_key = B.build_session_key(user_id, CasinoGames.Slots)
+    session = S.select_session(C.state, session_key)
+    emit(E.SessionUpdated, session, to=user_id)
 
-        C.dispatch(A.USER_PLAYED_SLOTS, payload)
-        session_key = B.build_session_key(user_id, CasinoGames.Slots)
-        session = S.select_session(C.state, session_key)
-        emit(E.SessionUpdated, session)
+    # 2. The game is decided some time later, and the client is updated again.
+    @copy_current_request_context
+    def handle_casino_slot_pull():
+        with app.app_context():
+            emit(E.ConfirmationReceived, "1")
 
-        channels = ['slots']
-        username = S.select_user_username(C.state, user_id)
-        text = f'{username} <change me>'
-        feed = C.add_feed(channels, text)
+            sleep(1)
 
-        for channel in channels:
-            emit(E.FeedUpdated, feed, to=channel)
+            emit(E.ConfirmationReceived, "2")
 
-        user = S.select_user(C.state, user_id)
-        emit(E.UserUpdated, user, broadcast=True)
-        return '', 200
-    else:
-        emit(E.ErrorOccurred, M.CannotPullLever)
-        return '', 400
+            sleep(1)
+
+            success, game_state = casino_slot_pull(v, wager, currency)
+
+            if success:
+                    balances = {
+                        'coins': v.coins,
+                        'procoins': v.procoins
+                    }
+                    payload = {
+                        'user_id': v.id,
+                        'balances': balances,
+                        'game_state': game_state
+                    }
+
+                    C.dispatch(A.USER_PLAYED_SLOTS, payload)
+
+                    session_key = B.build_session_key(user_id, CasinoGames.Slots)
+                    session = S.select_session(C.state, session_key)
+                    emit(E.SessionUpdated, session, to=user_id)
+
+                    channels = ['slots']
+                    username = S.select_user_username(C.state, user_id)
+                    text = f'{username} <change me>'
+                    feed = C.add_feed(channels, text)
+
+                    for channel in channels:
+                        emit(E.FeedUpdated, feed, to=channel)
+
+                    user = S.select_user(C.state, user_id)
+                    emit(E.UserUpdated, user, broadcast=True)
+            else:
+                emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
+
+    in_five_seconds = int(time.time()) + 5
+    C.scheduler.schedule(in_five_seconds, handle_casino_slot_pull)
+    return '', 200
 
 
 @socketio.on(E.UserPlayedRoulette, CASINO_NAMESPACE)

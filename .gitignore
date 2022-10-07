@@ -19,6 +19,7 @@ chat/node_modules
 chat/build
 chat/.env
 chat/server/state.json
+chat/server/scheduler.log.txt
 
 # Chat artifacts
 files/assets/css/chat_done.css

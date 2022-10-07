@@ -3,6 +3,7 @@ from random import choice, uniform
 from enum import Enum
 from copy import copy
 from flask import g
+from files.helpers.const import *
 from sqlalchemy.sql.expression import func
 from files.classes.marsey import Marsey
 from files.helpers.get import get_account
@@ -120,7 +121,8 @@ SPIRIT_RANGES = {
 
 
 def select_random_marsey_set():
-    return g.db.query(Marsey).order_by(func.random()).limit(HOW_MANY_MARSEYS_PER_RACE).all()
+    db = db_session()
+    return db.query(Marsey).order_by(func.random()).limit(HOW_MANY_MARSEYS_PER_RACE).all()
 
 
 def format_marsey_model(model):

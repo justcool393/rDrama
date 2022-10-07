@@ -6,10 +6,12 @@ from .config import IN_DEVELOPMENT_MODE, STATE_LOG_PATH
 from .enums import CasinoActions
 from .handlers import CasinoHandlers
 from .middleware import CasinoMiddleware
+from .scheduler import CasinoScheduler
 
 
 class CasinoManager():
     instance = None
+    scheduler = CasinoScheduler.instance
     racing_manager = None
     state = CasinoBuilders.build_initial_state()
     action_history = []

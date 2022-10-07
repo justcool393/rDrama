@@ -1,17 +1,18 @@
+from time import time
 from gevent import Greenlet, sleep
+from files.__main__ import app
+from .manager import CasinoManager
+
+SCHEDULE_SCAN_RATE = 5
 
 
-def _log_state():
-    i = 0
+def use_casino_scheduler():
+    scheduler = CasinoManager.instance.scheduler
 
     while True:
-        i += 1
-
-        logfile = open("foo.txt", "w+", encoding="utf-8")
-        logfile.write(str(i))
-        logfile.close()
-
-        sleep(1)
+        scheduler.scan()
+        sleep(SCHEDULE_SCAN_RATE)
 
 
-# t = Greenlet.spawn(_log_state)
+Greenlet.spawn(use_casino_scheduler)
+

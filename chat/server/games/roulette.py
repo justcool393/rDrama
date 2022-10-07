@@ -4,7 +4,6 @@ from enum import Enum
 from files.helpers.alerts import *
 from files.classes.casino_game import Casino_Game
 from files.helpers.get import get_account
-from flask import g
 
 
 class RouletteAction(str, Enum):
@@ -64,7 +63,9 @@ PAYOUT_MULITPLIERS = {
 
 
 def get_active_roulette_games():
-    return g.db.query(Casino_Game).filter(
+    db = db_session()
+
+    return db.query(Casino_Game).filter(
         Casino_Game.active == True,
         Casino_Game.kind == 'roulette'
     ).all()
@@ -108,8 +109,10 @@ def gambler_placed_roulette_bet(gambler, bet, which, amount, currency):
     game.game_state = json.dumps(
         {"parent_id": parent_id, "bet": bet, "which": which})
     game.active = True
-    g.db.add(game)
-    g.db.commit()
+
+    db = db_session()
+    db.add(game)
+    db.commit()
 
 
 def get_roulette_empty_bets():
@@ -156,6 +159,7 @@ def spin_roulette_wheel():
     participants, bets, active_games = get_roulette_bets_and_betters()
 
     if len(participants) > 0:
+        db = db_session()
         number = randint(0, 37)  # 37 is 00
 
         if number > 0 and number < 37: # 0 and 00 do not pay anything
@@ -194,7 +198,7 @@ def spin_roulette_wheel():
                 send_repeatable_notification(
                     participant, f"Winning number: {number}\nSorry, none of your recent roulette bets paid off.")
 
-                g.db.flush()
+                db.flush()
 
         # Adjust game winnings.
         for game in active_games:
@@ -204,10 +208,10 @@ def spin_roulette_wheel():
                 game.winnings = -game.wager
 
             game.active = False
-            g.db.add(game)
+            db.add(game)
 
         # Commit early when dirty because of long-running tasks after roulette
-        g.db.commit()
+        db.commit()
 
 
 def determine_roulette_winners(number, bets):

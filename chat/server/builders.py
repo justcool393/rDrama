@@ -1,5 +1,5 @@
 from time import time
-import uuid
+from uuid import uuid4
 from files.helpers.get import get_account
 from .games import get_roulette_empty_bets
 from .enums import CasinoGames
@@ -25,7 +25,7 @@ class CasinoBuilders():
 
     @staticmethod
     def build_message_entity(user_id, text):
-        message_id = str(uuid.uuid4())
+        message_id = str(uuid4())
 
         return {
             'id': message_id,

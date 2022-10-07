@@ -2,6 +2,7 @@ import json
 from math import floor
 import random
 from enum import Enum
+from files.helpers.const import *
 from files.classes.casino_game import Casino_Game
 from files.helpers.casino import distribute_wager_badges
 from flask import g
@@ -62,13 +63,18 @@ def build_casino_game(gambler, wager, currency):
     casino_game.kind = 'blackjack'
     casino_game.game_state = json.dumps(initial_state)
     casino_game.active = True
-    g.db.add(casino_game)
+
+    db = db_session()
+    db.add(casino_game)
+    db.commit()
 
     return casino_game
 
 
 def get_active_twentyone_game(gambler):
-    return g.db.query(Casino_Game).filter(
+    db = db_session()
+    
+    return db.query(Casino_Game).filter(
         Casino_Game.active == True,
         Casino_Game.kind == 'blackjack',
         Casino_Game.user_id == gambler.id).first()
@@ -100,8 +106,9 @@ def create_new_game(gambler, wager, currency):
     try:
         charge_gambler(gambler, wager, currency)
         new_game = build_casino_game(gambler, wager, currency)
-        g.db.add(new_game)
-        g.db.commit()
+        db = db_session()
+        db.add(new_game)
+        db.commit()
     except:
         raise Exception(f"Gambler cannot afford to bet {wager} {currency}.")
 
@@ -251,7 +258,10 @@ def handle_payout(gambler, state, game):
             distribute_wager_badges(gambler, game.wager, won=False)
 
     game.active = False
-    g.db.add(game)
+
+    db = db_session()
+    db.add(game)
+    db.commit()
 
     return payout
 
@@ -306,7 +316,10 @@ def dispatch_action(gambler, action):
     new_state['actions'] = get_available_actions(new_state)
 
     game.game_state = json.dumps(new_state)
-    g.db.add(game)
+    
+    db = db_session()
+    db.add(game)
+    db.commit()
 
     game_over, final_state = check_for_completion(new_state)
 
