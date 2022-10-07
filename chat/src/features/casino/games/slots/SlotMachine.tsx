@@ -14,13 +14,16 @@ export function SlotMachine() {
   const pullingLever = useRef(false);
   const { userPlayedSlots } = useCasino();
   const session = useUserGameSession("slots");
+
   const [active, setActive] = useState(false);
   const [rolling, setRolling] = useState([false, false, false]);
   const [finishing, setFinishing] = useState(false);
   const [result, setResult] = useState([null, null, null]);
+  const [ready, setReady] = useState(false);
   const handleLeverPull = useCallback(() => {
     if (!active && !pullingLever.current) {
       userPlayedSlots();
+      setReady(true);
     }
   }, []);
 
@@ -83,31 +86,35 @@ export function SlotMachine() {
 
   // Effect: When the session changes, it means a new game has been decided.
   useEffect(() => {
-    notification.info({
-      message: "Hi",
-      description: "Hi",
-    });
+    if (ready && session) {
+      setReady(false);
 
-    // Staggered slots
-    setActive(true);
+      notification.info({
+        message: "Hi",
+        description: "Hi",
+      });
 
-    // Lever animation
-    pullingLever.current = true;
+      // Staggered slots
+      setActive(true);
 
-    leverRef.current?.classList.add("Slots-lever__pulled");
-    leverBallRef.current?.classList.add("Slots-leverBall__pulled");
+      // Lever animation
+      pullingLever.current = true;
 
-    const removingClass = setTimeout(() => {
-      pullingLever.current = false;
+      leverRef.current?.classList.add("Slots-lever__pulled");
+      leverBallRef.current?.classList.add("Slots-leverBall__pulled");
 
-      leverRef.current?.classList.remove("Slots-lever__pulled");
-      leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
-    }, LEVER_PULL_DURATION);
+      const removingClass = setTimeout(() => {
+        pullingLever.current = false;
 
-    return () => {
-      clearTimeout(removingClass);
-    };
-  }, [session]);
+        leverRef.current?.classList.remove("Slots-lever__pulled");
+        leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
+      }, LEVER_PULL_DURATION);
+
+      return () => {
+        clearTimeout(removingClass);
+      };
+    }
+  }, [ready, session]);
 
   return (
     <div

@@ -82,3 +82,15 @@ export function useUserGameSession(game: CasinoGame) {
     useCasinoSelector((state) => state.session.by_id[`${id}#${game}`]) || null
   );
 }
+
+export function useOnlineUsers() {
+  return useCasinoSelector((state) =>
+    state.user.all
+      .map((id) => state.user.by_id[id])
+      .filter((user) => user.online)
+  );
+}
+
+export function useOnlineUserCount() {
+  return useOnlineUsers().length;
+}

@@ -1,45 +1,63 @@
-import React, { useEffect, useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
+import React, { useEffect } from "react";
 import {
   Affix,
+  Button,
   Divider,
-  Drawer,
   Grid,
   Layout,
   message,
   notification,
-  Space,
-  Typography,
+  Tabs,
 } from "antd";
-import { ChatMessageBox } from "./ChatMessageBox";
+import { UserOutlined } from "@ant-design/icons";
+import {
+  GiCardAceSpades,
+  GiCartwheel,
+  GiHorseHead,
+  GiLever,
+} from "react-icons/gi";
+import { TiMessage } from "react-icons/ti";
 import { GameList } from "./GameList";
-import { TextBox } from "./TextBox";
-import { useActiveCasinoGame, useCasinoSelector } from "./state";
-import { useCasino } from "./useCasino";
+import { useActiveCasinoGame, useOnlineUserCount } from "./state";
 import { Game, Lobby, UserList } from "./layout";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";
+import { useCasino } from "./useCasino";
 
 const PANEL_OFFSET_TOP = 120;
-const MOBILE_DRAWER_BUTTON_PADDING = 20;
 const GAME_PANEL_WIDTH = 440;
-const INFORMATION_SIDER_WIDTH = 300;
 const MESSAGE_TOP = 100;
 const MESSAGE_DURATION = 2;
 
-const { Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 export function Casino() {
+  const { lg } = useBreakpoint();
   const game = useActiveCasinoGame();
-  return (
+
+  useEffect(() => {
+    message.config({
+      duration: MESSAGE_DURATION,
+      top: MESSAGE_TOP,
+    });
+  }, []);
+
+  useEffect(() => {
+    notification.config({
+      top: 120,
+    });
+  }, []);
+
+  return lg ? (
     <Layout style={{ minHeight: "100vh" }}>
       {game && (
         <Layout.Sider
           width={GAME_PANEL_WIDTH}
           breakpoint="lg"
-          collapsedWidth="0"
+          collapsedWidth={0}
+          collapsible={true}
+          trigger={null}
         >
           <Affix offsetTop={PANEL_OFFSET_TOP} offsetBottom={PANEL_OFFSET_TOP}>
             <Game />
@@ -49,163 +67,96 @@ export function Casino() {
       <Layout.Content>
         <Lobby />
       </Layout.Content>
-      <Layout.Sider>
+      <Layout.Sider
+        breakpoint="lg"
+        collapsedWidth={0}
+        collapsible={true}
+        trigger={null}
+      >
         <Affix offsetTop={PANEL_OFFSET_TOP}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "stretch",
-              height: "95vh",
-            }}
-          >
-            <div style={{ flex: 1, maxHeight: "40vh", overflow: "auto" }}>
-              <UserList />
-            </div>
-            <Divider />
-            <div style={{ flex: 1, maxHeight: "40vh", overflow: "auto" }}>
-              <GameList direction="vertical" labels={true} block={true} />
-            </div>
-          </div>
+          <UsersAndGames />
         </Affix>
       </Layout.Sider>
+    </Layout>
+  ) : (
+    <Layout style={{ minHeight: "100vh", padding: "2rem" }}>
+      <Layout.Content>
+        <MobileNavTabs />
+      </Layout.Content>
     </Layout>
   );
 }
 
-// export function Casino() {
-//   const breakpoints = useBreakpoint();
-//   const { userStartedGame } = useCasino();
-//   const activeGame = useActiveCasinoGame();
-//   const [showingInformationPanel, setShowingInformationPanel] = useState(false);
-//   const usersOnline = useCasinoSelector((state) =>
-//     state.user.all
-//       .map((id) => state.user.by_id[id])
-//       .filter((user) => user.online)
-//   );
+function MobileNavTabs() {
+  const { userStartedGame } = useCasino();
+  const usersOnline = useOnlineUserCount();
+  const game = useActiveCasinoGame();
 
-//   useEffect(() => {
-//     message.config({
-//       duration: MESSAGE_DURATION,
-//       top: MESSAGE_TOP,
-//     });
-//   }, []);
+  return (
+    <Tabs
+      items={[
+        {
+          key: "lobby",
+          label: <TiMessage />,
+          children: <Lobby />,
+        },
+        {
+          active: game?.name === "slots",
+          key: "slots",
+          label: <GiLever onClick={() => userStartedGame("slots")} />,
+          children: <Game />,
+        },
+        {
+          active: game?.name === "blackjack",
+          key: "blackjack",
+          label: (
+            <GiCardAceSpades onClick={() => userStartedGame("blackjack")} />
+          ),
+          children: <Game />,
+        },
+        {
+          active: game?.name === "roulette",
+          key: "roulette",
+          label: <GiCartwheel onClick={() => userStartedGame("roulette")} />,
+          children: <Game />,
+        },
+        {
+          active: game?.name === "racing",
+          key: "racing",
+          label: <GiHorseHead onClick={() => userStartedGame("racing")} />,
+          children: <Game />,
+        },
+        {
+          key: "users",
+          label: (
+            <>
+              <UserOutlined /> {usersOnline} users
+            </>
+          ),
+          children: <UserList />,
+        },
+      ]}
+    />
+  );
+}
 
-//   useEffect(() => {
-//     notification.config({
-//       top: 120,
-//     });
-//   }, []);
-
-//   return (
-//     <Layout style={{ minHeight: "100vh" }}>
-//       {/* Interactions */}
-//       {/* == Mobile */}
-//       {/* {!breakpoints.lg && !activeGame && (
-//         <Affix
-//           offsetTop={PANEL_OFFSET_TOP}
-//           style={{
-//             position: "fixed",
-//             top: PANEL_OFFSET_TOP + MOBILE_DRAWER_BUTTON_PADDING,
-//             right: MOBILE_DRAWER_BUTTON_PADDING,
-//             zIndex: 100,
-//           }}
-//         >
-//           <Space>
-//             <Button
-//               type="ghost"
-//               shape="circle"
-//               icon={<CaretLeftOutlined />}
-//               // onClick={() => setShowingInteractionPanel(true)}
-//             />
-//             <Button
-//               type="ghost"
-//               shape="circle"
-//               icon={<UserOutlined />}
-//               onClick={() => setShowingInformationPanel(true)}
-//             >
-//               {usersOnline.length}
-//             </Button>
-//           </Space>
-//         </Affix>
-//       )}
-//       <Drawer
-//         placement="left"
-//         headerStyle={{ display: "none" }}
-//         onClose={() => setShowingInteractionPanel(false)}
-//         open={showingInteractionPanel && !breakpoints.lg}
-//         style={{ top: PANEL_OFFSET_TOP }}
-//       >
-//         <InteractionPanel onClose={() => setShowingInteractionPanel(false)} />
-//       </Drawer> */}
-
-//       {/* == Desktop */}
-//       {breakpoints.lg && (
-//         <Affix offsetTop={PANEL_OFFSET_TOP}>
-//           <Sider
-//             collapsible={true}
-//             collapsed={!activeGame}
-//             collapsedWidth={64}
-//             // onCollapse={(showing) => setShowingInteractionPanel(!showing)}
-//             trigger={null}
-//             width={INTERACTION_PANEL_WIDTH}
-//             style={{ height: "95vh", padding: "1rem" }}
-//           >
-//             {activeGame ? (
-//               <div className="Casino-fade">
-//                 <InteractionPanel
-//                   // onClose={() => setShowingInteractionPanel(false)}
-//                   onClose={() => {}}
-//                 />
-//               </div>
-//             ) : (
-//               <GameIconSider
-//                 direction="vertical"
-//                 onLoadGame={userStartedGame}
-//               />
-//             )}
-//           </Sider>
-//         </Affix>
-//       )}
-
-//       {/* Chat */}
-//       <Layout>
-//         <Content style={{ padding: "0 1rem" }}>
-//           <ChatMessageBox />
-//         </Content>
-//         <Affix offsetBottom={0}>
-//           <Footer>
-//             <TextBox />
-//           </Footer>
-//         </Affix>
-//       </Layout>
-
-//       {/* Information */}
-//       {/* == Mobile */}
-//       <Drawer
-//         placement="right"
-//         title={<>{usersOnline.length} Users Online</>}
-//         onClose={() => setShowingInformationPanel(false)}
-//         open={showingInformationPanel}
-//         style={{ top: PANEL_OFFSET_TOP }}
-//       >
-//         <InformationPanel />
-//       </Drawer>
-
-//       {/* == Desktop */}
-//       {breakpoints.lg && (
-//         <Affix offsetTop={PANEL_OFFSET_TOP}>
-//           <Sider width={INFORMATION_SIDER_WIDTH} style={{ height: "95vh" }}>
-//             <Space style={{ paddingLeft: "2rem" }}>
-//               <UserOutlined />
-//               <Typography.Title level={4}>
-//                 {usersOnline.length} users online
-//               </Typography.Title>
-//             </Space>
-//             <InformationPanel />
-//           </Sider>
-//         </Affix>
-//       )}
-//     </Layout>
-//   );
-// }
+function UsersAndGames() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        height: "95vh",
+      }}
+    >
+      <div style={{ flex: 1, maxHeight: "40vh", overflow: "auto" }}>
+        <UserList />
+      </div>
+      <Divider />
+      <div style={{ flex: 1, maxHeight: "40vh", overflow: "auto" }}>
+        <GameList direction="vertical" labels={true} block={true} />
+      </div>
+    </div>
+  );
+}

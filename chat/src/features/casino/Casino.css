@@ -1,4 +1,8 @@
 /* ANT OVERRIDES */
+.ant-layout-header {
+  background: transparent;
+}
+
 .ant-layout-sider {
   background: var(--gray-600) !important;
 }
