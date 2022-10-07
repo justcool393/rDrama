@@ -18,24 +18,16 @@ export function GameData() {
       tabProps={{ centered: true }}
       tabList={[
         {
-          key: "feed",
-          tab: "Feed",
+          key: "stats",
+          tab: "Stats",
         },
         {
           key: "leaderboards",
           tab: "Leaderboards",
         },
         {
-          key: "sessions",
-          tab: "Sessions",
-        },
-        {
-          key: "guide",
-          tab: "Guide",
-        },
-        {
-          key: "stats",
-          tab: "Stats",
+          key: "help",
+          tab: "Help",
         },
       ]}
     >
@@ -45,9 +37,8 @@ export function GameData() {
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "flex-end",
-          height: 250,
           overflow: "auto",
-          paddingTop: "6rem",
+          height: 300,
         }}
       >
         {activeTab === "feed" && (

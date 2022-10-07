@@ -12,9 +12,7 @@ import {
   Typography,
 } from "antd";
 import { ChatMessageBox } from "./ChatMessageBox";
-import { GameIconSider } from "./GameIconSider";
-import { InformationPanel } from "./InformationPanel";
-import { InteractionPanel } from "./InteractionPanel";
+import { GameList } from "./GameList";
 import { TextBox } from "./TextBox";
 import { useActiveCasinoGame, useCasinoSelector } from "./state";
 import { useCasino } from "./useCasino";
@@ -25,7 +23,7 @@ import "./Casino.css";
 
 const PANEL_OFFSET_TOP = 120;
 const MOBILE_DRAWER_BUTTON_PADDING = 20;
-const INTERACTION_PANEL_WIDTH = 560;
+const GAME_PANEL_WIDTH = 440;
 const INFORMATION_SIDER_WIDTH = 300;
 const MESSAGE_TOP = 100;
 const MESSAGE_DURATION = 2;
@@ -38,18 +36,15 @@ export function Casino() {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {game && (
-        <Sider
+        <Layout.Sider
+          width={GAME_PANEL_WIDTH}
           breakpoint="lg"
           collapsedWidth="0"
-          onBreakpoint={(broken) => {
-            console.log(broken);
-          }}
-          onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
-          }}
         >
-          <Game />
-        </Sider>
+          <Affix offsetTop={PANEL_OFFSET_TOP} offsetBottom={PANEL_OFFSET_TOP}>
+            <Game />
+          </Affix>
+        </Layout.Sider>
       )}
       <Layout.Content>
         <Lobby />
@@ -69,7 +64,7 @@ export function Casino() {
             </div>
             <Divider />
             <div style={{ flex: 1, maxHeight: "40vh", overflow: "auto" }}>
-              <UserList />
+              <GameList direction="vertical" labels={true} block={true} />
             </div>
           </div>
         </Affix>

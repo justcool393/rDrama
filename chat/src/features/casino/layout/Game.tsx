@@ -1,40 +1,32 @@
 import React from "react";
-import { ImExit } from "react-icons/im";
-import { Button, Divider, Space } from "antd";
-import { GameIconSider } from "../GameIconSider";
+import { Divider } from "antd";
 import { GameData } from "../GameData";
 import { Wager } from "../Wager";
-import { Slots } from "../games";
+import { SlotMachine } from "../games";
 
 export function Game() {
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Divider />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flex: 1,
-        }}
-      >
-        <GameIconSider direction="horizontal" />
-        <Button
-          size="large"
-          type="ghost"
-          shape="circle"
-          icon={<ImExit />}
-          //   onClick={onClose}
-        />
-      </div>
-      <Slots />
-      {/* <div style={{ padding: "0 2rem" }}>
-        <Wager />
+      <div style={{ flex: 1 }}>
+        <div style={{ position: "relative", left: 30 }}>
+          <SlotMachine />
+        </div>
+        <div style={{ flex: 1, padding: "2rem" }}>
+          <Wager />
+        </div>
       </div>
       <Divider />
-      <div style={{ padding: "0 1rem" }}>
+      <div style={{ width: "90%" }}>
         <GameData />
-      </div> */}
-    </Space>
+      </div>
+    </div>
   );
 }

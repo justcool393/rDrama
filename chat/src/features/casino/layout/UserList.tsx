@@ -37,52 +37,21 @@ export function UserList() {
         selectedKeys={[recipient]}
         mode="inline"
         onSelect={handleItemSelect}
-        items={[
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-          ...usersOnline,
-        ]
-          .sort(alphabeticalSort)
-          .map((user) =>
-            getMenuItem(
-              <Space
-                onClick={() => {
-                  if (user.id === recipient) {
-                    setRecipient("");
-                  }
-                }}
-              >
-                <Avatar src={user.account.profile_url} />
-                <span>@{user.account.username}</span>
-              </Space>,
-              user.id
-            )
-          )}
+        items={usersOnline.sort(alphabeticalSort).map((user) =>
+          getMenuItem(
+            <Space
+              onClick={() => {
+                if (user.id === recipient) {
+                  setRecipient("");
+                }
+              }}
+            >
+              <Avatar src={user.account.profile_url} />
+              <span>@{user.account.username}</span>
+            </Space>,
+            user.id
+          )
+        )}
       />
     </Space>
   );
