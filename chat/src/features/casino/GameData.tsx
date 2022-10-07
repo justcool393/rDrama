@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Card, List } from "antd";
 import { useFeedItems } from "./state";
 
-export function Game() {
+export function GameData() {
   const windowRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState("feed");
   const feed = useFeedItems();

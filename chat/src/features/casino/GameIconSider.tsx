@@ -6,35 +6,37 @@ import {
   GiLever,
 } from "react-icons/gi";
 import { Button, Space } from "antd";
+import { useCasino } from "./useCasino";
 
 interface Props {
   direction: "horizontal" | "vertical";
-  onLoadGame(game: CasinoGame): void;
 }
 
-export function GameIconSider({ direction, onLoadGame }: Props) {
+export function GameIconSider({ direction }: Props) {
+  const { userStartedGame } = useCasino();
+
   return (
     <Space direction={direction} align="center" style={{ width: "100%" }}>
       {[
         {
           key: "slots",
           icon: <GiLever />,
-          onClick: () => onLoadGame("slots"),
+          onClick: () => userStartedGame("slots"),
         },
         {
           key: "blackjack",
           icon: <GiCardAceSpades />,
-          onClick: () => onLoadGame("blackjack"),
+          onClick: () => userStartedGame("blackjack"),
         },
         {
           key: "roulette",
           icon: <GiCartwheel />,
-          onClick: () => onLoadGame("roulette"),
+          onClick: () => userStartedGame("roulette"),
         },
         {
           key: "racing",
           icon: <GiHorseHead />,
-          onClick: () => onLoadGame("racing"),
+          onClick: () => userStartedGame("racing"),
         },
       ].map(({ key, icon, onClick }, index) => (
         <Button

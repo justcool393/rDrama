@@ -4,7 +4,7 @@ export * from "./Balances";
 export * from "./Casino";
 export * from "./ChatMessageBox";
 export * from "./Currency";
-export * from "./Game";
+export * from "./GameData";
 export * from "./GameIconSider";
 export * from "./GameSelect";
 export * from "./InformationPanel";

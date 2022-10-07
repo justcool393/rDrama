@@ -29,7 +29,11 @@ CASINO_NAMESPACE = "/casino"
 @socketio.on_error(CASINO_NAMESPACE)
 def casino_error(error):
     # TODO: This.
-    pass
+    print("\n\n")
+    print("Casino Manager) [ERROR]")
+    print(error)
+    print("Casino Manager) [ERROR]")
+    print("\n\n")
 
 
 @socketio.on(E.Connect, CASINO_NAMESPACE)
@@ -48,6 +52,10 @@ def connect_to_casino(v):
         emit(E.JoinedAgain)
         return '', 403
 
+    initial_client_state = S.select_initial_client_state(
+        deepcopy(C.state), user_id)
+    emit(E.InitialStateProvided, initial_client_state)
+
     private_rooms = [user_id]
     private_rooms.extend(S.select_user_conversation_keys(C.state, user_id))
 
@@ -55,7 +63,6 @@ def connect_to_casino(v):
         join_room(room)
 
     C.dispatch(A.USER_CONNECTED, payload)
-
     user = S.select_user(C.state, str(v.id))
     emit(E.UserUpdated, user, broadcast=True)
 
@@ -66,9 +73,6 @@ def connect_to_casino(v):
 
     for channel in channels:
         emit(E.FeedUpdated, feed, broadcast=False, to=channel)
-
-    initial_client_state = S.select_initial_client_state(C.state, user_id)
-    emit(E.InitialStateProvided, initial_client_state)
     return '', 200
 
 

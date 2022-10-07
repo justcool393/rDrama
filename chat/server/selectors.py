@@ -1,5 +1,4 @@
 from copy import deepcopy
-from functools import reduce
 from .games import format_roulette_bet_feed_item, format_racing_bet_feed_item
 from .helpers import grab
 
@@ -10,12 +9,15 @@ class CasinoSelectors():
         # Only conversations they are a part of.
         conversation_keys = CasinoSelectors.select_user_conversation_keys(
             state, user_id)
-        conversations = CasinoSelectors.select_user_conversations(state)
+        conversations = CasinoSelectors.select_user_conversations(
+            state, user_id)
         state['conversations'] = {
             'all': conversation_keys, 'by_id': conversations}
 
         # No feeds.
         state['feeds'] = {'all': [], 'by_id': {}}
+
+        return state
 
     # Games
 
@@ -48,6 +50,7 @@ class CasinoSelectors():
         return session_id in CasinoSelectors.select_game_sessions(state, game_name)
 
     # User
+
     @staticmethod
     def select_user_ids(state):
         return grab(state, 'users/all')
@@ -73,6 +76,7 @@ class CasinoSelectors():
         return grab(CasinoSelectors.select_user(state, user_id), 'request_id')
 
     # Message
+
     @staticmethod
     def select_message_ids(state):
         return grab(state, 'messages/all')
@@ -91,6 +95,7 @@ class CasinoSelectors():
         return CasinoSelectors.select_message(state, message_id)
 
     # Conversation
+
     @staticmethod
     def select_conversation_keys(state):
         return grab(state, 'conversations/all')
@@ -132,6 +137,7 @@ class CasinoSelectors():
         return conversations
 
     # Feed
+
     @staticmethod
     def select_feed_ids(state):
         return grab(state, 'feed/all')
@@ -169,6 +175,7 @@ class CasinoSelectors():
         )
 
     # Session
+
     @staticmethod
     def select_session_ids(state):
         return grab(state, 'sessions/all')

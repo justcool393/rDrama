@@ -1,2 +1,2 @@
 export * from "./PlayingCard";
-export * from "./Slots";
+export * from "./slots";
