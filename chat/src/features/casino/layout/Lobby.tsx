@@ -12,9 +12,7 @@ export function Lobby() {
         <ChatMessageBox />
       </Content>
       <Affix offsetBottom={0}>
-        <Footer>
-          <TextBox />
-        </Footer>
+        <TextBox />
       </Affix>
     </Layout>
   );

@@ -14,7 +14,6 @@ export function SlotMachine() {
   const pullingLever = useRef(false);
   const { userPlayedSlots } = useCasino();
   const session = useUserGameSession("slots");
-
   const [active, setActive] = useState(false);
   const [rolling, setRolling] = useState([false, false, false]);
   const [finishing, setFinishing] = useState(false);
@@ -76,6 +75,7 @@ export function SlotMachine() {
       } else {
         setFinishing(false);
         setActive(false);
+        setReady(true);
       }
 
       return () => {

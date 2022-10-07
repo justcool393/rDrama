@@ -18,7 +18,7 @@ export function TextBox() {
   );
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
+    <div style={{ display: "flex", alignItems: "center", padding: "1rem" }}>
       <TextArea
         autoSize={{
           minRows: TEXTAREA_ROW_COUNT,
@@ -32,10 +32,14 @@ export function TextBox() {
         onPressEnter={handleSend}
         style={{
           flex: 1,
-          margin: "0 2rem",
+          // margin: "0 2rem",
         }}
       />
-      <Space direction="vertical">
+      <Space
+        direction="vertical"
+        align="center"
+        style={{ margin: "1rem", marginTop: 0 }}
+      >
         <Tooltip title="Send">
           <Button
             size="large"
