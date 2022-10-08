@@ -12,15 +12,16 @@ from files.helpers.alerts import *
 from files.helpers.regex import *
 from gevent import sleep
 from .builders import CasinoBuilders as B
+from .config import SLOTS_PULL_DURATION
 from .enums import CasinoActions as A, CasinoEvents as E, CasinoGames, CasinoMessages as M
 from .games import MarseyRacingManager, \
-    casino_slot_pull, \
+    SlotsManager, \
     gambler_placed_roulette_bet, \
     get_roulette_bets, \
     get_active_twentyone_game, \
     create_new_game as create_new_blackjack_game, \
     dispatch_action as dispatch_blackjack_action, \
-    build_start_state as build_slots_start_state
+    build_started_state as build_slots_start_state
 from .helpers import meets_minimum_wager, can_user_afford, sanitize_chat_message
 from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
@@ -28,13 +29,6 @@ from .selectors import CasinoSelectors as S
 C = CasinoManager.instance
 CASINO_NAMESPACE = "/casino"
 
-def copy_current_app_context(f):
-    from flask.globals import _app_ctx_stack
-    appctx = _app_ctx_stack.top
-    def _(*args, **kwargs):
-        with appctx:
-            return f(*args, **kwargs)
-    return _
 
 @socketio.on_error(CASINO_NAMESPACE)
 def casino_error(error):
@@ -227,6 +221,7 @@ def user_started_game(data, v):
 
     game = S.select_game(C.state, game)
     emit(E.GameUpdated, game)
+
     return '', 200
 
 
@@ -245,63 +240,56 @@ def user_played_slots(data, v):
         emit(E.ErrorOccurred, M.CannotAffordBet)
         return '', 400
 
-    # 1. The user sees the lever pull and the slots begin.
-    payload = {
-        'user_id': user_id,
-        'game_state': dumps(build_slots_start_state())
-    }
-    C.dispatch(A.USER_STARTED_SLOTS, payload)
-
-    session_key = B.build_session_key(user_id, CasinoGames.Slots)
-    session = S.select_session(C.state, session_key)
-    emit(E.SessionUpdated, session, to=user_id)
-
-    # 2. The game is decided some time later, and the client is updated again.
     @copy_current_request_context
     def handle_casino_slot_pull():
         with app.app_context():
-            emit(E.ConfirmationReceived, "1")
+            def send_session_update():
+                session_key = B.build_session_key(user_id, CasinoGames.Slots)
+                session = S.select_session(C.state, session_key)
+                emit(E.SessionUpdated, session, to=user_id)
 
-            sleep(1)
+            # 1. The user sees the lever pull and the slots begin.
+            payload = {
+                'user_id': user_id,
+                'game_state': dumps(build_slots_start_state())
+            }
+            C.dispatch(A.USER_PLAYED_SLOTS, payload)
 
-            emit(E.ConfirmationReceived, "2")
+            send_session_update()
 
-            sleep(1)
+            sleep(SLOTS_PULL_DURATION)
 
+            # 2. The game is decided some time later, and the client is updated again.
             success, game_state = casino_slot_pull(v, wager, currency)
 
             if success:
-                    balances = {
-                        'coins': v.coins,
-                        'procoins': v.procoins
-                    }
-                    payload = {
-                        'user_id': v.id,
-                        'balances': balances,
-                        'game_state': game_state
-                    }
+                balances = {
+                    'coins': v.coins,
+                    'procoins': v.procoins
+                }
+                payload = {
+                    'user_id': v.id,
+                    'balances': balances,
+                    'game_state': game_state
+                }
+                C.dispatch(A.USER_PLAYED_SLOTS, payload)
 
-                    C.dispatch(A.USER_PLAYED_SLOTS, payload)
+                send_session_update()
 
-                    session_key = B.build_session_key(user_id, CasinoGames.Slots)
-                    session = S.select_session(C.state, session_key)
-                    emit(E.SessionUpdated, session, to=user_id)
+                channels = ['slots']
+                username = S.select_user_username(C.state, user_id)
+                text = f'{username} <change me>'
+                feed = C.add_feed(channels, text)
 
-                    channels = ['slots']
-                    username = S.select_user_username(C.state, user_id)
-                    text = f'{username} <change me>'
-                    feed = C.add_feed(channels, text)
+                for channel in channels:
+                    emit(E.FeedUpdated, feed, to=channel)
 
-                    for channel in channels:
-                        emit(E.FeedUpdated, feed, to=channel)
-
-                    user = S.select_user(C.state, user_id)
-                    emit(E.UserUpdated, user, broadcast=True)
+                user = S.select_user(C.state, user_id)
+                emit(E.UserUpdated, user, broadcast=True)
             else:
                 emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
 
-    in_five_seconds = int(time.time()) + 5
-    C.scheduler.schedule(in_five_seconds, handle_casino_slot_pull)
+    handle_casino_slot_pull()
     return '', 200
 
 

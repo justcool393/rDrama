@@ -1,105 +1,98 @@
 import json
-from json.encoder import INFINITY
 import random
 from files.helpers.const import *
 from files.classes.casino_game import Casino_Game
 from files.helpers.casino import distribute_wager_badges
-from flask import g
+from ..config import SLOTS_PAYOUTS_TO_SYMBOLS
+from ..enums import CasinoCurrency, CasinoGames
+from .shared import *
 
-minimum_bet = 5
-maximum_bet = INFINITY
-payout_to_symbols = {
-    2: ["👣", "🍀", "🌈", "⭐️"],
-    3: ["🍎", "🔞", "⚛️", "☢️"],
-    5: ["✡️", "⚔️", "🍆", "🍒"],
-    12: ["🐱"]
-}
 
-def build_start_state():
-	return {
-		"status": "started",
-		"symbols": "",
-		"text": ""
-	}
+class SlotsManager():
+    @staticmethod
+    def load(user):
+        return None  # Slots doesn't have in-between states.
 
-def casino_slot_pull(gambler, wager_value, currency):
-    over_min = wager_value >= minimum_bet
-    under_max = wager_value <= maximum_bet
-    charged = gambler.charge_account(currency, wager_value)
-
-    if (over_min and under_max and charged):
-        payout = determine_payout()
-        reward = wager_value * payout
-        gambler.pay_account(currency, reward)
-
-        if currency == 'coins':
-            distribute_wager_badges(gambler, wager_value, won=(payout > 0))
-
-        symbols = build_symbols(payout)
-        text = build_text(wager_value, payout, currency)
-        game_state = {
-            "status": "done",
-            "symbols": symbols,
-            "text": text
+    @staticmethod
+    def wait():
+        return {
+            "game_status": GameStatus.Waiting,
+            "symbols": "",
+            "text": ""
         }
-        casino_game = Casino_Game()
-        casino_game.active = False
-        casino_game.user_id = gambler.id
-        casino_game.currency = currency
-        casino_game.wager = wager_value
-        casino_game.winnings = reward - wager_value
-        casino_game.kind = 'slots'
-        casino_game.game_state = json.dumps(game_state)
 
-        db = db_session()
-        db.add(casino_game)
-        db.commit()
+    @staticmethod
+    def start(user, currency, wager):
+        validate_bet(user, currency, wager)
 
-        return True, casino_game.game_state
-    else:
-        return False, "{}"
+        return {
+            "game_status": GameStatus.Started,
+            "symbols": "",
+            "text": ""
+        }
+
+    @staticmethod
+    def play(user, currency, wager):
+        charge_user(user, currency, wager)
+
+        payout = determine_payout()
+        reward = wager * payout
+        user.pay_account(currency, reward)
+
+        if currency == CasinoCurrency.Coins:
+            distribute_wager_badges(user, wager, won=(payout > 0))
+
+        game_state = {
+            "game_status": GameStatus.Done,
+            "symbols": build_symbols(payout),
+            "text": build_text(currency, wager, payout)
+        }
+        create_game(
+            user=user,
+            currency=currency,
+            wager=wager,
+            winnings=reward,
+            game=CasinoGames.Slots,
+            state=game_state,
+            active=False
+        )
+
+        return game_state
+
+# Helpers
 
 
-def build_symbols(for_payout):
+def get_all_slot_symbols():
     all_symbols = []
 
-    for payout in payout_to_symbols:
-        for symbol in payout_to_symbols[payout]:
+    for payout in SLOTS_PAYOUTS_TO_SYMBOLS:
+        for symbol in SLOTS_PAYOUTS_TO_SYMBOLS[payout]:
             all_symbols.append(symbol)
 
-    shuffle(all_symbols)
-
-    if for_payout == 0:
-        return "".join([all_symbols[0], ",", all_symbols[1], ",", all_symbols[2]])
-    elif for_payout == 1:
-        indices = shuffle([0, 1, 2])
-        symbol_set = ["", "", ""]
-        match_a = indices[0]
-        match_b = indices[1]
-        nonmatch = indices[2]
-        matching_symbol = all_symbols[0]
-        other_symbol = all_symbols[1]
-        symbol_set[match_a] = matching_symbol
-        symbol_set[match_b] = matching_symbol
-        symbol_set[nonmatch] = other_symbol
-
-        return "".join([symbol_set[0], ",", symbol_set[1], ",", symbol_set[2]])
-    else:
-        relevantSymbols = shuffle(payout_to_symbols[for_payout])
-        symbol = relevantSymbols[0]
-
-        return "".join([symbol, ",", symbol, ",", symbol])
+    return shuffle(all_symbols)
 
 
-def build_text(wager_value, result, currency):
-    if result == 0:
-        return f'Lost {wager_value} {currency}'
-    elif result == 1:
-        return 'Broke Even'
-    elif result == 12:
-        return f'Jackpot! Won {wager_value * (result-1)} {currency}'
-    else:
-        return f'Won {wager_value * (result-1)} {currency}'
+def determine_losing_symbols():
+    a, b, c, *_ = get_all_slot_symbols()
+    return ",".join([a, b, c])
+
+
+def determine_pushing_symbols():
+    matching_symbol, other_symbol, *_ = get_all_slot_symbols()
+    match_a, match_b, nonmatch = shuffle([0, 1, 2])
+    symbols = ["", "", ""]
+    symbols[match_a] = matching_symbol
+    symbols[match_b] = matching_symbol
+    symbols[nonmatch] = other_symbol
+
+    return ",".join(symbols)
+
+
+def determine_winning_symbols(payout):
+    relevantSymbols = shuffle(SLOTS_PAYOUTS_TO_SYMBOLS[payout])
+    symbol = relevantSymbols[0]
+
+    return "".join([symbol, symbol, symbol])
 
 
 def determine_payout():
@@ -118,6 +111,16 @@ def determine_payout():
         return 0
 
 
-def shuffle(stuff):
-    random.shuffle(stuff)
-    return stuff
+def build_symbols(payout):
+    return {
+        0: determine_losing_symbols(),
+        1: determine_pushing_symbols(),
+    }[payout] or determine_winning_symbols(payout)
+
+
+def build_text(currency, wager, payout):
+    return {
+        0: f'Lost {wager} {currency}',
+        1: 'Broke Even',
+        12: f'Jackpot! Won {wager * (payout - 1)} {currency}'
+    }[payout] or f'Won {wager * (payout - 1)} {currency}'

@@ -1,11 +1,11 @@
-import json
+from json import loads
 from math import floor
-import random
 from enum import Enum
 from files.helpers.const import *
-from files.classes.casino_game import Casino_Game
 from files.helpers.casino import distribute_wager_badges
-from flask import g
+from ..config import BLACKJACK_DECK_COUNT, PLAYING_CARD_RANKS
+from ..enums import CasinoCurrency, CasinoGames
+from .shared import *
 
 
 class BlackjackStatus(str, Enum):
@@ -17,7 +17,7 @@ class BlackjackStatus(str, Enum):
     BLACKJACK = "BLACKJACK"
 
 
-class BlackjackAction(str, Enum):
+class BlackjackActions(str, Enum):
     DEAL = "DEAL"
     HIT = "HIT"
     STAY = "STAY"
@@ -25,11 +25,65 @@ class BlackjackAction(str, Enum):
     BUY_INSURANCE = "BUY_INSURANCE"
 
 
-ranks = ("2", "3", "4", "5", "6", "7", "8", "9", "X", "J", "Q", "K", "A")
-suits = ("S", "H", "C", "D")
-deck = [rank + suit for rank in ranks for suit in suits]
-deck_count = 4
-minimum_bet = 5
+class BlackjackManager():
+    @staticmethod
+    def load(user):
+        return load_game(user, CasinoGames.Blackjack)
+
+    @staticmethod
+    def wait():
+        return {
+            "game_status": GameStatus.Waiting,
+            **get_initial_state()
+        }
+
+    @staticmethod
+    def start(user, currency, wager):
+        in_progress = BlackjackManager.load(user)
+
+        if in_progress:
+            raise GameInProgressException(user, CasinoGames.Blackjack)
+
+        validate_bet(user, currency, wager)
+
+        game_state = {
+            "game_status": GameStatus.Started,
+            **get_initial_state(),
+            'currency': currency,
+            'wager': wager
+        }
+        create_game(
+            user=user,
+            currency=currency,
+            wager=wager,
+            winnings=0,
+            game=CasinoGames.Blackjack,
+            state=game_state,
+            active=True
+        )
+
+        return BlackjackManager.play(user, BlackjackActions.DEAL)
+
+    @staticmethod
+    def play(user, action):
+        game, state = dispatch_action(user, action)
+        status = GameStatus.Started if game.active else GameStatus.Done
+
+        return {
+            "status": status,
+            **state
+        }
+
+# Helpers
+
+
+def remove_exploitable_information(state):
+    safe_state = state
+
+    if len(safe_state['dealer']) >= 2:
+        safe_state['dealer'][1] = '?'
+
+    safe_state['dealer_value'] = '?'
 
 
 def get_initial_state():
@@ -41,76 +95,17 @@ def get_initial_state():
         "player_bought_insurance": False,
         "player_doubled_down": False,
         "status": BlackjackStatus.PLAYING,
-        "actions": [BlackjackAction.DEAL],
-        "wager": {
-            "amount": 0,
-            "currency": "coins"
-        },
+        "actions": [BlackjackActions.DEAL],
+        "currency": CasinoCurrency.Coins,
+        "wager": 0,
         "payout": 0
     }
 
 
-def build_casino_game(gambler, wager, currency):
-    initial_state = get_initial_state()
-    initial_state['wager']['amount'] = wager
-    initial_state['wager']['currency'] = currency
-
-    casino_game = Casino_Game()
-    casino_game.user_id = gambler.id
-    casino_game.currency = currency
-    casino_game.wager = wager
-    casino_game.winnings = 0
-    casino_game.kind = 'blackjack'
-    casino_game.game_state = json.dumps(initial_state)
-    casino_game.active = True
-
-    db = db_session()
-    db.add(casino_game)
-    db.commit()
-
-    return casino_game
-
-
-def get_active_twentyone_game(gambler):
-    db = db_session()
-    
-    return db.query(Casino_Game).filter(
-        Casino_Game.active == True,
-        Casino_Game.kind == 'blackjack',
-        Casino_Game.user_id == gambler.id).first()
-
-
-def get_active_twentyone_game_state(gambler):
-    active_game = get_active_twentyone_game(gambler)
-    full_state = json.loads(active_game.game_state)
-    return remove_exploitable_information(full_state)
-
-
-def charge_gambler(gambler, amount, currency):
-    charged = gambler.charge_account(currency, amount)
-
-    if not charged:
-        raise Exception("Gambler cannot afford charge.")
-
-
-def create_new_game(gambler, wager, currency):
-    existing_game = get_active_twentyone_game(gambler)
-    over_minimum_bet = wager >= minimum_bet
-
-    if existing_game:
-        raise Exception("Gambler already has a game in progress.")
-
-    if not over_minimum_bet:
-        raise Exception(f"Gambler must bet over {minimum_bet} {currency}.")
-
-    try:
-        charge_gambler(gambler, wager, currency)
-        new_game = build_casino_game(gambler, wager, currency)
-        db = db_session()
-        db.add(new_game)
-        db.commit()
-    except:
-        raise Exception(f"Gambler cannot afford to bet {wager} {currency}.")
+def get_active_game_state(user):
+    game = BlackjackManager.load(user)
+    state = loads(game.game_state)
+    return remove_exploitable_information(state)
 
 
 def handle_blackjack_deal(state):
@@ -121,7 +116,6 @@ def handle_blackjack_deal(state):
     fourth = deck.pop()
     state['player'] = [first, third]
     state['dealer'] = [second, fourth]
-
     return state
 
 
@@ -129,13 +123,11 @@ def handle_blackjack_hit(state):
     deck = build_deck(state)
     next_card = deck.pop()
     state['player'].append(next_card)
-
     return state
 
 
 def handle_blackjack_stay(state):
     state['status'] = BlackjackStatus.STAYED
-
     return state
 
 
@@ -143,13 +135,11 @@ def handle_blackjack_double_down(state):
     state['player_doubled_down'] = True
     state = handle_blackjack_hit(state)
     state = handle_blackjack_stay(state)
-
     return state
 
 
 def handle_blackjack_buy_insurance(state):
     state['player_bought_insurance'] = True
-
     return state
 
 
@@ -220,7 +210,7 @@ def can_double_down(state):
     return player_hand_value in (10, 11) and player_never_hit
 
 
-def handle_payout(gambler, state, game):
+def handle_payout(user, game, state):
     status = state['status']
     payout = 0
 
@@ -249,19 +239,16 @@ def handle_payout(gambler, state, game):
     else:
         raise Exception("Attempted to payout a game that has not finished.")
 
-    gambler.pay_account(game.currency, payout)
+    user.pay_account(game.currency, payout)
 
-    if game.currency == 'coins':
+    if game.currency == CasinoCurrency.Coins:
         if status in (BlackjackStatus.BLACKJACK, BlackjackStatus.WON):
-            distribute_wager_badges(gambler, game.wager, won=True)
+            distribute_wager_badges(user, game.wager, won=True)
         elif status == BlackjackStatus.LOST:
-            distribute_wager_badges(gambler, game.wager, won=False)
+            distribute_wager_badges(user, game.wager, won=False)
 
     game.active = False
-
-    db = db_session()
-    db.add(game)
-    db.commit()
+    save_game(game, state)
 
     return payout
 
@@ -276,73 +263,65 @@ def remove_exploitable_information(state):
     return safe_state
 
 
-action_handlers = {
-    BlackjackAction.DEAL: handle_blackjack_deal,
-    BlackjackAction.HIT: handle_blackjack_hit,
-    BlackjackAction.STAY: handle_blackjack_stay,
-    BlackjackAction.DOUBLE_DOWN: handle_blackjack_double_down,
-    BlackjackAction.BUY_INSURANCE: handle_blackjack_buy_insurance,
-}
+def dispatch_action(user, action):
+    handler = {
+        BlackjackActions.DEAL: handle_blackjack_deal,
+        BlackjackActions.HIT: handle_blackjack_hit,
+        BlackjackActions.STAY: handle_blackjack_stay,
+        BlackjackActions.DOUBLE_DOWN: handle_blackjack_double_down,
+        BlackjackActions.BUY_INSURANCE: handle_blackjack_buy_insurance,
+    }[action] or None
 
-
-def dispatch_action(gambler, action):
-    game = get_active_twentyone_game(gambler)
-    handler = action_handlers[action]
-
-    if not game:
-        raise Exception(
-            'Gambler has no active blackjack game.')
     if not handler:
         raise Exception(
             f'Illegal action {action} passed to Blackjack#dispatch_action.')
 
-    state = json.loads(game.game_state)
+    game = BlackjackManager.load(user)
 
-    if action == BlackjackAction.BUY_INSURANCE:
+    if not game:
+        raise NoGameInProgressException(user, CasinoGames.Blackjack)
+
+    state = loads(game.game_state)
+
+    if action == BlackjackActions.BUY_INSURANCE:
         if not can_purchase_insurance(state):
             raise Exception("Insurance cannot be purchased.")
 
-        charge_gambler(gambler, floor(game.wager / 2), game.currency)
-    if action == BlackjackAction.DOUBLE_DOWN:
+        price = floor(game.wager / 2)
+        charge_user(user, game.currency, price)
+    if action == BlackjackActions.DOUBLE_DOWN:
         if not can_double_down(state):
             raise Exception("Cannot double down.")
 
-        charge_gambler(gambler, game.wager, game.currency)
+        charge_user(user, game.currency, price)
         game.wager *= 2
 
-    new_state = handler(state)
-    new_state['player_value'] = get_value_of_hand(new_state['player'])
-    new_state['dealer_value'] = get_value_of_hand(new_state['dealer'])
-    new_state['actions'] = get_available_actions(new_state)
-
-    game.game_state = json.dumps(new_state)
-    
-    db = db_session()
-    db.add(game)
-    db.commit()
+    new_state = {
+        **handler(state),
+        'player_value': get_value_of_hand(new_state['player']),
+        'dealer_value': get_value_of_hand(new_state['dealer']),
+        'actions': get_available_actions(new_state)
+    }
+    save_game(game, new_state)
 
     game_over, final_state = check_for_completion(new_state)
 
     if game_over:
-        payout = handle_payout(gambler, final_state, game)
-        final_state['actions'] = [BlackjackAction.DEAL]
+        payout = handle_payout(user, game, final_state)
+        final_state['actions'] = [BlackjackActions.DEAL]
         final_state['payout'] = payout
-        return final_state
+        return game, final_state
     else:
         safe_state = remove_exploitable_information(new_state)
-        return safe_state
-
-
-def shuffle(collection):
-    random.shuffle(collection)
-    return collection
+        return game, safe_state
 
 
 def build_deck(state):
+    deck = build_deck_of_cards()
     card_counts = {}
 
     for card in deck:
-        card_counts[card] = deck_count
+        card_counts[card] = BLACKJACK_DECK_COUNT
 
     cards_already_dealt = state['player'].copy()
     cards_already_dealt.extend(state['dealer'].copy())
@@ -363,7 +342,7 @@ def build_deck(state):
 
 def get_value_of_card(card):
     rank = card[0]
-    return 0 if rank == "A" else min(ranks.index(rank) + 2, 10)
+    return 0 if rank == "A" else min(PLAYING_CARD_RANKS.index(rank) + 2, 10)
 
 
 def get_value_of_hand(hand):
@@ -382,13 +361,13 @@ def get_available_actions(state):
     actions = []
 
     if state['status'] == BlackjackStatus.PLAYING:
-        actions.append(BlackjackAction.HIT)
-        actions.append(BlackjackAction.STAY)
+        actions.append(BlackjackActions.HIT)
+        actions.append(BlackjackActions.STAY)
 
     if can_double_down(state):
-        actions.append(BlackjackAction.DOUBLE_DOWN)
+        actions.append(BlackjackActions.DOUBLE_DOWN)
 
     if can_purchase_insurance(state):
-        actions.append(BlackjackAction.BUY_INSURANCE)
+        actions.append(BlackjackActions.BUY_INSURANCE)
 
     return actions

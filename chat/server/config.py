@@ -15,5 +15,24 @@ STATE_LOG_PATH = "chat/server/state.json"
 # When the scheduler runs, where should a local copy be stored for debugging?
 SCHEDULER_LOG_PATH = "chat/server/scheduler.log.txt"
 
+
+# -- Games
+
+# Playing cards
+PLAYING_CARD_RANKS = ("2", "3", "4", "5", "6", "7", "8", "9", "X", "J", "Q", "K", "A")
+PLAYING_CARD_SUITS = ("S", "H", "C", "D")
+
+# A record where the key is the payout multiplier and the value is the collection of symbols
+# with the value of that multiplier.
+SLOTS_PAYOUTS_TO_SYMBOLS = {
+    2: ["👣", "🍀", "🌈", "⭐️"],
+    3: ["🍎", "🔞", "⚛️", "☢️"],
+    5: ["✡️", "⚔️", "🍆", "🍒"],
+    12: ["🐱"]
+}
+
 # How many seconds does the slots animation last?
 SLOTS_PULL_DURATION = 3
+
+# How many decks in Blackjack?
+BLACKJACK_DECK_COUNT = 4

@@ -169,9 +169,13 @@ class User(Base):
 
 		super().__init__(**kwargs)
 
-
 	def __repr__(self):
 		return f"<User(id={self.id}, username={self.username})>"
+
+	def can_afford(self, currency, amount):
+		db = db_session()
+		in_db = db.query(User).filter(User.id == self.id).one()
+		return getattr(in_db, currency, 0) > amount
 
 	def pay_account(self, currency, amount):
 		db = db_session()
@@ -183,7 +187,6 @@ class User(Base):
 
 		db.flush()
 		
-
 	def charge_account(self, currency, amount):
 		db = db_session()
 		in_db = db.query(User).filter(User.id == self.id).one()
