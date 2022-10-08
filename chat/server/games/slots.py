@@ -112,7 +112,7 @@ def build_symbols(payout):
     return {
         0: determine_losing_symbols(),
         1: determine_pushing_symbols(),
-    }[payout] or determine_winning_symbols(payout)
+    }.get(payout) or determine_winning_symbols(payout)
 
 
 def build_text(currency, wager, payout):
@@ -120,4 +120,4 @@ def build_text(currency, wager, payout):
         0: f'Lost {wager} {currency}',
         1: 'Broke Even',
         12: f'Jackpot! Won {wager * (payout - 1)} {currency}'
-    }[payout] or f'Won {wager * (payout - 1)} {currency}'
+    }.get([payout]) or f'Won {wager * (payout - 1)} {currency}'

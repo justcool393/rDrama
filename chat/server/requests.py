@@ -232,7 +232,8 @@ def user_played_slots(data, v):
         with app.app_context():
             try:
                 # 1. The user sees the lever pull and the slots begin.
-                payload = SlotsManager.start(v, currency, wager)
+                state = dumps(SlotsManager.start(v, currency, wager))
+                payload = {'user_id': user_id, 'game_state': state}
                 C.dispatch(A.USER_PLAYED_SLOTS, payload)
             except:
                 return emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
@@ -245,12 +246,13 @@ def user_played_slots(data, v):
             try:
                 state = dumps(SlotsManager.play(v, currency, wager))
                 payload = {
-                    'user_id': v.id,
+                    'user_id': user_id,
                     'balances': get_balances(v),
                     'game_state': state
                 }
                 C.dispatch(A.USER_PLAYED_SLOTS, payload)
-            except:
+            except Exception as e:
+                raise e
                 return emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
 
             username = S.select_user_username(C.state, user_id)

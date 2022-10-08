@@ -29,7 +29,6 @@ def sanitize_chat_message(text):
     return text[:MESSAGE_MAX_LENGTH].strip()
 
 
-
 def validate_bet(user, currency, wager):
     if user.rehab:
         raise UserInRehabException(user)
