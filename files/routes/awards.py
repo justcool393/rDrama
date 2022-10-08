@@ -51,7 +51,7 @@ def buy(v, award):
 	if award == 'benefactor' and not request.values.get("mb"):
 		return {"error": "You can only buy the Benefactor award with marseybux."}, 403
 
-	if award == 'ghost' and v.admin_level < 2:
+	if award == 'ghost' and v.admin_level < PERMS['BUY_GHOST_AWARD']:
 		return {"error": "Only admins can buy this award."}, 403
 
 	AWARDS = deepcopy(AWARDS2)
@@ -62,6 +62,7 @@ def buy(v, award):
 	if award not in AWARDS: abort(400)
 	og_price = AWARDS[award]["price"]
 
+	award_title = AWARDS[award]['title']
 	price = int(og_price * v.discount)
 
 	if request.values.get("mb"):
@@ -92,11 +93,11 @@ def buy(v, award):
 
 	if award == "lootbox":
 		lootbox_items = []
-		for i in [1,2,3,4,5]:
-			award = random.choice(["firework", "confetti", "ricardo", "wholesome", "shit", "fireflies", "scooter", "train"])
-			lootbox_items.append(AWARDS[award]['title'])
-			award = AwardRelationship(user_id=v.id, kind=award)
-			g.db.add(award)
+		for i in range(5): # five items per lootbox
+			lb_award = random.choice(["firework", "confetti", "ricardo", "wholesome", "shit", "fireflies", "scooter", "train"])
+			lootbox_items.append(AWARDS[lb_award]['title'])
+			lb_award = AwardRelationship(user_id=v.id, kind=lb_award)
+			g.db.add(lb_award)
 			g.db.flush()
 
 		v.lootboxes_bought += 1
@@ -117,10 +118,10 @@ def buy(v, award):
 	g.db.add(v)
 
 	if CARP_ID and v.id != CARP_ID and og_price >= 10000:
-		send_repeatable_notification(CARP_ID, f"@{v.username} has bought a `{award}` award!")
+		send_repeatable_notification(CARP_ID, f"@{v.username} has bought a `{award_title}` award!")
 
 
-	return {"message": f"{award} award bought!"}
+	return {"message": f"{award_title} award bought!"}
 
 @app.post("/award/<thing_type>/<id>")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
@@ -133,7 +134,7 @@ def award_thing(v, thing_type, id):
 	if thing_type == 'post': thing = get_post(id)
 	else: thing = get_comment(id)
 
-	if v.shadowbanned: return render_template('errors/500.html', err=True, v=v), 500
+	if v.shadowbanned: abort(500)
 	
 	kind = request.values.get("kind", "").strip()
 	
@@ -186,10 +187,7 @@ def award_thing(v, thing_type, id):
 
 			g.db.delete(award)
 
-			if request.referrer and len(request.referrer) > 1:
-				if request.referrer == f'{SITE_FULL}/submit': return redirect(thing.permalink)
-				elif request.referrer.startswith(f'{SITE_FULL}/'): return redirect(request.referrer)
-			return redirect(SITE_FULL)
+			return {"message": f"{AWARDS[kind]['title']} award given to {thing_type} successfully!"}
 
 		if author.deflector and v.id != AEVANN_ID and (AWARDS[kind]['price'] > 500 or kind == 'marsify' or kind.istitle()) and kind not in ('pin','unpin','benefactor'):
 			msg = f"@{v.username} has tried to give your [{thing_type}]({thing.shortlink}) the {AWARDS[kind]['title']} Award but it was deflected and applied to them :marseytroll:"
@@ -212,7 +210,7 @@ def award_thing(v, thing_type, id):
 			author.unban_utc += 86400
 			send_repeatable_notification(author.id, f"Your account has been banned for **yet another day** for {link}. Seriously man?")
 
-		if v.admin_level > 2:
+		if v.admin_level >= PERMS['USER_BAN']:
 			log_link = f'/{thing_type}/{thing.id}'
 			reason = f'<a href="{log_link}">{log_link}</a>'
 
@@ -236,7 +234,7 @@ def award_thing(v, thing_type, id):
 			author.ban_reason = None
 			send_repeatable_notification(author.id, "You have been unbanned!")
 
-		if v.admin_level > 2:
+		if v.admin_level >= PERMS['USER_BAN']:
 			ma=ModAction(
 				kind="unban_user",
 				user_id=v.id,
@@ -249,7 +247,7 @@ def award_thing(v, thing_type, id):
 		author.unban_utc = int(time.time()) + 30 * 86400
 		send_repeatable_notification(author.id, f"Your account has been banned permanently for {link}. You must [provide the admins](/contact) a timestamped picture of you touching grass/snow/sand/ass to get unbanned!")
 
-		if v.admin_level > 2:
+		if v.admin_level >= PERMS['USER_BAN']:
 			log_link = f'/{thing_type}/{thing.id}'
 			reason = f'<a href="{log_link}">{log_link}</a>'
 
@@ -297,7 +295,7 @@ def award_thing(v, thing_type, id):
 		
 		badge_grant(user=author, badge_id=28)
 
-		if v.admin_level > 2:
+		if v.admin_level >= PERMS['USER_AGENDAPOSTER']:
 			ma = ModAction(
 				kind="agendaposter",
 				user_id=v.id,
@@ -431,88 +429,4 @@ def award_thing(v, thing_type, id):
 	else: author.received_award_count = 1
 	g.db.add(author)
 
-	if request.referrer and len(request.referrer) > 1:
-		if request.referrer == f'{SITE_FULL}/submit': return redirect(thing.permalink)
-		elif request.referrer.startswith(f'{SITE_FULL}/'): return redirect(request.referrer)
-	return redirect(SITE_FULL)
-
-
-
-@app.get("/admin/awards")
-@admin_level_required(2)
-def admin_userawards_get(v):
-	if not FEATURES['AWARDS']:
-		abort(404)
-
-	if SITE == 'pcmemes.net' and v.admin_level < 3: abort(403)
-
-	if v.admin_level != 3:
-		return render_template("admin/awards.html", awards=list(AWARDS3.values()), v=v)
-
-	return render_template("admin/awards.html", awards=list(AWARDS.values()), v=v) 
-
-@app.post("/admin/awards")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@admin_level_required(2)
-def admin_userawards_post(v):
-	if not FEATURES['AWARDS']:
-		abort(404)
-	
-	if SITE == 'pcmemes.net' and v.admin_level < 3: abort(403)
-
-	if SITE == 'watchpeopledie.co' and v.id not in (AEVANN_ID, CARP_ID, SNAKES_ID): abort(403)
-
-	try: u = request.values.get("username").strip()
-	except: abort(404)
-
-	whitelist = ("shit", "fireflies", "train", "scooter", "wholesome", "tilt", "glowie")
-
-	u = get_user(u, v=v)
-
-	notify_awards = {}
-
-	for key, value in request.values.items():
-		if key not in AWARDS: continue
-
-		if v.admin_level < 3 and key not in whitelist: continue
-
-		if value:
-			
-			if int(value) > 10: abort(403)
-
-			if int(value): notify_awards[key] = int(value)
-
-			for x in range(int(value)):
-				award = AwardRelationship(
-					user_id=u.id,
-					kind=key,
-					granted_by=v.id
-				)
-
-				g.db.add(award)
-
-	if v.id != u.id:
-		text = f"@{v.username} has given you the following awards:\n\n"
-		for key, value in notify_awards.items():
-			text += f" - **{value}** {AWARDS[key]['title']} {'Awards' if value != 1 else 'Award'}\n"
-		send_repeatable_notification(u.id, text)
-
-	note = ""
-
-	for key, value in notify_awards.items():
-		note += f"{value} {AWARDS[key]['title']}, "
-
-	if len(note) > 500: return {"error": "You're giving too many awards at the same time!"}, 400
-	
-	ma=ModAction(
-		kind="grant_awards",
-		user_id=v.id,
-		target_user_id=u.id,
-		_note=note[:-2]
-		)
-	g.db.add(ma)
-
-
-	if v.admin_level != 3: return render_template("admin/awards.html", awards=list(AWARDS3.values()), v=v, msg=f"Awards granted to @{u.username} successfully!")
-	return render_template("admin/awards.html", awards=list(AWARDS.values()), v=v, msg=f"Awards granted to @{u.username} successfully!") 
-
+	return {"message": f"{AWARDS[kind]['title']} award given to {thing_type} successfully!"}

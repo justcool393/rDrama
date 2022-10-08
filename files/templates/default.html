@@ -28,17 +28,6 @@
 				{{v.css | safe}}
 			</style>
 		{% endif %}
-
-		{% if v.earlylife %}
-			<style>
-				.nav-item .text-small.font-weight-bold::before {
-					content: "((("
-				}
-				.nav-item .text-small.font-weight-bold::after {
-					content: ")))"
-				}
-			</style>
-		{% endif %}
 	{% else %}
 		<style>:root{--primary:#{{DEFAULT_COLOR}}</style>
 		<link rel="stylesheet" href="{{'css/main.css' | asset}}">
@@ -243,9 +232,6 @@
 		href="{{'icon.webp' | asset_siteimg}}"
 		>
 
-		{% block fixedMobileBarJS %}
-		{% endblock %}
-
 		{% if 'slackernews' in request.path %}
 			<meta name="cf-2fa-verify" content="ea6d12c0fb87b3b">
 		{% elif SITE == 'rdrama.net' %}
@@ -264,6 +250,8 @@
  <body id="{% if request.path != '/comments' %}{% block pagetype %}frontpage{% endblock %}{% endif %}" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="{% if path != '/formatting' %}overflow-x: hidden; {% endif %} background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background){% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>
 
 {% block Banner %}
+	{% include "expanded_image_modal.html" %}
+
 	{% if '@' not in request.path %}	
 		{% if sub and SITE_NAME != 'WPD' %}
 			<a href="{{sub.banner_url}}">
@@ -286,10 +274,13 @@
 			{% else %}
 				{% set banner = 'cached.webp' | asset_siteimg %}
 			{% endif %}
-			<img alt="site banner" src="{{banner}}" width="100%">
+			<a href="{{banner}}">
+				<img alt="site banner" onclick="expandDesktopImage()" src="{{banner}}" width="100%">
+			</a>
 		{% else %}
 			{% if SITE_NAME == 'PCM' %}
-				{% set banner = 'banners/great-value-v2.webp' | asset_siteimg %}
+				{% set path = "assets/images/" + SITE_NAME + "/banners" %}
+				{% set banner = "/" + path + "/" + listdir('files/' + path)|max + '?v=1' %}
 			{% else %}
 				{% set banner = 'banner.webp' | asset_siteimg %}
 			{% endif %}
@@ -304,12 +295,6 @@
 {% include "header.html" %}
 
 {% block mobileUserBanner %}
-{% endblock %}
-
-{% block mobileBanner %}
-{% endblock %}
-
-{% block postNav %}
 {% endblock %}
 
 <div class="container">

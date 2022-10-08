@@ -22,7 +22,7 @@ def front_all(v, sub=None, subdomain=None):
 	if sub:
 		sub = sub.strip().lower()
 		if sub == 'chudrama' and not (v and v.can_see_chudrama): abort(403)
-		sub = g.db.get(Sub, sub)
+		sub = get_sub_by_name(sub, graceful=True)
 	
 	if (request.path.startswith('/h/') or request.path.startswith('/s/')) and not sub: abort(404)
 
@@ -189,7 +189,7 @@ def random_post(v):
 @app.get("/random_user")
 @auth_required
 def random_user(v):
-	u = g.db.query(User.username).filter(User.song != None).order_by(func.random()).first()
+	u = g.db.query(User.username).filter(User.song != None, User.shadowbanned == None).order_by(func.random()).first()
 	
 	if u: u = u[0]
 	else: return "No users have set a profile anthem so far!"
@@ -239,7 +239,7 @@ def comment_idlist(page=1, v=None, nsfw=False, sort="new", t="all", gt=0, lt=0, 
 
 	comments = g.db.query(Comment.id).filter(Comment.parent_submission != None, Comment.author_id.notin_(v.userblocks))
 
-	if v.admin_level < 2:
+	if v.admin_level < PERMS['POST_COMMENT_MODERATION']:
 		private = [x[0] for x in g.db.query(Submission.id).filter(Submission.private == True).all()]
 
 		comments = comments.filter(Comment.is_banned==False, Comment.deleted_utc == 0, Comment.parent_submission.notin_(private))

@@ -248,7 +248,8 @@ function post_toast_callback(url, data, callback) {
 
 	form.append("formkey", formkey());
 	xhr.onload = function() {
-		let result = callback(xhr);
+		let result
+		if (callback) result = callback(xhr);
 		if (xhr.status >= 200 && xhr.status < 300) {
 			var myToast = bootstrap.Toast.getOrCreateInstance(document.getElementById('toast-post-error'));
 			myToast.hide();
@@ -337,3 +338,15 @@ function timestamp(str, ti) {
 	const date = new Date(ti*1000);
 	document.getElementById(str).setAttribute("data-bs-original-title", formatDate(date));
 };
+
+function areyousure(t) {
+	if (t.value)
+		t.value = 'Are you sure?'
+	else
+		t.innerHTML = t.innerHTML.replace(t.textContent, 'Are you sure?')
+
+	t.setAttribute("onclick", t.dataset.click);
+
+	if (t.dataset.dismiss)
+    	t.setAttribute("data-bs-dismiss", t.dataset.dismiss);
+}

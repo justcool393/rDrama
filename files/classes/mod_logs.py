@@ -250,11 +250,6 @@ ACTIONTYPES = {
 		"icon": 'fa-tag', 
 		"color": 'bg-primary'
 	},
-	'grant_awards': {
-		"str": 'granted awards to {self.target_link}', 
-		"icon": 'fa-gift', 
-		"color": 'bg-primary'
-	},
 	'link_accounts': {
 		"str": 'linked {self.target_link}', 
 		"icon": 'fa-link', 
@@ -424,7 +419,17 @@ ACTIONTYPES = {
 		"str": 'updated marsey image', 
 		"icon": 'fa-cat', 
 		"color": 'bg-success'
-	}
+	},
+	'club_post': {
+		"str": 'moved post {self.target_link} to the {cc}', 
+		"icon": 'fa-club', 
+		"color": 'bg-success'
+	},
+	'unclub_post': {
+		"str": 'removed post {self.target_link} from the {cc}', 
+		"icon": 'fa-club', 
+		"color": 'bg-muted'
+	},
 }
 
 ACTIONTYPES2 = deepcopy(ACTIONTYPES)

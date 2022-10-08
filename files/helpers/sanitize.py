@@ -189,6 +189,19 @@ def with_sigalrm_timeout(timeout: int):
 	return inner
 
 
+def sanitize_raw_title(sanitized):
+	if not sanitized: return ""
+	sanitized = sanitized.replace('\u200e','').replace('\u200b','').replace("\ufeff", "").replace("\r","").replace("\n", "")
+	sanitized = sanitized.strip()
+	return sanitized[:POST_TITLE_LENGTH_LIMIT]
+
+def sanitize_raw_body(sanitized):
+	if not sanitized: return ""
+	sanitized = sanitized.replace('\u200e','').replace('\u200b','').replace("\ufeff", "").replace("\r\n", "\n")
+	sanitized = sanitized.strip()
+	return sanitized[:POST_BODY_LENGTH_LIMIT]
+
+
 @with_sigalrm_timeout(5)
 def sanitize(sanitized, golden=True, limit_pings=0, showmore=True, count_marseys=False, torture=False):
 	sanitized = sanitized.strip()
@@ -220,7 +233,7 @@ def sanitize(sanitized, golden=True, limit_pings=0, showmore=True, count_marseys
 
 	sanitized = strikethrough_regex.sub(r'\1<del>\2</del>', sanitized)
 
-	sanitized = sanitized.replace('‎','').replace('​','').replace("\ufeff", "").replace("𒐪","")
+	sanitized = sanitized.replace('\u200e','').replace('\u200b','').replace("\ufeff", "").replace("𒐪","").replace("\u0589", ":")
 
 	sanitized = reddit_regex.sub(r'\1<a href="https://old.reddit.com/\2" rel="nofollow noopener noreferrer" target="_blank">/\2</a>', sanitized)
 	sanitized = sub_regex.sub(r'\1<a href="/\2">/\2</a>', sanitized)
@@ -373,7 +386,7 @@ def sanitize(sanitized, golden=True, limit_pings=0, showmore=True, count_marseys
 	if '<pre>' not in sanitized:
 		sanitized = sanitized.replace('\n','')
 
-	if showmore and len(sanitized) > 5000:
+	if showmore and len(sanitized) > 3500:
 		sanitized = showmore_regex.sub(r'\1<p><button class="showmore" onclick="showmore()">SHOW MORE</button></p><d class="d-none">\2</d>', sanitized, count=1)
 
 	return sanitized.strip()
@@ -419,10 +432,10 @@ def filter_emojis_only(title, golden=True, count_marseys=False, graceful=False, 
 
 	title = strikethrough_regex.sub(r'\1<del>\2</del>', title)
 
-	title = bleach.clean(title, tags=['img','del','span'], attributes=allowed_attributes_emojis, protocols=['http','https'])
+	title = bleach.clean(title, tags=['img','del','span'], attributes=allowed_attributes_emojis, protocols=['http','https']).replace('\n','').strip()
 
-	if len(title) > 1500 and not graceful: abort(400)
-	else: return title.replace('\n','').strip()
+	if len(title) > POST_TITLE_HTML_LENGTH_LIMIT and not graceful: abort(400)
+	else: return title
 
 def normalize_url(url):
 	url = reddit_domain_regex.sub(r'\1https://old.reddit.com/\3/', url)
@@ -455,7 +468,7 @@ def normalize_url(url):
 
 def validate_css(css):
 	if '@import' in css:
-		return False, "@import statements not allowed."
+		return False, "@import statements are not allowed!"
 
 	for i in css_url_regex.finditer(css):
 		url = i.group(1)
