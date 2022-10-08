@@ -1,12 +1,10 @@
 from time import time
 from uuid import uuid4
 from files.helpers.get import get_account
-from .games import get_roulette_empty_bets
-from .enums import CasinoGames
+from .enums import CasinoGames, MarseyRacingBet, RouletteAction
 
 
 class CasinoBuilders():
-    # Builders
     @staticmethod
     def build_user_entity(user_id, request_id):
         user_account = get_account(user_id, graceful=True)
@@ -60,6 +58,44 @@ class CasinoBuilders():
         }
 
     @staticmethod
+    def build_racing_feed_entity(username, kind, selection, currency, wager):
+        single_choice = selection[0]
+        multi_choice = ' '.join(selection)
+        bet = f'bet {wager} {currency}'
+        phrase = {
+            MarseyRacingBet.WIN: f'{bet} to win on {single_choice}',
+            MarseyRacingBet.PLACE: f'{bet} to place on {single_choice}',
+            MarseyRacingBet.SHOW: f'{bet} to show on {single_choice}',
+            MarseyRacingBet.QUINELLA: f'{bet}, quinella, {multi_choice}',
+            MarseyRacingBet.TRIFECTA_BOX: f'{bet}, boxed trifecta, {multi_choice}',
+            MarseyRacingBet.TRIFECTA: f'{bet}, trifecta, {multi_choice}',
+            MarseyRacingBet.SUPERFECTA_BOX: f'{bet}, boxed superfecta, {multi_choice}',
+            MarseyRacingBet.SUPERFECTA: f'{bet}, superfecta, {multi_choice}'
+        }[kind]
+
+        return f'{username} {phrase}'
+
+    @staticmethod
+    def build_roulette_feed_entity(username, bet, which, currency, amount):
+        item = f'{username} bet {amount} {currency} that the number will be'
+
+        if bet == RouletteAction.STRAIGHT_UP_BET:
+            return f'{item} {which}.'
+        elif bet == RouletteAction.LINE_BET:
+            return f'{item} within line {which}.'
+        elif bet == RouletteAction.COLUMN_BET:
+            return f'{item} within columns {which}.'
+        elif bet == RouletteAction.DOZEN_BET:
+            return f'{item} within dozen {which}.'
+        elif bet == RouletteAction.EVEN_ODD_BET:
+            return f'{item} {which.lower()}.'
+        elif bet == RouletteAction.RED_BLACK_BET:
+            return f'{item} {which.lower()}.'
+        else:
+            condition = "higher than 18" if which == "HIGH" else "lower than 19"
+            return f'{item} {condition}.'
+
+    @staticmethod
     def build_game_entity(name):
         return {
             'id': name,
@@ -92,7 +128,17 @@ class CasinoBuilders():
             CasinoBuilders.build_game_entity(CasinoGames.Crossing),
         ]
 
-        slots['state'] = {'bets': get_roulette_empty_bets()}
+        slots['state'] = {
+            'bets': {
+                RouletteAction.STRAIGHT_UP_BET: [],
+                RouletteAction.LINE_BET: [],
+                RouletteAction.COLUMN_BET: [],
+                RouletteAction.DOZEN_BET: [],
+                RouletteAction.EVEN_ODD_BET: [],
+                RouletteAction.RED_BLACK_BET: [],
+                RouletteAction.HIGH_LOW_BET: [],
+            }
+        }
 
         return {
             'users': {

@@ -1,12 +1,14 @@
 from uuid import uuid4
 from json import dumps
 from copy import deepcopy
+from flask_socketio import emit
 from .builders import CasinoBuilders
 from .config import IN_DEVELOPMENT_MODE, STATE_LOG_PATH
-from .enums import CasinoActions
+from .enums import CasinoActions, CasinoEvents
 from .handlers import CasinoHandlers
 from .middleware import CasinoMiddleware
 from .scheduler import CasinoScheduler
+from .selectors import CasinoSelectors
 
 
 class CasinoManager():
@@ -67,6 +69,25 @@ class CasinoManager():
         self.dispatch(CasinoActions.FEED_ADDED, payload)
 
         return payload
+
+    def send_user_update(self, user_id):
+        user = CasinoSelectors.select_user(self.state, user_id)
+        emit(CasinoEvents.UserUpdated, user, broadcast=True)
+
+    def send_session_update(self, user_id, game):
+        session_key = CasinoBuilders.build_session_key(user_id, game)
+        session = CasinoSelectors.select_session(self.state, session_key)
+        emit(CasinoEvents.SessionUpdated, session, broadcast=True)
+
+    def send_game_update(self, game):
+        game_entity = CasinoSelectors.select_game(self.state, game)
+        emit(CasinoEvents.GameUpdated, game_entity, broadcast=True)
+
+    def send_feed_update(self, text, channels):
+        feed = self.add_feed(channels, text)
+
+        for channel in channels:
+            emit(CasinoEvents.FeedUpdated, feed, to=channel)
 
 
 CasinoManager.instance = CasinoManager()

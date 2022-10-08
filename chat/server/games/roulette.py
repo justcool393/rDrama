@@ -303,24 +303,3 @@ def determine_roulette_winners(number, bets):
 
 def get_roulette_bets():
     return get_roulette_bets_and_betters()[1]
-
-
-def format_roulette_bet_feed_item(username, bet, which, currency, amount):
-    item = f'{username} bet {amount} {currency} that the number will be'
-
-    if bet == RouletteAction.STRAIGHT_UP_BET:
-        return f'{item} {which}.'
-    elif bet == RouletteAction.LINE_BET:
-        return f'{item} within line {which}.'
-    elif bet == RouletteAction.COLUMN_BET:
-        return f'{item} within columns {which}.'
-    elif bet == RouletteAction.DOZEN_BET:
-        return f'{item} within dozen {which}.'
-    elif bet == RouletteAction.EVEN_ODD_BET:
-        return f'{item} {which.lower()}.'
-    elif bet == RouletteAction.RED_BLACK_BET:
-        return f'{item} {which.lower()}.'
-    else:
-        condition = "higher than 18" if which == "HIGH" else "lower than 19"
-        return f'{item} {condition}.'
-    

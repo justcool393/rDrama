@@ -81,3 +81,25 @@ class CasinoMessages(str, Enum):
     RacingBetPlacedSuccessfully = "Your bet was successfully placed."
     CannotSendEmptyMessage = "Please enter a message."
     UserInRehab = "You are in rehab."
+
+
+class RouletteAction(str, Enum):
+    STRAIGHT_UP_BET = "STRAIGHT_UP_BET"
+    LINE_BET = "LINE_BET"
+    COLUMN_BET = "COLUMN_BET"
+    DOZEN_BET = "DOZEN_BET"
+    EVEN_ODD_BET = "EVEN_ODD_BET"
+    RED_BLACK_BET = "RED_BLACK_BET"
+    HIGH_LOW_BET = "HIGH_LOW_BET"
+
+
+class MarseyRacingBet(str, Enum):
+    WIN = 'WIN'
+    PLACE = 'PLACE'
+    SHOW = 'SHOW'
+    QUINELLA = 'QUINELLA'
+    EXACTA = 'EXACTA'
+    TRIFECTA = 'TRIFECTA'
+    TRIFECTA_BOX = 'TRIFECTA_BOX'
+    SUPERFECTA = 'SUPERFECTA'
+    SUPERFECTA_BOX = 'SUPERFECTA_BOX'

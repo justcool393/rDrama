@@ -1,5 +1,5 @@
 from time import time
-from json import dumps, loads
+from json import loads
 from .enums import CasinoActions
 from .helpers import grab
 from .selectors import CasinoSelectors

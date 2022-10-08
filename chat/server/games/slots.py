@@ -1,19 +1,15 @@
 import random
 from files.helpers.const import *
-from files.classes.casino_game import Casino_Game
 from files.helpers.casino import distribute_wager_badges
 from ..config import SLOTS_PAYOUTS_TO_SYMBOLS
 from ..enums import CasinoCurrency, CasinoGames
+from ..helpers import validate_bet, charge_user
 from .shared import *
 
 # Manager
 
 
 class SlotsManager():
-    @staticmethod
-    def load(user):
-        return None  # Slots doesn't have in-between states.
-
     @staticmethod
     def wait():
         return {

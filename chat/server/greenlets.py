@@ -1,6 +1,4 @@
-from time import time
 from gevent import Greenlet, sleep
-from files.__main__ import app
 from .manager import CasinoManager
 
 SCHEDULE_SCAN_RATE = 5

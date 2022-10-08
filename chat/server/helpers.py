@@ -1,11 +1,7 @@
 from flask_socketio import emit
-from numpy import broadcast
 from .config import MESSAGE_MAX_LENGTH, MINIMUM_WAGER
-from .builders import CasinoBuilders
-from .enums import CasinoEvents, CasinoGames, CasinoMessages
+from .enums import CasinoEvents, CasinoMessages
 from .exceptions import *
-from .manager import CasinoManager
-from .selectors import CasinoSelectors
 
 
 def grab(object, path, delimiter='/', fallback=None):
@@ -32,30 +28,6 @@ def meets_minimum_wager(wager):
 def sanitize_chat_message(text):
     return text[:MESSAGE_MAX_LENGTH].strip()
 
-
-def send_user_update(user_id):
-    user = CasinoSelectors.select_user(CasinoManager.instance.state, user_id)
-    emit(CasinoEvents.UserUpdated, user, broadcast=True)
-
-
-def send_session_update(user_id, game):
-    session_key = CasinoBuilders.build_session_key(user_id, game)
-    session = CasinoSelectors.select_session(
-        CasinoManager.instance.state, session_key)
-    emit(CasinoEvents.SessionUpdated, session, broadcast=True)
-
-
-def send_game_update(game):
-    game_entity = CasinoSelectors.select_game(
-        CasinoManager.instance.state, game)
-    emit(CasinoEvents.GameUpdated, game_entity, broadcast=True)
-
-
-def send_feed_update(text, channels):
-    feed = CasinoManager.add_feed(channels, text)
-
-    for channel in channels:
-        emit(CasinoEvents.FeedUpdated, feed, to=channel)
 
 
 def validate_bet(user, currency, wager):

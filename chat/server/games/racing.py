@@ -413,23 +413,6 @@ def did_bet_succeed(state, bet):
     return checker(state, bet)
 
 
-def format_racing_bet_feed_item(username, kind, selection, currency, wager):
-    single_choice = selection[0]
-    multi_choice = ' '.join(selection)
-    bet = f'bet {wager} {currency}'
-    phrase = {
-        MarseyRacingBet.WIN: f'{bet} to win on {single_choice}',
-        MarseyRacingBet.PLACE: f'{bet} to place on {single_choice}',
-        MarseyRacingBet.SHOW: f'{bet} to show on {single_choice}',
-        MarseyRacingBet.QUINELLA: f'{bet}, quinella, {multi_choice}',
-        MarseyRacingBet.TRIFECTA_BOX: f'{bet}, boxed trifecta, {multi_choice}',
-        MarseyRacingBet.TRIFECTA: f'{bet}, trifecta, {multi_choice}',
-        MarseyRacingBet.SUPERFECTA_BOX: f'{bet}, boxed superfecta, {multi_choice}',
-        MarseyRacingBet.SUPERFECTA: f'{bet}, superfecta, {multi_choice}'
-    }[kind]
-
-    return f'{username} {phrase}'
-
     
 
 # Manager

@@ -132,9 +132,9 @@ def teardown_request(error):
 if app.config["SERVER_NAME"] == 'localhost':
 	from files.routes import *
 	from files.routes.chat import *
-	from chat.server import *
+	from chat.server.requests import *
 elif "load_chat" in argv:
-	from chat.server import *
+	from chat.server.requests import *
 else:
 	from files.routes import *
 

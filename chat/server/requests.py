@@ -13,11 +13,10 @@ from gevent import sleep
 from .builders import CasinoBuilders as B
 from .config import CASINO_NAMESPACE, SLOTS_PULL_DURATION
 from .enums import CasinoActions as A, CasinoEvents as E, CasinoGames, CasinoMessages as M
-from .games import SlotsManager, \
-    BlackjackManager, \
-    RacingManager, \
-    gambler_placed_roulette_bet, \
-    get_roulette_bets
+from .games.slots import SlotsManager
+from .games.blackjack import BlackjackManager
+from .games.racing import RacingManager
+from .games.roulette import gambler_placed_roulette_bet, get_roulette_bets
 from .helpers import *
 from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
@@ -67,8 +66,8 @@ def connect_to_casino(v):
     username = S.select_user_username(C.state, user_id)
     text = f'{username} has entered the casino.'
     channels = ['lobby']
-    send_feed_update(text, channels)
-    send_user_update(user_id)
+    C.send_feed_update(text, channels)
+    C.send_user_update(user_id)
     return '', 200
 
 
@@ -94,8 +93,8 @@ def disconnect_from_casino(v):
     username = S.select_user_username(C.state, user_id)
     text = f'{username} has exited the casino.'
     channels = ['lobby']
-    send_feed_update(text, channels)
-    send_user_update(user_id)
+    C.send_feed_update(text, channels)
+    C.send_user_update(user_id)
     return '', 200
 
 
@@ -200,8 +199,8 @@ def user_started_game(data, v):
     username = S.select_user_username(C.state, user_id)
     text = f'{username} started playing {game}.'
     channels = [game]
-    send_feed_update(text, channels)
-    send_game_update(game)
+    C.send_feed_update(text, channels)
+    C.send_game_update(game)
 
     # Games
     if game == CasinoGames.Slots:
@@ -212,7 +211,7 @@ def user_started_game(data, v):
         if not active_game:
             active_game = BlackjackManager.wait()
 
-        send_session_update(user_id, CasinoGames.Blackjack)
+        C.send_session_update(user_id, CasinoGames.Blackjack)
 
     return '', 200
 
@@ -238,7 +237,7 @@ def user_played_slots(data, v):
             except:
                 return emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
 
-            send_session_update(user_id, CasinoGames.Slots)
+            C.send_session_update(user_id, CasinoGames.Slots)
 
             sleep(SLOTS_PULL_DURATION)
 
@@ -257,9 +256,9 @@ def user_played_slots(data, v):
             username = S.select_user_username(C.state, user_id)
             text = f'{username} <change me>'
             channels = ['slots']
-            send_feed_update(text, channels)
-            send_session_update(user_id, CasinoGames.Slots)
-            send_user_update(user_id)
+            C.send_feed_update(text, channels)
+            C.send_session_update(user_id, CasinoGames.Slots)
+            C.send_user_update(user_id)
 
     handle_casino_slot_pull()
     return '', 200
@@ -298,7 +297,7 @@ def user_played_roulette(data, v):
 
         C.dispatch(A.USER_PLAYED_ROULETTE, payload)
 
-        text = S.select_roulette_bet_feed_item(
+        text = B.build_roulette_feed_entity(
             C.state,
             user_id,
             bet,
@@ -307,9 +306,9 @@ def user_played_roulette(data, v):
             wager
         )
         channels = ['roulette']
-        send_feed_update(text, channels)
-        send_session_update(user_id, CasinoGames.Roulette)
-        send_game_update(CasinoGames.Roulette)
+        C.send_feed_update(text, channels)
+        C.send_session_update(user_id, CasinoGames.Roulette)
+        C.send_game_update(CasinoGames.Roulette)
         return '', 200
     except:
         emit(E.ErrorOccurred, M.CannotPlaceBet)
@@ -344,8 +343,8 @@ def user_played_blackjack(data, v):
             }
             C.dispatch(A.USER_PLAYED_BLACKJACK, payload)
 
-            send_session_update(user_id, CasinoGames.Blackjack)
-            send_game_update(CasinoGames.Blackjack)
+            C.send_session_update(user_id, CasinoGames.Blackjack)
+            C.send_game_update(CasinoGames.Blackjack)
             return '', 200
         except:
             emit(E.ErrorOccurred, M.BlackjackUnableToDeal)
@@ -364,8 +363,8 @@ def user_played_blackjack(data, v):
             }
             C.dispatch(A.USER_PLAYED_BLACKJACK, payload)
 
-            send_session_update(user_id, CasinoGames.Blackjack)
-            send_game_update(CasinoGames.Blackjack)
+            C.send_session_update(user_id, CasinoGames.Blackjack)
+            C.send_game_update(CasinoGames.Blackjack)
             return '', 200
         except:
             emit(E.ErrorOccurred, M.BlackjackUnableToTakeAction)
@@ -405,18 +404,17 @@ def user_played_racing(data, v):
 
             C.dispatch(A.USER_PLAYED_RACING, payload)
 
-            text = S.select_racing_bet_feed_item(
-                C.state,
-                str(v.id),
+            text = B.build_racing_feed_entity(
+                v.username,
                 kind,
                 selection,
                 currency,
                 wager
             )
             channels = [CasinoGames.Racing]
-            send_feed_update(text, channels)
-            send_session_update(user_id, CasinoGames.Racing)
-            send_game_update(CasinoGames.Racing)
+            C.send_feed_update(text, channels)
+            C.send_session_update(user_id, CasinoGames.Racing)
+            C.send_game_update(CasinoGames.Racing)
 
             emit(E.ConfirmationReceived, M.RacingBetPlacedSuccessfully)
             return 200, ''
