@@ -17,10 +17,10 @@ import {
 import { TiMessage } from "react-icons/ti";
 import { useActiveCasinoGame, useOnlineUserCount } from "./state";
 import { Game, Lobby, UserList, UsersAndGames } from "./layout";
+import { useCasino } from "./useCasino";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";
-import { useCasino } from "./useCasino";
 
 const PANEL_OFFSET_TOP = 120;
 const GAME_PANEL_WIDTH = 440;

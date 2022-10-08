@@ -232,11 +232,10 @@ class CasinoController(BaseController):
             })
             self._send_session_update(user_id, CasinoGames.Slots)
         elif game == CasinoGames.Blackjack:
-            state = dumps(BlackjackManager.load(user)
-                          or BlackjackManager.wait())
+            saved_game = BlackjackManager.load(user) or BlackjackManager.wait()
             self.manager.dispatch(CasinoActions.USER_PLAYED_BLACKJACK, {
                 'user_id': user_id,
-                'game_state': state,
+                'game_state': dumps(saved_game),
             })
             self._send_session_update(user_id, CasinoGames.Blackjack)
 

@@ -30,7 +30,13 @@ class BlackjackActions(str, Enum):
 class BlackjackManager():
     @staticmethod
     def load(user):
-        return load_game(user, CasinoGames.Blackjack)
+        saved_game = load_game(user, CasinoGames.Blackjack)
+
+        if saved_game:
+            state = loads(saved_game.game_state)
+            return state if state['status'] is not BlackjackStatus.PLAYING else remove_exploitable_information(state)
+        else:
+            return None
 
     @staticmethod
     def wait():
@@ -98,7 +104,7 @@ def get_initial_state():
         "actions": [BlackjackActions.DEAL],
         "currency": CasinoCurrency.Coins,
         "wager": 0,
-        "payout": 0
+        "reward": 0
     }
 
 
@@ -254,7 +260,7 @@ def handle_payout(user, game, state):
 
 
 def remove_exploitable_information(state):
-    safe_state = state
+    safe_state = deepcopy(state)
 
     if len(safe_state['dealer']) >= 2:
         safe_state['dealer'][1] = '?'

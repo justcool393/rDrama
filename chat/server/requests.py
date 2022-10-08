@@ -1,3 +1,4 @@
+from traceback import format_exc
 from files.routes.chat import socketio
 from files.helpers.wrappers import is_not_permabanned
 from .config import CASINO_NAMESPACE
@@ -12,6 +13,8 @@ ERROR_RESPONSE = '', 400
 @socketio.on_error(CASINO_NAMESPACE)
 def casino_error(error):
     CASINO_CONTROLLER.logger.log(str(error))
+    CASINO_CONTROLLER.logger.log(format_exc())
+
 
 
 @socketio.on(CasinoEvents.Connect, CASINO_NAMESPACE)
@@ -114,6 +117,13 @@ def user_played_blackjack(data, v):
     except CannotAffordBetException:
         CASINO_CONTROLLER.send_error(CasinoMessages.CannotAffordBet)
         return ERROR_RESPONSE
+    except GameInProgressException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.BlackjackGameInProgress)
+        return ERROR_RESPONSE
+    except NoGameInProgressException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.BlackjackNoGameInProgress)
+        return ERROR_RESPONSE
+
 
 
 @socketio.on(CasinoEvents.UserPlayedRoulette, CASINO_NAMESPACE)

@@ -168,7 +168,24 @@ declare type BlackjackAction =
   | "DOUBLE_DOWN"
   | "BUY_INSURANCE";
 
-declare interface BlackjackGameState {}
+declare type BlackjackStatus = 
+  | "PLAYING"
+  | "STAYED"
+  | "PUSHED"
+  | "WON"
+  | "LOST"
+  | "BLACKJACK"
+
+declare interface BlackjackGameState extends CasinoGameState {
+  player: string[];
+  player_value: number;
+  dealer: string[];
+  dealer_value: number;
+  player_bought_insurance: boolean;
+  player_doubled_down: boolean;
+  status: BlackjackStatus;
+  actions: BlackjackAction[];
+}
 
 declare type BlackjackGameEntity = GameEntity<null>;
 
