@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import {
   Affix,
-  Button,
-  Divider,
   Grid,
   Layout,
   message,
@@ -17,9 +15,8 @@ import {
   GiLever,
 } from "react-icons/gi";
 import { TiMessage } from "react-icons/ti";
-import { GameList } from "./GameList";
 import { useActiveCasinoGame, useOnlineUserCount } from "./state";
-import { Game, Lobby, UserList } from "./layout";
+import { Game, Lobby, UserList, UsersAndGames } from "./layout";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";
@@ -140,23 +137,3 @@ function MobileNavTabs() {
   );
 }
 
-function UsersAndGames() {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        height: "95vh",
-      }}
-    >
-      <div style={{ flex: 1, maxHeight: "40vh", overflow: "auto" }}>
-        <UserList />
-      </div>
-      <Divider />
-      <div style={{ flex: 1, maxHeight: "40vh", overflow: "auto" }}>
-        <GameList direction="vertical" labels={true} block={true} />
-      </div>
-    </div>
-  );
-}

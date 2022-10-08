@@ -2,14 +2,12 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CasinoClientActions } from "../enums";
 import { initialStateProvided } from "../actions";
 
-type PossibleGameEntity =
-  | SlotsGameEntity
-  | RouletteGameEntity
-  | BlackjackGameEntity
-  | RacingGameEntity;
-
 type GameUpdatedPayload = {
   game: PossibleGameEntity;
+};
+
+type GamesUpdatedPayload = {
+  games: Normalized<PossibleGameEntity>;
 };
 
 export interface GameState {
@@ -41,10 +39,22 @@ export const gameSlice = createSlice({
       state.all = Array.from(new Set(state.all.concat(game.id)));
       state.by_id[game.id] = game;
     },
+    [CasinoClientActions.GAMES_UPDATED]: (
+      state,
+      action: PayloadAction<GamesUpdatedPayload>
+    ) => {
+      const { games } = action.payload;
+
+      state.all = games.all;
+      state.by_id = games.by_id;
+    },
   },
 });
 
 export const {
-  actions: { [CasinoClientActions.GAME_UPDATED]: gameUpdated },
+  actions: {
+    [CasinoClientActions.GAME_UPDATED]: gameUpdated,
+    [CasinoClientActions.GAMES_UPDATED]: gamesUpdated,
+  },
   reducer: game,
 } = gameSlice;

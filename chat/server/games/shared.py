@@ -6,11 +6,6 @@ from files.classes.casino_game import Casino_Game
 from ..config import PLAYING_CARD_RANKS, PLAYING_CARD_SUITS
 from ..exceptions import *
 
-class GameStatus(str, Enum):
-    Waiting = "waiting"
-    Started = "started"
-    Done = "done"
-
 
 def shuffle(collection):
     random.shuffle(collection)

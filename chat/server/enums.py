@@ -4,6 +4,7 @@ from .config import MINIMUM_WAGER
 
 class CasinoRooms(str, Enum):
     Lobby = "lobby"
+    Suite = "suite"
 
 
 class CasinoGames(str, Enum):
@@ -17,6 +18,12 @@ class CasinoGames(str, Enum):
 class CasinoCurrency(str, Enum):
     Coins = "coins"
     Procoins = "procoins"
+
+
+class CasinoGameStatus(str, Enum):
+    Waiting = "waiting"
+    Started = "started"
+    Done = "done"
 
 
 class CasinoActions(str, Enum):
@@ -59,6 +66,7 @@ class CasinoEvents(str, Enum):
     ConversationUpdated = "conversation-updated"
     FeedUpdated = "feed-updated"
     GameUpdated = "game-updated"
+    GamesUpdated = "games-updated"
     LeaderboardUpdated = "leaderboard-updated"
     MessageUpdated = "message-updated"
     MessageDeleted = "message-deleted"
@@ -109,3 +117,11 @@ class MarseyRacingBet(str, Enum):
     TRIFECTA_BOX = 'TRIFECTA_BOX'
     SUPERFECTA = 'SUPERFECTA'
     SUPERFECTA_BOX = 'SUPERFECTA_BOX'
+
+
+class SlotsOutcome(str, Enum):
+    Undecided = "undecided"
+    Loss = "loss"
+    Push = "push"
+    Win = "win"
+    Jackpot = "jackpot"

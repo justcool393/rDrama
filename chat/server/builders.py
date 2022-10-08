@@ -1,7 +1,7 @@
 from time import time
 from uuid import uuid4
 from files.helpers.get import get_account
-from .enums import CasinoGames, MarseyRacingBet, RouletteAction
+from .enums import CasinoGames, MarseyRacingBet, RouletteAction, SlotsOutcome
 
 
 class CasinoBuilders():
@@ -56,6 +56,27 @@ class CasinoBuilders():
             'text': text,
             'timestamp': int(time())
         }
+
+    @staticmethod
+    def build_slots_feed_entity(username, game_state):
+        currency = game_state['currency']
+        wager = game_state['wager']
+        reward = game_state['reward']
+        symbols = game_state['symbols']
+        outcome = game_state['outcome']
+
+        bet_fragment = f'{wager} {currency}'
+        reward_fragment = f'{reward} {currency}'
+        symbols_fragment = f'[{"/".join(symbols)}]'
+
+        return {
+            SlotsOutcome.Undecided: '',
+            SlotsOutcome.Loss: f'{username} lost {bet_fragment}. {symbols_fragment}',
+            SlotsOutcome.Push: f'{username} bet {bet_fragment} and pushed. {symbols_fragment}',
+            SlotsOutcome.Win: f'{username} won {reward_fragment}. {symbols_fragment}',
+            SlotsOutcome.Jackpot: f'JACKPOT! {username} made off with {reward_fragment}! {symbols_fragment}',
+        }[outcome]
+
 
     @staticmethod
     def build_racing_feed_entity(username, kind, selection, currency, wager):

@@ -21,6 +21,7 @@ export enum CasinoHandlers {
   ConversationUpdated = "conversation-updated",
   FeedUpdated = "feed-updated",
   GameUpdated = "game-updated",
+  GamesUpdated = "games-updated",
   LeaderboardUpdated = "leaderboard-updated",
   MessageUpdated = "message-updated",
   MessageDeleted = "message-deleted",
@@ -37,5 +38,6 @@ export enum CasinoClientActions {
   FEED_UPDATED = "FEED_UPDATED",
   LEADERBOARD_UPDATED = "LEADERBOARD_UPDATED",
   GAME_UPDATED = "GAME_UPDATED",
+  GAMES_UPDATED = "GAMES_UPDATED",
   SESSION_UPDATED = "SESSION_UPDATED",
 }

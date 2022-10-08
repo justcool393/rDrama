@@ -20,7 +20,13 @@ from .scheduler import CasinoScheduler
 from .selectors import CasinoSelectors
 
 
-class CasinoController():
+class BaseController():
+    def __init__(self):
+        self.logger = CasinoLogger(CASINO_LOGGER_PREFIX, ERROR_LOG_PATH)
+        self.manager = CasinoManager()
+        self.scheduler = CasinoScheduler()
+        self.racing_manager = None
+
     @property
     def state(self):
         return self.manager.state
@@ -74,11 +80,13 @@ class CasinoController():
         game_entity = CasinoSelectors.select_game(self.state, game)
         emit(CasinoEvents.GameUpdated, game_entity, broadcast=True)
 
+    def _send_games_update(self):
+        emit(CasinoEvents.GamesUpdated, self.state['games'], broadcast=True)
+
     def _send_feed_update(self, text, channels):
         feed = self.manager.add_feed(channels, text)
 
-        for channel in channels:
-            emit(CasinoEvents.FeedUpdated, feed, to=channel)
+        emit(CasinoEvents.FeedUpdated, feed, broadcast=True)
 
     def _send_message_update(self):
         latest_message = CasinoSelectors.select_newest_message(self.state)
@@ -92,12 +100,8 @@ class CasinoController():
         emit(CasinoEvents.ConversationUpdated,
              conversation, to=conversation_key)
 
-    def __init__(self):
-        self.logger = CasinoLogger(CASINO_LOGGER_PREFIX, ERROR_LOG_PATH)
-        self.manager = CasinoManager()
-        self.scheduler = CasinoScheduler()
-        self.racing_manager = None
 
+class CasinoController(BaseController):
     def send_confirmation(self, message):
         emit(CasinoEvents.ConfirmationReceived, message)
 
@@ -177,7 +181,7 @@ class CasinoController():
 
         emit(CasinoEvents.MessageDeleted, message_id, broadcast=True)
 
-        self._send_confirmation(CasinoMessages.MessageDeleteSuccess)
+        self.send_confirmation(CasinoMessages.MessageDeleteSuccess)
 
     def user_conversed(self, user, data):
         user_id = str(user.id)
@@ -218,7 +222,7 @@ class CasinoController():
         self._join_user_game_room(user_id, game)
         self._send_feed_update(
             f'{user.username} started playing {game}.', [game])
-        self._send_game_update(game)
+        self._send_games_update()
 
         if game == CasinoGames.Slots:
             state = dumps(SlotsManager.wait())
@@ -226,7 +230,7 @@ class CasinoController():
                 'user_id': user_id,
                 'game_state': state,
             })
-            self._send_session_update(user_id, CasinoGames.Blackjack)
+            self._send_session_update(user_id, CasinoGames.Slots)
         elif game == CasinoGames.Blackjack:
             state = dumps(BlackjackManager.load(user)
                           or BlackjackManager.wait())
@@ -246,7 +250,7 @@ class CasinoController():
         @copy_current_request_context
         def play_slots():
             with app.app_context():
-                state = dumps(SlotsManager.start())
+                state = dumps(SlotsManager.start(currency, wager))
                 self.manager.dispatch(CasinoActions.USER_PLAYED_SLOTS, {
                     'user_id': user_id,
                     'game_state': state
@@ -255,20 +259,20 @@ class CasinoController():
 
                 sleep(SLOTS_PULL_DURATION)
 
-                state = dumps(SlotsManager.play(user, currency, wager))
+                state = SlotsManager.play(user, currency, wager)
                 self.manager.dispatch(CasinoActions.USER_PLAYED_SLOTS, {
                     'user_id': user_id,
-                    'game_state': state,
+                    'game_state': dumps(state),
                     'balances': get_balances(user)
                 })
 
                 self._send_user_update(user_id)
                 self._send_session_update(user_id, CasinoGames.Slots)
                 self._send_feed_update(
-                    f'{user.username} <change me>', [CasinoGames.Slots])
+                    CasinoBuilders.build_slots_feed_entity(user.username, state), [CasinoGames.Slots])
 
         spawn(play_slots)
-
+    
     def user_played_blackjack(self, user, data):
         user_id = str(user.id)
         action = data['action']
@@ -369,4 +373,8 @@ class CasinoController():
             wager
         )
         self._send_feed_update(text, [CasinoGames.Roulette])
-        self._send_confirmation(CasinoMessages.RacingBetPlacedSuccessfully)
+        self.send_confirmation(CasinoMessages.RacingBetPlacedSuccessfully)
+
+
+CASINO_CONTROLLER = CasinoController()
+CASINO_CONTROLLER.logger.log("Initialized.")

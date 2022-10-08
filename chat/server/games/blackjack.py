@@ -4,7 +4,7 @@ from enum import Enum
 from files.helpers.const import *
 from files.helpers.casino import distribute_wager_badges
 from ..config import BLACKJACK_DECK_COUNT, PLAYING_CARD_RANKS
-from ..enums import CasinoCurrency, CasinoGames
+from ..enums import CasinoCurrency, CasinoGames, CasinoGameStatus
 from .shared import *
 
 # Manager
@@ -35,7 +35,7 @@ class BlackjackManager():
     @staticmethod
     def wait():
         return {
-            "game_status": GameStatus.Waiting,
+            "game_status": CasinoGameStatus.Waiting,
             **get_initial_state()
         }
 
@@ -47,7 +47,7 @@ class BlackjackManager():
             raise GameInProgressException(user, CasinoGames.Blackjack)
 
         game_state = {
-            "game_status": GameStatus.Started,
+            "game_status": CasinoGameStatus.Started,
             **get_initial_state(),
             'currency': currency,
             'wager': wager
@@ -67,7 +67,7 @@ class BlackjackManager():
     @staticmethod
     def play(user, action):
         game, state = dispatch_action(user, action)
-        status = GameStatus.Started if game.active else GameStatus.Done
+        status = CasinoGameStatus.Started if game.active else CasinoGameStatus.Done
 
         return {
             "status": status,

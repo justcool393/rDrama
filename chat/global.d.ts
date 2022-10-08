@@ -24,10 +24,23 @@ declare interface EmojiModSelection {
   pat: boolean;
 }
 
-/* === */
-type CasinoGame = "slots" | "blackjack" | "roulette" | "racing" | "crossing";
+declare type CasinoGame =
+  | "slots"
+  | "blackjack"
+  | "roulette"
+  | "racing"
+  | "crossing";
 
-type CasinoCurrency = "coins" | "procoins";
+declare type CasinoCurrency = "coins" | "procoins";
+
+declare type CasinoGameStatus = "waiting" | "started" | "done";
+
+declare interface CasinoGameState {
+  game_status: CasinoGameStatus;
+  currency: CasinoCurrency;
+  wager: number;
+  reward: number;
+}
 
 declare interface Normalized<T> {
   all: string[];
@@ -110,9 +123,15 @@ declare interface GameEntity<T> {
   state: T;
 }
 
-declare interface SlotsGameState {
-  symbols: [string, string, string];
-  text: string;
+declare type PossibleGameEntity =
+  | SlotsGameEntity
+  | RouletteGameEntity
+  | BlackjackGameEntity
+  | RacingGameEntity;
+
+declare interface SlotsGameState extends CasinoGameState {
+  symbols: [null | string, null | string, null | string];
+  outcome: "undecided" | "loss" | "push" | "win" | "jackpot";
 }
 
 declare type SlotsGameEntity = GameEntity<null>;
@@ -238,7 +257,7 @@ declare interface SessionEntity {
   id: string;
   user_id: string;
   game: CasinoGame;
-  game_state: any;
+  game_state: CasinoGameState;
 }
 
 declare interface CasinoState {

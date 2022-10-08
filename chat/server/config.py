@@ -15,7 +15,7 @@ MESSAGE_MAX_LENGTH = 1000
 IN_DEVELOPMENT_MODE = app.config["SERVER_NAME"] == 'localhost'
 
 #
-CASINO_LOGGER_PREFIX = "Controller )"
+CASINO_LOGGER_PREFIX = "Controller)"
 
 # When the controller errors, where should a local copy be stored for debugging?
 ERROR_LOG_PATH = "chat/server/errors.txt"

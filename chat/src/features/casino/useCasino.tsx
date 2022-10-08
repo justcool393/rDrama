@@ -17,6 +17,7 @@ import {
   conversationUpdated,
   feedUpdated,
   gameUpdated,
+  gamesUpdated,
   leaderboardUpdated,
   messageUpdated,
   messageDeleted,
@@ -219,8 +220,11 @@ export function CasinoProvider({ children }: PropsWithChildren) {
         .on(CasinoHandlers.FeedUpdated, (feed: FeedEntity) =>
           dispatch(feedUpdated({ feed }))
         )
-        .on(CasinoHandlers.GameUpdated, (game: GameEntity<any>) =>
+        .on(CasinoHandlers.GameUpdated, (game: PossibleGameEntity) =>
           dispatch(gameUpdated({ game }))
+        )
+        .on(CasinoHandlers.GamesUpdated, (games: Normalized<PossibleGameEntity>) =>
+          dispatch(gamesUpdated({ games }))
         )
         .on(
           CasinoHandlers.LeaderboardUpdated,
