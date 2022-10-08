@@ -5,7 +5,6 @@ from files.helpers.const import *
 from files.helpers.casino import distribute_wager_badges
 from ..config import BLACKJACK_DECK_COUNT, PLAYING_CARD_RANKS
 from ..enums import CasinoCurrency, CasinoGames
-from ..helpers import charge_user, validate_bet
 from .shared import *
 
 # Manager
@@ -46,8 +45,6 @@ class BlackjackManager():
 
         if in_progress:
             raise GameInProgressException(user, CasinoGames.Blackjack)
-
-        validate_bet(user, currency, wager)
 
         game_state = {
             "game_status": GameStatus.Started,

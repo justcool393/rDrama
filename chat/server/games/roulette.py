@@ -4,6 +4,7 @@ from enum import Enum
 from files.helpers.alerts import *
 from files.classes.casino_game import Casino_Game
 from files.helpers.get import get_account
+from .shared import charge_user
 
 
 class RouletteAction(str, Enum):
@@ -71,14 +72,7 @@ def get_active_roulette_games():
     ).all()
 
 
-def charge_gambler(gambler, amount, currency):
-    charged = gambler.charge_account(currency, amount)
-
-    if not charged:
-        raise Exception("Gambler cannot afford charge.")
-
-
-def gambler_placed_roulette_bet(gambler, bet, which, amount, currency):
+def gambler_placed_roulette_bet(gambler, bet, which, currency, wager):
     if not bet in (
         RouletteAction.STRAIGHT_UP_BET,
         RouletteAction.LINE_BET,
@@ -98,12 +92,12 @@ def gambler_placed_roulette_bet(gambler, bet, which, amount, currency):
     else:
         parent_id = json.loads(active_games[0].game_state)['parent_id']
 
-    charge_gambler(gambler, amount, currency)
+    charge_user(gambler, currency, wager)
 
     game = Casino_Game()
     game.user_id = gambler.id
     game.currency = currency
-    game.wager = amount
+    game.wager = wager
     game.winnings = 0
     game.kind = 'roulette'
     game.game_state = json.dumps(

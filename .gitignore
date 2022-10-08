@@ -18,6 +18,7 @@ tags
 chat/node_modules
 chat/build
 chat/.env
+chat/server/errors.txt
 chat/server/state.json
 chat/server/scheduler.log.txt
 

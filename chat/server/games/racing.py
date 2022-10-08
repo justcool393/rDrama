@@ -3,13 +3,14 @@ from random import choice, uniform
 from enum import Enum
 from copy import copy
 from flask import g
+from chat.server.exceptions import BadBetException
 from files.helpers.const import *
 from sqlalchemy.sql.expression import func
 from files.classes.marsey import Marsey
 from files.helpers.get import get_account
-from ..enums import CasinoCurrency
+from ..enums import CasinoCurrency, CasinoGames
 from ..config import MINIMUM_WAGER
-from ..helpers import charge_user
+from .shared import charge_user
 
 
 class MarseyRacingEvent(str, Enum):
@@ -467,29 +468,24 @@ class RacingManager():
 
         return True
 
-    def handle_player_bet(self, data, user):
+    def handle_player_bet(self, user, data):
         kind = data['kind']
         selection = data['selection']
         currency = data['currency']
         wager = data['wager']
         valid = self.validate_bet(kind, selection, wager)
 
-        if valid:
-            charged = charge_user(user, currency, wager)
+        if not valid:
+            raise BadBetException(user, CasinoGames.Racing)
 
-            if charged:
-                self.state = handle_place_bet(
-                    state=self.state,
-                    user_id=user.id,
-                    bet=kind,
-                    selection=selection,
-                    currency=currency,
-                    wager=wager,
-                )
+        charge_user(user, currency, wager)
 
-                return True
-            else:
-                return False
-        else:
-            return False
+        self.state = handle_place_bet(
+            state=self.state,
+            user_id=user.id,
+            bet=kind,
+            selection=selection,
+            currency=currency,
+            wager=wager,
+        )
 

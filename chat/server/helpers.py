@@ -33,9 +33,7 @@ def validate_bet(user, currency, wager):
     if user.rehab:
         raise UserInRehabException(user)
 
-    over_min = wager >= MINIMUM_WAGER
-
-    if not over_min:
+    if not wager >= MINIMUM_WAGER:
         raise UnderMinimumBetException(wager)
 
     if not user.can_afford(currency, wager):

@@ -3,7 +3,6 @@ from files.helpers.const import *
 from files.helpers.casino import distribute_wager_badges
 from ..config import SLOTS_PAYOUTS_TO_SYMBOLS
 from ..enums import CasinoCurrency, CasinoGames
-from ..helpers import validate_bet, charge_user
 from .shared import *
 
 # Manager
@@ -19,9 +18,7 @@ class SlotsManager():
         }
 
     @staticmethod
-    def start(user, currency, wager):
-        validate_bet(user, currency, wager)
-
+    def start():
         return {
             "game_status": GameStatus.Started,
             "symbols": "",
@@ -120,4 +117,4 @@ def build_text(currency, wager, payout):
         0: f'Lost {wager} {currency}',
         1: 'Broke Even',
         12: f'Jackpot! Won {wager * (payout - 1)} {currency}'
-    }.get([payout]) or f'Won {wager * (payout - 1)} {currency}'
+    }.get(payout) or f'Won {wager * (payout - 1)} {currency}'

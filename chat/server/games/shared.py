@@ -50,3 +50,10 @@ def load_game(user, game):
         Casino_Game.active == True,
         Casino_Game.kind == game,
         Casino_Game.user_id == user.id).first()
+
+
+def charge_user(user, currency, wager):
+    charged = user.charge_account(currency, wager)
+
+    if not charged:
+        raise CannotAffordBetException(user, currency, wager)

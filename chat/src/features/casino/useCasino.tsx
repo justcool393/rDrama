@@ -91,7 +91,9 @@ export function CasinoProvider({ children }: PropsWithChildren) {
 
   const userDeletedMessage = useCallback(
     (messageId: string) =>
-      socket.current?.emit(CasinoHandlers.UserDeletedMessage, messageId),
+      socket.current?.emit(CasinoHandlers.UserDeletedMessage, {
+        id: messageId,
+      }),
     []
   );
 
@@ -107,7 +109,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   }, [draft, recipient]);
 
   const userStartedGame = useCallback((game: CasinoGame) => {
-    socket.current?.emit(CasinoHandlers.UserStartedGame, game);
+    socket.current?.emit(CasinoHandlers.UserStartedGame, { game });
   }, []);
 
   const userPlayedSlots = useCallback(() => {
@@ -201,9 +203,6 @@ export function CasinoProvider({ children }: PropsWithChildren) {
         .on(CasinoHandlers.ConfirmationReceived, (confirmation) => {
           console.info(`Confirmation Received: ${confirmation}`);
           setTimeout(() => message.success(confirmation), 0);
-        })
-        .on(CasinoHandlers.Disconnect, () => {
-          window.location.href = "/";
         })
         .on(CasinoHandlers.Refresh, () =>
           setTimeout(() => window.location.reload(), 2000)
