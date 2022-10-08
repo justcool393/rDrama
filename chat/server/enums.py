@@ -80,3 +80,4 @@ class CasinoMessages(str, Enum):
     BlackjackNoGameInProgress = "You do not have a blackjack game in progress."
     RacingBetPlacedSuccessfully = "Your bet was successfully placed."
     CannotSendEmptyMessage = "Please enter a message."
+    UserInRehab = "You are in rehab."

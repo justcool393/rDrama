@@ -9,6 +9,7 @@ from files.classes.marsey import Marsey
 from files.helpers.get import get_account
 from ..enums import CasinoCurrency
 from ..config import MINIMUM_WAGER
+from ..helpers import charge_user
 
 
 class MarseyRacingEvent(str, Enum):
@@ -203,7 +204,7 @@ def select_all_bets(state):
 # Handlers
 
 
-def handle_place_bet(state, user_id, bet, selection, amount, currency):
+def handle_place_bet(state, user_id, bet, selection, currency, wager):
     next_state = copy(state)
     user_id = str(user_id)
 
@@ -216,7 +217,7 @@ def handle_place_bet(state, user_id, bet, selection, amount, currency):
         'user_id': user_id,
         'bet': bet,
         'selections': selection,
-        'amount': amount,
+        'wager': wager,
         'currency': currency,
         'succeeded': False
     }
@@ -293,8 +294,8 @@ def handle_determine_payouts(state):
             next_state['bets']['by_id'][bet_id]['succeeded'] = True
 
             payout_id = create_id()
-            refund = bet['amount']
-            reward = bet['amount'] * PAYOUT_MULITPLIERS[bet['bet']]
+            refund = bet['wager']
+            reward = bet['wager'] * PAYOUT_MULITPLIERS[bet['bet']]
             payout_data = {
                 'id': payout_id,
                 'bet_id': bet_id,
@@ -433,14 +434,14 @@ def format_racing_bet_feed_item(username, kind, selection, currency, wager):
 
 # Manager
 
-class MarseyRacingManager():
+class RacingManager():
     def __init__(self):
         self.state = create_initial_state()
 
     def start_race(self):
         self.state = handle_start_race(self.state)
 
-    def validate_bet(self, kind, selection, wager):
+    def validate_bet(self, kind, selection, currency, wager):
         valid_kinds = (
             MarseyRacingBet.WIN,
             MarseyRacingBet.PLACE,
@@ -474,11 +475,11 @@ class MarseyRacingManager():
                 return False
 
         # Supplied an invalid currency.
-        if not wager['currency'] in (CasinoCurrency.Coins, CasinoCurrency.Procoins):
+        if not currency in (CasinoCurrency.Coins, CasinoCurrency.Procoins):
             return False
 
         # Bet was too low.
-        if wager['amount'] < MINIMUM_WAGER:
+        if wager < MINIMUM_WAGER:
             return False
 
         return True
@@ -486,11 +487,12 @@ class MarseyRacingManager():
     def handle_player_bet(self, data, user):
         kind = data['kind']
         selection = data['selection']
+        currency = data['currency']
         wager = data['wager']
         valid = self.validate_bet(kind, selection, wager)
 
         if valid:
-            charged = user.charge_account(wager['currency'], wager['amount'])
+            charged = charge_user(user, currency, wager)
 
             if charged:
                 self.state = handle_place_bet(
@@ -498,8 +500,8 @@ class MarseyRacingManager():
                     user_id=user.id,
                     bet=kind,
                     selection=selection,
-                    amount=wager['amount'],
-                    currency=wager['currency']
+                    currency=currency,
+                    wager=wager,
                 )
 
                 return True

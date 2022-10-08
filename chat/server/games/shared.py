@@ -3,46 +3,13 @@ from json import dumps
 from enum import Enum
 from files.helpers.const import *
 from files.classes.casino_game import Casino_Game
-from ..config import MINIMUM_WAGER, PLAYING_CARD_RANKS, PLAYING_CARD_SUITS
-
+from ..config import PLAYING_CARD_RANKS, PLAYING_CARD_SUITS
+from ..exceptions import *
 
 class GameStatus(str, Enum):
     Waiting = "waiting"
     Started = "started"
     Done = "done"
-
-
-class UserInRehabException(Exception):
-    def __init__(self, user):
-        self.user = user
-        self.message = f'{user} is in rehab'
-        super().__init__(self.message)
-
-
-class UnderMinimumBetException(Exception):
-    def __init__(self, wager):
-        self.wager = wager
-        self.message = 'Wager of {wager} does not equal or exceed minimum wager of {MINIMUM_WAGER}'
-        super().__init__(self.message)
-
-
-class CannotAffordBetException(Exception):
-    def __init__(self, user, currency, wager):
-        self.wager = wager
-        self.message = f'{user} cannot afford to bet {wager} {currency}'
-        super().__init__(self.message)
-
-
-class GameInProgressException(Exception):
-    def __init__(self, user, game):
-        self.message = f'{user} already has a game of {game} in progress'
-        super().__init__(self.message)
-
-
-class NoGameInProgressException(Exception):
-    def __init__(self, user, game):
-        self.message = f'{user} does not have a game of {game} in progress'
-        super().__init__(self.message)
 
 
 def shuffle(collection):
@@ -52,28 +19,6 @@ def shuffle(collection):
 
 def build_deck_of_cards():
     return [rank + suit for rank in PLAYING_CARD_RANKS for suit in PLAYING_CARD_SUITS]
-
-
-def validate_bet(user, currency, wager):
-    if user.rehab:
-        raise UserInRehabException(user)
-
-    if not user.can_afford(currency, wager):
-        raise CannotAffordBetException(user, currency, wager)
-
-    over_min = wager >= MINIMUM_WAGER
-
-    if not over_min:
-        raise UnderMinimumBetException(wager)
-
-
-def charge_user(user, currency, wager):
-    validate_bet(user, currency, wager)
-
-    charged = user.charge_account(currency, wager)
-
-    if not charged:
-        raise CannotAffordBetException(user, currency, wager)
 
 
 def create_game(user, currency, wager, winnings, game, state, active):

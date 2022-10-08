@@ -1,9 +1,8 @@
-from time import time
 from json import dumps
 from copy import copy
 from flask import copy_current_request_context
 from flask_socketio import emit, disconnect, join_room, leave_room
-from chat.server.games.racing import MarseyRacingManager
+from chat.server.games.racing import RacingManager
 from files.helpers.twentyone import BlackjackAction
 from files.routes.chat import socketio
 from files.helpers.wrappers import *
@@ -12,22 +11,18 @@ from files.helpers.alerts import *
 from files.helpers.regex import *
 from gevent import sleep
 from .builders import CasinoBuilders as B
-from .config import SLOTS_PULL_DURATION
+from .config import CASINO_NAMESPACE, SLOTS_PULL_DURATION
 from .enums import CasinoActions as A, CasinoEvents as E, CasinoGames, CasinoMessages as M
-from .games import MarseyRacingManager, \
-    SlotsManager, \
+from .games import SlotsManager, \
+    BlackjackManager, \
+    RacingManager, \
     gambler_placed_roulette_bet, \
-    get_roulette_bets, \
-    get_active_twentyone_game, \
-    create_new_game as create_new_blackjack_game, \
-    dispatch_action as dispatch_blackjack_action, \
-    build_started_state as build_slots_start_state
-from .helpers import meets_minimum_wager, can_user_afford, sanitize_chat_message
+    get_roulette_bets
+from .helpers import *
 from .manager import CasinoManager
 from .selectors import CasinoSelectors as S
 
 C = CasinoManager.instance
-CASINO_NAMESPACE = "/casino"
 
 
 @socketio.on_error(CASINO_NAMESPACE)
@@ -45,7 +40,7 @@ def casino_error(error):
 @is_not_permabanned
 def connect_to_casino(v):
     if not C.racing_manager:
-        C.racing_manager = MarseyRacingManager()
+        C.racing_manager = RacingManager()
         C.dispatch(A.RACING_STATE_INITIALIZED, {
                    'game_state': dumps(C.racing_manager.state)})
 
@@ -68,16 +63,12 @@ def connect_to_casino(v):
         join_room(room)
 
     C.dispatch(A.USER_CONNECTED, payload)
-    user = S.select_user(C.state, str(v.id))
-    emit(E.UserUpdated, user, broadcast=True)
 
-    channels = ['lobby']
     username = S.select_user_username(C.state, user_id)
     text = f'{username} has entered the casino.'
-    feed = C.add_feed(channels, text)
-
-    for channel in channels:
-        emit(E.FeedUpdated, feed, broadcast=False, to=channel)
+    channels = ['lobby']
+    send_feed_update(text, channels)
+    send_user_update(user_id)
     return '', 200
 
 
@@ -100,17 +91,11 @@ def disconnect_from_casino(v):
 
     C.dispatch(A.USER_DISCONNECTED, payload)
 
-    user = S.select_user(C.state, str(v.id))
-    emit(E.UserUpdated, user, broadcast=True)
-
-    channels = ['lobby']
     username = S.select_user_username(C.state, user_id)
     text = f'{username} has exited the casino.'
-    feed = C.add_feed(channels, text)
-
-    for channel in channels:
-        emit(E.FeedUpdated, feed, to=channel)
-
+    channels = ['lobby']
+    send_feed_update(text, channels)
+    send_user_update(user_id)
     return '', 200
 
 
@@ -194,8 +179,9 @@ def user_conversed(data, v):
 @socketio.on(E.UserStartedGame, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_started_game(data, v):
+    user_id = str(v.id)
     game = data
-    payload = {'user_id': v.id, 'game': game}
+    payload = {'user_id': user_id, 'game': game}
 
     if not game in S.select_game_names(C.state):
         emit(E.ErrorOccurred, M.GameNotFound)
@@ -211,16 +197,22 @@ def user_started_game(data, v):
     for remaining_game in remaining_games:
         leave_room(remaining_game)
 
-    channels = [game]
-    username = S.select_user_username(C.state, str(v.id))
+    username = S.select_user_username(C.state, user_id)
     text = f'{username} started playing {game}.'
-    feed = C.add_feed(channels, text)
+    channels = [game]
+    send_feed_update(text, channels)
+    send_game_update(game)
 
-    for channel in channels:
-        emit(E.FeedUpdated, feed, to=channel)
+    # Games
+    if game == CasinoGames.Slots:
+        pass
+    elif game == CasinoGames.Blackjack:
+        active_game = BlackjackManager.load(v)
 
-    game = S.select_game(C.state, game)
-    emit(E.GameUpdated, game)
+        if not active_game:
+            active_game = BlackjackManager.wait()
+
+        send_session_update(user_id, CasinoGames.Blackjack)
 
     return '', 200
 
@@ -231,63 +223,43 @@ def user_played_slots(data, v):
     user_id = str(v.id)
     currency = data['currency']
     wager = int(data['wager'])
+    validated = validate_bet_request(v, currency, wager)
 
-    if not meets_minimum_wager(wager):
-        emit(E.ErrorOccurred, M.MinimumWagerNotMet)
-        return '', 400
-
-    if not can_user_afford(v, currency, wager):
-        emit(E.ErrorOccurred, M.CannotAffordBet)
+    if not validated:
         return '', 400
 
     @copy_current_request_context
     def handle_casino_slot_pull():
         with app.app_context():
-            def send_session_update():
-                session_key = B.build_session_key(user_id, CasinoGames.Slots)
-                session = S.select_session(C.state, session_key)
-                emit(E.SessionUpdated, session, to=user_id)
+            try:
+                # 1. The user sees the lever pull and the slots begin.
+                payload = SlotsManager.start(v, currency, wager)
+                C.dispatch(A.USER_PLAYED_SLOTS, payload)
+            except:
+                return emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
 
-            # 1. The user sees the lever pull and the slots begin.
-            payload = {
-                'user_id': user_id,
-                'game_state': dumps(build_slots_start_state())
-            }
-            C.dispatch(A.USER_PLAYED_SLOTS, payload)
-
-            send_session_update()
+            send_session_update(user_id, CasinoGames.Slots)
 
             sleep(SLOTS_PULL_DURATION)
 
             # 2. The game is decided some time later, and the client is updated again.
-            success, game_state = casino_slot_pull(v, wager, currency)
-
-            if success:
-                balances = {
-                    'coins': v.coins,
-                    'procoins': v.procoins
-                }
+            try:
+                state = dumps(SlotsManager.play(v, currency, wager))
                 payload = {
                     'user_id': v.id,
-                    'balances': balances,
-                    'game_state': game_state
+                    'balances': get_balances(v),
+                    'game_state': state
                 }
                 C.dispatch(A.USER_PLAYED_SLOTS, payload)
+            except:
+                return emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
 
-                send_session_update()
-
-                channels = ['slots']
-                username = S.select_user_username(C.state, user_id)
-                text = f'{username} <change me>'
-                feed = C.add_feed(channels, text)
-
-                for channel in channels:
-                    emit(E.FeedUpdated, feed, to=channel)
-
-                user = S.select_user(C.state, user_id)
-                emit(E.UserUpdated, user, broadcast=True)
-            else:
-                emit(E.ErrorOccurred, M.CannotPullLever, to=user_id)
+            username = S.select_user_username(C.state, user_id)
+            text = f'{username} <change me>'
+            channels = ['slots']
+            send_feed_update(text, channels)
+            send_session_update(user_id, CasinoGames.Slots)
+            send_user_update(user_id)
 
     handle_casino_slot_pull()
     return '', 200
@@ -296,65 +268,48 @@ def user_played_slots(data, v):
 @socketio.on(E.UserPlayedRoulette, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_roulette(data, v):
+    user_id = str(v.id)
     bet = data['bet']
     which = data['which']
     currency = data['currency']
     wager = int(data['wager'])
+    validated = validate_bet_request(v, currency, wager)
 
-    if not meets_minimum_wager(wager):
-        emit(E.ErrorOccurred, M.MinimumWagerNotMet)
-        return '', 400
-
-    if not can_user_afford(v, currency, wager):
-        emit(E.ErrorOccurred, M.CannotAffordBet)
+    if not validated:
         return '', 400
 
     try:
         gambler_placed_roulette_bet(v, bet, which, wager, currency)
 
-        game_state = dumps({
+        state = dumps({
             'bets': get_roulette_bets()
         })
-        balances = {
-            'coins': v.coins,
-            'procoins': v.procoins
-        }
-        placed_bet = {
-            'bet': bet,
-            'which': which,
-            'currency': currency,
-            'wager': wager
-        }
         payload = {
-            'user_id': str(v.id),
-            'balances': balances,
-            'game_state': game_state,
-            'placed_bet': placed_bet
+            'user_id': user_id,
+            'balances': get_balances(v),
+            'game_state': state,
+            'placed_bet': {
+                'bet': bet,
+                'which': which,
+                'currency': currency,
+                'wager': wager
+            }
         }
 
         C.dispatch(A.USER_PLAYED_ROULETTE, payload)
 
-        game = S.select_game(C.state, CasinoGames.Roulette)
-        emit(E.GameUpdated, game, broadcast=True)
-
-        session_key = B.build_session_key(str(v.id), CasinoGames.Roulette)
-        session = S.select_session(C.state, session_key)
-        emit(E.SessionUpdated, session, broadcast=True)
-
-        channels = ['roulette']
         text = S.select_roulette_bet_feed_item(
             C.state,
-            str(v.id),
+            user_id,
             bet,
             which,
             currency,
             wager
         )
-        feed = C.add_feed(channels, text)
-
-        for channel in channels:
-            emit(E.FeedUpdated, feed, to=channel)
-
+        channels = ['roulette']
+        send_feed_update(text, channels)
+        send_session_update(user_id, CasinoGames.Roulette)
+        send_game_update(CasinoGames.Roulette)
         return '', 200
     except:
         emit(E.ErrorOccurred, M.CannotPlaceBet)
@@ -364,53 +319,33 @@ def user_played_roulette(data, v):
 @socketio.on(E.UserPlayedBlackjack, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_blackjack(data, v):
+    user_id = str(v.id)
     action = data['action']
-    active_game = get_active_twentyone_game(v)
-    balances = {
-        'coins': v.coins,
-        'procoins': v.procoins
-    }
+    active_game = BlackjackManager.load(v)
 
     if action == BlackjackAction.DEAL:
-        currency = data['currency']
-        wager = int(data['wager'])
-
         if active_game:
             emit(E.ErrorOccurred, M.BlackjackGameInProgress)
             return '', 400
 
-        if not meets_minimum_wager(wager):
-            emit(E.ErrorOccurred, M.MinimumWagerNotMet)
-            return '', 400
+        currency = data['currency']
+        wager = int(data['wager'])
+        validated = validate_bet_request(v, currency, wager)
 
-        if not can_user_afford(v, currency, wager):
-            emit(E.ErrorOccurred, M.CannotAffordBet)
+        if not validated:
             return '', 400
 
         try:
-            create_new_blackjack_game(v, wager, currency)
-
-            game_state = dumps(
-                dispatch_blackjack_action(v, BlackjackAction.DEAL))
-            placed_bet = {
-                'currency': currency,
-                'wager': wager
-            }
+            state = dumps(BlackjackManager.start(v, currency, wager))
             payload = {
-                'user_id': str(v.id),
-                'balances': balances,
-                'game_state': game_state,
-                'placed_bet': placed_bet
+                'user_id': user_id,
+                'balances': get_balances(v),
+                'game_state': state
             }
-
             C.dispatch(A.USER_PLAYED_BLACKJACK, payload)
 
-            game = S.select_game(C.state, CasinoGames.Blackjack)
-            emit(E.GameUpdated, game, broadcast=True)
-
-            session_key = B.build_session_key(str(v.id), CasinoGames.Blackjack)
-            session = S.select_session(C.state, session_key)
-            emit(E.SessionUpdated, session, broadcast=True)
+            send_session_update(user_id, CasinoGames.Blackjack)
+            send_game_update(CasinoGames.Blackjack)
             return '', 200
         except:
             emit(E.ErrorOccurred, M.BlackjackUnableToDeal)
@@ -421,21 +356,16 @@ def user_played_blackjack(data, v):
             return '', 400
 
         try:
-            game_state = dumps(dispatch_blackjack_action(v, action))
+            state = dumps(BlackjackManager.play(v, action))
             payload = {
-                'user_id': str(v.id),
-                'balances': balances,
-                'game_state': game_state,
+                'user_id': user_id,
+                'balances': get_balances(v),
+                'game_state': state
             }
-
             C.dispatch(A.USER_PLAYED_BLACKJACK, payload)
 
-            game = S.select_game(C.state, CasinoGames.Blackjack)
-            session_key = B.build_session_key(str(v.id), CasinoGames.Blackjack)
-            session = S.select_session(C.state, session_key)
-
-            emit(E.GameUpdated, game, broadcast=True)
-            emit(E.SessionUpdated, session, broadcast=True)
+            send_session_update(user_id, CasinoGames.Blackjack)
+            send_game_update(CasinoGames.Blackjack)
             return '', 200
         except:
             emit(E.ErrorOccurred, M.BlackjackUnableToTakeAction)
@@ -445,60 +375,36 @@ def user_played_blackjack(data, v):
 @socketio.on(E.UserPlayedRacing, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_racing(data, v):
+    user_id = str(v.id)
     currency = data['currency']
     wager = int(data['wager'])
+    validated = validate_bet_request(v, currency, wager)
 
-    if not meets_minimum_wager(wager):
-        emit(E.ErrorOccurred, M.MinimumWagerNotMet)
-        return '', 400
-
-    if not can_user_afford(v, currency, wager):
-        emit(E.ErrorOccurred, M.CannotAffordBet)
+    if not validated:
         return '', 400
 
     try:
-        user_id = str(v.id)
         kind = data['kind']
         selection = data['selection']
-        racing_bet = {
+        placed_bet = {
             'kind': kind,
             'selection': selection,
-            'wager': {
-                'amount': wager,
-                'currency': currency
-            }
+            'currency': currency,
+            'wager': wager,
         }
-        successful = C.racing_manager.handle_player_bet(racing_bet, v)
+        successful = C.racing_manager.handle_player_bet(placed_bet, v)
 
         if successful:
-            game_state = dumps(C.racing_manager.state)
-            balances = {
-                'coins': v.coins,
-                'procoins': v.procoins
-            }
-            placed_bet = {
-                'kind': kind,
-                'selection': selection,
-                'currency': currency,
-                'wager': wager
-            }
+            state = dumps(C.racing_manager.state)
             payload = {
                 'user_id': user_id,
-                'balances': balances,
-                'game_state': game_state,
+                'balances': get_balances(v),
+                'game_state': state,
                 'placed_bet': placed_bet
             }
 
             C.dispatch(A.USER_PLAYED_RACING, payload)
 
-            game = S.select_game(C.state, CasinoGames.Racing)
-            emit(E.GameUpdated, game, broadcast=True)
-
-            session_key = B.build_session_key(user_id, CasinoGames.Racing)
-            session = S.select_session(C.state, session_key)
-            emit(E.SessionUpdated, session, broadcast=True)
-
-            channels = ['roulette']
             text = S.select_racing_bet_feed_item(
                 C.state,
                 str(v.id),
@@ -507,10 +413,10 @@ def user_played_racing(data, v):
                 currency,
                 wager
             )
-            feed = C.add_feed(channels, text)
-
-            for channel in channels:
-                emit(E.FeedUpdated, feed, to=channel)
+            channels = [CasinoGames.Racing]
+            send_feed_update(text, channels)
+            send_session_update(user_id, CasinoGames.Racing)
+            send_game_update(CasinoGames.Racing)
 
             emit(E.ConfirmationReceived, M.RacingBetPlacedSuccessfully)
             return 200, ''

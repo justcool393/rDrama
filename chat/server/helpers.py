@@ -1,4 +1,12 @@
+from flask_socketio import emit
+from numpy import broadcast
 from .config import MESSAGE_MAX_LENGTH, MINIMUM_WAGER
+from .builders import CasinoBuilders
+from .enums import CasinoEvents, CasinoGames, CasinoMessages
+from .exceptions import *
+from .manager import CasinoManager
+from .selectors import CasinoSelectors
+
 
 def grab(object, path, delimiter='/', fallback=None):
     try:
@@ -23,3 +31,81 @@ def meets_minimum_wager(wager):
 
 def sanitize_chat_message(text):
     return text[:MESSAGE_MAX_LENGTH].strip()
+
+
+def send_user_update(user_id):
+    user = CasinoSelectors.select_user(CasinoManager.instance.state, user_id)
+    emit(CasinoEvents.UserUpdated, user, broadcast=True)
+
+
+def send_session_update(user_id, game):
+    session_key = CasinoBuilders.build_session_key(user_id, game)
+    session = CasinoSelectors.select_session(
+        CasinoManager.instance.state, session_key)
+    emit(CasinoEvents.SessionUpdated, session, broadcast=True)
+
+
+def send_game_update(game):
+    game_entity = CasinoSelectors.select_game(
+        CasinoManager.instance.state, game)
+    emit(CasinoEvents.GameUpdated, game_entity, broadcast=True)
+
+
+def send_feed_update(text, channels):
+    feed = CasinoManager.add_feed(channels, text)
+
+    for channel in channels:
+        emit(CasinoEvents.FeedUpdated, feed, to=channel)
+
+
+def validate_bet(user, currency, wager):
+    if user.rehab:
+        raise UserInRehabException(user)
+
+    over_min = wager >= MINIMUM_WAGER
+
+    if not over_min:
+        raise UnderMinimumBetException(wager)
+
+    if not user.can_afford(currency, wager):
+        raise CannotAffordBetException(user, currency, wager)
+
+
+def validate_bet_request(user, currency, wager):
+    try:
+        validate_bet(user, currency, wager)
+        return True
+    except UserInRehabException:
+        emit(CasinoEvents.ErrorOccurred, CasinoMessages.UserInRehab)
+        return False
+    except CannotAffordBetException:
+        emit(CasinoEvents.ErrorOccurred, CasinoMessages.CannotAffordBet)
+        return False
+    except UnderMinimumBetException:
+        emit(CasinoEvents.ErrorOccurred, CasinoMessages.MinimumWagerNotMet)
+        return False
+
+
+def charge_user(user, currency, wager):
+    validate_bet(user, currency, wager)
+
+    charged = user.charge_account(currency, wager)
+
+    if not charged:
+        raise CannotAffordBetException(user, currency, wager)
+
+
+def charge_user_request(user, currency, wager):
+    try:
+        charge_user(user, currency, wager)
+        return True
+    except CannotAffordBetException:
+        emit(CasinoEvents.ErrorOccurred, CasinoMessages.CannotAffordBet)
+        return False
+
+
+def get_balances(user):
+    return {
+        'coins': user.coins,
+        'procoins': user.procoins
+    }
