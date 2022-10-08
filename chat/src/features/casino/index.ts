@@ -6,7 +6,6 @@ export * from "./ChatMessageBox";
 export * from "./Currency";
 export * from "./GameData";
 export * from "./GameList";
-export * from "./GameSelect";
 export * from "./TextBox";
 export * from "./useCasino";
 export * from "./Username";
