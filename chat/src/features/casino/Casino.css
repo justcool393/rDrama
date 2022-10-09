@@ -167,3 +167,8 @@ lite-youtube {
 .Casino-fade {
   animation: fading-in linear 0.66s forwards;
 }
+
+
+.no-pointer-events {
+  pointer-events: none;
+}

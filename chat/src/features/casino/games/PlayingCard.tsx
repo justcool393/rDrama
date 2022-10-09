@@ -1,23 +1,6 @@
 import React from "react";
 import { Tooltip } from "antd";
 
-type PlayingCardRank =
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "10"
-  | "J"
-  | "Q"
-  | "K"
-  | "A";
-
-type PlayingCardSuit = "C" | "H" | "D" | "S";
-
 type PlayingCardSize = "small" | "large";
 
 interface PlayingCardProps {
@@ -52,7 +35,7 @@ const SUIT_TO_SUIT_TEXT: Record<PlayingCardSuit, string> = {
 };
 
 const CARD_SIZES: Record<PlayingCardSize, number> = {
-  small: 128,
+  small: 96,
   large: 128,
 };
 

@@ -79,6 +79,7 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
 
           <Dropdown.Button
             style={{ position: "absolute", top: 0, right: 0 }}
+            type="text"
             overlay={<ChatMessageMenu author={author} message={first} />}
           />
         </div>
@@ -93,6 +94,7 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
 
               <Dropdown.Button
                 style={{ position: "absolute", top: 0, right: 0 }}
+                type="text"
                 overlay={<ChatMessageMenu author={author} message={message} />}
               />
             </div>

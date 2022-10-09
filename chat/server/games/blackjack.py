@@ -33,8 +33,7 @@ class BlackjackManager():
         saved_game = load_game(user, CasinoGames.Blackjack)
 
         if saved_game:
-            state = loads(saved_game.game_state)
-            return state if state['status'] is not BlackjackStatus.PLAYING else remove_exploitable_information(state)
+            return loads(saved_game.game_state)
         else:
             return None
 
@@ -282,7 +281,7 @@ def dispatch_action(user, action):
         raise Exception(
             f'Illegal action {action} passed to Blackjack#dispatch_action.')
 
-    game = BlackjackManager.load(user)
+    game = load_game(user, CasinoGames.Blackjack)
 
     if not game:
         raise NoGameInProgressException(user, CasinoGames.Blackjack)
@@ -302,8 +301,9 @@ def dispatch_action(user, action):
         charge_user(user, game.currency, price)
         game.wager *= 2
 
+    new_state = handler(state)
     new_state = {
-        **handler(state),
+        **new_state,
         'player_value': get_value_of_hand(new_state['player']),
         'dealer_value': get_value_of_hand(new_state['dealer']),
         'actions': get_available_actions(new_state)

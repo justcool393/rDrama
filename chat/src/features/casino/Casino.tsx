@@ -1,13 +1,7 @@
-import React, { useEffect } from "react";
-import {
-  Affix,
-  Grid,
-  Layout,
-  message,
-  notification,
-  Tabs,
-} from "antd";
+import React, { useEffect, useState } from "react";
+import { Affix, Button, Grid, Layout, message, notification, Tabs } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { AiOutlineMenuUnfold } from "react-icons/ai";
 import {
   GiCardAceSpades,
   GiCartwheel,
@@ -15,14 +9,14 @@ import {
   GiLever,
 } from "react-icons/gi";
 import { TiMessage } from "react-icons/ti";
-import { useActiveCasinoGame, useOnlineUserCount } from "./state";
-import { Game, Lobby, UserList, UsersAndGames } from "./layout";
+import { useActiveCasinoGame, useOnlineUserCount, useUserGameSession } from "./state";
+import { DraggableModal, Game, Lobby, UserList, UsersAndGames } from "./layout";
 import { useCasino } from "./useCasino";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";
 
-const PANEL_OFFSET_TOP = 120;
+const PANEL_OFFSET_TOP = 68;
 const GAME_PANEL_WIDTH = 440;
 const MESSAGE_TOP = 100;
 const MESSAGE_DURATION = 2;
@@ -32,6 +26,8 @@ const { useBreakpoint } = Grid;
 export function Casino() {
   const { lg } = useBreakpoint();
   const game = useActiveCasinoGame();
+  const session = useUserGameSession(game?.name as CasinoGame);
+  const [showingSider, setShowingSider] = useState(false);
 
   useEffect(() => {
     message.config({
@@ -45,6 +41,49 @@ export function Casino() {
       top: 120,
     });
   }, []);
+
+  useEffect(() => {
+    if (game) {
+      setShowingSider(false);
+    }
+  }, [game])
+
+  return (
+    <Layout
+      style={{ minHeight: "100vh", position: "relative" }}
+      hasSider={true}
+    >
+      <Layout.Content>
+        {session && <DraggableModal session={session} />}
+        <Lobby />
+      </Layout.Content>
+      <Layout.Sider
+        breakpoint="lg"
+        collapsedWidth={0}
+        collapsible={true}
+        collapsed={!showingSider}
+        trigger={null}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "fixed",
+          right: 0,
+          top: PANEL_OFFSET_TOP,
+          bottom: 0,
+          zIndex: 10
+        }}
+      >
+        <UsersAndGames />
+      </Layout.Sider>
+      {!showingSider && (
+        <Button
+          type="text"
+          icon={<AiOutlineMenuUnfold />}
+          onClick={() => setShowingSider(true)}
+        />
+      )}
+    </Layout>
+  );
 
   return lg ? (
     <Layout style={{ minHeight: "100vh" }}>
@@ -76,7 +115,7 @@ export function Casino() {
       </Layout.Sider>
     </Layout>
   ) : (
-    <Layout style={{ minHeight: "100vh", padding: "2rem" }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Layout.Content>
         <MobileNavTabs />
       </Layout.Content>
@@ -136,4 +175,3 @@ function MobileNavTabs() {
     />
   );
 }
-

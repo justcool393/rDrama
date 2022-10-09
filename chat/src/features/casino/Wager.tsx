@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { InputNumber, Tabs, Typography } from "antd";
+import { Button, InputNumber, Tabs, Typography } from "antd";
 import { useRootContext } from "../../hooks";
 import { Currency } from "./Currency";
 import { useCasinoSelector } from "./state";
@@ -28,7 +28,6 @@ export function Wager() {
       <div style={{ flex: 1, maxWidth: 300 }}>
         <Title level={5}>Wager</Title>
         <InputNumber
-          bordered={false}
           placeholder="Enter your wager..."
           min={MINIMUM_WAGER}
           value={wager}
@@ -37,6 +36,7 @@ export function Wager() {
           prefix={balanceError ? <ExclamationCircleOutlined /> : <span />}
           size="large"
           style={{ padding: 0 }}
+          autoFocus={true}
         />
         <Text
           style={{
@@ -49,17 +49,15 @@ export function Wager() {
       </div>
       <Tabs
         tabPosition="right"
-        onChange={(tab) => {
-          const handlers = {};
-        }}
+        onChange={tab => setCurrency(tab as CasinoCurrency)}
         items={[
-          {
-            key: "procoins",
-            label: <Currency kind="procoins" amount={balances.procoins} />,
-          },
           {
             key: "coins",
             label: <Currency kind="coins" amount={balances.coins} />,
+          },
+          {
+            key: "procoins",
+            label: <Currency kind="procoins" amount={balances.procoins} />,
           },
         ]}
       />

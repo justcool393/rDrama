@@ -32,13 +32,12 @@ export function TextBox() {
         onPressEnter={handleSend}
         style={{
           flex: 1,
-          // margin: "0 2rem",
         }}
       />
       <Space
         direction="vertical"
         align="center"
-        style={{ margin: "1rem", marginTop: 0 }}
+        style={{ marginLeft: "1rem", marginBottom: "1rem" }}
       >
         <Tooltip title="Send">
           <Button

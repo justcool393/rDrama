@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Grid } from "antd";
 import { sleep } from "../../../../helpers";
 import { useCasino } from "../../useCasino";
 import { useUserGameSession } from "../../state";
@@ -14,11 +15,14 @@ import "./Slots.css";
 const REEL_DELAY = 250;
 const LEVER_PULL_DURATION = 1000;
 
+const { useBreakpoint } = Grid;
+
 export function Slots() {
   const leverRef = useRef<HTMLDivElement>(null);
   const leverBallRef = useRef<HTMLDivElement>(null);
   const pullingLever = useRef(false);
   const { userPlayedSlots } = useCasino();
+  const { sm } = useBreakpoint();
   const session = useUserGameSession("slots");
   const [rolling, setRolling] = useState([false, false, false]);
   const results = useMemo(() => {
@@ -83,6 +87,7 @@ export function Slots() {
         border: "1px solid var(--gray-900)",
         borderRadius: 4,
         padding: "1rem",
+        transform: sm ? "" : "scale(0.75)"
       }}
     >
       <SlotReel result={results[0]} rolling={rolling[0]} />
@@ -105,6 +110,7 @@ export function Slots() {
           ref={leverBallRef}
           className="Slots-leverBall"
           onClick={handleLeverPull}
+          onTouchStart={handleLeverPull}
         />
       </div>
     </div>
