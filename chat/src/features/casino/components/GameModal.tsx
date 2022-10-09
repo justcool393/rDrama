@@ -3,7 +3,11 @@ import { Button, Divider, Modal, Space } from "antd";
 import { AiOutlineTrophy } from "react-icons/ai";
 import { FiHelpCircle } from "react-icons/fi";
 import { ImExit } from "react-icons/im";
-import { useActiveUserGameSession, useGameIcons } from "../state";
+import {
+  useActiveUserGameSession,
+  useGameActions,
+  useGameIcons,
+} from "../state";
 import { useCasino } from "../useCasino";
 import { ActiveGame } from "./ActiveGame";
 import { GameLeaderboard } from "./GameLeaderboard";
@@ -18,6 +22,7 @@ enum GameModalMode {
 
 export function GameModal() {
   const { userQuitGame } = useCasino();
+  const gameActions = useGameActions();
   const session = useActiveUserGameSession();
   const [mode, setMode] = useState(GameModalMode.Play);
   const Icon = useGameIcons()[session?.game];
@@ -63,14 +68,26 @@ export function GameModal() {
       onCancel={userQuitGame}
       footer={
         mode === GameModalMode.Play ? (
-          <Space direction="vertical">
+          <Space direction="vertical" style={{ width: "100%" }}>
             <Wager />
             <Divider style={{ margin: 0 }} />
             <Space>
               <Button key="exit" onClick={userQuitGame}>
                 <ImExit style={{ marginRight: 8 }} /> Exit
               </Button>
-              <Button>Action</Button>
+              {gameActions.map(
+                ({ key, title, disabled, primary, icon: Icon, onClick }) => (
+                  <Button
+                    key={key}
+                    icon={<Icon style={{ position: "relative", top: -2 }} />}
+                    type={primary ? "primary" : "default"}
+                    disabled={disabled}
+                    onClick={onClick}
+                  >
+                    {title}
+                  </Button>
+                )
+              )}
             </Space>
           </Space>
         ) : null

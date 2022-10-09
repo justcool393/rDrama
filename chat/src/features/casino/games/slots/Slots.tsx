@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Grid } from "antd";
+import { Grid, notification } from "antd";
 import { sleep } from "../../../../helpers";
 import { useCasino } from "../../useCasino";
 import { useUserGameSession } from "../../state";
@@ -30,15 +30,16 @@ export function Slots() {
 
     if (session?.game_state.game_status === "done") {
       const state = session.game_state as SlotsGameState;
-      return state.symbols
+      return state.symbols;
     } else {
       return emptySet;
     }
   }, [session]);
-
-  const handleLeverPull = useCallback(async () => {
+  const handleLeverPull = useCallback(async (active = true) => {
     if (!pullingLever.current) {
-      userPlayedSlots();
+      if (active) {
+        userPlayedSlots();
+      }
 
       pullingLever.current = true;
       leverRef.current?.classList.add("Slots-lever__pulled");
@@ -64,13 +65,44 @@ export function Slots() {
     setRolling([false, false, true]);
     await sleep(REEL_DELAY);
     setRolling([false, false, false]);
+    await sleep(REEL_DELAY);
   }, []);
 
   useEffect(() => {
     if (session?.game_state.game_status === "started") {
       handleSlotsStart();
+
+      if (!pullingLever.current) {
+        handleLeverPull(false);
+      }
     } else if (session?.game_state.game_status === "done") {
       handleSlotsStop();
+
+      const outcome =
+        (session?.game_state as SlotsGameState).outcome ?? "undecided";
+
+      switch (outcome) {
+        case "loss":
+          notification.error({
+            message: "You did not win.",
+          });
+          break;
+        case "push":
+          notification.info({
+            message: "You broke even.",
+          });
+          break;
+        case "win":
+          notification.success({
+            message: "You won!",
+          });
+          break;
+        case "jackpot":
+          return notification.success({
+            message: "You hit the jackpot!",
+          });
+          break;
+      }
     }
   }, [session, handleSlotsStart, handleSlotsStop]);
 
@@ -87,7 +119,7 @@ export function Slots() {
         border: "1px solid var(--gray-900)",
         borderRadius: 4,
         padding: "1rem",
-        transform: sm ? "" : "scale(0.75)"
+        transform: sm ? "" : "scale(0.75)",
       }}
     >
       <SlotReel result={results[0]} rolling={rolling[0]} />
@@ -109,8 +141,7 @@ export function Slots() {
         <div
           ref={leverBallRef}
           className="Slots-leverBall"
-          onClick={handleLeverPull}
-          onTouchStart={handleLeverPull}
+          onClick={() => handleLeverPull()}
         />
       </div>
     </div>

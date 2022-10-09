@@ -123,3 +123,33 @@ export function useGameIcons(): Record<CasinoGame, IconType> {
     slots: GiLever,
   };
 }
+
+export function useGameActions() {
+  const { userPlayedSlots } = useCasino();
+  const session = useActiveUserGameSession();
+
+  if (!session) {
+    return [];
+  }
+
+  const game = session?.game;
+
+  if (game === "slots") {
+    const state = session?.game_state as SlotsGameState;
+
+    return [
+      {
+        key: "pull",
+        icon: GiLever,
+        primary: true,
+        title: "Pull",
+        onClick: userPlayedSlots,
+        disabled: state.game_status === "started",
+      },
+    ];
+  } else if (game === "blackjack") {
+    return [];
+  } else {
+    return [];
+  }
+}

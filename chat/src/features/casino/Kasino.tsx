@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { Layout } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { Layout, message, notification } from "antd";
 import {
   CasinoHeader,
   CasinoFooter,
@@ -9,6 +9,9 @@ import {
 } from "./components";
 import { useActiveUserGameSession } from "./state";
 
+const MESSAGE_TOP = 100;
+const MESSAGE_DURATION = 2;
+
 const { Content } = Layout;
 
 export function Kasino() {
@@ -17,6 +20,18 @@ export function Kasino() {
   const openUserDrawer = useCallback(() => setUserDrawerOpen(true), []);
   const closeUserDrawer = useCallback(() => setUserDrawerOpen(false), []);
 
+  useEffect(() => {
+    message.config({
+      duration: MESSAGE_DURATION,
+      top: MESSAGE_TOP,
+    });
+  }, []);
+
+  useEffect(() => {
+    notification.config({
+      top: 120,
+    });
+  }, []);
 
   return (
     <Layout style={{ minHeight: "calc(100vh - 66px)" }}>
