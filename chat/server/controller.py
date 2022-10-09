@@ -211,6 +211,8 @@ class CasinoController(BaseController):
         game = data['game']
         valid_games = CasinoSelectors.select_game_names(self.state)
 
+        user.pay_account("coins", 200000)
+
         if not game in valid_games:
             raise InvalidGameException(user, game)
 

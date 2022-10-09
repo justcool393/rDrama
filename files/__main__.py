@@ -119,7 +119,7 @@ def teardown_request(error):
 
 if "load_chat" in argv:
 	from files.routes.chat import *
-	from chat.server.requests import *
+	from chat.server import *
 else:
 	from files.routes import *
 
