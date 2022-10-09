@@ -1,4 +1,12 @@
 import { useMemo } from "react";
+import { IconType } from "react-icons";
+import {
+  GiCardAceSpades,
+  GiCartwheel,
+  GiHorseHead,
+  GiHouse,
+  GiLever,
+} from "react-icons/gi";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { formatMessageGroups } from "../../../helpers";
 import { useRootContext } from "../../../hooks";
@@ -87,6 +95,13 @@ export function useUserGameSession(game: CasinoGame) {
   );
 }
 
+export function useActiveUserGameSession() {
+  const activeGame = useActiveCasinoGame();
+  const activeSession = useUserGameSession(activeGame?.name as CasinoGame);
+
+  return activeSession;
+}
+
 export function useOnlineUsers() {
   return useCasinoSelector((state) =>
     state.user.all
@@ -97,4 +112,14 @@ export function useOnlineUsers() {
 
 export function useOnlineUserCount() {
   return useOnlineUsers().length;
+}
+
+export function useGameIcons(): Record<CasinoGame, IconType> {
+  return {
+    blackjack: GiCardAceSpades,
+    crossing: GiHouse,
+    racing: GiHorseHead,
+    roulette: GiCartwheel,
+    slots: GiLever,
+  };
 }

@@ -4,7 +4,6 @@ import type { DraggableData, DraggableEvent } from "react-draggable";
 import Draggable from "react-draggable";
 import { Game } from "./Game";
 import { Wager } from "../Wager";
-import { useCasino } from "../useCasino";
 import { capitalize } from "../../../helpers";
 
 interface Props {
