@@ -62,6 +62,10 @@ export function useFeedItems() {
   );
 }
 
+export function useCasinoGameNames() {
+  return useCasinoSelector((state) => state.game.all);
+}
+
 export function useCasinoGames() {
   return useCasinoSelector((state) =>
     state.game.all.map((id) => state.game.by_id[id])

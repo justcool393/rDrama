@@ -15,7 +15,7 @@ import { formatTimeAgo } from "../../helpers";
 import { useRootContext } from "../../hooks";
 import { useCasino } from "./useCasino";
 import { useCasinoUser, useChatMessages } from "./state";
-import { Username } from "./Username";
+import { CasinoUsername } from "./CasinoUsername";
 
 const { Title, Text } = Typography;
 
@@ -37,7 +37,7 @@ export function ChatMessageBox() {
           onBack={() => setRecipient("")}
           title={
             <Space>
-              <Username user={recipientUser.account} />
+              <CasinoUsername user={recipientUser.account} />
               <Title level={4}>'s Suite</Title>
             </Space>
           }

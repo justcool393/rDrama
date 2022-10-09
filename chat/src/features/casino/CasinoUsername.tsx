@@ -5,11 +5,11 @@ interface Props {
   user: UserEntity["account"];
 }
 
-export function Username({ user }: Props) {
+export function CasinoUsername({ user }: Props) {
   return (
     <Space>
       <Avatar src={user.profile_url} />
-      <Typography.Title level={4}>{user.username}</Typography.Title>
+      <Typography.Title level={5}>{user.username}</Typography.Title>
     </Space>
   );
 }

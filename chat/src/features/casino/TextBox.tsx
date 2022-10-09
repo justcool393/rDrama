@@ -33,6 +33,7 @@ export function TextBox() {
         style={{
           flex: 1,
         }}
+        bordered={false}
       />
       <Space
         direction="vertical"
@@ -41,18 +42,16 @@ export function TextBox() {
       >
         <Tooltip title="Send">
           <Button
-            size="large"
-            type="ghost"
-            shape="circle"
+            size="small"
+            type="text"
             icon={<FiSend />}
             onClick={handleSend}
           />
         </Tooltip>
         <Tooltip title="Emojis">
           <Button
-            size="large"
-            type="ghost"
-            shape="circle"
+            size="small"
+            type="text"
             icon={<BsEmojiSmileFill />}
             onClick={handleSend}
           />
