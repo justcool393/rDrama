@@ -14,11 +14,10 @@ valid_params = [
 	'author',
 	'domain',
 	'over18',
-	"post",
-	"before",
-	"after",
-	"title",
-	"exact",
+	'post',
+	'before',
+	'after',
+	'title',
 	search_operator_hole,
 ]
 
@@ -62,18 +61,19 @@ def searchposts(v):
 	if not v.paid_dues:
 		posts = posts.filter(Submission.club == False)
 	
-	if v.admin_level < 2:
+	if v.admin_level < PERMS['POST_COMMENT_MODERATION']:
 		posts = posts.filter(
 			Submission.deleted_utc == 0,
 			Submission.is_banned == False,
-			Submission.private == False,
-			User.shadowbanned == None)
+			Submission.private == False)
+	
+	if v.admin_level < PERMS['USER_SHADOWBAN']:
+		posts = posts.filter(User.shadowbanned == None)
 
 	if 'author' in criteria:
 		posts = posts.filter(Submission.ghost == False)
-		author = get_user(criteria['author'])
-		if not author: return {"error": "User not found"}, 400
-		if author.is_private and author.id != v.id and v.admin_level < 2 and not v.eye:
+		author = get_user(criteria['author'], v=v, include_shadowbanned=False)
+		if author.is_private and author.id != v.id and v.admin_level < PERMS['VIEW_PRIVATE_PROFILES'] and not v.eye:
 			if request.headers.get("Authorization"):
 				return {"error": f"@{author.username}'s profile is private; You can't use the 'author' syntax on them"}, 400
 			return render_template("search.html",
@@ -91,14 +91,7 @@ def searchposts(v):
 								)
 		else: posts = posts.filter(Submission.author_id == author.id)
 
-	if 'exact' in criteria and 'full_text' in criteria:
-		regex_str = '[[:<:]]'+criteria['full_text']+'[[:>:]]' # https://docs.oracle.com/cd/E17952_01/mysql-5.5-en/regexp.html "word boundaries"
-		if 'title' in criteria:
-			words = [Submission.title.regexp_match(regex_str)]
-		else:
-			words = [or_(Submission.title.regexp_match(regex_str), Submission.body.regexp_match(regex_str))]
-		posts = posts.filter(*words)
-	elif 'q' in criteria:
+	if 'q' in criteria:
 		if('title' in criteria):
 			words = [or_(Submission.title.ilike('%'+x+'%')) \
 					for x in criteria['q']]
@@ -184,8 +177,6 @@ def searchposts(v):
 @app.get("/search/comments")
 @auth_required
 def searchcomments(v):
-
-
 	query = request.values.get("q", '').strip()
 
 	try: page = max(1, int(request.values.get("page", 1)))
@@ -208,9 +199,8 @@ def searchcomments(v):
 
 	if 'author' in criteria:
 		comments = comments.filter(Comment.ghost == False)
-		author = get_user(criteria['author'])
-		if not author: return {"error": "User not found"}, 400
-		if author.is_private and author.id != v.id and v.admin_level < 2 and not v.eye:
+		author = get_user(criteria['author'], v=v, include_shadowbanned=False)
+		if author.is_private and author.id != v.id and v.admin_level < PERMS['VIEW_PRIVATE_PROFILES'] and not v.eye:
 			if request.headers.get("Authorization"):
 				return {"error": f"@{author.username}'s profile is private; You can't use the 'author' syntax on them"}, 400
 
@@ -218,14 +208,12 @@ def searchcomments(v):
 
 		else: comments = comments.filter(Comment.author_id == author.id)
 
-	if 'exact' in criteria and 'full_text' in criteria:
-		regex_str = '[[:<:]]'+criteria['full_text']+'[[:>:]]' # https://docs.oracle.com/cd/E17952_01/mysql-5.5-en/regexp.html "word boundaries"
-		words = [Comment.body.regexp_match(regex_str)]
-		comments = comments.filter(*words)
-	elif 'q' in criteria:
-		words = [or_(Comment.body.ilike('%'+x+'%')) \
-				for x in criteria['q']]
-		comments = comments.filter(*words)
+	if 'q' in criteria:
+		tokens = map(lambda x: re.sub(r'[\0():|&*!<>]', '', x), criteria['q'])
+		tokens = map(lambda x: re.sub(r'\s+', ' <-> ', x), tokens)
+		comments = comments.filter(Comment.body_ts.match(
+			' & '.join(tokens),
+			postgresql_regconfig='english'))
 
 	if 'over18' in criteria: comments = comments.filter(Comment.over_18 == True)
 
@@ -234,7 +222,7 @@ def searchcomments(v):
 
 	comments = apply_time_filter(t, comments, Comment)
 
-	if v.admin_level < 2:
+	if v.admin_level < PERMS['POST_COMMENT_MODERATION']:
 		private = [x[0] for x in g.db.query(Submission.id).filter(Submission.private == True).all()]
 
 		comments = comments.filter(Comment.is_banned==False, Comment.deleted_utc == 0, Comment.parent_submission.notin_(private))
@@ -296,7 +284,7 @@ def searchusers(v):
 		)
 	)
 	
-	if v.admin_level < 2:
+	if v.admin_level < PERMS['USER_SHADOWBAN']:
 		users = users.filter(User.shadowbanned == None)
 
 	users=users.order_by(User.username.ilike(term).desc(), User.stored_subscriber_count.desc())

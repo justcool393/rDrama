@@ -83,6 +83,7 @@ def speak(data, v):
 	elif blackjack and any(i in text.lower() for i in blackjack.split()):
 		emit('speak', data)
 		v.shadowbanned = 'AutoJanny'
+		if not v.is_banned: v.ban_reason = 'Blackjack'
 		g.db.add(v)
 		send_repeatable_notification(CARP_ID, f"{v.username} has been shadowbanned because of a chat message.")
 	elif recipient:
@@ -96,7 +97,7 @@ def speak(data, v):
 
 	total += 1
 
-	if v.admin_level > 1:
+	if v.admin_level >= PERMS['USER_BAN']:
 		text = text.lower()
 		for i in mute_regex.finditer(text):
 			username = i.group(1).lower()
@@ -152,7 +153,7 @@ def typing_indicator(data, v):
 
 
 @socketio.on('delete')
-@admin_level_required(2)
+@admin_level_required(PERMS['POST_COMMENT_MODERATION'])
 def delete(text, v):
 
 	for message in messages:

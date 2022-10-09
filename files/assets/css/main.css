@@ -2480,6 +2480,9 @@ a.bg-light:hover, a.bg-light:focus, button.bg-light:hover, button.bg-light:focus
 .text-center {
 	text-align: center !important;
 }
+.text-justify {
+	text-align: justify !important;
+}
 @media (min-width: 768px) {
 	.text-md-left {
 		text-align: left !important;
@@ -2508,6 +2511,9 @@ a.bg-light:hover, a.bg-light:focus, button.bg-light:hover, button.bg-light:focus
 }
 .font-italic {
 	font-style: italic !important;
+}
+.font-underline {
+	text-decoration: underline !important;
 }
 .text-primary {
 	color: var(--primary) !important;
@@ -4020,6 +4026,9 @@ ul.comment-section {
 .profile-actions .dropdown-item:hover .fa, .profile-actions .dropdown-item:hover .fas, .profile-actions .dropdown-item:active .far {
 	color: var(--black);
 }
+.profile-owned-all-hats {
+	color: gold;
+}
 #page .footer h1, #page .footer h2, #page .footer h3, #page .footer h4, #page .footer h5, #page .footer h6, #article .footer h1, #article .footer h2, #article .footer h3, #article .footer h4, #article .footer h5, #article .footer h6 {
 	font-weight: 600;
 }
@@ -4800,7 +4809,7 @@ input[type=radio] ~ .custom-control-label::before {
 	border-radius: 50%;
 }
 .emoji-modal {
-	max-width: 90% !important
+	max-width: 80% !important
 }
 .emj, .emoji, strong a img, img[alt^=":"]:not(img[b]):not(img[alt*="#"]) {
 	height: 40px !important;
@@ -5069,10 +5078,8 @@ img[glow]:not([data-src]) {
 }
 
 .awardmodal {
-	max-width: 90% !important;
-	min-height: 90% !important;
-	max-height: 90% !important;
-	height: 90% !important;
+	max-width: 80% !important;
+	height: 100% !important;
 	margin: auto !important
 }
 
@@ -5124,7 +5131,7 @@ html {
 
 @media (max-width: 991.98px) {
 	.popover {
-		max-width: 90% !important;
+		max-width: 80% !important;
 	}
 }
 
@@ -5565,15 +5572,20 @@ audio, video {
 	font-size: 0.95rem;
 }
 
-#sidebar-wpd--flairs {
+.sidebar-wpd--flairs {
 	display: grid;
 	align-items: center;
-	grid-template-columns: repeat(3, 1fr);
-	margin-bottom: 2rem;
 	grid-gap: 1px;
 }
 
-#sidebar-wpd--flairs a {
+.sidebar-wpd--flairs--3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+.sidebar-wpd--flairs--2 {
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.sidebar-wpd--flairs a {
 	padding: 5px 5px 4px 5px;
 	text-align: center;
 	color: var(--muted);
@@ -5581,18 +5593,9 @@ audio, video {
 	box-shadow: 0 0 0 1px var(--primary);
 }
 
-#sidebar-wpd--flairs a:hover {
+.sidebar-wpd--flairs a:hover {
 	color: #fff;
 	text-decoration: none;
-}
-
-#sidebar-lgb--host-notice img {
-	display: block;
-	margin: 1.5rem auto 1rem auto;
-}
-#sidebar-lgb--host-notice a {
-	display: block;
-	text-align: center;
 }
 
 #sidebar--directory--head {
@@ -6031,6 +6034,10 @@ g {
 .fa-hat-cowboy:before{content:"\f8c0"}
 .fa-cloud-rainbow:before{content:"\f73e"}
 .fa-telegram:before{content:"\f2c6"}
+.fa-css3-alt:before{content:"\f38b"}
+.fa-landscape:before{content:"\e1b5"}
+.fa-user-ninja:before{content:"\f504"}
+.fa-club:before{content:"\f327"}
 
 .pronouns {
 	font-size: 9px;
@@ -6283,4 +6290,18 @@ div.markdown {
 
 .bug {
 	pointer-events: none !important;
+}
+
+@media (min-width: 768px) {
+	.expandedimage {
+		max-width: 80% !important;
+	}
+	#speed-carot-modal .speed-modal-image
+	{
+		width: 50px;
+		height: 50px;
+	}
+	.emoji-modal, .awardmodal {
+		max-width: 90% !important
+	}	
 }

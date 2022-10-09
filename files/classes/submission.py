@@ -204,15 +204,7 @@ class Submission(Base):
 	@lazy
 	def author_name(self):
 		if self.ghost: return '👻'
-		if self.author.earlylife:
-			expiry = int(self.author.earlylife - time.time())
-			if expiry > 86400:
-				name = self.author.username
-				for i in range(int(expiry / 86400 + 1)):
-					name = f'((({name})))'
-				return name
-			return f'((({self.author.username})))'
-		return self.author.username
+		return self.author.user_name
 
 	@property
 	@lazy
@@ -319,6 +311,10 @@ class Submission(Base):
 			if "?" in url: url += "&context=9" 
 			else: url += "?context=8"
 			if v and v.controversial: url += "&sort=controversial"
+		elif url.startswith("https://watchpeopledie.co/videos/"):
+			# Semi-temporary fix for self-hosted unproxied video serving
+			url = url.replace("https://watchpeopledie.co/videos/",
+							  "https://videos.watchpeopledie.co/", 1)
 
 		return url
 	
@@ -334,6 +330,8 @@ class Submission(Base):
 	@lazy
 	def realbody(self, v, listing=False):
 		if self.club and not (v and (v.paid_dues or v.id == self.author_id)): return f"<p>{CC} ONLY</p>"
+		if self.deleted_utc != 0 and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.author.id)): return "[Deleted by user]"
+		if self.is_banned and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']): return "[Removed by admins]"
 
 		body = self.body_html or ""
 
@@ -364,19 +362,19 @@ class Submission(Base):
 			if o.exclusive > 1:
 				body += f'''<div class="custom-control mt-2"><input name="option-{self.id}" autocomplete="off" class="custom-control-input bet" type="radio" id="{o.id}" onchange="bet_vote('{o.id}','{self.id}')"'''
 				if o.voted(v): body += " checked "
-				if not (v and v.coins >= 200) or self.total_bet_voted(v): body += " disabled "
+				if not (v and v.coins >= POLL_BET_COINS) or self.total_bet_voted(v): body += " disabled "
 
 				body += f'''><label class="custom-control-label" for="{o.id}">{o.body_html}<span class="presult-{self.id}'''
 				body += f'"> - <a href="/votes/post/option/{o.id}"><span id="option-{o.id}">{o.upvotes}</span> bets</a>'
 				if not self.total_bet_voted(v):
-					body += '''<span class="cost"> (cost of entry: 200 coins)</span>'''
+					body += f'''<span class="cost"> (cost of entry: {POLL_BET_COINS} coins)</span>'''
 				body += "</label>"
 
 				if o.exclusive == 3:
 					body += " - <b>WINNER!</b>"
 				
-				if not winner and v and v.admin_level > 2:
-					body += f'''<button class="btn btn-primary distribute" onclick="this.nextElementSibling.classList.remove('d-none');this.classList.add('d-none')">Declare winner</button><button class="btn btn-primary distribute d-none" onclick="post_toast(this,'/distribute/{o.id}',true)">Are you sure?</button>'''
+				if not winner and v and v.admin_level >= PERMS['POST_BETS_DISTRIBUTE']:
+					body += f'''<button class="btn btn-primary distribute" data-click="post_toast(this,'/distribute/{o.id}',true)" onclick="areyousure(this)">Declare winner</button>'''
 				body += "</div>"
 			else:
 				input_type = 'radio' if o.exclusive else 'checkbox'
@@ -401,13 +399,15 @@ class Submission(Base):
 
 	@lazy
 	def plainbody(self, v):
+		if self.deleted_utc != 0 and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.author.id)): return "[Deleted by user]"
+		if self.is_banned and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']): return "[Removed by admins]"
 		if self.club and not (v and (v.paid_dues or v.id == self.author_id)): return f"<p>{CC} ONLY</p>"
 
 		body = self.body
 
 		if not body: return ""
 
-		body = censor_slurs(body, v)
+		body = censor_slurs(body, v).replace('<img loading="lazy" data-bs-toggle="tooltip" alt=":marseytrain:" title=":marseytrain:" src="/e/marseytrain.webp">', ':marseytrain:')
 
 		body = normalize_urls_runtime(body, v)
 		return body
@@ -416,7 +416,7 @@ class Submission(Base):
 	def realtitle(self, v):
 		if self.club and not (v and (v.paid_dues or v.id == self.author_id)):
 			if v: return random.choice(TROLLTITLES).format(username=v.username)
-			elif dues == -2: return f'Please make an account to see this post'
+			elif DUES == -2: return f'Please make an account to see this post'
 			else: return f'{CC} MEMBERS ONLY'
 		elif self.title_html: title = self.title_html
 		else: title = self.title
@@ -432,7 +432,7 @@ class Submission(Base):
 			else: return f'{CC} MEMBERS ONLY'
 		else: title = self.title
 
-		title = censor_slurs(title, v)
+		title = censor_slurs(title, v).replace('<img loading="lazy" data-bs-toggle="tooltip" alt=":marseytrain:" title=":marseytrain:" src="/e/marseytrain.webp">', ':marseytrain:')
 
 		return title
 

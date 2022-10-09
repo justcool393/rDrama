@@ -1,15 +1,16 @@
 from files.mail import *
-from files.__main__ import app, limiter, mail
+from files.__main__ import app, limiter
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.actions import *
 from files.classes.award import AWARDS
-from sqlalchemy import func
+from sqlalchemy import func, nullslast
 import os
 from files.classes.mod_logs import ACTIONTYPES, ACTIONTYPES2
 from files.classes.badges import BadgeDef
 import files.helpers.stats as statshelper
 from shutil import move, copyfile
+
 
 @app.get("/r/drama/comments/<id>/<title>")
 @app.get("/r/Drama/comments/<id>/<title>")
@@ -24,8 +25,12 @@ def marseys(v):
 	if SITE == 'rdrama.net':
 		marseys = g.db.query(Marsey, User).join(User, Marsey.author_id == User.id).filter(Marsey.submitter_id==None)
 		sort = request.values.get("sort", "usage")
-		if sort == "usage": marseys = marseys.order_by(Marsey.count.desc(), User.username).all()
-		else: marseys = marseys.order_by(User.username, Marsey.count.desc()).all()
+		if sort == "usage":
+			marseys = marseys.order_by(Marsey.count.desc(), User.username).all()
+		elif sort == "added":
+			marseys = marseys.order_by(nullslast(Marsey.created_utc.desc()), User.username).all()
+		else: # implied sort == "author"
+			marseys = marseys.order_by(User.username, Marsey.count.desc()).all()
 
 		original = os.listdir("/asset_submissions/marseys/original")
 		for marsey, user in marseys:
@@ -67,11 +72,8 @@ def marsey_list():
 
 	return jsonify(emojis)
 
-@app.get('/rules')
 @app.get('/sidebar')
-@app.get('/logged_out/rules')
-@app.get('/logged_out/sidebar')
-@auth_desired_with_logingate
+@auth_desired
 def sidebar(v):
 	return render_template('sidebar.html', v=v)
 
@@ -102,19 +104,19 @@ def daily_chart(v):
 
 @app.get("/patrons")
 @app.get("/paypigs")
-@admin_level_required(3)
+@admin_level_required(PERMS['VIEW_PATRONS'])
 def patrons(v):
-	if AEVANN_ID and v.id != AEVANN_ID: abort(404)
+	if AEVANN_ID and v.id not in (AEVANN_ID, CARP_ID, SNAKES_ID): abort(404)
 
 	users = g.db.query(User).filter(User.patron > 0).order_by(User.patron.desc(), User.id).all()
 
-	return render_template("patrons.html", v=v, users=users)
+	return render_template("patrons.html", v=v, users=users, benefactor_def=AWARDS['benefactor'])
 
 @app.get("/admins")
 @app.get("/badmins")
 @auth_required
 def admins(v):
-	if v and v.admin_level > 2:
+	if v.admin_level >= PERMS['VIEW_SORTED_ADMIN_LIST']:
 		admins = g.db.query(User).filter(User.admin_level>1).order_by(User.truecoins.desc()).all()
 		admins += g.db.query(User).filter(User.admin_level==1).order_by(User.truecoins.desc()).all()
 	else: admins = g.db.query(User).filter(User.admin_level>0).order_by(User.truecoins.desc()).all()
@@ -135,7 +137,7 @@ def log(v):
 
 	kind = request.values.get("kind")
 
-	if v and v.admin_level > 1: types = ACTIONTYPES
+	if v and v.admin_level >= PERMS['USER_SHADOWBAN']: types = ACTIONTYPES
 	else: types = ACTIONTYPES2
 
 	if kind and kind not in types:
@@ -143,12 +145,13 @@ def log(v):
 		actions = []
 	else:
 		actions = g.db.query(ModAction)
-		if not (v and v.admin_level >= 2): 
+		if not (v and v.admin_level >= PERMS['USER_SHADOWBAN']): 
 			actions = actions.filter(ModAction.kind.notin_(["shadowban","unshadowban"]))
 
 		if admin_id:
 			actions = actions.filter_by(user_id=admin_id)
 			kinds = set([x.kind for x in actions])
+			kinds.add(kind)
 			types2 = {}
 			for k,val in types.items():
 				if k in kinds: types2[k] = val
@@ -159,7 +162,7 @@ def log(v):
 	
 	next_exists=len(actions)>25
 	actions=actions[:25]
-	admins = [x[0] for x in g.db.query(User.username).filter(User.admin_level >= 2).order_by(User.username).all()]
+	admins = [x[0] for x in g.db.query(User.username).filter(User.admin_level >= PERMS['ADMIN_MOP_VISIBLE']).order_by(User.username).all()]
 
 	return render_template("log.html", v=v, admins=admins, types=types, admin=admin, type=kind, actions=actions, next_exists=next_exists, page=page)
 
@@ -174,9 +177,9 @@ def log_item(id, v):
 
 	if not action: abort(404)
 
-	admins = [x[0] for x in g.db.query(User.username).filter(User.admin_level > 1).all()]
+	admins = [x[0] for x in g.db.query(User.username).filter(User.admin_level >= PERMS['ADMIN_MOP_VISIBLE']).all()]
 
-	if v and v.admin_level > 1: types = ACTIONTYPES
+	if v and v.admin_level >= PERMS['USER_SHADOWBAN']: types = ACTIONTYPES
 	else: types = ACTIONTYPES2
 
 	return render_template("log.html", v=v, actions=[action], next_exists=False, page=1, action=action, admins=admins, types=types)
@@ -196,7 +199,7 @@ def api(v):
 @app.get("/contact_us")
 @app.get("/press")
 @app.get("/media")
-@auth_required
+@auth_desired
 def contact(v):
 	return render_template("contact.html", v=v)
 
@@ -229,7 +232,7 @@ def submit_contact(v):
 	g.db.flush()
 	new_comment.top_comment_id = new_comment.id
 	
-	admins = g.db.query(User).filter(User.admin_level > 2)
+	admins = g.db.query(User).filter(User.admin_level >= PERMS['NOTIFICATIONS_MODMAIL'])
 	if SITE == 'watchpeopledie.co':
 		admins = admins.filter(User.id != AEVANN_ID)
 
@@ -291,6 +294,10 @@ def static_service(path):
 
 	return resp
 
+### BEGIN FALLBACK ASSET SERVING
+# In production, we have nginx serve these locations now.
+# These routes stay for local testing. Requests don't reach them on prod.
+
 @app.get('/images/<path>')
 @app.get('/hostedimages/<path>')
 @app.get("/static/images/<path>")
@@ -318,6 +325,8 @@ def audio(path):
 	resp.headers.remove("Cache-Control")
 	resp.headers.add("Cache-Control", "public, max-age=3153600")
 	return resp
+
+### END FALLBACK ASSET SERVING
 
 @app.get("/robots.txt")
 def robots_txt():
@@ -453,15 +462,17 @@ if SITE == 'pcmemes.net':
 		if '"videoDetails":{"videoId"' in text:
 			y = live_regex.search(text)
 			count = y.group(3)
-			if 'περιμένει' in count:
-				return process_streamer(id, '')
 
-			try: count = int(count.replace('.', ''))
-			except Exception as e:
-				print(e)
-				with open('files/assets/count.txt', 'w', encoding='utf-8') as f:
-					f.write(text)
-				return None
+			if count == '1 παρακολουθεί τώρα':
+				count = "1"
+
+			if 'περιμένει' in count:
+				if live != '':
+					return process_streamer(id, '')
+				else:
+					return None
+
+			count = int(count.replace('.', ''))
 
 			t = live_thumb_regex.search(text)
 
@@ -472,6 +483,12 @@ if SITE == 'pcmemes.net':
 			return (True, (id, req.url, thumb, name, title, count))
 		else:
 			t = offline_regex.search(text)
+			if not t:
+				if live != '':
+					return process_streamer(id, '')
+				else:
+					return None
+
 			y = offline_details_regex.search(text)
 
 			if y:
@@ -479,16 +496,19 @@ if SITE == 'pcmemes.net':
 				quantity = int(y.group(1))
 				unit = y.group(2)
 
-				if unit.startswith('λεπτ'):
+				if unit.startswith('δε'):
+					unit = 'second'
+					modifier = 1/60
+				elif unit.startswith('λεπτ'):
 					unit = 'minute'
 					modifier = 1
-				if unit.startswith('ώρ'):
+				elif unit.startswith('ώρ'):
 					unit = 'hour'
 					modifier = 60
-				if unit.startswith('ημέρ'):
+				elif unit.startswith('ημέρ'):
 					unit = 'day'
 					modifier = 1440
-				if unit.startswith('εβδομάδ'):
+				elif unit.startswith('εβδομάδ'):
 					unit = 'week'
 					modifier = 10080
 				elif unit.startswith('μήν'):
@@ -503,17 +523,11 @@ if SITE == 'pcmemes.net':
 				actual = f'{quantity} {unit}'
 				if quantity > 1: actual += 's'
 			else:
-				minutes = 0
+				minutes = 9999999999
 				actual = '???'
 				views = 0
 
-			print(req.url, flush=True)
-			try: thumb = t.group(2)
-			except Exception as e:
-				print(e)
-				with open('files/assets/thumb.txt', 'w', encoding='utf-8') as f:
-					f.write(text)
-				return None
+			thumb = t.group(2)
 
 			name = t.group(1)
 
@@ -549,11 +563,8 @@ if SITE == 'pcmemes.net':
 		return render_template('live.html', v=v, live=live, offline=offline)
 
 	@app.post('/live/add')
-	@admin_level_required(2)
+	@admin_level_required(PERMS['STREAMERS_MODERATION'])
 	def live_add(v):
-		if v.id not in (AEVANN_ID, KIPPY_ID, 1550):
-			return {"error": 'Only Kippy can add channels!'}, 403
-
 		link = request.values.get('link').strip()
 
 		if 'youtube.com/channel/' in link:
@@ -591,7 +602,7 @@ if SITE == 'pcmemes.net':
 		return redirect('/live')
 
 	@app.post('/live/remove')
-	@admin_level_required(2)
+	@admin_level_required(PERMS['STREAMERS_MODERATION'])
 	def live_remove(v):
 		id = request.values.get('id').strip()
 		if not id: abort(400)
