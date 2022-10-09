@@ -16,7 +16,6 @@ def casino_error(error):
     CASINO_CONTROLLER.logger.log(format_exc())
 
 
-
 @socketio.on(CasinoEvents.Connect, CASINO_NAMESPACE)
 @is_not_permabanned
 def connect_to_casino(v):
@@ -85,6 +84,16 @@ def user_started_game(data, v):
         return ERROR_RESPONSE
 
 
+@socketio.on(CasinoEvents.UserQuitGame, CASINO_NAMESPACE)
+@is_not_permabanned
+def user_quit_game(v):
+    try:
+        CASINO_CONTROLLER.user_quit_game(v)
+    except NoGameInProgressException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.GameNotFound)
+        return ERROR_RESPONSE
+
+
 @socketio.on(CasinoEvents.UserPlayedSlots, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_played_slots(data, v):
@@ -123,7 +132,6 @@ def user_played_blackjack(data, v):
     except NoGameInProgressException:
         CASINO_CONTROLLER.send_error(CasinoMessages.BlackjackNoGameInProgress)
         return ERROR_RESPONSE
-
 
 
 @socketio.on(CasinoEvents.UserPlayedRoulette, CASINO_NAMESPACE)

@@ -239,6 +239,23 @@ class CasinoController(BaseController):
             })
             self._send_session_update(user_id, CasinoGames.Blackjack)
 
+    def user_quit_game(self, user):
+        user_id = str(user.id)
+        game = CasinoSelectors.select_user_active_game(self.state, user_id)
+
+        if not game:
+            raise NoGameInProgressException(user, None)
+
+        self.manager.dispatch(CasinoActions.USER_QUIT_GAME, {
+            'user_id': user_id,
+        })
+
+        leave_room(game)
+
+        self._send_feed_update(
+            f'{user.username} quit playing {game}.', [game])
+        self._send_games_update()
+
     def user_played_slots(self, user, data):
         user_id = str(user.id)
         currency = data['currency']

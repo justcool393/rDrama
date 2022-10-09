@@ -25,6 +25,7 @@ const { useBreakpoint } = Grid;
 
 export function Casino() {
   const { lg } = useBreakpoint();
+  const { userQuitGame } = useCasino();
   const game = useActiveCasinoGame();
   const session = useUserGameSession(game?.name as CasinoGame);
   const [showingSider, setShowingSider] = useState(false);
@@ -54,7 +55,7 @@ export function Casino() {
       hasSider={true}
     >
       <Layout.Content>
-        {session && <DraggableModal session={session} />}
+        {session && <DraggableModal session={session} onClose={userQuitGame} />}
         <Lobby />
       </Layout.Content>
       <Layout.Sider

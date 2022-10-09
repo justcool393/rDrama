@@ -9,9 +9,10 @@ import { capitalize } from "../../../helpers";
 
 interface Props {
   session: SessionEntity;
+  onClose(): void;
 }
 
-export function DraggableModal({ session }: Props) {
+export function DraggableModal({ session, onClose }: Props) {
   const [disabled, setDisabled] = useState(false);
   const [bounds, setBounds] = useState({
     left: 0,
@@ -61,8 +62,9 @@ export function DraggableModal({ session }: Props) {
         </div>
       }
       open={true}
+      afterClose={() => console.log("2")}
       onOk={() => {}}
-      onCancel={() => {}}
+      onCancel={onClose}
       mask={false}
       maskClosable={false}
       wrapClassName="no-pointer-events"

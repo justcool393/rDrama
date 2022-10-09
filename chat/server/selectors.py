@@ -74,6 +74,16 @@ class CasinoSelectors():
     def select_user_request_id(state, user_id):
         return grab(CasinoSelectors.select_user(state, user_id), 'request_id')
 
+    @staticmethod
+    def select_user_active_game(state, user_id):
+        games = CasinoSelectors.select_game_names(state)
+
+        for game in games:
+            if CasinoSelectors.select_user_in_game(state, game, user_id):
+                return game
+
+        return None
+
     # Message
 
     @staticmethod
@@ -148,7 +158,6 @@ class CasinoSelectors():
     @staticmethod
     def select_feed(state, feed_id):
         return CasinoSelectors.select_feed_lookup(state).get(feed_id)
-
 
     # Session
 
