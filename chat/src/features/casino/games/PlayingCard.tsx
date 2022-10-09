@@ -21,6 +21,7 @@ const RANK_TO_RANK_TEXT: Record<PlayingCardRank, string> = {
   "8": "Eight",
   "9": "Nine",
   "10": "Ten",
+  X: "Ten",
   J: "Jack",
   Q: "Queen",
   K: "King",
@@ -31,7 +32,7 @@ const SUIT_TO_SUIT_TEXT: Record<PlayingCardSuit, string> = {
   C: "Clubs",
   H: "Hearts",
   D: "Diamonds",
-  S: "Spaces",
+  S: "Spades",
 };
 
 const CARD_SIZES: Record<PlayingCardSize, number> = {
@@ -50,7 +51,7 @@ export function PlayingCard({
     ? ""
     : `${RANK_TO_RANK_TEXT[rank]} of ${SUIT_TO_SUIT_TEXT[suit]}`;
   const width = CARD_SIZES[size];
-  const faceImage = `/i/cards/${rank}${suit}.svg`;
+  const faceImage = `/i/cards/${rank === "X" ? "10" : rank}${suit}.svg`;
   const flippedImage = "/i/cards/BLUE_BACK.svg";
 
   return (

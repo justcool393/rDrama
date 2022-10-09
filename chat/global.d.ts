@@ -305,6 +305,7 @@ declare type PlayingCardRank =
   | "8"
   | "9"
   | "10"
+  | "X"
   | "J"
   | "Q"
   | "K"
