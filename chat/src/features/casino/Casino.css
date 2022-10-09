@@ -2,18 +2,18 @@
 .ant-layout-header {
   background: transparent;
 }
-
 .ant-layout-sider {
   background: var(--gray-600) !important;
 }
-
 .ant-menu.ant-menu-dark {
   background: var(--background) !important;
 }
-
 .ant-input-number,
 .ant-input-number-affix-wrapper {
   width: 100% !important;
+}
+.ant-comment-inner {
+  padding: 8px 0;
 }
 /* ANT OVERRIDES */
 
@@ -167,7 +167,6 @@ lite-youtube {
 .Casino-fade {
   animation: fading-in linear 0.66s forwards;
 }
-
 
 .no-pointer-events {
   pointer-events: none;

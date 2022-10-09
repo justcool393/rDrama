@@ -42,8 +42,9 @@ export function Kasino() {
       />
       <Content
         style={{
-          padding: "0 12px",
-          marginTop: 48,
+          padding: 4,
+          marginTop: 60,
+          marginBottom: 170,
           position: "relative",
           overflow: "hidden",
         }}

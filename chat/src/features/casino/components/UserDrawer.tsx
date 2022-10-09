@@ -13,7 +13,7 @@ export function UserDrawer({ onClose }: { onClose(): void }) {
       onClose={onClose}
       open={true}
       getContainer={false}
-      style={{ position: "absolute", top: 4 }}
+      style={{ position: "fixed", top: 97 }}
     >
       <Typography.Title level={4} style={{ margin: 0 }}>
         {onlineUserCount} Users Online

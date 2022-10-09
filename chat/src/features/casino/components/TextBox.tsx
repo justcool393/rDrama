@@ -34,6 +34,7 @@ export function TextBox() {
           flex: 1,
         }}
         bordered={false}
+        id="TextBox"
       />
       <Space
         direction="vertical"
@@ -52,8 +53,14 @@ export function TextBox() {
           <Button
             size="small"
             type="text"
+            data-bs-toggle="modal"
+            data-bs-target="#emojiModal"
+            data-bs-placement="bottom"
             icon={<BsEmojiSmileFill />}
-            onClick={handleSend}
+            onClick={() => {
+              const whatever = window as any;
+              whatever.loadEmojis("TextBox");
+            }}
           />
         </Tooltip>
       </Space>

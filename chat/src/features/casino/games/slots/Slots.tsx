@@ -78,28 +78,27 @@ export function Slots() {
     } else if (session?.game_state.game_status === "done") {
       handleSlotsStop();
 
-      const outcome =
-        (session?.game_state as SlotsGameState).outcome ?? "undecided";
+      const state = session?.game_state as SlotsGameState;
 
-      switch (outcome) {
+      switch (state.outcome) {
         case "loss":
           notification.error({
-            message: "You did not win.",
+            message: `You lost ${state.wager} ${state.currency}.`,
           });
           break;
         case "push":
           notification.info({
-            message: "You broke even.",
+            message: `You broke even and were refunded ${state.wager} ${state.currency}.`,
           });
           break;
         case "win":
           notification.success({
-            message: "You won!",
+            message: `You won ${state.reward} ${state.currency}!`,
           });
           break;
         case "jackpot":
           return notification.success({
-            message: "You hit the jackpot!",
+            message: `You hit the jackpot and won ${state.reward} ${state.currency}!!`,
           });
           break;
       }

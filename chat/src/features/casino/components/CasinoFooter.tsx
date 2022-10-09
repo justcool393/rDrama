@@ -27,10 +27,10 @@ export function CasinoFooter() {
       <Divider style={{ margin: 0 }} />
       <TextBox />
       <Menu
-        theme="dark"
         mode="horizontal"
         selectable={false}
         activeKey={activeGame?.name}
+        style={{ borderTop: "1px solid var(--primary)" }}
         items={availableGames.map((game) => {
           const Icon = gameIcons[game];
 

@@ -113,8 +113,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
 
   const userStartedGame = useCallback((game: CasinoGame) => {
     socket.current?.emit(CasinoHandlers.UserStartedGame, { game });
-  }
-  , []);
+  }, []);
 
   const userQuitGame = useCallback(() => {
     socket.current?.emit(CasinoHandlers.UserQuitGame);
@@ -233,8 +232,10 @@ export function CasinoProvider({ children }: PropsWithChildren) {
         .on(CasinoHandlers.GameUpdated, (game: PossibleGameEntity) =>
           dispatch(gameUpdated({ game }))
         )
-        .on(CasinoHandlers.GamesUpdated, (games: Normalized<PossibleGameEntity>) =>
-          dispatch(gamesUpdated({ games }))
+        .on(
+          CasinoHandlers.GamesUpdated,
+          (games: Normalized<PossibleGameEntity>) =>
+            dispatch(gamesUpdated({ games }))
         )
         .on(
           CasinoHandlers.LeaderboardUpdated,

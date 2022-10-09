@@ -7,7 +7,7 @@ from flask_socketio import emit, join_room, leave_room
 from gevent import sleep, spawn
 from .builders import CasinoBuilders
 from .config import CASINO_LOGGER_PREFIX, ERROR_LOG_PATH, SLOTS_PULL_DURATION
-from .enums import CasinoActions, CasinoEvents, CasinoGames, CasinoMessages, CasinoRooms
+from .enums import CasinoActions, CasinoEvents, CasinoGameStatus, CasinoGames, CasinoMessages, CasinoRooms
 from .exceptions import *
 from .games.blackjack import BlackjackActions, BlackjackManager
 from .games.racing import RacingManager
@@ -26,10 +26,20 @@ class BaseController():
         self.manager = CasinoManager()
         self.scheduler = CasinoScheduler()
         self.racing_manager = None
+        self.initialized_roulette = False
 
     @property
     def state(self):
         return self.manager.state
+
+    def _initialize_roulette(self):
+        self.manager.dispatch(CasinoActions.ROULETTE_STATE_INITIALIZED, {
+            "game_state": dumps({
+                'game_status': CasinoGameStatus.Waiting,
+                'bets': get_roulette_bets()
+            })
+        })
+        self.initialized_roulette = True
 
     def _initialize_racing_manager(self):
         self.racing_manager = RacingManager()
@@ -74,7 +84,21 @@ class BaseController():
     def _send_session_update(self, user_id, game):
         session_key = CasinoBuilders.build_session_key(user_id, game)
         session = CasinoSelectors.select_session(self.state, session_key)
-        emit(CasinoEvents.SessionUpdated, session, broadcast=True)
+        emit(CasinoEvents.SessionUpdated, session, to=user_id)
+
+    def _send_shared_session_update(self, user_id, game):
+        selector = {
+            CasinoGames.Roulette: CasinoSelectors.select_shared_roulette_state,
+            CasinoGames.Racing: CasinoSelectors.select_shared_racing_state,
+        }.get(game) or None
+
+        if not selector:
+            raise NotSharedGameException
+
+        game_state = selector(self.state)
+        session = CasinoBuilders.build_session_entity(
+            user_id, game, game_state)
+        emit(CasinoEvents.SessionUpdated, session, to=user_id)
 
     def _send_game_update(self, game):
         game_entity = CasinoSelectors.select_game(self.state, game)
@@ -109,6 +133,9 @@ class CasinoController(BaseController):
         emit(CasinoEvents.ErrorOccurred, error)
 
     def user_connected(self, user):
+        if not self.initialized_roulette:
+            self._initialize_roulette()
+
         if not self.racing_manager:
             self._initialize_racing_manager()
 
@@ -232,12 +259,16 @@ class CasinoController(BaseController):
             })
             self._send_session_update(user_id, CasinoGames.Slots)
         elif game == CasinoGames.Blackjack:
-            saved_game = BlackjackManager.load(user) or BlackjackManager.wait()
+            state = BlackjackManager.load(user) or BlackjackManager.wait()
             self.manager.dispatch(CasinoActions.USER_PLAYED_BLACKJACK, {
                 'user_id': user_id,
-                'game_state': dumps(saved_game),
+                'game_state': dumps(state),
             })
             self._send_session_update(user_id, CasinoGames.Blackjack)
+        elif game == CasinoGames.Roulette:
+            self._send_shared_session_update(user_id, CasinoGames.Roulette)
+        elif game == CasinoGames.Racing:
+            self._send_shared_session_update(user_id, CasinoGames.Racing)
 
     def user_quit_game(self, user):
         user_id = str(user.id)
@@ -288,7 +319,7 @@ class CasinoController(BaseController):
                     CasinoBuilders.build_slots_feed_entity(user.username, state), [CasinoGames.Slots])
 
         spawn(play_slots)
-    
+
     def user_played_blackjack(self, user, data):
         user_id = str(user.id)
         action = data['action']

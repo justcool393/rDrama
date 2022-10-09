@@ -1,4 +1,5 @@
 from copy import deepcopy
+from .enums import CasinoGames
 from .helpers import grab
 
 
@@ -47,6 +48,14 @@ class CasinoSelectors():
     @staticmethod
     def select_session_in_game(state, game_name, session_id):
         return session_id in CasinoSelectors.select_game_sessions(state, game_name)
+
+    @staticmethod
+    def select_shared_roulette_state(state):
+        return CasinoSelectors.select_game(state, CasinoGames.Roulette)['state']
+
+    @staticmethod
+    def select_shared_racing_state(state):
+        return CasinoSelectors.select_game(state, CasinoGames.Racing)['state']
 
     # User
 

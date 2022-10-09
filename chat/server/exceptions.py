@@ -71,3 +71,9 @@ class BadBetException(Exception):
     def __init__(self, user, game):
         self.message = f'{user} placed a bad bet at {game}'
         super().__init__(self.message)
+
+
+class NotSharedGameException(Exception):
+    def __init__(self, user, game):
+        self.message = f'{user} tried to get shared game state for {game}'
+        super().__init__(self.message)

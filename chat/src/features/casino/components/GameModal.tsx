@@ -62,7 +62,6 @@ export function GameModal() {
           />
         </Space>
       }
-      centered={true}
       closeIcon={<ImExit />}
       onOk={() => {}}
       onCancel={userQuitGame}

@@ -21,6 +21,7 @@ class CasinoHandlers():
             CasinoActions.USER_PLAYED_BLACKJACK: CasinoHandlers.handle_user_played_blackjack,
             CasinoActions.USER_PLAYED_RACING: CasinoHandlers.handle_user_played_racing,
             CasinoActions.RACING_STATE_INITIALIZED: CasinoHandlers.handle_racing_state_initialized,
+            CasinoActions.ROULETTE_STATE_INITIALIZED: CasinoHandlers.handle_roulette_state_initialized,
         }[action] or None
 
     @staticmethod
@@ -262,6 +263,15 @@ class CasinoHandlers():
         game_state = payload['game_state']
 
         CasinoSelectors.select_game(state, CasinoGames.Racing)[
+            'state'] = game_state
+
+        return state
+
+    @staticmethod
+    def handle_roulette_state_initialized(state, payload):
+        game_state = payload['game_state']
+
+        CasinoSelectors.select_game(state, CasinoGames.Roulette)[
             'state'] = game_state
 
         return state

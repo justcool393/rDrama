@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect, useRef } from "react";
 import {
   Avatar,
   Comment,
@@ -17,12 +17,39 @@ import { useCasino } from "../useCasino";
 import { useCasinoUser, useChatMessages } from "../state";
 import { CasinoUsername } from "./CasinoUsername";
 
+const SCROLL_CANCEL_THRESHOLD = 500;
+
 const { Title, Text } = Typography;
 
 export function ChatMessageBox() {
   const { recipient, setRecipient } = useCasino();
   const recipientUser = useCasinoUser(recipient);
   const chatMessageGroups = useChatMessages();
+  const initiallyScrolledDown = useRef(false);
+
+  // Autoscroll.
+  useEffect(() => {
+    if (chatMessageGroups.length > 0) {
+      // Always scroll to the bottom on first load.
+      // if (initiallyScrolledDown.current) {
+      //   /* We only want to scroll back down on a new message
+      //    if the user is not scrolled up looking at previous messages. */
+      //   const scrollableDistance =
+      //     document.body.scrollHeight - document.body.clientHeight;
+      //   const scrolledDistance = document.body.scrollTop;
+      //   const hasScrolledEnough =
+      //     scrollableDistance - scrolledDistance >= SCROLL_CANCEL_THRESHOLD;
+
+      //   if (hasScrolledEnough) {
+      //     return;
+      //   }
+      // } else {
+      //   initiallyScrolledDown.current = true;
+      // }
+
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+  }, [chatMessageGroups]);
 
   return (
     <div
