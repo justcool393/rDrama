@@ -33,7 +33,7 @@ class BlackjackManager():
         saved_game = load_game(user, CasinoGames.Blackjack)
 
         if saved_game:
-            return loads(saved_game.game_state)
+            return remove_exploitable_information(loads(saved_game.game_state))
         else:
             return None
 
@@ -264,7 +264,7 @@ def remove_exploitable_information(state):
     if len(safe_state['dealer']) >= 2:
         safe_state['dealer'][1] = '?'
 
-    safe_state['dealer_value'] = '?'
+    safe_state['dealer_value'] = f"{get_value_of_card(safe_state['dealer'][0])}+"
     return safe_state
 
 
@@ -314,7 +314,9 @@ def dispatch_action(user, action):
 
     if game_over:
         payout = handle_payout(user, game, final_state)
+        final_state['game_status'] = CasinoGameStatus.Done
         final_state['actions'] = [BlackjackActions.DEAL]
+        final_state['reward'] = payout - game.wager
         final_state['payout'] = payout
         return game, final_state
     else:

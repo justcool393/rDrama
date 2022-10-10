@@ -1,4 +1,5 @@
 export * from "./ActiveGame";
+export * from "./Balances";
 export * from "./CasinoFooter";
 export * from "./CasinoHeader";
 export * from "./CasinoUsername";

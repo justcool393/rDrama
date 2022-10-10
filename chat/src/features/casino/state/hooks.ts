@@ -8,7 +8,7 @@ import {
   GiLever,
 } from "react-icons/gi";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { formatMessageGroups } from "../../../helpers";
+import { capitalize, formatMessageGroups } from "../../../helpers";
 import { useRootContext } from "../../../hooks";
 import { useCasino } from "../useCasino";
 import { AppDispatch, RootState } from "./store";
@@ -125,7 +125,7 @@ export function useGameIcons(): Record<CasinoGame, IconType> {
 }
 
 export function useGameActions() {
-  const { userPlayedSlots } = useCasino();
+  const { userPlayedSlots, userPlayedBlackjack } = useCasino();
   const session = useActiveUserGameSession();
 
   if (!session) {
@@ -148,7 +148,18 @@ export function useGameActions() {
       },
     ];
   } else if (game === "blackjack") {
-    return [];
+    const state = session?.game_state as BlackjackGameState;
+
+    return state.actions.map((action) => ({
+      key: action,
+      icon: () => null,
+      primary: false,
+      title: action
+        .split("_")
+        .map((word) => capitalize(word.toLowerCase()))
+        .join(" "),
+      onClick: () => userPlayedBlackjack(action),
+    }));
   } else {
     return [];
   }

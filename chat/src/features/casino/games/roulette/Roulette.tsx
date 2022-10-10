@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Grid, Row, Space } from "antd";
+import { Button, Col, Grid, Row, Space, Statistic } from "antd";
 import chunk from "lodash.chunk";
 import key from "weak-key";
 import { useCasino } from "../../useCasino";
@@ -53,7 +53,7 @@ export function Roulette() {
       };
 
   return (
-    <Space align="start">
+    <Space align="start" style={{ marginBottom: "-10rem" }}>
       <Board onFinish={() => setFinished(true)} />
       <div
         style={{
@@ -214,15 +214,23 @@ function Board({ onFinish }) {
   return (
     <>
       <div style={{ minWidth: 240, height: 400, visibility: "hidden" }} />
-      <Countdown
+      <div
         style={{
           position: "relative",
-          top: -120,
+          top: -140,
         }}
-        title="Next Roll"
-        value={Date.now() + 10 * 1000}
-        onFinish={onFinish}
-      />
+      >
+        <Space direction="vertical">
+          <Countdown
+            title="Next Roll"
+            value={Date.now() + 10 * 1000}
+            onFinish={onFinish}
+          />
+          <Statistic title="At Stake" value={30001} />
+          <Button type="default">View Bets</Button>
+        </Space>
+      </div>
+
       <div style={style}>
         <div
           style={{

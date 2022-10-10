@@ -36,7 +36,7 @@ const SUIT_TO_SUIT_TEXT: Record<PlayingCardSuit, string> = {
 };
 
 const CARD_SIZES: Record<PlayingCardSize, number> = {
-  small: 96,
+  small: 80,
   large: 128,
 };
 
@@ -78,6 +78,7 @@ export function PlayingCardDeck({ count }: PlayingCardDeckProps) {
           flipped={true}
           rank="2"
           suit="C"
+          size="small"
           style={{
             position: "absolute",
             top: index * -2,
