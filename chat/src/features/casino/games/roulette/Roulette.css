@@ -1,0 +1,12 @@
+@keyframes spinning-wheel {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.Roulette-wheel {
+  animation: spinning-wheel 1s linear infinite;
+}

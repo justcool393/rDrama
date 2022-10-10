@@ -155,7 +155,7 @@ declare interface RouletteBetData {
   wager: Wager;
 }
 
-declare interface RouletteGameState {
+declare interface RouletteGameState extends CasinoGameState {
   bets: Record<RouletteBet, RouletteBetData[]>;
 }
 
@@ -168,13 +168,13 @@ declare type BlackjackAction =
   | "DOUBLE_DOWN"
   | "BUY_INSURANCE";
 
-declare type BlackjackStatus = 
+declare type BlackjackStatus =
   | "PLAYING"
   | "STAYED"
   | "PUSHED"
   | "WON"
   | "LOST"
-  | "BLACKJACK"
+  | "BLACKJACK";
 
 declare interface BlackjackGameState extends CasinoGameState {
   player: string[];

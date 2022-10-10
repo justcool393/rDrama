@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Card, Space } from "antd";
-import key from "weak-key";
 import { useUserGameSession } from "../../state";
 import { useCasino } from "../../useCasino";
 import { PlayingCardDeck, PlayingCard } from "../PlayingCard";
