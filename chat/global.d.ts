@@ -87,6 +87,7 @@ declare interface MessageEntity {
     html: string;
     html_censored: string;
   };
+  reactions: string[];
   timestamp: number;
 }
 
@@ -98,6 +99,13 @@ declare interface ConversationEntity {
   id: string;
   participants: [string, string] /* [user_id, user_id] */;
   messages: Normalized<MessageEntity>;
+}
+
+declare interface ReactionEntity {
+  id: string;
+  entity_id: string;
+  user_ids: string[];
+  reactions: Record<string, string>;
 }
 
 declare interface FeedEntity {
@@ -290,6 +298,7 @@ declare interface CasinoState {
   users: Normalized<UserEntity>;
   messages: Normalized<MessageEntity>;
   conversations: Normalized<ConversationEntity>;
+  reactions: Normalized<ReactionEntity>;
   feed: Normalized<FeedEntity>;
   leaderboards: Normalized<LeaderboardEntity>;
   sessions: Normalized<SessionEntity>;

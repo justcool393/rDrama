@@ -12,6 +12,7 @@ class CasinoHandlers():
             CasinoActions.USER_CONNECTED: CasinoHandlers.handle_user_connected,
             CasinoActions.USER_DISCONNECTED: CasinoHandlers.handle_user_disconnected,
             CasinoActions.USER_SENT_MESSAGE: CasinoHandlers.handle_user_sent_message,
+            CasinoActions.USER_REACTED_TO_MESSAGE: CasinoHandlers.handle_user_reacted_to_message,
             CasinoActions.USER_DELETED_MESSAGE: CasinoHandlers.handle_user_deleted_message,
             CasinoActions.USER_CONVERSED: CasinoHandlers.handle_user_conversed,
             CasinoActions.USER_STARTED_GAME: CasinoHandlers.handle_user_started_game,
@@ -22,7 +23,7 @@ class CasinoHandlers():
             CasinoActions.USER_PLAYED_RACING: CasinoHandlers.handle_user_played_racing,
             CasinoActions.RACING_STATE_INITIALIZED: CasinoHandlers.handle_racing_state_initialized,
             CasinoActions.ROULETTE_STATE_INITIALIZED: CasinoHandlers.handle_roulette_state_initialized,
-        }[action] or None
+        }.get(action)
 
     @staticmethod
     def handle_user_session_updated(state, payload):
@@ -103,6 +104,10 @@ class CasinoHandlers():
         CasinoSelectors.select_message_ids(state).append(message_id)
         CasinoSelectors.select_message_lookup(state)[message_id] = message
 
+        return state
+
+    @staticmethod
+    def handle_user_reacted_to_message(state, payload):
         return state
 
     @staticmethod

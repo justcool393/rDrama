@@ -41,8 +41,26 @@ def disconnect_from_casino(v):
 @socketio.on(CasinoEvents.UserSentMessage, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_sent_message(data, v):
-    CASINO_CONTROLLER.user_sent_message(v, data)
-    return SUCCESS_RESPONSE
+    try:
+        CASINO_CONTROLLER.user_sent_message(v, data)
+        return SUCCESS_RESPONSE
+    except UserSentEmptyMessageException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.CannotSendEmptyMessage)
+        return ERROR_RESPONSE
+    except InvalidMessageException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.InvalidMessage)
+        return ERROR_RESPONSE
+
+
+@socketio.on(CasinoEvents.UserReactedToMessage, CASINO_NAMESPACE)
+@is_not_permabanned
+def user_reacted_to_message(data, v):
+    try:
+        CASINO_CONTROLLER.user_reacted_to_message(v, data)
+        return SUCCESS_RESPONSE
+    except NotFoundException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.MessageNotFound)
+        return ERROR_RESPONSE
 
 
 @socketio.on(CasinoEvents.UserDeletedMessage, CASINO_NAMESPACE)
@@ -67,6 +85,9 @@ def user_conversed(data, v):
         return SUCCESS_RESPONSE
     except UserSentEmptyMessageException:
         CASINO_CONTROLLER.send_error(CasinoMessages.CannotSendEmptyMessage)
+        return ERROR_RESPONSE
+    except InvalidMessageException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.InvalidMessage)
         return ERROR_RESPONSE
     except NotFoundException:
         CASINO_CONTROLLER.send_error(CasinoMessages.UserNotFound)

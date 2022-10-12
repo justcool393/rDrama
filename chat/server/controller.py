@@ -209,6 +209,9 @@ class CasinoController(BaseController):
 
         self._send_message_update()
 
+    def user_reacted_to_message(self, user, data):
+        pass
+
     def user_deleted_message(self, user, data):
         user_id = str(user.id)
         message_id = data['id']

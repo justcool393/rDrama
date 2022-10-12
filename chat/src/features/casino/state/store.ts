@@ -5,6 +5,7 @@ import {
   game,
   leaderboard,
   message,
+  reaction,
   session,
   user,
 } from "./slices";
@@ -16,6 +17,7 @@ export const store = configureStore({
     game,
     leaderboard,
     message,
+    reaction,
     session,
     user,
   },

@@ -2,6 +2,7 @@ export enum CasinoHandlers {
   // Outgoing
   UserKickedOwnClient = "user-kicked-own-client",
   UserSentMessage = "user-sent-message",
+  UserReactedToMessage = "user-reacted-to-message",
   UserDeletedMessage = "user-deleted-message",
   UserConversed = "user-conversed",
   UserStartedGame = "user-started-game",
@@ -20,6 +21,7 @@ export enum CasinoHandlers {
   InitialStateProvided = "initial-state-provided",
   ConfirmationReceived = "confirmation-received",
   ConversationUpdated = "conversation-updated",
+  ReactionUpdated = "reaction-updated",
   FeedUpdated = "feed-updated",
   GameUpdated = "game-updated",
   GamesUpdated = "games-updated",
@@ -36,6 +38,7 @@ export enum CasinoClientActions {
   MESSAGE_UPDATED = "MESSAGE_UPDATED",
   MESSAGE_DELETED = "MESSAGE_DELETED",
   CONVERSATION_UPDATED = "CONVERSATION_UPDATED",
+  REACTION_UPDATED = "REACTION_UPDATED",
   FEED_UPDATED = "FEED_UPDATED",
   LEADERBOARD_UPDATED = "LEADERBOARD_UPDATED",
   GAME_UPDATED = "GAME_UPDATED",

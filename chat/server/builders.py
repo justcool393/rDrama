@@ -96,6 +96,20 @@ class CasinoBuilders():
         return f'{username} {phrase}'
 
     @staticmethod
+    def build_roulette_initial_state():
+        return {
+            'bets': {
+                RouletteAction.STRAIGHT_UP_BET: [],
+                RouletteAction.LINE_BET: [],
+                RouletteAction.COLUMN_BET: [],
+                RouletteAction.DOZEN_BET: [],
+                RouletteAction.EVEN_ODD_BET: [],
+                RouletteAction.RED_BLACK_BET: [],
+                RouletteAction.HIGH_LOW_BET: [],
+            }
+        }
+
+    @staticmethod
     def build_roulette_feed_entity(username, bet, which, currency, amount):
         item = f'{username} bet {amount} {currency} that the number will be'
 
@@ -148,17 +162,7 @@ class CasinoBuilders():
             CasinoBuilders.build_game_entity(CasinoGames.Crossing),
         ]
 
-        slots['state'] = {
-            'bets': {
-                RouletteAction.STRAIGHT_UP_BET: [],
-                RouletteAction.LINE_BET: [],
-                RouletteAction.COLUMN_BET: [],
-                RouletteAction.DOZEN_BET: [],
-                RouletteAction.EVEN_ODD_BET: [],
-                RouletteAction.RED_BLACK_BET: [],
-                RouletteAction.HIGH_LOW_BET: [],
-            }
-        }
+        roulette['state'] = CasinoBuilders.build_roulette_initial_state()
 
         return {
             'users': {
@@ -170,6 +174,10 @@ class CasinoBuilders():
                 'by_id': {}
             },
             'conversations': {
+                'all': [],
+                'by_id': {}
+            },
+            'reactions': {
                 'all': [],
                 'by_id': {}
             },
