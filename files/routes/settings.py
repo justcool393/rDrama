@@ -512,9 +512,8 @@ def settings_log_out_others(v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
+@is_not_tor
 def settings_images_profile(v):
-	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
-
 	file = request.files["profile"]
 
 	name = f'/images/{time.time()}'.replace('.','') + '.webp'
@@ -548,9 +547,8 @@ def settings_images_profile(v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 @feature_required('USERS_PROFILE_BANNER')
+@is_not_tor
 def settings_images_banner(v):
-	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
-
 	file = request.files["banner"]
 
 	name = f'/images/{time.time()}'.replace('.','') + '.webp'

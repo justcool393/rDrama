@@ -469,9 +469,8 @@ def get_sub_css(sub):
 @limiter.limit("1/second;10/day")
 @limiter.limit("1/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @is_not_permabanned
+@is_not_tor
 def sub_banner(v, sub):
-	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
-
 	sub = get_sub_by_name(sub)
 	if not v.mods(sub.name): abort(403)
 	if v.shadowbanned: return redirect(f'/h/{sub}/settings')
@@ -502,9 +501,8 @@ def sub_banner(v, sub):
 @limiter.limit("1/second;10/day")
 @limiter.limit("1/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @is_not_permabanned
+@is_not_tor
 def sub_sidebar(v, sub):
-	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
-
 	sub = get_sub_by_name(sub)
 	if not v.mods(sub.name): abort(403)
 	if v.shadowbanned: return redirect(f'/h/{sub}/settings')
@@ -534,9 +532,8 @@ def sub_sidebar(v, sub):
 @limiter.limit("1/second;10/day")
 @limiter.limit("1/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @is_not_permabanned
+@is_not_tor
 def sub_marsey(v, sub):
-	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
-
 	sub = get_sub_by_name(sub)
 	if not v.mods(sub.name): abort(403)
 	if v.shadowbanned: return redirect(f'/h/{sub}/settings')

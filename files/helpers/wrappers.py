@@ -155,3 +155,10 @@ def feature_required(x):
 		wrapper.__name__ = f.__name__
 		return wrapper
 	return wrapper_maker
+
+def is_not_tor(f):
+	def wrapper(*args, **kwargs):
+		if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through Tor.")
+		return make_response(f(*args, **kwargs))
+	wrapper.__name__ = f.__name__
+	return wrapper
