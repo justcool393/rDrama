@@ -250,7 +250,10 @@ class CasinoController(BaseController):
         })
 
         self._join_user_conversation_rooms(user_id)
-        self._join_user_conversation_rooms(recipient)
+
+        if receiving_user['online']:
+            self._join_user_conversation_rooms(recipient)
+
         self._send_conversation_update(user_id, recipient)
 
     def user_started_game(self, user, data):
