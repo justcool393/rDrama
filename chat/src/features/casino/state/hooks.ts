@@ -27,15 +27,23 @@ export function useCasinoUser(userId: string) {
 }
 
 export function usePublicMessages() {
+  const { censored } = useRootContext();
+
   return useCasinoSelector((state) =>
     state.message.all
       .map((messageId) => state.message.by_id[messageId])
       .sort((messageA, messageB) => messageA.timestamp - messageB.timestamp)
+      .map((message) => ({
+        ...message,
+        content: censored
+          ? message.content.html_censored
+          : message.content.html,
+      }))
   );
 }
 
 export function useConversationMessages() {
-  const { id } = useRootContext();
+  const { id, censored } = useRootContext();
   const { recipient } = useCasino();
   const conversation = useCasinoSelector((state) => {
     const conversationKey = [id, recipient].sort().join("#");
@@ -45,7 +53,13 @@ export function useConversationMessages() {
   if (conversation) {
     return conversation.messages.all
       .map((messageId) => conversation.messages.by_id[messageId])
-      .sort((messageA, messageB) => messageA.timestamp - messageB.timestamp);
+      .sort((messageA, messageB) => messageA.timestamp - messageB.timestamp)
+      .map((message) => ({
+        ...message,
+        content: censored
+          ? message.content.html_censored
+          : message.content.html,
+      }));
   } else {
     return [];
   }

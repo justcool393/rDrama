@@ -1,4 +1,6 @@
 from flask_socketio import emit
+from files.helpers.regex import censor_slurs
+from files.helpers.sanitize import sanitize
 from .config import MESSAGE_MAX_LENGTH, MINIMUM_WAGER
 from .enums import CasinoEvents, CasinoMessages
 from .exceptions import *
@@ -26,7 +28,17 @@ def meets_minimum_wager(wager):
 
 
 def sanitize_chat_message(text):
-    return text[:MESSAGE_MAX_LENGTH].strip()
+    text = text[:MESSAGE_MAX_LENGTH].strip()
+    text_censored = censor_slurs(text, 'chat')
+    html = sanitize(text, count_marseys=True)
+    html_censored = censor_slurs(html, 'chat')
+
+    return {
+        'text': text,
+        'text_censored': text_censored,
+        'html': html,
+        'html_censored': html_censored
+    }
 
 
 def validate_bet(user, currency, wager):

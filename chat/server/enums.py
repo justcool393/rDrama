@@ -80,6 +80,7 @@ class CasinoEvents(str, Enum):
 class CasinoMessages(str, Enum):
     InsufficientPermissions = "You do not have permission to perform that action."
     MessageNotFound = "That message does not exist."
+    InvalidMessage = "There was something wrong with that message."
     MessageDeleteSuccess = "Successfully deleted a message."
     MessageDeleteFailure = "Unable to delete message."
     UserNotFound = "That user does not exist."

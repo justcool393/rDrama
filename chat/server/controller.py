@@ -1,7 +1,8 @@
 from copy import copy, deepcopy
 from json import dumps
+from files.helpers.alerts import send_repeatable_notification
+from files.helpers.const import CARP_ID, request, blackjack, db_session
 from files.helpers.wrappers import app
-from files.helpers.const import request
 from flask import copy_current_request_context
 from flask_socketio import emit, join_room, leave_room
 from gevent import sleep, spawn
@@ -124,6 +125,29 @@ class BaseController():
         emit(CasinoEvents.ConversationUpdated,
              conversation, to=conversation_key)
 
+    def _format_message(self, user, message):
+        self._validate_message(user, message)
+        return sanitize_chat_message(message)
+
+    def _validate_message(self, user, message):
+        if len(message) == 0:
+            raise UserSentEmptyMessageException(user)
+
+        if blackjack and any(character in message.lower() for character in blackjack.split()):
+            db = db_session()
+            user.shadowbanned = 'AutoJanny'
+
+            if not user.is_banned:
+                user.ban_reason = 'Blackjack'
+
+            db.add(user)
+            db.commit()
+
+            send_repeatable_notification(
+                CARP_ID, f'{user.username} has been shadowbanned because of a chat message.')
+
+            raise InvalidMessageException(user)
+
 
 class CasinoController(BaseController):
     def send_confirmation(self, message):
@@ -175,14 +199,12 @@ class CasinoController(BaseController):
 
     def user_sent_message(self, user, data):
         user_id = str(user.id)
-        text = sanitize_chat_message(data['message'])
-
-        if len(text) == 0:
-            raise UserSentEmptyMessageException(user)
+        message = data['message']
+        content = self._format_message(user, message)
 
         self.manager.dispatch(CasinoActions.USER_SENT_MESSAGE, {
             'user_id': user_id,
-            'text': text
+            'content': content
         })
 
         self._send_message_update()
@@ -212,10 +234,8 @@ class CasinoController(BaseController):
 
     def user_conversed(self, user, data):
         user_id = str(user.id)
-        text = sanitize_chat_message(data['message'])
-
-        if len(text) == 0:
-            raise UserSentEmptyMessageException(user)
+        message = data['message']
+        content = self._format_message(user, message)
 
         recipient = data['recipient']
         receiving_user = CasinoSelectors.select_user(self.state, recipient)
@@ -225,7 +245,7 @@ class CasinoController(BaseController):
 
         self.manager.dispatch(CasinoActions.USER_CONVERSED, {
             'user_id': user_id,
-            'text': text,
+            'content': content,
             'recipient': recipient
         })
 

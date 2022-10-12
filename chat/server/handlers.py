@@ -96,10 +96,10 @@ class CasinoHandlers():
     @staticmethod
     def handle_user_sent_message(state, payload):
         user_id = payload['user_id']
-        text = payload['text']
-        message = CasinoBuilders.build_message_entity(user_id, text)
-        message_id = message['id']
+        content = payload['content']
+        message = CasinoBuilders.build_message_entity(user_id, content)
 
+        message_id = message['id']
         CasinoSelectors.select_message_ids(state).append(message_id)
         CasinoSelectors.select_message_lookup(state)[message_id] = message
 
@@ -122,8 +122,8 @@ class CasinoHandlers():
     @staticmethod
     def handle_user_conversed(state, payload):
         user_id = payload['user_id']
+        content = payload['content']
         recipient = payload['recipient']
-        text = payload['text']
         conversation_key = CasinoBuilders.build_conversation_key(
             user_id, recipient)
         conversation = CasinoSelectors.select_conversation(
@@ -141,7 +141,7 @@ class CasinoHandlers():
             CasinoSelectors.select_conversation_lookup(
                 state)[conversation_key] = conversation
 
-        message = CasinoBuilders.build_message_entity(user_id, text)
+        message = CasinoBuilders.build_message_entity(user_id, content)
         message_id = message['id']
         CasinoSelectors.select_conversation_message_ids(
             state, conversation_key).append(message_id)

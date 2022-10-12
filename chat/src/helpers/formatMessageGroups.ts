@@ -2,11 +2,11 @@ import cloneDeep from "lodash.clonedeep";
 
 export function formatMessageGroups(
   users: Record<string, UserEntity>,
-  messages: MessageEntity[]
+  messages: ProcessedMessageEntity[]
 ) {
   const chatMessageGroups = [] as Array<{
     author: UserEntity;
-    messages: MessageEntity[];
+    messages: ProcessedMessageEntity[];
   }>;
 
   if (messages.length === 0) {
@@ -14,7 +14,7 @@ export function formatMessageGroups(
   } else {
     const chatMessageGroup = {
       author: users[messages[0].user_id],
-      messages: [] as MessageEntity[],
+      messages: [] as ProcessedMessageEntity[],
     };
 
     for (const message of messages) {

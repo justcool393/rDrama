@@ -25,6 +25,12 @@ class UserSentEmptyMessageException(Exception):
         super().__init__(self.message)
 
 
+class InvalidMessageException(Exception):
+    def __init__(self, user):
+        self.message = f'{user} sent an invalid message'
+        super().__init__(self.message)
+
+
 class UserAlreadyOnlineException(Exception):
     def __init__(self, user):
         self.message = f'{user} is already online'

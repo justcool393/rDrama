@@ -81,9 +81,18 @@ declare interface UserEntity {
 declare interface MessageEntity {
   id: string;
   user_id: string;
-  text: string;
+  content: {
+    text: string;
+    text_censored: string;
+    html: string;
+    html_censored: string;
+  };
   timestamp: number;
 }
+
+declare type ProcessedMessageEntity = Omit<MessageEntity, "content"> & {
+  content: string;
+};
 
 declare interface ConversationEntity {
   id: string;

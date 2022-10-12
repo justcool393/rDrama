@@ -22,13 +22,13 @@ class CasinoBuilders():
         }
 
     @staticmethod
-    def build_message_entity(user_id, text):
+    def build_message_entity(user_id, content):
         message_id = str(uuid4())
 
         return {
             'id': message_id,
             'user_id': user_id,
-            'text': text,
+            'content': content,
             'timestamp': int(time())
         }
 
@@ -76,7 +76,6 @@ class CasinoBuilders():
             SlotsOutcome.Win: f'{username} won {reward_fragment}. {symbols_fragment}',
             SlotsOutcome.Jackpot: f'JACKPOT! {username} made off with {reward_fragment}! {symbols_fragment}',
         }[outcome]
-
 
     @staticmethod
     def build_racing_feed_entity(username, kind, selection, currency, wager):

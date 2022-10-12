@@ -84,7 +84,7 @@ export function ChatMessageBox() {
 
 interface ChatMessageGroupProps extends PropsWithChildren {
   author: UserEntity;
-  messages: MessageEntity[];
+  messages: ProcessedMessageEntity[];
 }
 
 export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
@@ -102,7 +102,10 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
       datetime={formatTimeAgo(first.timestamp)}
       content={
         <div style={{ position: "relative" }}>
-          {first.text}
+          <div
+            dangerouslySetInnerHTML={{ __html: first.content }}
+            data-testid="first-message"
+          />
 
           <Dropdown.Button
             style={{ position: "absolute", top: 0, right: 0 }}
@@ -117,7 +120,10 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
           key={key(message)}
           content={
             <div style={{ position: "relative" }}>
-              {message.text}
+              <div
+                dangerouslySetInnerHTML={{ __html: message.content }}
+                data-testid="subsequent-message"
+              />
 
               <Dropdown.Button
                 style={{ position: "absolute", top: 0, right: 0 }}
@@ -134,7 +140,7 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
 
 interface ChatMessageMenuProps {
   author: UserEntity;
-  message: MessageEntity;
+  message: ProcessedMessageEntity;
 }
 
 export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
