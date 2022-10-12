@@ -94,7 +94,7 @@ class User(Base):
 	alt = Column(Boolean)
 	offsitementions = Column(Boolean, default=False, nullable=False)
 	frontsize = Column(Integer, default=25)
-	controversial = Column(Boolean, default=False)
+	controversial = Column(Boolean, default=True)
 	bio = deferred(Column(String))
 	bio_html = Column(String)
 	sig = deferred(Column(String))
@@ -121,7 +121,7 @@ class User(Base):
 	mfa_secret = deferred(Column(String))
 	is_private = Column(Boolean, default=False)
 	stored_subscriber_count = Column(Integer, default=0)
-	defaultsortingcomments = Column(String, default="top")
+	defaultsortingcomments = Column(String, default="hot")
 	defaultsorting = Column(String, default="hot")
 	defaulttime = Column(String, default=DEFAULT_TIME_FILTER)
 	is_nofollow = Column(Boolean, default=False)
@@ -295,6 +295,14 @@ class User(Base):
 		if self.bite: return "565656"
 		return self.namecolor
 
+	@property
+	@lazy
+	def is_votes_real(self):
+		if self.is_suspended_permanently or self.shadowbanned: return False
+		if self.agendaposter: return False
+		if self.profile_url.startswith('/e/') and not self.customtitle and self.namecolor == DEFAULT_COLOR: return False
+		return True
+
 	@lazy
 	def mods(self, sub):
 		if self.is_suspended_permanently or self.shadowbanned: return False
@@ -467,7 +475,7 @@ class User(Base):
 	@cache.memoize(timeout=86400)
 	def userpagelisting(self, site=None, v=None, page=1, sort="new", t="all"):
 
-		if self.shadowbanned and not (v and (v.admin_level >= PERMS['USER_SHADOWBAN'] or v.id == self.id)): return []
+		if self.shadowbanned and not (v and v.can_see_shadowbanned): return []
 
 		posts = g.db.query(Submission.id).filter_by(author_id=self.id, is_pinned=False)
 
@@ -476,7 +484,8 @@ class User(Base):
 
 		posts = apply_time_filter(t, posts, Submission)
 
-		posts = sort_posts(sort, posts)
+		posts = sort_objects(sort, posts, Submission,
+			include_shadowbanned=(not (v and v.can_see_shadowbanned)))
 	
 		posts = posts.offset(25 * (page - 1)).limit(26).all()
 
@@ -599,7 +608,7 @@ class User(Base):
 			Notification.user_id == self.id, Notification.read == False, 
 			Comment.is_banned == False, Comment.deleted_utc == 0)
 		
-		if not self.shadowbanned and self.admin_level < PERMS['USER_SHADOWBAN']:
+		if not self.can_see_shadowbanned:
 			notifs = notifs.join(Comment.author).filter(User.shadowbanned == None)
 		
 		return notifs.count() + self.post_notifications_count + self.modaction_notifications_count
@@ -624,7 +633,7 @@ class User(Base):
 					Comment.parent_submission == None,
 				)
 
-		if not self.shadowbanned and self.admin_level < PERMS['USER_SHADOWBAN']:
+		if not self.can_see_shadowbanned:
 			notifs = notifs.join(Comment.author).filter(User.shadowbanned == None)
 
 		return notifs.count()
@@ -781,8 +790,8 @@ class User(Base):
 				'bannerurl': self.banner_url,
 				'bio_html': self.bio_html_eager,
 				'coins': self.coins,
-				'post_count': 0 if self.shadowbanned and not (v and (v.shadowbanned or v.admin_level >= PERMS['USER_SHADOWBAN'])) else self.post_count,
-				'comment_count': 0 if self.shadowbanned and not (v and (v.shadowbanned or v.admin_level >= PERMS['USER_SHADOWBAN'])) else self.comment_count,
+				'post_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.post_count,
+				'comment_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.comment_count,
 				'badges': [x.path for x in self.badges],
 				}
 
@@ -973,3 +982,8 @@ class User(Base):
 				return name
 			return f'((({self.username})))'
 		return self.username
+
+	@property
+	@lazy
+	def can_see_shadowbanned(self):
+		return self.shadowbanned or self.admin_level >= PERMS['USER_SHADOWBAN']

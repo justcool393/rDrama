@@ -182,7 +182,7 @@ if (document.readyState === "complete" ||
 }
 
 function post_toast(t, url, button1, button2, classname, extra_actions) {
-	let isShopConfirm = t.id.startsWith('buy1-go') || t.id.startsWith('buy2-go');
+	let isShopConfirm = t.id.startsWith('buy1-') || t.id.startsWith('buy2-');
 
 	if (!isShopConfirm)
 	{
@@ -218,6 +218,7 @@ function post_toast(t, url, button1, button2, classname, extra_actions) {
 		} else {
 			document.getElementById('toast-post-error-text').innerText = "Error, please try again later."
 			if (data && data["error"]) document.getElementById('toast-post-error-text').innerText = data["error"];
+			if (data && data["details"]) document.getElementById('toast-post-error-text').innerText = data["details"];
 			bootstrap.Toast.getOrCreateInstance(document.getElementById('toast-post-error')).show();
 		}
 		if (!isShopConfirm)
@@ -296,7 +297,13 @@ function escapeHTML(unsafe) {
 }
 
 function changename(s1,s2) {
-	let files = document.getElementById(s2).files;
+	const files = document.getElementById(s2).files;
+	if (files.length > 4)
+	{
+		alert("You can't upload more than 4 files at one time!")
+		document.getElementById(s2).files = null
+		return
+	}
 	let filename = '';
 	for (const e of files) {
 		filename += e.name.substr(0, 20) + ', ';

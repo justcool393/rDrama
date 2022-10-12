@@ -245,7 +245,7 @@ def add_mod(v, sub):
 	user = get_user(user, v=v, include_shadowbanned=False)
 
 	if sub in ('furry','vampire','racist','femboy') and not v.client and not user.house.lower().startswith(sub):
-		return {"error": f"@{user.username} needs to be a member of House {sub.capitalize()} to be added as a mod there!"}, 400
+		abort(403, f"@{user.username} needs to be a member of House {sub.capitalize()} to be added as a mod there!")
 
 	existing = g.db.query(Mod).filter_by(user_id=user.id, sub=sub).one_or_none()
 
@@ -332,7 +332,7 @@ def create_sub2(v):
 		if v.coins < HOLE_COST:
 			return render_template("sub/create_hole.html", v=v, cost=HOLE_COST, error="You don't have enough coins!"), 403
 
-		v.coins -= HOLE_COST
+		v.charge_account('coins', HOLE_COST)
 		g.db.add(v)
 		if v.shadowbanned: return {"error": "Internal Server Error"}, 500
 
@@ -470,7 +470,7 @@ def get_sub_css(sub):
 @limiter.limit("1/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @is_not_permabanned
 def sub_banner(v, sub):
-	if request.headers.get("cf-ipcountry") == "T1": return {"error":"Image uploads are not allowed through TOR."}, 403
+	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
 
 	sub = get_sub_by_name(sub)
 	if not v.mods(sub.name): abort(403)
@@ -503,7 +503,7 @@ def sub_banner(v, sub):
 @limiter.limit("1/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @is_not_permabanned
 def sub_sidebar(v, sub):
-	if request.headers.get("cf-ipcountry") == "T1": return {"error":"Image uploads are not allowed through TOR."}, 403
+	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
 
 	sub = get_sub_by_name(sub)
 	if not v.mods(sub.name): abort(403)
@@ -535,7 +535,7 @@ def sub_sidebar(v, sub):
 @limiter.limit("1/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @is_not_permabanned
 def sub_marsey(v, sub):
-	if request.headers.get("cf-ipcountry") == "T1": return {"error":"Image uploads are not allowed through TOR."}, 403
+	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
 
 	sub = get_sub_by_name(sub)
 	if not v.mods(sub.name): abort(403)
@@ -653,9 +653,9 @@ def sub_stealth(v, sub):
 
 @app.post("/mod_pin/<cid>")
 @is_not_permabanned
+@feature_required('PINS')
 def mod_pin(cid, v):
-	if not FEATURES['PINS']:
-		abort(403)
+	
 	comment = get_comment(cid, v=v)
 	
 	if not comment.stickied:

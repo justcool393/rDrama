@@ -196,7 +196,7 @@ def remove_admin(v, username):
 @admin_level_required(PERMS['POST_BETS_DISTRIBUTE'])
 def distribute(v, option_id):
 	autojanny = get_account(AUTOJANNY_ID)
-	if autojanny.coins == 0: return {"error": "@AutoJanny has 0 coins"}, 400
+	if autojanny.coins == 0: abort(400, "@AutoJanny has 0 coins")
 
 	try: option_id = int(option_id)
 	except: abort(400)
@@ -216,7 +216,7 @@ def distribute(v, option_id):
 		if o.exclusive >= 2: pool += o.upvotes
 	pool *= POLL_BET_COINS
 
-	autojanny.coins -= pool
+	autojanny.charge_account('coins', pool)
 	if autojanny.coins < 0: autojanny.coins = 0
 	g.db.add(autojanny)
 
@@ -283,7 +283,7 @@ def revert_actions(v, username):
 		user.ban_reason = None
 		if user.is_banned:
 			user.is_banned = 0
-			send_repeatable_notification(user.id, f"@{v.username} has unbanned you!")
+			send_repeatable_notification(user.id, f"@{v.username} (Admin) has unbanned you!")
 		g.db.add(user)
 
 		for u in user.alts:
@@ -292,7 +292,7 @@ def revert_actions(v, username):
 			u.ban_reason = None
 			if u.is_banned:
 				u.is_banned = 0
-				send_repeatable_notification(u.id, f"@{v.username} has unbanned you!")
+				send_repeatable_notification(u.id, f"@{v.username} (Admin) has unbanned you!")
 			g.db.add(u)
 
 	return {"message": f"@{user.username}'s admin actions have been reverted!"}
@@ -303,7 +303,7 @@ def revert_actions(v, username):
 def club_allow(v, username):
 	u = get_user(username, v=v)
 
-	if u.admin_level >= v.admin_level: return {"error": "noob"}, 400
+	if u.admin_level >= v.admin_level: abort(403, 'noob')
 
 	u.club_allowed = True
 	g.db.add(u)
@@ -319,7 +319,7 @@ def club_allow(v, username):
 	)
 	g.db.add(ma)
 
-	send_repeatable_notification(u.id, f"@{v.username} (admin) has inducted you into the {CC_TITLE}!")
+	send_repeatable_notification(u.id, f"@{v.username} (Admin) has inducted you into the {CC_TITLE}!")
 
 	return {"message": f"@{u.username} has been allowed into the {CC_TITLE}!"}
 
@@ -329,7 +329,7 @@ def club_allow(v, username):
 def club_ban(v, username):
 	u = get_user(username, v=v)
 
-	if u.admin_level >= v.admin_level: return {"error": "noob"}, 400
+	if u.admin_level >= v.admin_level: abort(403, 'noob')
 
 	u.club_allowed = False
 
@@ -344,15 +344,14 @@ def club_ban(v, username):
 	)
 	g.db.add(ma)
 
-	send_repeatable_notification(u.id, f"@{v.username} (admin) has disallowed you from the {CC_TITLE}!")
+	send_repeatable_notification(u.id, f"@{v.username} (Admin) has disallowed you from the {CC_TITLE}!")
 
 	return {"message": f"@{u.username} has been disallowed from the {CC_TITLE}. Deserved."}
 
 
 @app.get("/admin/shadowbanned")
-@auth_required
+@admin_level_required(PERMS['USER_SHADOWBAN'])
 def shadowbanned(v):
-	if not (v and v.admin_level >= PERMS['USER_SHADOWBAN']): abort(404)
 	users = g.db.query(User).filter(User.shadowbanned != None).order_by(User.shadowbanned).all()
 	return render_template("shadowbanned.html", v=v, users=users)
 
@@ -490,7 +489,7 @@ def purge_cache(v):
 	g.db.add(ma)
 
 	if response == "<Response [200]>": return {"message": "Cache purged!"}
-	return {"error": "Failed to purge cache."}, 400
+	abort(400, 'Failed to purge cache.')
 
 
 @app.post("/admin/under_attack")
@@ -507,7 +506,7 @@ def under_attack(v):
 
 		response = str(requests.patch(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, data='{"value":"high"}', timeout=5))
 		if response == "<Response [200]>": return {"message": "Under attack mode disabled!"}
-		return {"error": "Failed to disable under attack mode."}, 400
+		abort(400, "Failed to disable under attack mode.")
 	else:
 		ma = ModAction(
 			kind="enable_under_attack",
@@ -517,14 +516,12 @@ def under_attack(v):
 
 		response = str(requests.patch(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, data='{"value":"under_attack"}', timeout=5))
 		if response == "<Response [200]>": return {"message": "Under attack mode enabled!"}
-		return {"error": "Failed to enable under attack mode."}, 400
+		abort(400, "Failed to enable under attack mode.")
 
 @app.get("/admin/badge_grant")
 @admin_level_required(PERMS['USER_BADGES'])
+@feature_required('BADGES')
 def badge_grant_get(v):
-	if not FEATURES['BADGES']:
-		abort(404)
-
 	badges = g.db.query(BadgeDef).order_by(BadgeDef.id).all()
 	return render_template("admin/badge_grant.html", v=v, badge_types=badges)
 
@@ -532,9 +529,9 @@ def badge_grant_get(v):
 @app.post("/admin/badge_grant")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @admin_level_required(PERMS['USER_BADGES'])
+@feature_required('BADGES')
 def badge_grant_post(v):
-	if not FEATURES['BADGES']:
-		abort(404)
+	
 
 	badges = g.db.query(BadgeDef).order_by(BadgeDef.id).all()
 
@@ -565,7 +562,7 @@ def badge_grant_post(v):
 	g.db.flush()
 
 	if v.id != user.id:
-		text = f"@{v.username} has given you the following profile badge:\n\n![]({new_badge.path})\n\n**{new_badge.name}**\n\n{new_badge.badge.description}"
+		text = f"@{v.username} (Admin) has given you the following profile badge:\n\n![]({new_badge.path})\n\n**{new_badge.name}**\n\n{new_badge.badge.description}"
 		send_repeatable_notification(user.id, text)
 	
 	ma = ModAction(
@@ -582,9 +579,9 @@ def badge_grant_post(v):
 
 @app.get("/admin/badge_remove")
 @admin_level_required(PERMS['USER_BADGES'])
+@feature_required('BADGES')
 def badge_remove_get(v):
-	if not FEATURES['BADGES']:
-		abort(404)
+	
 
 	badges = g.db.query(BadgeDef).order_by(BadgeDef.id).all()
 
@@ -594,9 +591,9 @@ def badge_remove_get(v):
 @app.post("/admin/badge_remove")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
 @admin_level_required(PERMS['USER_BADGES'])
+@feature_required('BADGES')
 def badge_remove_post(v):
-	if not FEATURES['BADGES']:
-		abort(404)
+	
 	
 	badges = g.db.query(BadgeDef).order_by(BadgeDef.id).all()
 
@@ -612,7 +609,7 @@ def badge_remove_post(v):
 		return render_template("admin/badge_remove.html", v=v, badge_types=badges, error="User doesn't have that badge.")
 
 	if v.id != user.id:
-		text = f"@{v.username} has removed the following profile badge from you:\n\n![]({badge.path})\n\n**{badge.name}**\n\n{badge.badge.description}"
+		text = f"@{v.username} (Admin) has removed the following profile badge from you:\n\n![]({badge.path})\n\n**{badge.name}**\n\n{badge.badge.description}"
 		send_repeatable_notification(user.id, text)
 
 	ma = ModAction(
@@ -853,7 +850,9 @@ def agendaposter(user_id, v):
 	user.agendaposter = expiry
 	g.db.add(user)
 
-	if days: note = f"for {days} days"
+	if days:
+		days_txt = str(days).rstrip('.0')
+		note = f"for {days_txt} days"
 	else: note = "permanently"
 
 	ma = ModAction(
@@ -866,7 +865,7 @@ def agendaposter(user_id, v):
 
 	badge_grant(user=user, badge_id=28)
 
-	send_repeatable_notification(user.id, f"@{v.username} has marked you as a chud ({note}).")
+	send_repeatable_notification(user.id, f"@{v.username} (Admin) has marked you as a chud ({note}).")
 
 	
 	return redirect(user.url)
@@ -896,7 +895,7 @@ def unagendaposter(user_id, v):
 	badge = user.has_badge(28)
 	if badge: g.db.delete(badge)
 
-	send_repeatable_notification(user.id, f"@{v.username} has unmarked you as a chud.")
+	send_repeatable_notification(user.id, f"@{v.username} (Admin) has unmarked you as a chud.")
 
 	return {"message": f"@{user.username}'s chud theme has been disabled!"}
 
@@ -997,7 +996,8 @@ def admin_title_change(user_id, v):
 def ban_user(user_id, v):
 	user = get_account(user_id)
 
-	if user.admin_level >= v.admin_level: abort(403)
+	if user.admin_level > v.admin_level:
+		abort(403)
 
 	days = float(request.values.get("days")) if request.values.get('days') else 0
 
@@ -1011,21 +1011,23 @@ def ban_user(user_id, v):
 
 	if request.values.get("alts"):
 		for x in user.alts:
-			if x.admin_level: break
+			if x.admin_level > v.admin_level:
+				continue
 			x.ban(admin=v, reason=reason, days=days)
 
 	if days:
-		if reason: text = f"@{v.username} has banned you for **{days}** days for the following reason:\n\n> {reason}"
-		else: text = f"@{v.username} has banned you for **{days}** days."
+		days_txt = str(days).rstrip('.0')
+		if reason: text = f"@{v.username} (Admin) has banned you for **{days_txt}** days for the following reason:\n\n> {reason}"
+		else: text = f"@{v.username} (Admin) has banned you for **{days_txt}** days."
 	else:
-		if reason: text = f"@{v.username} has banned you permanently for the following reason:\n\n> {reason}"
-		else: text = f"@{v.username} has banned you permanently."
+		if reason: text = f"@{v.username} (Admin) has banned you permanently for the following reason:\n\n> {reason}"
+		else: text = f"@{v.username} (Admin) has banned you permanently."
 
 	send_repeatable_notification(user.id, text)
 	
 	if days == 0: duration = "permanently"
 	elif days == 1: duration = "for 1 day"
-	else: duration = f"for {days} days"
+	else: duration = f"for {days_txt} days"
 
 	note = f'reason: "{reason}", duration: {duration}'
 	ma=ModAction(
@@ -1065,11 +1067,11 @@ def unban_user(user_id, v):
 	user.is_banned = 0
 	user.unban_utc = 0
 	user.ban_reason = None
-	send_repeatable_notification(user.id, f"@{v.username} has unbanned you!")
+	send_repeatable_notification(user.id, f"@{v.username} (Admin) has unbanned you!")
 	g.db.add(user)
 
 	for x in user.alts:
-		if x.is_banned: send_repeatable_notification(x.id, f"@{v.username} has unbanned you!")
+		if x.is_banned: send_repeatable_notification(x.id, f"@{v.username} (Admin) has unbanned you!")
 		x.is_banned = 0
 		x.unban_utc = 0
 		x.ban_reason = None
@@ -1155,7 +1157,7 @@ def approve_post(post_id, v):
 	post = get_post(post_id)
 
 	if post.author.id == v.id and post.author.agendaposter and AGENDAPOSTER_PHRASE not in post.body.lower() and post.sub != 'chudrama':
-		return {"error": "You can't bypass the chud award!"}, 400
+		abort(400, "You can't bypass the chud award!")
 
 	if post.is_banned:
 		ma=ModAction(
@@ -1173,7 +1175,7 @@ def approve_post(post_id, v):
 
 	cache.delete_memoized(frontlist)
 
-	v.coins -= 1
+	v.charge_account('coins', 1)
 	g.db.add(v)
 
 	return {"message": "Post approved!"}
@@ -1209,9 +1211,9 @@ def distinguish_post(post_id, v):
 
 @app.post("/sticky/<post_id>")
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])
+@feature_required('PINS')
 def sticky_post(post_id, v):
-	if not FEATURES['PINS']:
-		abort(403)
+	
 
 	post = get_post(post_id)
 	if not post.stickied:
@@ -1220,7 +1222,7 @@ def sticky_post(post_id, v):
 			if v.admin_level >= PERMS['BYPASS_PIN_LIMIT']:
 				post.stickied = v.username
 				post.stickied_utc = int(time.time()) + 3600
-			else: return {"error": f"Can't exceed {PIN_LIMIT} pinned posts limit!"}, 403
+			else: abort(403, f"Can't exceed {PIN_LIMIT} pinned posts limit!")
 		else: post.stickied = v.username
 		g.db.add(post)
 
@@ -1232,7 +1234,7 @@ def sticky_post(post_id, v):
 		g.db.add(ma)
 
 		if v.id != post.author_id:
-			send_repeatable_notification(post.author_id, f"@{v.username} has pinned [{post.title}](/post/{post_id})!")
+			send_repeatable_notification(post.author_id, f"@{v.username} (Admin) has pinned [{post.title}](/post/{post_id})!")
 
 		cache.delete_memoized(frontlist)
 	return {"message": "Post pinned!"}
@@ -1243,7 +1245,7 @@ def unsticky_post(post_id, v):
 
 	post = get_post(post_id)
 	if post.stickied:
-		if post.stickied.endswith('(pin award)'): return {"error": "Can't unpin award pins!"}, 403
+		if post.stickied.endswith('(pin award)'): abort(403, "Can't unpin award pins!")
 
 		post.stickied = None
 		post.stickied_utc = None
@@ -1257,7 +1259,7 @@ def unsticky_post(post_id, v):
 		g.db.add(ma)
 
 		if v.id != post.author_id:
-			send_repeatable_notification(post.author_id, f"@{v.username} has unpinned [{post.title}](/post/{post_id})!")
+			send_repeatable_notification(post.author_id, f"@{v.username} (Admin) has unpinned [{post.title}](/post/{post_id})!")
 
 		cache.delete_memoized(frontlist)
 	return {"message": "Post unpinned!"}
@@ -1280,7 +1282,7 @@ def sticky_comment(cid, v):
 		g.db.add(ma)
 
 		if v.id != comment.author_id:
-			message = f"@{v.username} has pinned your [comment]({comment.shortlink})!"
+			message = f"@{v.username} (Admin) has pinned your [comment]({comment.shortlink})!"
 			send_repeatable_notification(comment.author_id, message)
 
 	return {"message": "Comment pinned!"}
@@ -1293,7 +1295,7 @@ def unsticky_comment(cid, v):
 	comment = get_comment(cid, v=v)
 	
 	if comment.stickied:
-		if comment.stickied.endswith("(pin award)"): return {"error": "Can't unpin award pins!"}, 403
+		if comment.stickied.endswith("(pin award)"): abort(403, "Can't unpin award pins!")
 
 		comment.stickied = None
 		g.db.add(comment)
@@ -1306,7 +1308,7 @@ def unsticky_comment(cid, v):
 		g.db.add(ma)
 
 		if v.id != comment.author_id:
-			message = f"@{v.username} has unpinned your [comment]({comment.shortlink})!"
+			message = f"@{v.username} (Admin) has unpinned your [comment]({comment.shortlink})!"
 			send_repeatable_notification(comment.author_id, message)
 
 	return {"message": "Comment unpinned!"}
@@ -1341,7 +1343,7 @@ def approve_comment(c_id, v):
 	if not comment: abort(404)
 	
 	if comment.author.id == v.id and comment.author.agendaposter and AGENDAPOSTER_PHRASE not in comment.body.lower() and comment.post.sub != 'chudrama':
-		return {"error": "You can't bypass the chud award!"}, 400
+		abort(400, "You can't bypass the chud award!")
 
 	if comment.is_banned:
 		ma=ModAction(

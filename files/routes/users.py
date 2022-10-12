@@ -77,8 +77,13 @@ def upvoting_downvoting(v, username, uid, cls, vote_cls, vote_dir, template, sta
 	listing = [p.id for p in listing]
 	next_exists = len(listing) > 25
 	listing = listing[:25]
-
-	listing = get_posts(listing, v=v)
+	
+	if cls == Submission:
+		listing = get_posts(listing, v=v)
+	elif cls == Comment:
+		listing = get_comments(listing, v=v)
+	else:
+		listing = []
 
 	return render_template(template, next_exists=next_exists, listing=listing, page=page, v=v, standalone=standalone)
 
@@ -230,9 +235,9 @@ def downvoting(v, username):
 @limiter.limit("1/second;5/day")
 @limiter.limit("1/second;5/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
+@feature_required('USERS_SUICIDE')
 def suicide(v, username):
-	if not FEATURES['USERS_SUICIDE']:
-		abort(403)
+	
 
 	user = get_user(username)
 	suicide = f"Hi there,\n\nA [concerned user](/id/{v.id}) reached out to us about you.\n\nWhen you're in the middle of something painful, it may feel like you don't have a lot of options. But whatever you're going through, you deserve help and there are people who are here for you.\n\nThere are resources available in your area that are free, confidential, and available 24/7:\n\n- Call, Text, or Chat with Canada's [Crisis Services Canada](https://www.crisisservicescanada.ca/en/)\n- Call, Email, or Visit the UK's [Samaritans](https://www.samaritans.org/)\n- Text CHAT to America's [Crisis Text Line](https://www.crisistextline.org/) at 741741.\nIf you don't see a resource in your area above, the moderators keep a comprehensive list of resources and hotlines for people organized by location. Find Someone Now\n\nIf you think you may be depressed or struggling in another way, don't ignore it or brush it aside. Take yourself and your feelings seriously, and reach out to someone.\n\nIt may not feel like it, but you have options. There are people available to listen to you, and ways to move forward.\n\nYour fellow users care about you and there are people who want to help."
@@ -259,14 +264,14 @@ def transfer_coins(v, username):
 		amount = int(amount) if amount.isdigit() else None
 		reason = request.values.get("reason", "").strip()
 
-		if amount is None or amount <= 0: return {"error": "Invalid amount of coins."}, 400
-		if v.coins < amount: return {"error": "You don't have enough coins."}, 400
-		if amount < 100: return {"error": "You have to gift at least 100 coins."}, 400
+		if amount is None or amount <= 0: abort(400, "Invalid amount of coins.")
+		if v.coins < amount: abort(400, "You don't have enough coins.")
+		if amount < 100: abort(400, "You have to gift at least 100 coins.")
 
 		if not v.patron and not receiver.patron and not v.alts_patron and not receiver.alts_patron: tax = math.ceil(amount*0.03)
 		else: tax = 0
 
-		v.coins -= amount
+		v.charge_account('coins', amount)
 
 		if not v.shadowbanned:
 			receiver.coins += amount - tax
@@ -275,7 +280,7 @@ def transfer_coins(v, username):
 			notif_text = f":marseycapitalistmanlet: @{v.username} has gifted you {amount-tax} coins!"
 
 			if reason:
-				if len(reason) > TRANSFER_MESSAGE_LENGTH_LIMIT: return {"error": f"Reason is too long, max {TRANSFER_MESSAGE_LENGTH_LIMIT} characters"},400
+				if len(reason) > TRANSFER_MESSAGE_LENGTH_LIMIT: abort(400, f"Reason is too long, max {TRANSFER_MESSAGE_LENGTH_LIMIT} characters")
 				notif_text += f"\n\n> {reason}"
 				log_message += f"\n\n> {reason}"
 
@@ -286,8 +291,7 @@ def transfer_coins(v, username):
 		g.db.add(v)
 
 		return {"message": f"{amount-tax} coins have been transferred to @{receiver.username}"}, 200
-
-	return {"message": "You can't transfer coins to yourself!"}, 400
+	abort(400, "You can't transfer coins to yourself!")
 
 
 @app.post("/@<username>/transfer_bux")
@@ -302,11 +306,11 @@ def transfer_bux(v, username):
 		amount = int(amount) if amount.isdigit() else None
 		reason = request.values.get("reason", "").strip()
 
-		if not amount or amount < 0: return {"error": "Invalid amount of marseybux."}, 400
-		if v.procoins < amount: return {"error": "You don't have enough marseybux"}, 400
-		if amount < 100: return {"error": "You have to gift at least 100 marseybux."}, 400
+		if not amount or amount < 0: abort(400, "Invalid amount of marseybux.")
+		if v.procoins < amount: abort(400, "You don't have enough marseybux")
+		if amount < 100: abort(400, "You have to gift at least 100 marseybux.")
 
-		v.procoins -= amount
+		v.charge_account('procoins', amount)
 
 		if not v.shadowbanned:
 			receiver.procoins += amount
@@ -315,7 +319,7 @@ def transfer_bux(v, username):
 			notif_text = f":marseycapitalistmanlet: @{v.username} has gifted you {amount} marseybux!"
 
 			if reason:
-				if len(reason) > 200: return {"error": "Reason is too long, max 200 characters"},400
+				if len(reason) > 200: abort(400, "Reason is too long, max 200 characters")
 				notif_text += f"\n\n> {reason}"
 				log_message += f"\n\n> {reason}"
 
@@ -326,7 +330,7 @@ def transfer_bux(v, username):
 		g.db.add(v)
 		return {"message": f"{amount} marseybux have been transferred to @{receiver.username}"}, 200
 
-	return {"message": "You can't transfer marseybux to yourself!"}, 400
+	abort(400, "You can't transfer marseybux to yourslef!")
 
 
 @app.get("/leaderboard")
@@ -495,26 +499,26 @@ def message2(v, username):
 	user = get_user(username, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
-		return {"error": "You're blocking this user."}, 403
+		abort(403, "You're blocking this user.")
 
 	if v.admin_level <= PERMS['MESSAGE_BLOCKED_USERS'] and hasattr(user, 'is_blocked') and user.is_blocked:
-		return {"error": "This user is blocking you."}, 403
+		abort(403, "This user is blocking you.")
 
 	message = request.values.get("message", "").strip()[:10000].strip()
 
-	if not message: return {"error": "Message is empty!"}, 400
+	if not message: abort(400, "Message is empty!")
 
-	if 'linkedin.com' in message: return {"error": "This domain 'linkedin.com' is banned."}, 403
+	if 'linkedin.com' in message: abort(403, "This domain 'linkedin.com' is banned.")
 
 	body_html = sanitize(message)
 
-	if not (SITE == 'rdrama.net' and user.id == 12732):
+	if not (SITE == 'rdrama.net' and user.id == BLACKJACKBTZ_ID):
 		existing = g.db.query(Comment.id).filter(Comment.author_id == v.id,
 																Comment.sentto == user.id,
 																Comment.body_html == body_html,
 																).first()
 
-		if existing: return {"error": "Message already exists."}, 403
+		if existing: abort(403, "Message already exists.")
 
 	c = Comment(author_id=v.id,
 						parent_submission=None,
@@ -568,18 +572,18 @@ def messagereply(v):
 	body = request.values.get("body", "").strip().replace('‎','')
 	body = body.replace('\r\n', '\n')[:COMMENT_BODY_LENGTH_LIMIT]
 
-	if not body and not request.files.get("file"): return {"error": "Message is empty!"}, 400
+	if not body and not request.files.get("file"): abort(400, "Message is empty!")
 
-	if 'linkedin.com' in body: return {"error": "this domain 'linkedin.com' is banned"}, 400
+	if 'linkedin.com' in body: abort(400, "this domain 'linkedin.com' is banned")
 
 	id = int(request.values.get("parent_id"))
 	parent = get_comment(id, v=v)
 	user_id = parent.author.id
 
 	if v.is_suspended_permanently and parent.sentto != 2:
-		return {"error": "You are permabanned and may not reply to messages."}, 400
+		abort(400, "You are permabanned and may not reply to messages.")
 	elif v.is_muted and parent.sentto == 2:
-		return {"error": "You are forbidden from replying to modmail."}, 400
+		abort(400, "You are forbidden from replying to modmail.")
 
 	if parent.sentto == 2: user_id = None
 	elif v.id == user_id: user_id = parent.sentto
@@ -646,7 +650,7 @@ def messagereply(v):
 			notif = Notification(comment_id=c.id, user_id=admin)
 			g.db.add(notif)
 
-		ids = [c.top_comment.id] + [x.id for x in c.top_comment.replies(None)]
+		ids = [c.top_comment.id] + [x.id for x in c.top_comment.replies(sort="old", v=v)]
 		notifications = g.db.query(Notification).filter(Notification.comment_id.in_(ids), Notification.user_id.in_(admins))
 		for n in notifications:
 			g.db.delete(n)
@@ -769,7 +773,7 @@ def u_username(username, v=None):
 
 	if u.reserved:
 		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			return {"error": f"This username is reserved for: {u.reserved}"}, 418
+			abort(418, f"This username is reserved for: {u.reserved}")
 
 		return render_template("userpage_reserved.html", u=u, v=v)
 
@@ -786,14 +790,14 @@ def u_username(username, v=None):
 		
 	if u.is_private and (not v or (v.id != u.id and v.admin_level < PERMS['VIEW_PRIVATE_PROFILES'] and not v.eye)):
 		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			return {"error": "This userpage is private"}, 403
+			abort(403, "This userpage is private")
 
 		return render_template("userpage_private.html", u=u, v=v)
 
 	
 	if v and hasattr(u, 'is_blocking') and u.is_blocking:
 		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			return {"error": f"You are blocking @{u.username}."}, 403
+			abort(403, f"You are blocking @{u.username}.")
 
 		return render_template("userpage_blocking.html", u=u, v=v)
 
@@ -866,18 +870,18 @@ def u_username_comments(username, v=None):
 
 	if u.reserved:
 		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			return {"error": f"This username is reserved for: {u.reserved}"}, 418
+			abort(418, f"This username is reserved for: {u.reserved}")
 		return render_template("userpage_reserved.html", u=u, v=v)
 
 
 	if u.is_private and (not v or (v.id != u.id and v.admin_level < PERMS['VIEW_PRIVATE_PROFILES'] and not v.eye)):
 		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			return {"error": "This userpage is private"}, 403
+			abort(403, "This userpage is private")
 		return render_template("userpage_private.html", u=u, v=v)
 
 	if v and hasattr(u, 'is_blocking') and u.is_blocking:
 		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			return {"error": f"You are blocking @{u.username}."}, 403
+			abort(403, f"You are blocking @{u.username}.")
 		return render_template("userpage_blocking.html", u=u, v=v)
 
 	try: page = max(int(request.values.get("page", "1")), 1)
@@ -905,7 +909,8 @@ def u_username_comments(username, v=None):
 
 	comments = apply_time_filter(t, comments, Comment)
 
-	comments = sort_comments(sort, comments)
+	comments = sort_objects(sort, comments, Comment,
+		include_shadowbanned=(not (v and v.can_see_shadowbanned)))
 
 	comments = comments.offset(25 * (page - 1)).limit(26).all()
 	ids = [x.id for x in comments]
@@ -928,9 +933,9 @@ def u_username_info(username, v=None):
 	user=get_user(username, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
-		return {"error": "You're blocking this user."}, 401
+		abort(401, "You're blocking this user.")
 	elif hasattr(user, 'is_blocked') and user.is_blocked:
-		return {"error": "This user is blocking you."}, 403
+		abort(403, "This user is blocking you.")
 
 	return user.json
 
@@ -941,9 +946,9 @@ def u_user_id_info(id, v=None):
 	user=get_account(id, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
-		return {"error": "You're blocking this user."}, 401
+		abort(403, "You're blocking this user.")
 	elif hasattr(user, 'is_blocked') and user.is_blocked:
-		return {"error": "This user is blocking you."}, 403
+		abort(403, "This user is blocking you.")
 
 	return user.json
 
@@ -956,10 +961,10 @@ def follow_user(username, v):
 	target = get_user(username, v=v, include_shadowbanned=False)
 
 	if target.id==v.id:
-		return {"error": "You can't follow yourself!"}, 400
+		abort(400, "You can't follow yourself!")
 
 	if target.is_nofollow:
-		return {"error": "This user has disallowed other users from following them!"}, 403
+		abort(403, "This user has disallowed other users from following them!")
 
 	if g.db.query(Follow).filter_by(user_id=v.id, target_id=target.id).one_or_none():
 		return {"message": f"@{target.username} has been followed!"}
@@ -988,7 +993,7 @@ def unfollow_user(username, v):
 	if target.fish:
 		if not v.shadowbanned:
 			send_notification(target.id, f"@{v.username} has tried to unfollow you and failed because of your fish award!")
-		return {"error": "You can't unfollow this user!"}, 400
+		abort(400, "You can't unfollow this user!")
 
 	follow = g.db.query(Follow).filter_by(user_id=v.id, target_id=target.id).one_or_none()
 
@@ -1218,15 +1223,15 @@ kofi_tiers={
 @auth_required
 def settings_kofi(v):
 	if not (v.email and v.is_activated):
-		return {"error": f"You must have a verified email to verify {patron} status and claim your rewards!"}, 400
+		abort(400, f"You must have a verified email to verify {patron} status and claim your rewards!")
 
 	transaction = g.db.query(Transaction).filter_by(email=v.email).order_by(Transaction.created_utc.desc()).first()
 
 	if not transaction:
-		return {"error": "Email not found"}, 404
+		abort(404, "Email not found")
 
 	if transaction.claimed:
-		return {"error": f"{patron} rewards already claimed"}, 400
+		abort(400, f"{patron} rewards already claimed")
 
 	tier = kofi_tiers[transaction.amount]
 

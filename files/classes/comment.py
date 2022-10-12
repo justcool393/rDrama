@@ -9,8 +9,8 @@ from files.__main__ import Base
 from files.classes.votes import CommentVote
 from files.helpers.const import *
 from files.helpers.regex import *
-from files.helpers.regex import *
 from files.helpers.lazy import lazy
+from files.helpers.sorting_and_time import *
 from .flags import CommentFlag
 from .votes import CommentVote
 from .saves import CommentSaveRelationship
@@ -69,8 +69,7 @@ class Comment(Base):
 	post = relationship("Submission", back_populates="comments")
 	author = relationship("User", primaryjoin="User.id==Comment.author_id")
 	senttouser = relationship("User", primaryjoin="User.id==Comment.sentto")
-	parent_comment = relationship("Comment", remote_side=[id], back_populates="child_comments")
-	child_comments = relationship("Comment", order_by="Comment.stickied, Comment.realupvotes.desc()", remote_side=[parent_comment_id], back_populates="parent_comment")
+	parent_comment = relationship("Comment", remote_side=[id])
 	awards = relationship("AwardRelationship", order_by="AwardRelationship.awarded_utc.desc()", back_populates="comment")
 	flags = relationship("CommentFlag", order_by="CommentFlag.created_utc")
 	options = relationship("CommentOption", order_by="CommentOption.id")
@@ -207,26 +206,16 @@ class Comment(Base):
 		elif self.parent_submission: return f"p_{self.parent_submission}"
 
 	@lazy
-	def replies(self, sort=None):
-		if self.replies2 != None:
-			replies = self.replies2
-		elif not self.parent_submission:
-			replies = g.db.query(Comment).filter_by(parent_comment_id=self.id).order_by(Comment.id).all()
-		else: 
-			replies = self.child_comments
-
-		return [x for x in replies if not x.author.shadowbanned]
-
-
-	@lazy
-	def replies3(self, sort):
+	def replies(self, sort, v):
 		if self.replies2 != None:
 			return self.replies2
-		
-		if not self.parent_submission:
-			return g.db.query(Comment).filter_by(parent_comment_id=self.id).order_by(Comment.id).all()
 
-		return self.child_comments
+		replies = g.db.query(Comment).filter_by(parent_comment_id=self.id).order_by(Comment.stickied)
+		
+		if not self.parent_submission: sort='old'
+
+		return sort_objects(sort, replies, Comment,
+			include_shadowbanned=(not (v and v.can_see_shadowbanned))).all()
 
 
 	@property
@@ -311,7 +300,7 @@ class Comment(Base):
 				'is_bot': self.is_bot,
 				'flags': flags,
 				'author': '👻' if self.ghost else self.author.json,
-				'replies': [x.json for x in self.replies()]
+				'replies': [x.json for x in self.replies(sort="old", v=None)]
 				}
 
 		if self.level >= 2: data['parent_comment_id'] = self.parent_comment_id
@@ -333,7 +322,7 @@ class Comment(Base):
 			body = normalize_urls_runtime(body, v)
 
 
-			if v and v.controversial:
+			if not v or v.controversial:
 				captured = []
 				for i in controversial_regex.finditer(body):
 					if i.group(1) in captured: continue
