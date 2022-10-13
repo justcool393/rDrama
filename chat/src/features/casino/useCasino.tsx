@@ -23,6 +23,7 @@ import {
   messageDeleted,
   sessionUpdated,
   userUpdated,
+  reactionUpdated,
 } from "./state";
 
 export const MINIMUM_WAGER = 5;
@@ -239,6 +240,9 @@ export function CasinoProvider({ children }: PropsWithChildren) {
           CasinoHandlers.ConversationUpdated,
           (conversation: ConversationEntity) =>
             dispatch(conversationUpdated({ conversation }))
+        )
+        .on(CasinoHandlers.ReactionUpdated, (reaction: ReactionEntity) =>
+          dispatch(reactionUpdated({ reaction }))
         )
         .on(CasinoHandlers.FeedUpdated, (feed: FeedEntity) =>
           dispatch(feedUpdated({ feed }))

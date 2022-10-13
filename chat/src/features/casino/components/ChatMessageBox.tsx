@@ -1,4 +1,9 @@
-import React, { PropsWithChildren, useEffect, useRef } from "react";
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import {
   Avatar,
   Comment,
@@ -144,13 +149,29 @@ interface ChatMessageMenuProps {
 }
 
 export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
+  const dumbassButton = useRef<null | HTMLButtonElement>(null);
   const { id, admin } = useRootContext();
-  const { recipient, setRecipient, userDeletedMessage } = useCasino();
+  const { recipient, setRecipient, userReactedToMessage, userDeletedMessage } =
+    useCasino();
+  const reactToMessage = useCallback(() => {
+    const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) => {
+      userReactedToMessage(message.id, event.detail.emoji);
+      document.removeEventListener("emojiInserted", handleEmojiInsert);
+      dumbassButton.current?.click();
+    };
+
+    document.addEventListener("emojiInserted", handleEmojiInsert);
+
+    const whatever = window as any;
+    whatever.loadEmojis("dumbassInput");
+
+    dumbassButton.current?.click();
+  }, [message, userReactedToMessage]);
   const items: ItemType[] = [
     {
       key: "react",
       label: "React",
-      disabled: true,
+      onClick: reactToMessage,
     },
   ];
   const isOwnMessage = id.toString() === author.id.toString();
@@ -190,5 +211,17 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
     );
   }
 
-  return <Menu items={items} />;
+  return (
+    <>
+      <button
+        ref={dumbassButton}
+        style={{ display: "none" }}
+        data-bs-toggle="modal"
+        data-bs-target="#emojiModal"
+        data-bs-placement="bottom"
+      />
+      <input id="dumbassInput" style={{ display: "none" }} />
+      <Menu items={items} />
+    </>
+  );
 }

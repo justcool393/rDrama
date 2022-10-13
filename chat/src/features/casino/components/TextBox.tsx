@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { FiSend } from "react-icons/fi";
 import { Button, Input, Space, Tooltip } from "antd";
@@ -10,12 +10,28 @@ const TEXTAREA_CHARACTER_LIMIT = 1000;
 const { TextArea } = Input;
 
 export function TextBox() {
+  const isFocused = useRef(false);
   const { draft, recipient, setDraft, userSentMessage, userConversed } =
     useCasino();
   const handleSend = useMemo(
     () => (recipient ? userConversed : userSentMessage),
     [recipient, userConversed, userSentMessage]
   );
+
+  // Listen for changes from the Emoji Modal and reflect them in draft
+  useEffect(() => {
+    const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) => {
+      if (isFocused.current) {
+        setDraft((prev) => `${prev} ${event.detail.emoji} `);
+      }
+    };
+
+    document.addEventListener("emojiInserted", handleEmojiInsert);
+
+    return () => {
+      document.removeEventListener("emojiInserted", handleEmojiInsert);
+    };
+  }, []);
 
   return (
     <div style={{ display: "flex", alignItems: "center", padding: "1rem" }}>
@@ -35,6 +51,8 @@ export function TextBox() {
         }}
         bordered={false}
         id="TextBox"
+        onFocus={() => (isFocused.current = true)}
+        onBlur={() => (isFocused.current = false)}
       />
       <Space
         direction="vertical"

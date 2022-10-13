@@ -49,6 +49,14 @@ class CasinoBuilders():
         }
 
     @staticmethod
+    def build_reaction_entity(entity_id):
+        return {
+            'id': entity_id,
+            'user_ids': [],
+            'reactions': {}  # user_id -> :emoji:
+        }
+
+    @staticmethod
     def build_feed_entity(id, channels, text):
         return {
             'id': id,

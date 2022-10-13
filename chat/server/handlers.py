@@ -108,6 +108,43 @@ class CasinoHandlers():
 
     @staticmethod
     def handle_user_reacted_to_message(state, payload):
+        user_id = payload['user_id']
+        message_id = payload['message_id']
+        reaction = payload['reaction']
+        message_reactions = CasinoSelectors.select_reactions_for_entity(
+            state, message_id)
+
+        if not message_reactions:
+            message_reactions = CasinoBuilders.build_reaction_entity(
+                message_id)
+
+        reaction_user_ids = message_reactions['user_ids']
+        reaction_emojis = message_reactions['reactions']
+
+        if not user_id in reaction_user_ids:
+            reaction_user_ids.append(user_id)
+
+        current_reaction = reaction_emojis.get(user_id)
+
+        if current_reaction and current_reaction == reaction:
+            if user_id in reaction_user_ids:
+                reaction_user_ids.remove(user_id)
+
+            del reaction_emojis[user_id]
+        else:
+            if not user_id in reaction_user_ids:
+                reaction_user_ids.append(user_id)
+
+            reaction_emojis[user_id] = reaction
+
+        all_reactions = CasinoSelectors.select_reaction_ids(state)
+        reaction_lookup = CasinoSelectors.select_reaction_lookup(state)
+
+        if not message_id in all_reactions:
+            all_reactions.append(message_id)
+
+        reaction_lookup[message_id] = message_reactions
+
         return state
 
     @staticmethod

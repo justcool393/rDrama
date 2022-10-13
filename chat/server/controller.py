@@ -110,7 +110,6 @@ class BaseController():
 
     def _send_feed_update(self, text, channels):
         feed = self.manager.add_feed(channels, text)
-
         emit(CasinoEvents.FeedUpdated, feed, broadcast=True)
 
     def _send_message_update(self):
@@ -124,6 +123,11 @@ class BaseController():
             self.state, conversation_key)
         emit(CasinoEvents.ConversationUpdated,
              conversation, to=conversation_key)
+
+    def _send_reaction_update(self, entity_id):
+        reaction = CasinoSelectors.select_reactions_for_entity(
+            self.state, entity_id)
+        emit(CasinoEvents.ReactionUpdated, reaction, broadcast=True)
 
     def _format_message(self, user, message):
         self._validate_message(user, message)
@@ -210,7 +214,21 @@ class CasinoController(BaseController):
         self._send_message_update()
 
     def user_reacted_to_message(self, user, data):
-        pass
+        user_id = str(user.id)
+        message_id = data['id']
+        reaction = data['reaction']
+        message = CasinoSelectors.select_message(self.state, message_id)
+
+        if not message:
+            raise NotFoundException('message')
+
+        self.manager.dispatch(CasinoActions.USER_REACTED_TO_MESSAGE, {
+            'user_id': user_id,
+            'message_id': message_id,
+            'reaction': reaction
+        })
+
+        self._send_reaction_update(message_id)
 
     def user_deleted_message(self, user, data):
         user_id = str(user.id)

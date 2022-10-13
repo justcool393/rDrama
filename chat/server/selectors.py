@@ -154,6 +154,19 @@ class CasinoSelectors():
 
         return conversations
 
+    # Reaction
+
+    @staticmethod
+    def select_reaction_ids(state):
+        return grab(state, 'reactions/all')
+
+    def select_reaction_lookup(state):
+        return grab(state, 'reactions/by_id')
+
+    @staticmethod
+    def select_reactions_for_entity(state, entity_id):
+        return CasinoSelectors.select_reaction_lookup(state).get(entity_id)
+
     # Feed
 
     @staticmethod
