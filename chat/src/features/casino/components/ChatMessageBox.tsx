@@ -106,36 +106,44 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
       author={author.account.username}
       datetime={formatTimeAgo(first.timestamp)}
       content={
-        <div style={{ position: "relative" }}>
-          <div
-            dangerouslySetInnerHTML={{ __html: first.content }}
-            data-testid="first-message"
-          />
+        <>
+          <div style={{ position: "relative" }}>
+            <div
+              dangerouslySetInnerHTML={{ __html: first.content }}
+              data-testid="first-message"
+            />
 
-          <Dropdown.Button
-            style={{ position: "absolute", top: 0, right: 0 }}
-            type="text"
-            overlay={<ChatMessageMenu author={author} message={first} />}
-          />
-        </div>
+            <Dropdown.Button
+              style={{ position: "absolute", top: 0, right: 0 }}
+              type="text"
+              overlay={<ChatMessageMenu author={author} message={first} />}
+            />
+          </div>
+          {first.reactions.map((each) => JSON.stringify(each, null, 2))}
+        </>
       }
     >
       {rest.map((message) => (
         <Comment
           key={key(message)}
           content={
-            <div style={{ position: "relative" }}>
-              <div
-                dangerouslySetInnerHTML={{ __html: message.content }}
-                data-testid="subsequent-message"
-              />
+            <>
+              <div style={{ position: "relative" }}>
+                <div
+                  dangerouslySetInnerHTML={{ __html: message.content }}
+                  data-testid="subsequent-message"
+                />
 
-              <Dropdown.Button
-                style={{ position: "absolute", top: 0, right: 0 }}
-                type="text"
-                overlay={<ChatMessageMenu author={author} message={message} />}
-              />
-            </div>
+                <Dropdown.Button
+                  style={{ position: "absolute", top: 0, right: 0 }}
+                  type="text"
+                  overlay={
+                    <ChatMessageMenu author={author} message={message} />
+                  }
+                />
+              </div>
+              {message.reactions.map((each) => JSON.stringify(each, null, 2))}
+            </>
           }
         />
       ))}

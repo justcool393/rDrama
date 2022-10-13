@@ -26,7 +26,45 @@ export function useCasinoUser(userId: string) {
   return userId ? lookup[userId] : null;
 }
 
-export function usePublicMessages() {
+export function useMessageReactions(
+  useMessageHook: () => ProcessedMessageEntity[]
+) {
+  const messages = useMessageHook();
+  const reactionLookup = useReactionLookup();
+  const getMessageReactions = (message: ProcessedMessageEntity) => {
+    const messageReactionData = reactionLookup[message.id];
+
+    if (messageReactionData) {
+      const { user_ids, reactions } = messageReactionData;
+      const emojis = Object.values(reactions).reduce((prev, next) => {
+        if (!prev[next]) {
+          prev[next] = [];
+        }
+
+        return prev;
+      }, {} as Record<string, string[]>);
+
+      for (const userId of user_ids) {
+        const emoji = reactions[userId];
+        emojis[emoji].push(userId);
+      }
+
+      return Object.entries(emojis).map(([emoji, userIds]) => ({
+        reaction: emoji,
+        user_ids: userIds,
+      }));
+    }
+
+    return [];
+  };
+
+  return messages.map((message) => ({
+    ...message,
+    reactions: getMessageReactions(message),
+  }));
+}
+
+export function usePublicMessages(): ProcessedMessageEntity[] {
   const { censored } = useRootContext();
 
   return useCasinoSelector((state) =>
@@ -35,6 +73,7 @@ export function usePublicMessages() {
       .sort((messageA, messageB) => messageA.timestamp - messageB.timestamp)
       .map((message) => ({
         ...message,
+        reactions: [],
         content: censored
           ? message.content.html_censored
           : message.content.html,
@@ -42,7 +81,7 @@ export function usePublicMessages() {
   );
 }
 
-export function useConversationMessages() {
+export function useConversationMessages(): ProcessedMessageEntity[] {
   const { id, censored } = useRootContext();
   const { recipient } = useCasino();
   const conversation = useCasinoSelector((state) => {
@@ -56,6 +95,7 @@ export function useConversationMessages() {
       .sort((messageA, messageB) => messageA.timestamp - messageB.timestamp)
       .map((message) => ({
         ...message,
+        reactions: [],
         content: censored
           ? message.content.html_censored
           : message.content.html,
@@ -68,8 +108,8 @@ export function useConversationMessages() {
 export function useChatMessages() {
   const { recipient } = useCasino();
   const users = useCasinoUserLookup();
-  const publicMessages = usePublicMessages();
-  const conversationMessages = useConversationMessages();
+  const publicMessages = useMessageReactions(usePublicMessages);
+  const conversationMessages = useMessageReactions(useConversationMessages);
   const messages = useMemo(
     () => (recipient ? conversationMessages : publicMessages),
     [recipient, publicMessages, conversationMessages]
@@ -177,4 +217,8 @@ export function useGameActions() {
   } else {
     return [];
   }
+}
+
+export function useReactionLookup() {
+  return useCasinoSelector((state) => state.reaction.by_id);
 }

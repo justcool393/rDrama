@@ -87,12 +87,17 @@ declare interface MessageEntity {
     html: string;
     html_censored: string;
   };
-  reactions: string[];
   timestamp: number;
+}
+
+interface MessageReactions {
+  reaction: string;
+  user_ids: string[];
 }
 
 declare type ProcessedMessageEntity = Omit<MessageEntity, "content"> & {
   content: string;
+  reactions: MessageReactions[];
 };
 
 declare interface ConversationEntity {

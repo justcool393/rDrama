@@ -1,4 +1,5 @@
 import cloneDeep from "lodash.clonedeep";
+import { ReactionState } from "../features";
 
 export function formatMessageGroups(
   users: Record<string, UserEntity>,
