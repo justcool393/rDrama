@@ -510,6 +510,9 @@ def message2(v, username):
 
 	if 'linkedin.com' in message: abort(403, "This domain 'linkedin.com' is banned.")
 
+	if 'discord.gg' in message or 'discord.com' in message or 'discordapp.com' in message:
+		abort(403, "Stop grooming!")
+
 	body_html = sanitize(message)
 
 	if not (SITE == 'rdrama.net' and user.id == BLACKJACKBTZ_ID):
@@ -574,9 +577,12 @@ def messagereply(v):
 
 	if not body and not request.files.get("file"): abort(400, "Message is empty!")
 
-	if 'linkedin.com' in body: abort(400, "this domain 'linkedin.com' is banned")
+	if 'linkedin.com' in body: abort(403, "This domain 'linkedin.com' is banned")
 
-	id = int(request.values.get("parent_id"))
+	if 'discord.gg' in body or 'discord.com' in body or 'discordapp.com' in body:
+		abort(403, "Stop grooming!")
+
+	id = request.values.get("parent_id")
 	parent = get_comment(id, v=v)
 	user_id = parent.author.id
 
@@ -771,12 +777,6 @@ def u_username(username, v=None):
 	if username != u.username:
 		return redirect(SITE_FULL + request.full_path.replace(username, u.username))
 
-	if u.reserved:
-		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			abort(418, f"This username is reserved for: {u.reserved}")
-
-		return render_template("userpage_reserved.html", u=u, v=v)
-
 	if v and v.id not in (u.id, DAD_ID) and u.viewers_recorded:
 		g.db.flush()
 		view = g.db.query(ViewerRelationship).filter_by(viewer_id=v.id, user_id=u.id).one_or_none()
@@ -868,12 +868,6 @@ def u_username_comments(username, v=None):
 
 	u = user
 
-	if u.reserved:
-		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
-			abort(418, f"This username is reserved for: {u.reserved}")
-		return render_template("userpage_reserved.html", u=u, v=v)
-
-
 	if u.is_private and (not v or (v.id != u.id and v.admin_level < PERMS['VIEW_PRIVATE_PROFILES'] and not v.eye)):
 		if request.headers.get("Authorization") or request.headers.get("xhr") or request.path.endswith(".json"):
 			abort(403, "This userpage is private")
@@ -903,14 +897,13 @@ def u_username_comments(username, v=None):
 		comments = comments.filter(
 			Comment.is_banned == False,
 			Comment.ghost == False,
-			comment_post_author.shadowbanned == None,
 			Comment.deleted_utc == 0
 		)
 
 	comments = apply_time_filter(t, comments, Comment)
 
 	comments = sort_objects(sort, comments, Comment,
-		include_shadowbanned=(not (v and v.can_see_shadowbanned)))
+		include_shadowbanned=(v and v.can_see_shadowbanned))
 
 	comments = comments.offset(25 * (page - 1)).limit(26).all()
 	ids = [x.id for x in comments]

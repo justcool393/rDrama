@@ -11,6 +11,7 @@ from files.helpers.get import *
 from files.helpers.media import *
 from files.helpers.const import *
 from files.helpers.actions import *
+from files.helpers.cloudflare import *
 from files.classes import *
 from flask import *
 from files.__main__ import app, cache, limiter
@@ -426,9 +427,7 @@ def admin_home(v):
 	under_attack = False
 
 	if v.admin_level >= PERMS['SITE_SETTINGS_UNDER_ATTACK']:
-		if CF_ZONE == 'blahblahblah': response = 'high'
-		else: response = requests.get(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, timeout=5).json()['result']['value']
-		under_attack = response == 'under_attack'
+		under_attack = (get_security_level() or 'high') == 'under_attack'
 
 	gitref = admin_git_head()
 	
@@ -479,44 +478,33 @@ def purge_cache(v):
 	online = cache.get(ONLINE_STR)
 	cache.clear()
 	cache.set(ONLINE_STR, online)
-
-	response = str(requests.post(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/purge_cache', headers=CF_HEADERS, data='{"purge_everything":true}', timeout=5))
-
+	if not purge_entire_cache():
+		abort(400, 'Failed to purge cache')
 	ma = ModAction(
 		kind="purge_cache",
 		user_id=v.id
 	)
 	g.db.add(ma)
-
-	if response == "<Response [200]>": return {"message": "Cache purged!"}
-	abort(400, 'Failed to purge cache.')
+	return {"message": "Cache purged!"}
 
 
 @app.post("/admin/under_attack")
 @admin_level_required(PERMS['SITE_SETTINGS_UNDER_ATTACK'])
 def under_attack(v):
-	response = requests.get(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, timeout=5).json()['result']['value']
-
-	if response == 'under_attack':
-		ma = ModAction(
-			kind="disable_under_attack",
-			user_id=v.id,
-		)
-		g.db.add(ma)
-
-		response = str(requests.patch(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, data='{"value":"high"}', timeout=5))
-		if response == "<Response [200]>": return {"message": "Under attack mode disabled!"}
-		abort(400, "Failed to disable under attack mode.")
-	else:
-		ma = ModAction(
-			kind="enable_under_attack",
-			user_id=v.id,
-		)
-		g.db.add(ma)
-
-		response = str(requests.patch(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/settings/security_level', headers=CF_HEADERS, data='{"value":"under_attack"}', timeout=5))
-		if response == "<Response [200]>": return {"message": "Under attack mode enabled!"}
-		abort(400, "Failed to enable under attack mode.")
+	response = get_security_level()
+	if not response:
+		abort(400, 'Could not retrieve the current security level')
+	old_under_attack_mode = response == 'under_attack'
+	enable_disable_str = 'disable' if old_under_attack_mode else 'enable'
+	new_security_level = 'high' if old_under_attack_mode else 'under_attack'
+	if not set_security_level(new_security_level):
+		abort(400, f'Failed to {enable_disable_str} under attack mode')
+	ma = ModAction(
+		kind=f"{enable_disable_str}_under_attack",
+		user_id=v.id,
+	)
+	g.db.add(ma)
+	return {"message": f"Under attack mode {enable_disable_str}d!"}
 
 @app.get("/admin/badge_grant")
 @admin_level_required(PERMS['USER_BADGES'])
@@ -542,7 +530,10 @@ def badge_grant_post(v):
 	try: badge_id = int(request.values.get("badge_id"))
 	except: abort(400)
 
-	if badge_id in {16,17,21,22,23,24,25,26,27,94,95,96,97,98,109,137} and v.id != AEVANN_ID and SITE != 'pcmemes.net':
+	if SITE == 'watchpeopledie.co' and badge_id not in {99,101}:
+		abort(403)
+
+	if badge_id in {16,17,21,22,23,24,25,26,27,94,95,96,97,98,109,137,67,68,83,84,87,90,140} and v.id != AEVANN_ID and SITE != 'pcmemes.net':
 		abort(403)
 
 	if user.has_badge(badge_id):
@@ -603,6 +594,9 @@ def badge_remove_post(v):
 
 	try: badge_id = int(request.values.get("badge_id"))
 	except: abort(400)
+
+	if badge_id in {67,68,83,84,87,90,140} and v.id != AEVANN_ID and SITE != 'pcmemes.net':
+		abort(403)
 
 	badge = user.has_badge(badge_id)
 	if not badge:
@@ -1142,10 +1136,7 @@ def remove_post(post_id, v):
 
 	v.coins += 1
 	g.db.add(v)
-
-	requests.post(f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE}/purge_cache', headers=CF_HEADERS,
-		data=f'{{"files": ["https://{SITE}/logged_out"]}}', timeout=5)
-
+	purge_files_in_cache(f"https://{SITE}/logged_out")
 	return {"message": "Post removed!"}
 
 
@@ -1214,30 +1205,39 @@ def distinguish_post(post_id, v):
 @feature_required('PINS')
 def sticky_post(post_id, v):
 	
+	pins = g.db.query(Submission).filter(Submission.stickied != None, Submission.is_banned == False).count()
+
+	if pins >= PIN_LIMIT and v.admin_level < PERMS['BYPASS_PIN_LIMIT']:
+		abort(403, f"Can't exceed {PIN_LIMIT} pinned posts limit!")
 
 	post = get_post(post_id)
-	if not post.stickied:
-		pins = g.db.query(Submission).filter(Submission.stickied != None, Submission.is_banned == False).count()
-		if pins >= PIN_LIMIT:
-			if v.admin_level >= PERMS['BYPASS_PIN_LIMIT']:
-				post.stickied = v.username
-				post.stickied_utc = int(time.time()) + 3600
-			else: abort(403, f"Can't exceed {PIN_LIMIT} pinned posts limit!")
-		else: post.stickied = v.username
-		g.db.add(post)
 
-		ma=ModAction(
-			kind="pin_post",
-			user_id=v.id,
-			target_submission_id=post.id
-		)
-		g.db.add(ma)
-
+	if not post.stickied_utc:
+		post.stickied_utc = int(time.time()) + 3600
+		pin_time = 'for 1 hour'
+		code = 200
 		if v.id != post.author_id:
 			send_repeatable_notification(post.author_id, f"@{v.username} (Admin) has pinned [{post.title}](/post/{post_id})!")
+	else:
+		post.stickied_utc = None
+		pin_time = 'permanently'
+		code = 201
 
-		cache.delete_memoized(frontlist)
-	return {"message": "Post pinned!"}
+	post.stickied = v.username
+
+	g.db.add(post)
+
+	ma=ModAction(
+		kind="pin_post",
+		user_id=v.id,
+		target_submission_id=post.id,
+		_note=pin_time
+	)
+	g.db.add(ma)
+
+	cache.delete_memoized(frontlist)
+
+	return {"message": f"Post pinned {pin_time}!"}, code
 
 @app.post("/unsticky/<post_id>")
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])

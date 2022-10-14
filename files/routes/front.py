@@ -112,11 +112,8 @@ def frontlist(v=None, sort="hot", page=1, t="all", ids_only=True, ccmode="false"
 			word = word.replace('\\', '').replace('_', '\_').replace('%', '\%').strip()
 			posts=posts.filter(not_(Submission.title.ilike(f'%{word}%')))
 
-	if not (v and v.shadowbanned):
-		posts = posts.join(Submission.author).filter(User.shadowbanned == None)
-
 	posts = sort_objects(sort, posts, Submission,
-		include_shadowbanned=(not (v and v.can_see_shadowbanned)))
+		include_shadowbanned=(v and v.can_see_shadowbanned))
 
 	if v: size = v.frontsize or 0
 	else: size = 25
@@ -213,22 +210,22 @@ def all_comments(v):
 	return render_template("home_comments.html", v=v, sort=sort, t=t, page=page, comments=comments, standalone=True, next_exists=next_exists)
 
 
-
 @cache.memoize(timeout=86400)
-def comment_idlist(page=1, v=None, nsfw=False, sort="new", t="all", gt=0, lt=0, site=None):
-
-	comments = g.db.query(Comment.id).filter(Comment.parent_submission != None, Comment.author_id.notin_(v.userblocks))
+def comment_idlist(v=None, page=1, sort="new", t="all", gt=0, lt=0, site=None):
+	comments = g.db.query(Comment.id) \
+		.join(Comment.post) \
+		.filter(Comment.parent_submission != None)
 
 	if v.admin_level < PERMS['POST_COMMENT_MODERATION']:
-		private = [x[0] for x in g.db.query(Submission.id).filter(Submission.private == True).all()]
-
-		comments = comments.filter(Comment.is_banned==False, Comment.deleted_utc == 0, Comment.parent_submission.notin_(private))
-
+		comments = comments.filter(
+			Comment.is_banned == False,
+			Comment.deleted_utc == 0,
+			Submission.private == False,
+			Comment.author_id.notin_(v.userblocks),
+		)
 
 	if not v.paid_dues:
-		club = [x[0] for x in g.db.query(Submission.id).filter(Submission.club == True).all()]
-		comments = comments.filter(Comment.parent_submission.notin_(club))
-
+		comments = comments.filter(Submission.club == False)
 
 	if gt: comments = comments.filter(Comment.created_utc > gt)
 	if lt: comments = comments.filter(Comment.created_utc < lt)
@@ -237,7 +234,7 @@ def comment_idlist(page=1, v=None, nsfw=False, sort="new", t="all", gt=0, lt=0, 
 		comments = apply_time_filter(t, comments, Comment)
 
 	comments = sort_objects(sort, comments, Comment,
-		include_shadowbanned=(not (v and v.can_see_shadowbanned)))
+		include_shadowbanned=(v and v.can_see_shadowbanned))
 
 	comments = comments.offset(25 * (page - 1)).limit(26).all()
 	return [x[0] for x in comments]

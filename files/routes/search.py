@@ -67,9 +67,6 @@ def searchposts(v):
 			Submission.is_banned == False,
 			Submission.private == False)
 	
-	if v.admin_level < PERMS['USER_SHADOWBAN']:
-		posts = posts.filter(User.shadowbanned == None)
-
 	if 'author' in criteria:
 		posts = posts.filter(Submission.ghost == False)
 		author = get_user(criteria['author'], v=v, include_shadowbanned=False)
@@ -146,7 +143,7 @@ def searchposts(v):
 	posts = apply_time_filter(t, posts, Submission)
 
 	posts = sort_objects(sort, posts, Submission,
-		include_shadowbanned=(not (v and v.can_see_shadowbanned)))
+		include_shadowbanned=(v and v.can_see_shadowbanned))
 
 	total = posts.count()
 
@@ -250,7 +247,7 @@ def searchcomments(v):
 		comments = comments.filter(Comment.created_utc < before)
 
 	comments = sort_objects(sort, comments, Comment,
-		include_shadowbanned=(not (v and v.can_see_shadowbanned)))
+		include_shadowbanned=(v and v.can_see_shadowbanned))
 
 	total = comments.count()
 

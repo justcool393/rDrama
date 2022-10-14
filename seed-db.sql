@@ -308,6 +308,24 @@ INSERT INTO public.hat_defs VALUES (807, 'The Capy', 'You''re the chosen one! No
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 INSERT INTO public.hat_defs VALUES (92, 'Top Hat (black)', 'Traditional. Classy. Elegant.', 2, 500, NULL, 1662167687);
 INSERT INTO public.hat_defs VALUES (714, 'Captain Falcon', 'The chad that every smash player wanted to imitate, if only his moveset included a shower.', 2, 500, NULL, 1663474615);
 INSERT INTO public.hat_defs VALUES (715, 'Inspector Gadget', '"Go go Gadget Brown Bricks!"', 2, 500, NULL, 1663477536);
@@ -390,6 +408,9 @@ INSERT INTO public.hat_defs VALUES (844, 'Snek Peek', 'When the friendly snek se
 INSERT INTO public.hat_defs VALUES (17, 'Viking', 'Rape, pillage, never bathe. Live the dream.', 2, 500, NULL, 1662167687);
 INSERT INTO public.hat_defs VALUES (532, 'Under His Eye', 'WATCH ANOTHER SHOW', 2, 500, NULL, 1662167687);
 INSERT INTO public.hat_defs VALUES (845, 'Loading', 'please wait', 2, 1000, NULL, 1665261780);
+
+
+
 
 
 INSERT INTO public.hat_defs VALUES (22, 'Southern Gentleman', 'Slaveowner? Fried chicken chain founder? You decide!', 2, 500, NULL, 1662167687);
@@ -477,6 +498,7 @@ INSERT INTO public.hat_defs VALUES (861, 'Bowl Cut', 'Who cut your hair? Your mo
 INSERT INTO public.hat_defs VALUES (866, 'Venom Mask', 'PUT THE TOUNGUE AWAY', 2, 500, NULL, 1665272503);
 INSERT INTO public.hat_defs VALUES (871, 'Kirby Beanie', 'Be careful he''ll swallow you', 2, 500, NULL, 1665272632);
 INSERT INTO public.hat_defs VALUES (872, 'Pinwheels', 'Holland hat holland hat', 2, 1000, NULL, 1665272653);
+
 
 INSERT INTO public.hat_defs VALUES (631, 'Country Club Visor', 'What country club members wear when discussing your reddit account', 2, 500, NULL, 1663033011);
 INSERT INTO public.hat_defs VALUES (632, 'Jotaro Hat', 'The iconic cap of a buff punchy weebshit guy', 2, 500, NULL, 1663033206);
@@ -1054,7 +1076,7 @@ INSERT INTO public.hat_defs VALUES (504, 'Iron Crown of Lombardy', 'This isn''t 
 -- Name: hat_defs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.hat_defs_id_seq', 944, true);
+SELECT pg_catalog.setval('public.hat_defs_id_seq', 968, true);
 
 
 --
@@ -1227,6 +1249,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseybeekeeper',2,'bee beekeeper honey honeybee insect honeypot apiary apiculture pollinate pollen',NULL),
 ('marseybeggar',2,'poor busking panhandler gofundme busker',NULL),
 ('marseybegging',2,'pls plz pleading reaction tears in eyes animated',NULL),
+('marseybegoneprot',2,'tooka cross christian catholic orthodox protestant begone religion holy pepe apu peepo demon exorcise',1665684007),
 ('marseybegonethot',2,'pepe apu peepo begon thot cross demon exorcise slut whore',NULL),
 ('marseyben10',2,'ten anime cartoon lawlz',NULL),
 ('marseybestfriends',2,'snoo reddit alien slice kill kys stab blood wpd',NULL),
@@ -1360,6 +1383,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseycarp2',2,'harm cutting selfharm cutter reaction carpathianflorist self animated',NULL),
 ('marseycarp3',2,'reaction fish carpathianflorist catfish',NULL),
 ('marseycarp4',2,'sicksadworld banhammer pin awards janny mod admin',1664034021),
+('marseycarpabusivewife',2,'carpathianflorist boobs sweater yesdear demeaning jannie fish',1665700295),
 ('marseycarpasian',2,'carpathianflorist fish azn racist hat paddy gook nip ching chong chink',NULL),
 ('marseycarpautism',2,'carpathianflorist special assburgers aspergers retarded janitor jannie',NULL),
 ('marseycarpboobs',2,'carpathianflorist boobs booba titties tiddies tits boobs breasts censored fish administrator jannie janny janitor',1663771699),
@@ -1620,6 +1644,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseydunce',2,'stupid moron imbecile dolt dunce retard dumb cap hat sped',NULL),
 ('marseydunkon',2,'basketball dunk seethe cope rage sports',NULL),
 ('marseydylan',2,'columbine school shooter psycho gun pistol klebold',NULL),
+('marseydylannroof',2,'mayo streetwear dylann roof shooter confederate flag fashion',1665607955),
 ('marseydynamite',2,'dynomite black afro gun',NULL),
 ('marseyearrape',2,'breakcore goreshit headphones noisecore',NULL),
 ('marseyecstatic',2,'ecstatic happy creepy smile',1664490819),
@@ -1903,6 +1928,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseyjesus2',2,'crucify crucifixion christianity easter persecuted religion saint martyr religious cross',NULL),
 ('marseyjetbombing',2,'obama bush animated usa animated american pilot bomber plane war usaf air force',NULL),
 ('marseyjetfighter',2,'pilot plane airforce air force usaf bomber dogfight war',NULL),
+('marseyjewish',2,'jew jewish religon hat',1665706842),
 ('marseyjewishkkk',2,'klan israel racism hood blue',1664491568),
 ('marseyjewoftheorient',2,'china chinese greedy jew jewish merchant',NULL),
 ('marseyjewoftheorientglow',2,'animated glow rice china chinese chink commie mao xi',NULL),
@@ -2364,6 +2390,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseyrightoidschizo',2,'nazi conspiracy crazy tin foil tinfoil conservative animated ruqqus',NULL),
 ('marseyrobber',2,'mask balaclava gun shooter shooting thief criminal nigger jogger ahmaud arbery george floyd',NULL),
 ('marseyrobot',2,'npc snappy sentient ai glow tech computer',1664034073),
+('marseyroguspanish',2,'rogu spanish marsey american dad',1665625304),
 ('marseyroo',2,'kangaroo australian',NULL),
 ('marseyrope',2,'reaction suicidal shotgun facelift suicide',NULL),
 ('marseyropewithchingchong',2,'suicide chink chinese asian die kys together strawhat slit zip gook nip buckteeth',NULL),
@@ -2372,6 +2399,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseyropeyourself2',2,'kill yourself kys lynch reaction keep yourself safe hanging noose',NULL),
 ('marseyropeyourselfmirror',2,'suicide kms kys death hanging noose chair suicidal depression depressed reflection',NULL),
 ('marseyrowling',2,'harry potter terf jkr transphobe',NULL),
+('marseyroxsneed',2,'roxy roxxane wolf fnaf freddy furry fur chuck fuck suck',1665715251),
 ('marseyroxy',2,'fnaf roxanne wolf freddy keytar rockstar vidya furry',1663987934),
 ('marseyrs',2,'runescape party hat phat crown lowpoly low poly',NULL),
 ('marseyrulebritannia',2,'britain british bongistan chips london england lasereyes',1663211275),
