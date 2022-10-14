@@ -30,6 +30,7 @@ export function useMessageReactions(
   useMessageHook: () => ProcessedMessageEntity[]
 ) {
   const messages = useMessageHook();
+  const userLookup = useCasinoUserLookup();
   const reactionLookup = useReactionLookup();
   const getMessageReactions = (message: ProcessedMessageEntity) => {
     const messageReactionData = reactionLookup[message.id];
@@ -51,7 +52,7 @@ export function useMessageReactions(
 
       return Object.entries(emojis).map(([emoji, userIds]) => ({
         reaction: emoji,
-        user_ids: userIds,
+        users: userIds.map((id) => userLookup[id].account.username),
       }));
     }
 

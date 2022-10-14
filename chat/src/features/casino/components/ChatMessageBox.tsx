@@ -6,12 +6,15 @@ import React, {
 } from "react";
 import {
   Avatar,
+  Button,
   Comment,
   Dropdown,
   Menu,
   PageHeader,
   Popconfirm,
   Space,
+  Tag,
+  Tooltip,
   Typography,
 } from "antd";
 import type { ItemType } from "antd/lib/menu/hooks/useItems";
@@ -119,7 +122,11 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
               overlay={<ChatMessageMenu author={author} message={first} />}
             />
           </div>
-          {first.reactions.map((each) => JSON.stringify(each, null, 2))}
+
+          <ChatMessageReactions
+            messageId={first.id}
+            reactions={first.reactions}
+          />
         </>
       }
     >
@@ -142,7 +149,11 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
                   }
                 />
               </div>
-              {message.reactions.map((each) => JSON.stringify(each, null, 2))}
+
+              <ChatMessageReactions
+                messageId={message.id}
+                reactions={message.reactions}
+              />
             </>
           }
         />
@@ -231,5 +242,50 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
       <input id="dumbassInput" style={{ display: "none" }} />
       <Menu items={items} />
     </>
+  );
+}
+
+function ChatMessageReactions({
+  messageId,
+  reactions,
+}: {
+  messageId: string;
+  reactions: MessageReactions[];
+}) {
+  const { userReactedToMessage } = useCasino();
+
+  return (
+    <Space>
+      {reactions.map(({ reaction, users }) => (
+        <Tooltip
+          key={reaction}
+          placement="top"
+          title={
+            <>
+              {reaction}
+              <ul style={{ listStyle: "none" }}>
+                {users.map((user) => (
+                  <li key={user}>{user}</li>
+                ))}
+              </ul>
+            </>
+          }
+        >
+          <Button
+            type="text"
+            onClick={() => userReactedToMessage(messageId, reaction)}
+          >
+            <Space>
+              <img
+                loading="lazy"
+                src={`/e/${reaction.replace(/\:/g, "")}.webp`}
+                width={24}
+              />
+              <Tag>{users.length}</Tag>
+            </Space>
+          </Button>
+        </Tooltip>
+      ))}
+    </Space>
   );
 }

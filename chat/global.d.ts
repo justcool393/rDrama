@@ -92,7 +92,7 @@ declare interface MessageEntity {
 
 interface MessageReactions {
   reaction: string;
-  user_ids: string[];
+  users: string[];
 }
 
 declare type ProcessedMessageEntity = Omit<MessageEntity, "content"> & {
