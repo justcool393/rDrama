@@ -107,7 +107,11 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
         />
       }
       author={author.account.username}
-      datetime={formatTimeAgo(first.timestamp)}
+      datetime={formatTimeAgo({
+        timestamp: first.timestamp,
+        edited: first.edited,
+        showTimestamp: true,
+      })}
       content={
         <>
           <div style={{ position: "relative" }}>
@@ -133,6 +137,11 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
       {rest.map((message) => (
         <Comment
           key={key(message)}
+          datetime={formatTimeAgo({
+            timestamp: message.timestamp,
+            edited: message.edited,
+            showTimestamp: false,
+          })}
           content={
             <>
               <div style={{ position: "relative" }}>
@@ -170,8 +179,13 @@ interface ChatMessageMenuProps {
 export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   const dumbassButton = useRef<null | HTMLButtonElement>(null);
   const { id, admin } = useRootContext();
-  const { recipient, setRecipient, userReactedToMessage, userDeletedMessage } =
-    useCasino();
+  const {
+    recipient,
+    setRecipient,
+    userReactedToMessage,
+    userEditedMessage,
+    userDeletedMessage,
+  } = useCasino();
   const reactToMessage = useCallback(() => {
     const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) => {
       userReactedToMessage(message.id, event.detail.emoji);
@@ -213,7 +227,11 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
 
   if (isOwnMessage || admin) {
     items.push(
-      { key: "edit", label: "Edit", disabled: true },
+      {
+        key: "edit",
+        label: "Edit",
+        onClick: () => userEditedMessage(message.id, "testing 1, 2, 3"),
+      },
       {
         key: "delete",
         label: (

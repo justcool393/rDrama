@@ -1,12 +1,12 @@
-from time import time
 from json import loads
 from .enums import CasinoActions
-from .helpers import grab
+from .helpers import grab, now
 from .selectors import CasinoSelectors
 
 recent_state = None
 next_action = {'action': None, 'payload': None}
 action_history = []
+
 
 class CasinoMiddleware():
     @staticmethod
@@ -47,7 +47,7 @@ class CasinoMiddleware():
             user = CasinoSelectors.select_user(next_state, user_id)
 
             if user:
-                user['last_active'] = int(time())
+                user['last_active'] = now()
 
         return next_state, action, payload
 

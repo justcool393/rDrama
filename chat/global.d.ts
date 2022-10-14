@@ -88,6 +88,7 @@ declare interface MessageEntity {
     html_censored: string;
   };
   timestamp: number;
+  edited: false | number;
 }
 
 interface MessageReactions {

@@ -1,6 +1,7 @@
 from copy import copy
 from .builders import CasinoBuilders
 from .enums import CasinoActions, CasinoGames
+from .helpers import now
 from .selectors import CasinoSelectors
 
 
@@ -13,6 +14,7 @@ class CasinoHandlers():
             CasinoActions.USER_DISCONNECTED: CasinoHandlers.handle_user_disconnected,
             CasinoActions.USER_SENT_MESSAGE: CasinoHandlers.handle_user_sent_message,
             CasinoActions.USER_REACTED_TO_MESSAGE: CasinoHandlers.handle_user_reacted_to_message,
+            CasinoActions.USER_EDITED_MESSAGE: CasinoHandlers.handle_user_edited_message,
             CasinoActions.USER_DELETED_MESSAGE: CasinoHandlers.handle_user_deleted_message,
             CasinoActions.USER_CONVERSED: CasinoHandlers.handle_user_conversed,
             CasinoActions.USER_STARTED_GAME: CasinoHandlers.handle_user_started_game,
@@ -144,6 +146,17 @@ class CasinoHandlers():
             all_reactions.append(message_id)
 
         reaction_lookup[message_id] = message_reactions
+
+        return state
+
+    @staticmethod
+    def handle_user_edited_message(state, payload):
+        message_id = payload['message_id']
+        content = payload['content']
+        message = CasinoSelectors.select_message(state, message_id)
+
+        message['content'] = content
+        message['edited'] = now()
 
         return state
 

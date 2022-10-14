@@ -1,7 +1,7 @@
-from time import time
 from uuid import uuid4
 from files.helpers.get import get_account
 from .enums import CasinoGames, MarseyRacingBet, RouletteAction, SlotsOutcome
+from .helpers import now
 
 
 class CasinoBuilders():
@@ -14,7 +14,7 @@ class CasinoBuilders():
             'request_id': request_id,
             'account': user_account.json,
             'online': True,
-            'last_active': int(time()),
+            'last_active': now(),
             'balances': {
                 'coins': user_account.coins,
                 'procoins': user_account.procoins
@@ -29,7 +29,8 @@ class CasinoBuilders():
             'id': message_id,
             'user_id': user_id,
             'content': content,
-            'timestamp': int(time())
+            'timestamp': now(),
+            'edited': False
         }
 
     @staticmethod
@@ -62,7 +63,7 @@ class CasinoBuilders():
             'id': id,
             'channels': channels,
             'text': text,
-            'timestamp': int(time())
+            'timestamp': now()
         }
 
     @staticmethod

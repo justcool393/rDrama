@@ -1,5 +1,5 @@
-from time import time
 from .config import IN_DEVELOPMENT_MODE, SCHEDULER_LOG_PATH
+from .helpers import now
 
 
 class CasinoScheduler():
@@ -8,8 +8,7 @@ class CasinoScheduler():
     _time_entries = []
 
     def __init__(self):
-        now = int(time())
-        self._log(f"{now}) CasinoScheduler initialized")
+        self._log(f"{now()}) CasinoScheduler initialized")
 
     def _log(self, message):
         self._logs.append(message)
@@ -19,33 +18,31 @@ class CasinoScheduler():
 
     def schedule(self, when, task):
         found_existing_time_entry = False
-        
+
         for time_entry in self._time_entries:
             if time_entry['when'] == when:
                 found_existing_time_entry = True
                 time_entry['tasks'].append(task)
-        
+
         if not found_existing_time_entry:
             new_time_entry = {'when': when, 'tasks': [task]}
             self._time_entries.append(new_time_entry)
 
         if (IN_DEVELOPMENT_MODE):
-            now = int(time())
-            self._log(f'{now}) Scheduled {task} at {when}')
+            self._log(f'{now()}) Scheduled {task} at {when}')
 
     def scan(self):
-        now = int(time())
         next_time_entries = []
         time_entries_processed = 0
 
         for time_entry in self._time_entries:
-            if now >= time_entry['when']:
+            if now() >= time_entry['when']:
                 for task in time_entry['tasks']:
                     task()
                     time_entries_processed += 1
 
                     if (IN_DEVELOPMENT_MODE):
-                        self._log(f'{now})\t\tRan {task}')
+                        self._log(f'{now()})\t\tRan {task}')
             else:
                 next_time_entries.append(time_entry)
 
@@ -54,7 +51,6 @@ class CasinoScheduler():
         if (IN_DEVELOPMENT_MODE):
             if time_entries_processed > 0:
                 self._log(f"-- Ran {time_entries_processed} tasks\n")
-                
 
 
 CasinoScheduler.instance = CasinoScheduler()

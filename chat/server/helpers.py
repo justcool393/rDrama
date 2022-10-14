@@ -1,3 +1,4 @@
+from time import time
 from flask_socketio import emit
 from files.helpers.regex import censor_slurs
 from files.helpers.sanitize import sanitize
@@ -90,3 +91,7 @@ def get_balances(user):
         'coins': user.coins,
         'procoins': user.procoins
     }
+
+
+def now():
+    return int(time())

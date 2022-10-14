@@ -1,6 +1,13 @@
 import humanizeDuration from "humanize-duration";
 
-export function formatTimeAgo(time: number) {
+type FormatTimeAgoOptions = {
+  timestamp: number;
+  edited: false | number;
+  showTimestamp?: boolean;
+};
+
+export function formatTimeAgo(options: FormatTimeAgoOptions) {
+  const showTimestamp = options.showTimestamp ?? true;
   const shortEnglishHumanizer = humanizeDuration.humanizer({
     language: "shortEn",
     languages: {
@@ -22,7 +29,27 @@ export function formatTimeAgo(time: number) {
     delimiter: ", ",
   });
   const now = new Date().getTime();
-  const humanized = `${shortEnglishHumanizer(time * 1000 - now)} ago`;
+  const toFormat: string[] = [];
 
-  return humanized === "0s ago" ? "just now" : humanized;
+  if (showTimestamp) {
+    const humanizedTimeAgo = `${shortEnglishHumanizer(
+      options.timestamp * 1000 - now
+    )} ago`;
+    const finalTimeAgo =
+      humanizedTimeAgo === "0s ago" ? "just now" : humanizedTimeAgo;
+
+    toFormat.push(finalTimeAgo);
+  }
+
+  if (options.edited) {
+    const humanizedEdited = `(edited ${shortEnglishHumanizer(
+      options.edited * 1000 - now
+    )} ago)`;
+    const finalEdited =
+      humanizedEdited === "0s ago" ? "just now" : humanizedEdited;
+
+    toFormat.push(finalEdited);
+  }
+
+  return toFormat.join(" ");
 }

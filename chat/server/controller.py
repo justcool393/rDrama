@@ -112,9 +112,13 @@ class BaseController():
         feed = self.manager.add_feed(channels, text)
         emit(CasinoEvents.FeedUpdated, feed, broadcast=True)
 
-    def _send_message_update(self):
+    def _send_new_message_update(self):
         latest_message = CasinoSelectors.select_newest_message(self.state)
         emit(CasinoEvents.MessageUpdated, latest_message, broadcast=True)
+
+    def _send_edited_message_update(self, message_id):
+        message = CasinoSelectors.select_message(self.state, message_id)
+        emit(CasinoEvents.MessageUpdated, message, broadcast=True)
 
     def _send_conversation_update(self, user_id_a, user_id_b):
         conversation_key = CasinoBuilders.build_conversation_key(
@@ -211,7 +215,7 @@ class CasinoController(BaseController):
             'content': content
         })
 
-        self._send_message_update()
+        self._send_new_message_update()
 
     def user_reacted_to_message(self, user, data):
         user_id = str(user.id)
@@ -229,6 +233,30 @@ class CasinoController(BaseController):
         })
 
         self._send_reaction_update(message_id)
+
+    def user_edited_message(self, user, data):
+        user_id = str(user.id)
+        message_id = data['id']
+        edited_message = data['content']
+        content = self._format_message(user, edited_message)
+        message = CasinoSelectors.select_message(self.state, message_id)
+
+        if not message:
+            raise NotFoundException('message')
+
+        is_own_message = message['user_id'] == user_id
+        is_allowed_anyway = user.admin_level >= 2
+
+        if not is_own_message and not is_allowed_anyway:
+            raise NotAllowedException(user, f'edit message#{message_id}')
+
+        self.manager.dispatch(CasinoActions.USER_EDITED_MESSAGE, {
+            'user_id': user_id,
+            'message_id': message_id,
+            'content': content
+        })
+
+        self._send_edited_message_update(message_id)
 
     def user_deleted_message(self, user, data):
         user_id = str(user.id)

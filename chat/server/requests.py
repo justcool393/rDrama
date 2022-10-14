@@ -63,6 +63,26 @@ def user_reacted_to_message(data, v):
         return ERROR_RESPONSE
 
 
+@socketio.on(CasinoEvents.UserEditedMessage, CASINO_NAMESPACE)
+@is_not_permabanned
+def user_edited_message(data, v):
+    try:
+        CASINO_CONTROLLER.user_edited_message(v, data)
+        return SUCCESS_RESPONSE
+    except UserSentEmptyMessageException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.CannotSendEmptyMessage)
+        return ERROR_RESPONSE
+    except InvalidMessageException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.InvalidMessage)
+        return ERROR_RESPONSE
+    except NotFoundException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.MessageNotFound)
+        return ERROR_RESPONSE
+    except NotAllowedException:
+        CASINO_CONTROLLER.send_error(CasinoMessages.InsufficientPermissions)
+        return ERROR_RESPONSE
+
+
 @socketio.on(CasinoEvents.UserDeletedMessage, CASINO_NAMESPACE)
 @is_not_permabanned
 def user_deleted_message(data, v):

@@ -72,7 +72,11 @@ export function ChatMessageGroup({ author, messages }: ChatMessageGroupProps) {
         />
       }
       author={author.account.username}
-      datetime={formatTimeAgo(first.timestamp)}
+      datetime={formatTimeAgo({
+        timestamp: first.timestamp,
+        edited: first.edited,
+        showTimestamp: true,
+      })}
       content={
         <div style={{ position: "relative" }}>
           <div
@@ -118,7 +122,8 @@ interface ChatMessageMenuProps {
 
 export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   const { id, admin } = useRootContext();
-  const { recipient, setRecipient, userDeletedMessage } = useCasino();
+  const { recipient, setRecipient, userEditedMessage, userDeletedMessage } =
+    useCasino();
   const items: ItemType[] = [
     {
       key: "react",
@@ -146,7 +151,14 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
 
   if (isOwnMessage || admin) {
     items.push(
-      { key: "edit", label: "Edit", disabled: true },
+      {
+        key: "edit",
+        label: "Edit",
+        disabled: false,
+        onClick: () => {
+          userEditedMessage(message.id, "<EDITED>");
+        },
+      },
       {
         key: "delete",
         label: (
