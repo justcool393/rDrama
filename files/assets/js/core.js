@@ -23,6 +23,19 @@ function showToast(success, message) {
 	bootstrap.Toast.getOrCreateInstance(document.getElementById(element)).show();
 }
 
+function getMessageFromJsonData(success, json) {
+	let message;
+	let key = success ? "message" : "error";
+	if (!json || !json[key]) {
+		return success ? "Success!" : "Error, please try again later";
+	}
+	message = json[key]
+	if (json["details"]) {
+		message = json["details"];
+	}
+	return message;
+}
+
 function postToastLoad(xhr, className, extraActionsOnSuccess, extraActionsOnError) {
 	let data
 	try {
@@ -31,22 +44,20 @@ function postToastLoad(xhr, className, extraActionsOnSuccess, extraActionsOnErro
 	catch (e) {
 		console.log(e)
 	}
-	if (xhr.status >= 200 && xhr.status < 300) {
-		showToast(true, data && data["message"] ? data["message"] : "Success!");
+	success = xhr.status >= 200 && xhr.status < 300;
+	showToast(success, getMessageFromJsonData(success, data));
+	if (success) {
 		if (button1)
 		{
 			if (typeof(button1) == 'boolean') {
 				location.reload()
-            } else {
+			} else {
 				document.getElementById(button1).classList.toggle(className);
 				document.getElementById(button2).classList.toggle(className);
 			}
 		}
 		if (extraActionsOnSuccess) extraActionsOnSuccess(xhr);
 	} else {
-		let message = data && data["error"] ? data["error"] : "Error, please try again later"
-		if (data && data["details"]) message = data["details"];
-		showToast(false, message);
 		if (extraActionsOnError) extraActionsOnError(xhr);
 	}
 }
