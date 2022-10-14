@@ -98,6 +98,7 @@ interface MessageReactions {
 
 declare type ProcessedMessageEntity = Omit<MessageEntity, "content"> & {
   content: string;
+  original: string;
   reactions: MessageReactions[];
 };
 

@@ -181,9 +181,11 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   const { id, admin } = useRootContext();
   const {
     recipient,
+    editing,
+    setDraft,
     setRecipient,
+    setEditing,
     userReactedToMessage,
-    userEditedMessage,
     userDeletedMessage,
   } = useCasino();
   const reactToMessage = useCallback(() => {
@@ -209,7 +211,27 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   ];
   const isOwnMessage = id.toString() === author.id.toString();
 
-  if (!isOwnMessage) {
+  if (isOwnMessage) {
+    if (editing && editing === message.id) {
+      items.push({
+        key: "cancel",
+        label: "Cancel",
+        onClick: () => {
+          setDraft("");
+          setEditing(null);
+        },
+      });
+    } else {
+      items.push({
+        key: "edit",
+        label: "Edit",
+        onClick: () => {
+          setDraft(message.original);
+          setEditing(message.id);
+        },
+      });
+    }
+  } else {
     items.unshift({
       key: "reply",
       label: "Reply",
@@ -226,26 +248,19 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   }
 
   if (isOwnMessage || admin) {
-    items.push(
-      {
-        key: "edit",
-        label: "Edit",
-        onClick: () => userEditedMessage(message.id, "testing 1, 2, 3"),
-      },
-      {
-        key: "delete",
-        label: (
-          <Popconfirm
-            title="Delete this message?"
-            onConfirm={() => userDeletedMessage(message.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Text type="danger">Delete</Text>
-          </Popconfirm>
-        ),
-      }
-    );
+    items.push({
+      key: "delete",
+      label: (
+        <Popconfirm
+          title="Delete this message?"
+          onConfirm={() => userDeletedMessage(message.id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Text type="danger">Delete</Text>
+        </Popconfirm>
+      ),
+    });
   }
 
   return (

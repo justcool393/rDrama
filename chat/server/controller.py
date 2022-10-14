@@ -245,9 +245,8 @@ class CasinoController(BaseController):
             raise NotFoundException('message')
 
         is_own_message = message['user_id'] == user_id
-        is_allowed_anyway = user.admin_level >= 2
 
-        if not is_own_message and not is_allowed_anyway:
+        if not is_own_message:
             raise NotAllowedException(user, f'edit message#{message_id}')
 
         self.manager.dispatch(CasinoActions.USER_EDITED_MESSAGE, {

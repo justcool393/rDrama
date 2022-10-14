@@ -34,14 +34,15 @@ interface CasinoProviderContext {
   currency: CasinoCurrency;
   draft: string;
   recipient: null | string;
+  editing: null | string;
   setWager: React.Dispatch<React.SetStateAction<number>>;
   setCurrency: React.Dispatch<React.SetStateAction<CasinoCurrency>>;
   setDraft: React.Dispatch<React.SetStateAction<string>>;
   setRecipient: React.Dispatch<React.SetStateAction<null | string>>;
+  setEditing: React.Dispatch<React.SetStateAction<null | string>>;
   userKickedOwnClient(): void;
   userSentMessage(): void;
   userReactedToMessage(messageId: string, reaction: string): void;
-  userEditedMessage(messageId: string, content: string): void;
   userDeletedMessage(messageId: string): void;
   userConversed(): void;
   userStartedGame(game: CasinoGame): void;
@@ -57,14 +58,15 @@ const CasinoContext = createContext<CasinoProviderContext>({
   currency: "coins",
   draft: "",
   recipient: null,
+  editing: null,
   setWager() {},
   setCurrency() {},
   setDraft() {},
   setRecipient() {},
+  setEditing() {},
   userKickedOwnClient() {},
   userSentMessage() {},
   userReactedToMessage() {},
-  userEditedMessage() {},
   userDeletedMessage() {},
   userConversed() {},
   userStartedGame() {},
@@ -82,6 +84,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   const [wager, setWager] = useState(MINIMUM_WAGER);
   const [draft, setDraft] = useState("");
   const [recipient, setRecipient] = useState<null | string>(null);
+  const [editing, setEditing] = useState<null | string>(null);
   const dispatch = useCasinoDispatch();
 
   // Callbacks
@@ -90,28 +93,27 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   }, []);
 
   const userSentMessage = useCallback(() => {
-    socket.current?.emit(CasinoHandlers.UserSentMessage, {
-      message: draft,
-    });
+    if (editing) {
+      socket.current?.emit(CasinoHandlers.UserEditedMessage, {
+        id: editing,
+        content: draft,
+      });
+
+      setEditing(null);
+    } else {
+      socket.current?.emit(CasinoHandlers.UserSentMessage, {
+        message: draft,
+      });
+    }
 
     setTimeout(() => setDraft(""), 0);
-  }, [draft]);
+  }, [draft, editing]);
 
   const userReactedToMessage = useCallback(
     (messageId: string, reaction: string) => {
       socket.current?.emit(CasinoHandlers.UserReactedToMessage, {
         id: messageId,
         reaction,
-      });
-    },
-    []
-  );
-
-  const userEditedMessage = useCallback(
-    (messageId: string, content: string) => {
-      socket.current?.emit(CasinoHandlers.UserEditedMessage, {
-        id: messageId,
-        content,
       });
     },
     []
@@ -192,14 +194,15 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       currency,
       recipient,
       draft,
+      editing,
       setWager,
       setCurrency,
       setDraft,
       setRecipient,
+      setEditing,
       userKickedOwnClient,
       userSentMessage,
       userReactedToMessage,
-      userEditedMessage,
       userDeletedMessage,
       userConversed,
       userStartedGame,
@@ -214,10 +217,10 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       currency,
       recipient,
       draft,
+      editing,
       userKickedOwnClient,
       userSentMessage,
       userReactedToMessage,
-      userEditedMessage,
       userDeletedMessage,
       userConversed,
       userStartedGame,

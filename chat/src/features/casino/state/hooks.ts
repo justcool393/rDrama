@@ -78,6 +78,9 @@ export function usePublicMessages(): ProcessedMessageEntity[] {
         content: censored
           ? message.content.html_censored
           : message.content.html,
+        original: censored
+          ? message.content.text_censored
+          : message.content.text,
       }))
   );
 }
@@ -100,6 +103,9 @@ export function useConversationMessages(): ProcessedMessageEntity[] {
         content: censored
           ? message.content.html_censored
           : message.content.html,
+        original: censored
+          ? message.content.text_censored
+          : message.content.text,
       }));
   } else {
     return [];
