@@ -3,21 +3,7 @@ import { useEffect, useState } from "react";
 type ChatMode = "chat" | "casino";
 
 export function useRootContext() {
-  const [
-    {
-      mode,
-      admin,
-      id,
-      username,
-      censored,
-      themeColor,
-      siteName,
-      nameColor,
-      avatar,
-      hat,
-    },
-    setContext,
-  ] = useState({
+  const [rootContext, setRootContext] = useState({
     mode: null,
     id: "",
     username: "",
@@ -33,7 +19,7 @@ export function useRootContext() {
   useEffect(() => {
     const root = document.getElementById("root");
 
-    setContext({
+    setRootContext({
       mode: root.dataset.mode?.toLowerCase() as ChatMode,
       id: root.dataset.id,
       username: root.dataset.username,
@@ -47,16 +33,5 @@ export function useRootContext() {
     });
   }, []);
 
-  return {
-    mode,
-    id,
-    admin,
-    username,
-    censored,
-    themeColor,
-    siteName,
-    nameColor,
-    avatar,
-    hat,
-  };
+  return rootContext;
 }

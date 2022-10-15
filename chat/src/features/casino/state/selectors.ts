@@ -9,8 +9,8 @@ import {
 } from "react-icons/gi";
 import { shallowEqual, TypedUseSelectorHook, useSelector } from "react-redux";
 import { capitalize, formatMessageGroups } from "../../../helpers";
-import { RootState } from "./store";
-import { useSocketActions } from "./socket";
+import { RootState, useCasinoDispatch } from "./store";
+import { userPlayedSlots, userPlayedBlackjack } from "./thunks";
 
 const useCasinoSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -247,7 +247,7 @@ export function useChatMessages() {
 }
 
 export function useGameActions() {
-  const { userPlayedSlots, userPlayedBlackjack } = useSocketActions();
+  const dispatch = useCasinoDispatch();
   const session = useActiveUserGameSession();
   const gameActions = useMemo(() => {
     if (!session) {
@@ -265,7 +265,7 @@ export function useGameActions() {
           icon: GiLever,
           primary: true,
           title: "Pull",
-          onClick: userPlayedSlots,
+          onClick: () => dispatch(userPlayedSlots()),
           disabled: state.game_status === "started",
         },
       ];
@@ -280,12 +280,12 @@ export function useGameActions() {
           .split("_")
           .map((word) => capitalize(word.toLowerCase()))
           .join(" "),
-        onClick: () => userPlayedBlackjack(action),
+        onClick: () => dispatch(userPlayedBlackjack(action)),
       }));
     } else {
       return [];
     }
-  }, [session, userPlayedSlots, userPlayedBlackjack]);
+  }, [dispatch, session]);
 
   return gameActions;
 }

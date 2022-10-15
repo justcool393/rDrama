@@ -1,16 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, RootState, SocketActions, socketActions } from "./store";
+import { AppDispatch, RootState } from "./store";
 import {
   confirmingDeleteMessage,
   closedReactionModal,
   draftChanged,
   quitEditing,
 } from "./slices";
+import { socketActions } from "./socket";
 
 type ThunkType = {
   dispatch: AppDispatch;
   state: RootState;
-  extra: SocketActions;
 };
 
 export const userSentMessage = createAsyncThunk<void, void, ThunkType>(

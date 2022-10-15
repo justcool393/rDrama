@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { MINIMUM_WAGER } from "../config";
 
 interface ActiveState {
   draft: string;
@@ -19,7 +20,7 @@ const initialState: ActiveState = {
   editing: "",
   reacting: false,
   bet: {
-    wager: 0,
+    wager: MINIMUM_WAGER,
     currency: "coins",
   },
   user: {
