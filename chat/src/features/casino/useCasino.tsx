@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Alert, Button, Empty, message } from "antd";
+import { Alert, Button, Empty, Modal, message } from "antd";
 import { io, Socket } from "socket.io-client";
 import {
   CasinoHandlers,
@@ -35,11 +35,13 @@ interface CasinoProviderContext {
   draft: string;
   recipient: null | string;
   editing: null | string;
+  reacting: boolean;
   setWager: React.Dispatch<React.SetStateAction<number>>;
   setCurrency: React.Dispatch<React.SetStateAction<CasinoCurrency>>;
   setDraft: React.Dispatch<React.SetStateAction<string>>;
   setRecipient: React.Dispatch<React.SetStateAction<null | string>>;
   setEditing: React.Dispatch<React.SetStateAction<null | string>>;
+  setReacting: React.Dispatch<React.SetStateAction<boolean>>;
   userKickedOwnClient(): void;
   userSentMessage(): void;
   userReactedToMessage(messageId: string, reaction: string): void;
@@ -59,11 +61,13 @@ const CasinoContext = createContext<CasinoProviderContext>({
   draft: "",
   recipient: null,
   editing: null,
+  reacting: false,
   setWager() {},
   setCurrency() {},
   setDraft() {},
   setRecipient() {},
   setEditing() {},
+  setReacting() {},
   userKickedOwnClient() {},
   userSentMessage() {},
   userReactedToMessage() {},
@@ -85,21 +89,45 @@ export function CasinoProvider({ children }: PropsWithChildren) {
   const [draft, setDraft] = useState("");
   const [recipient, setRecipient] = useState<null | string>(null);
   const [editing, setEditing] = useState<null | string>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [reacting, setReacting] = useState(false);
   const dispatch = useCasinoDispatch();
 
   // Callbacks
+  // - Internal
+  const finishConfirmingDelete = useCallback(() => {
+    setConfirmingDelete(false);
+    setEditing(null);
+    setDraft("");
+  }, []);
+
+  // - Socket Event Wrappers
   const userKickedOwnClient = useCallback(() => {
     socket.current?.emit(CasinoHandlers.UserKickedOwnClient);
   }, []);
 
-  const userSentMessage = useCallback(() => {
-    if (editing) {
-      socket.current?.emit(CasinoHandlers.UserEditedMessage, {
-        id: editing,
-        content: draft,
+  const userReactedToMessage = useCallback(
+    (messageId: string, reaction: string) => {
+      socket.current?.emit(CasinoHandlers.UserReactedToMessage, {
+        id: messageId,
+        reaction,
       });
 
-      setEditing(null);
+      setReacting(false);
+    },
+    []
+  );
+
+  const userSentMessage = useCallback(() => {
+    if (editing) {
+      if (draft.length === 0) {
+        setConfirmingDelete(true);
+      } else {
+        socket.current?.emit(CasinoHandlers.UserEditedMessage, {
+          id: editing,
+          content: draft,
+        });
+      }
     } else {
       socket.current?.emit(CasinoHandlers.UserSentMessage, {
         message: draft,
@@ -108,16 +136,6 @@ export function CasinoProvider({ children }: PropsWithChildren) {
 
     setTimeout(() => setDraft(""), 0);
   }, [draft, editing]);
-
-  const userReactedToMessage = useCallback(
-    (messageId: string, reaction: string) => {
-      socket.current?.emit(CasinoHandlers.UserReactedToMessage, {
-        id: messageId,
-        reaction,
-      });
-    },
-    []
-  );
 
   const userDeletedMessage = useCallback(
     (messageId: string) =>
@@ -195,11 +213,13 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       recipient,
       draft,
       editing,
+      reacting,
       setWager,
       setCurrency,
       setDraft,
       setRecipient,
       setEditing,
+      setReacting,
       userKickedOwnClient,
       userSentMessage,
       userReactedToMessage,
@@ -218,6 +238,7 @@ export function CasinoProvider({ children }: PropsWithChildren) {
       recipient,
       draft,
       editing,
+      reacting,
       userKickedOwnClient,
       userSentMessage,
       userReactedToMessage,
@@ -323,7 +344,24 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     );
   } else {
     return (
-      <CasinoContext.Provider value={value}>{children}</CasinoContext.Provider>
+      <>
+        <CasinoContext.Provider value={value}>
+          {children}
+        </CasinoContext.Provider>
+        <Modal
+          title="Really delete?"
+          open={confirmingDelete}
+          onOk={() => {
+            userDeletedMessage(editing);
+            finishConfirmingDelete();
+          }}
+          onCancel={finishConfirmingDelete}
+          okText="Yep"
+          cancelText="Nope"
+        >
+          <p>Do you want to delete this message?</p>
+        </Modal>
+      </>
     );
   }
 }

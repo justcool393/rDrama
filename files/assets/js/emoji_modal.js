@@ -189,84 +189,83 @@ const emojisSearchDictionary = {
 const emojiRequest = new XMLHttpRequest();
 emojiRequest.open("GET", '/marsey_list.json');
 emojiRequest.onload = async (e) => {
-	console.log("HERE")
-	let emojis = JSON.parse(emojiRequest.response);
-	if(! (emojis instanceof Array ))
-		throw new TypeError("[EMOJI DIALOG] rDrama's server should have sent a JSON-coded Array!");
+  let emojis = JSON.parse(emojiRequest.response);
+  if (!(emojis instanceof Array))
+    throw new TypeError(
+      "[EMOJI DIALOG] rDrama's server should have sent a JSON-coded Array!"
+    );
 
-	let classes = new Set();
-	const bussyDOM = document.createElement("div");
-	let startTime = Date.now();
+  let classes = new Set();
+  const bussyDOM = document.createElement("div");
+  let startTime = Date.now();
 
-	for(let i = 0; i < emojis.length; i++)
-	{
-		const emoji = emojis[i];
+  for (let i = 0; i < emojis.length; i++) {
+    const emoji = emojis[i];
 
-		emojisSearchDictionary.updateTag(emoji.name, emoji.name);
-		if(emoji.author !== undefined && emoji.author !== null)
-			emojisSearchDictionary.updateTag(emoji.author.toLowerCase(), emoji.name);
+    emojisSearchDictionary.updateTag(emoji.name, emoji.name);
+    if (emoji.author !== undefined && emoji.author !== null)
+      emojisSearchDictionary.updateTag(emoji.author.toLowerCase(), emoji.name);
 
-		if(emoji.tags instanceof Array)
-			for(let i = 0; i < emoji.tags.length; i++)
-				emojisSearchDictionary.updateTag(emoji.tags[i], emoji.name);
+    if (emoji.tags instanceof Array)
+      for (let i = 0; i < emoji.tags.length; i++)
+        emojisSearchDictionary.updateTag(emoji.tags[i], emoji.name);
 
-		classes.add(emoji.class);
+    classes.add(emoji.class);
 
-		// Create emoji DOM
-		const emojiDOM = document.importNode(emojiButtonTemplateDOM.content, true).children[0];
+    // Create emoji DOM
+    const emojiDOM = document.importNode(emojiButtonTemplateDOM.content, true)
+      .children[0];
 
-		emojiDOM.title = emoji.name
-		if(emoji.author !== undefined && emoji.author !== null)
-			emojiDOM.title += "\nauthor\t" + emoji.author
-		if(emoji.count !== undefined)
-			emojiDOM.title += "\nused\t" + emoji.count;
-		emojiDOM.dataset.className = emoji.class;
-		emojiDOM.dataset.emojiName = emoji.name;
-		emojiDOM.onclick = emojiAddToInput;
-		emojiDOM.hidden = true;
+    emojiDOM.title = emoji.name;
+    if (emoji.author !== undefined && emoji.author !== null)
+      emojiDOM.title += "\nauthor\t" + emoji.author;
+    if (emoji.count !== undefined) emojiDOM.title += "\nused\t" + emoji.count;
+    emojiDOM.dataset.className = emoji.class;
+    emojiDOM.dataset.emojiName = emoji.name;
+    emojiDOM.onclick = emojiAddToInput;
+    emojiDOM.hidden = true;
 
-		const emojiIMGDOM = emojiDOM.children[0];
-		emojiIMGDOM.src = "/e/" + emoji.name + ".webp";
-		emojiIMGDOM.alt = emoji.name;
-		/** Disableing lazy loading seems to reduce cpu usage somehow (?)
-			* idk it is difficult to benchmark */
-		emojiIMGDOM.loading = "lazy";
+    const emojiIMGDOM = emojiDOM.children[0];
+    emojiIMGDOM.src = "/e/" + emoji.name + ".webp";
+    emojiIMGDOM.alt = emoji.name;
+    /** Disableing lazy loading seems to reduce cpu usage somehow (?)
+     * idk it is difficult to benchmark */
+    emojiIMGDOM.loading = "lazy";
 
-		// Save reference
-		emojiDOMs[emoji.name] = emojiDOM;
+    // Save reference
+    emojiDOMs[emoji.name] = emojiDOM;
 
-		// Add to the document!
-		bussyDOM.appendChild(emojiDOM);
-	}
+    // Add to the document!
+    bussyDOM.appendChild(emojiDOM);
+  }
 
-	// Create header
-	for(let className of classes)
-	{
-		let classSelectorDOM = document.createElement("li");
-		classSelectorDOM.classList.add("nav-item");
+  // Create header
+  for (let className of classes) {
+    let classSelectorDOM = document.createElement("li");
+    classSelectorDOM.classList.add("nav-item");
 
-		let classSelectorLinkDOM = document.createElement("a");
-		classSelectorLinkDOM.href = "#";
-		classSelectorLinkDOM.classList.add("nav-link", "emojitab");
-		classSelectorLinkDOM.dataset.bsToggle = "tab";
-		classSelectorLinkDOM.dataset.className = className;
-		classSelectorLinkDOM.innerText = className;
-		classSelectorLinkDOM.onclick = switchEmojiTab;
+    let classSelectorLinkDOM = document.createElement("a");
+    classSelectorLinkDOM.href = "#";
+    classSelectorLinkDOM.classList.add("nav-link", "emojitab");
+    classSelectorLinkDOM.dataset.bsToggle = "tab";
+    classSelectorLinkDOM.dataset.className = className;
+    classSelectorLinkDOM.innerText = className;
+    classSelectorLinkDOM.onclick = switchEmojiTab;
 
-		classSelectorDOM.appendChild(classSelectorLinkDOM);
-		classesSelectorDOM.appendChild(classSelectorDOM);
-	}
+    classSelectorDOM.appendChild(classSelectorLinkDOM);
+    classesSelectorDOM.appendChild(classSelectorDOM);
+  }
 
-	// Show favorite for start.
-	await classesSelectorDOM.children[0].children[0].click();
+  // Show favorite for start.
+  await classesSelectorDOM.children[0].children[0].click();
 
-	// Send it to the render machine!
-	emojiResultsDOM.appendChild(bussyDOM);
+  // Send it to the render machine!
+  emojiResultsDOM.appendChild(bussyDOM);
 
-	emojiResultsDOM.hidden = false;
-	emojiWorkingDOM.hidden = true;
-	emojiSearchBarDOM.disabled = false;
-}
+  emojiResultsDOM.hidden = false;
+  emojiWorkingDOM.hidden = true;
+  emojiSearchBarDOM.disabled = false;
+};
 
 /**
 *
@@ -578,3 +577,9 @@ function loadEmojis(inputTargetIDName)
 document.getElementById('emojiModal').addEventListener('shown.bs.modal', function () {
 	emojiSearchBarDOM.focus();
 });
+document
+  .getElementById("emojiModal")
+  .addEventListener("hide.bs.modal", function () {
+    const emojiModalClosedEvent = new CustomEvent("emojiModalClosed");
+    document.dispatchEvent(emojiModalClosedEvent);
+  });

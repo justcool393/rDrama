@@ -11,11 +11,11 @@ const { TextArea } = Input;
 
 export function TextBox() {
   const textareaRef = useRef<null | HTMLTextAreaElement>(null);
-  const isFocused = useRef(false);
   const {
     draft,
     recipient,
     editing,
+    reacting,
     setDraft,
     setEditing,
     userSentMessage,
@@ -29,7 +29,7 @@ export function TextBox() {
   // Listen for changes from the Emoji Modal and reflect them in draft
   useEffect(() => {
     const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) => {
-      if (isFocused.current) {
+      if (!reacting) {
         setDraft((prev) => `${prev} ${event.detail.emoji} `);
       }
     };
@@ -39,7 +39,7 @@ export function TextBox() {
     return () => {
       document.removeEventListener("emojiInserted", handleEmojiInsert);
     };
-  }, []);
+  }, [reacting]);
 
   // When "Edit" is selected, re-focus the textbox.
   useEffect(() => {
@@ -85,8 +85,6 @@ export function TextBox() {
           }}
           bordered={false}
           id="TextBox"
-          onFocus={() => (isFocused.current = true)}
-          onBlur={() => (isFocused.current = false)}
         />
         <Space
           direction="vertical"

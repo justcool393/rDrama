@@ -10,6 +10,7 @@ import {
   Comment,
   Dropdown,
   Menu,
+  Modal,
   PageHeader,
   Popconfirm,
   Space,
@@ -185,14 +186,19 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
     setDraft,
     setRecipient,
     setEditing,
+    setReacting,
     userReactedToMessage,
     userDeletedMessage,
   } = useCasino();
   const reactToMessage = useCallback(() => {
+    setReacting(true);
+
     const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) => {
       userReactedToMessage(message.id, event.detail.emoji);
       document.removeEventListener("emojiInserted", handleEmojiInsert);
-      dumbassButton.current?.click();
+
+      const dismissButton = document.querySelector('[data-bs-dismiss=modal]') as HTMLButtonElement;
+      dismissButton?.click()
     };
 
     document.addEventListener("emojiInserted", handleEmojiInsert);
@@ -271,6 +277,7 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
         data-bs-toggle="modal"
         data-bs-target="#emojiModal"
         data-bs-placement="bottom"
+        data-bs-dismiss="modal"
       />
       <input id="dumbassInput" style={{ display: "none" }} />
       <Menu items={items} />
@@ -288,6 +295,7 @@ function ChatMessageReactions({
   const { userReactedToMessage } = useCasino();
 
   return (
+    <>
     <Space>
       {reactions.map(({ reaction, users }) => (
         <Tooltip
@@ -320,5 +328,6 @@ function ChatMessageReactions({
         </Tooltip>
       ))}
     </Space>
+  </>
   );
 }

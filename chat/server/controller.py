@@ -138,7 +138,7 @@ class BaseController():
         return sanitize_chat_message(message)
 
     def _validate_message(self, user, message):
-        if len(message) == 0:
+        if len(message.strip()) == 0:
             raise UserSentEmptyMessageException(user)
 
         if blackjack and any(character in message.lower() for character in blackjack.split()):
