@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Layout, Modal, message, notification } from "antd";
+import { useRootContext } from "../../hooks";
 import {
   CasinoHeader,
   CasinoFooter,
@@ -16,7 +17,6 @@ import {
   confirmedDeleteMessage,
   userLoaded,
 } from "./state";
-import { useRootContext } from "../../hooks";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";

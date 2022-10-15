@@ -36,7 +36,7 @@ export function useActiveConversation() {
 
   return useCasinoSelector((state) => {
     const conversationKey = [id, recipient].sort().join("#");
-    state.conversation.by_id[conversationKey];
+    return state.conversation.by_id[conversationKey];
   }, shallowEqual);
 }
 
@@ -173,7 +173,7 @@ export function useMessageReactions(messages: ProcessedMessageEntity[]) {
         ...message,
         reactions: getMessageReactions(message, userLookup, reactionLookup),
       })),
-    [userLookup, reactionLookup]
+    [messages, userLookup, reactionLookup]
   );
 
   return messagesWithReactions;
@@ -240,7 +240,7 @@ export function useChatMessages() {
   const messagesWithReactions = useMessageReactions(messagesToUse);
   const formattedMessageGroups = useMemo(
     () => formatMessageGroups(users, messagesWithReactions),
-    [users, recipient, publicMessages, conversationMessages]
+    [users, messagesWithReactions]
   );
 
   return formattedMessageGroups;

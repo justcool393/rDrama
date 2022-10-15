@@ -32,10 +32,11 @@ export function TextBox() {
   const editing = useActiveEditing();
   const reacting = useActiveReacting();
   const chatMessageGroups = useChatMessages();
-  const handleSend = useMemo(
-    () => (recipient ? userConversed : userSentMessage),
-    [recipient, userConversed, userSentMessage]
-  );
+  const handleSend = useCallback(() => {
+    const action = recipient ? userConversed : userSentMessage;
+    dispatch(action());
+  }, [dispatch, recipient, userConversed, userSentMessage]);
+  
   const handleEditLastMessage = useCallback(() => {
     for (const messageGroup of cloneDeep(chatMessageGroups).reverse()) {
       if (messageGroup.author.id === id) {
@@ -58,6 +59,7 @@ export function TextBox() {
       }
     }
   }, [dispatch, chatMessageGroups]);
+
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === "ArrowUp") {

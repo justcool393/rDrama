@@ -54,42 +54,46 @@ export type AppDispatch = typeof store.dispatch;
 export const useCasinoDispatch: () => AppDispatch = useDispatch;
 
 //===
-const CASINO_HANDLERS_TO_UPDATERS = {
-  [CasinoHandlers.ConversationUpdated]: [conversationUpdated, "conversation"],
-  [CasinoHandlers.ReactionUpdated]: [reactionUpdated, "reaction"],
-  [CasinoHandlers.FeedUpdated]: [feedUpdated, "feed"],
-  [CasinoHandlers.GameUpdated]: [gameUpdated, "game"],
-  [CasinoHandlers.GamesUpdated]: [gamesUpdated, "games"],
-  [CasinoHandlers.LeaderboardUpdated]: [leaderboardUpdated, "leaderboard"],
-  [CasinoHandlers.MessageUpdated]: [messageUpdated, "message"],
-  [CasinoHandlers.MessageDeleted]: [messageDeleted, "message_id"],
-  [CasinoHandlers.SessionUpdated]: [sessionUpdated, "session"],
-  [CasinoHandlers.UserUpdated]: [userUpdated, "user"],
-};
-
 const socket = io("/casino")
-.on(CasinoHandlers.ConfirmationReceived, (confirmation) => {
-  setTimeout(() => antMessage.success(confirmation), 0);
-})
-.on(CasinoHandlers.ErrorOccurred, (error) =>
-  setTimeout(() => antMessage.error(error), 0)
-)
-.on(CasinoHandlers.InitialStateProvided, (state: CasinoState) =>
-  store.dispatch(initialStateProvided(state))
-);
-
-for (const [updatedEvent, eventProperties] of Object.values(
-  CASINO_HANDLERS_TO_UPDATERS
-)) {
-  const [updater, entityName] = eventProperties as any;
-  socket.on(updatedEvent as CasinoHandlers, (value: any) =>
-    store.dispatch(
-      updater({
-        [entityName]: value,
-      })
-    )
+  .on(CasinoHandlers.ConfirmationReceived, (confirmation) => {
+    setTimeout(() => antMessage.success(confirmation), 0);
+  })
+  .on(CasinoHandlers.ErrorOccurred, (error) =>
+    setTimeout(() => antMessage.error(error), 0)
+  )
+  .on(CasinoHandlers.InitialStateProvided, (state: CasinoState) =>
+    store.dispatch(initialStateProvided(state))
+  )
+  .on(CasinoHandlers.ConversationUpdated, (conversation: ConversationEntity) =>
+    store.dispatch(conversationUpdated({ conversation }))
+  )
+  .on(CasinoHandlers.ReactionUpdated, (reaction: ReactionEntity) =>
+    store.dispatch(reactionUpdated({ reaction }))
+  )
+  .on(CasinoHandlers.FeedUpdated, (feed: FeedEntity) =>
+    store.dispatch(feedUpdated({ feed }))
+  )
+  .on(CasinoHandlers.GameUpdated, (game: PossibleGameEntity) =>
+    store.dispatch(gameUpdated({ game }))
+  )
+  .on(CasinoHandlers.GamesUpdated, (games: Normalized<PossibleGameEntity>) =>
+    store.dispatch(gamesUpdated({ games }))
+  )
+  .on(CasinoHandlers.LeaderboardUpdated, (leaderboard: LeaderboardEntity) =>
+    store.dispatch(leaderboardUpdated({ leaderboard }))
+  )
+  .on(CasinoHandlers.UserUpdated, (user: UserEntity) =>
+    store.dispatch(userUpdated({ user }))
+  )
+  .on(CasinoHandlers.SessionUpdated, (session: SessionEntity) =>
+    store.dispatch(sessionUpdated({ session }))
+  )
+  .on(CasinoHandlers.MessageUpdated, (message: MessageEntity) =>
+    store.dispatch(messageUpdated({ message }))
+  )
+  .on(CasinoHandlers.MessageDeleted, (message_id: string) =>
+    store.dispatch(messageDeleted({ message_id }))
   );
-}
 
 export const socketActions: SocketActions = {
   userKickedOwnClient() {

@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, RootState, SocketActions } from "./store";
+import { AppDispatch, RootState, SocketActions, socketActions } from "./store";
 import {
   confirmingDeleteMessage,
   closedReactionModal,
   draftChanged,
+  quitEditing,
 } from "./slices";
 
 type ThunkType = {
@@ -14,7 +15,7 @@ type ThunkType = {
 
 export const userSentMessage = createAsyncThunk<void, void, ThunkType>(
   "userSentMessage",
-  (_, { dispatch, getState, extra: socketActions }) => {
+  (_, { dispatch, getState }) => {
     const {
       active: { editing, draft },
     } = getState();
@@ -24,9 +25,11 @@ export const userSentMessage = createAsyncThunk<void, void, ThunkType>(
         dispatch(confirmingDeleteMessage());
       } else {
         socketActions.userEditedMessage(editing, draft);
+        dispatch(quitEditing());
       }
     } else {
       socketActions.userSentMessage(draft);
+      setTimeout(() => dispatch(draftChanged("")), 0);
     }
   }
 );
@@ -40,29 +43,26 @@ export const userReactedToMessage = createAsyncThunk<
   void,
   MessageReaction,
   ThunkType
->(
-  "userReactedToMessage",
-  ({ messageId, reaction }, { dispatch, extra: socketActions }) => {
-    socketActions.userReactedToMessage(messageId, reaction);
-    dispatch(closedReactionModal());
-  }
-);
+>("userReactedToMessage", ({ messageId, reaction }, { dispatch }) => {
+  socketActions.userReactedToMessage(messageId, reaction);
+  dispatch(closedReactionModal());
+});
 
 export const userConversed = createAsyncThunk<void, void, ThunkType>(
   "userConversed",
-  (_, { dispatch, getState, extra: socketActions }) => {
+  (_, { dispatch, getState }) => {
     const {
       active: { draft, recipient },
     } = getState();
 
     socketActions.userConversed(draft, recipient);
-    dispatch(draftChanged(""));
+    setTimeout(() => dispatch(draftChanged("")), 0);
   }
 );
 
 export const userPlayedSlots = createAsyncThunk<void, void, ThunkType>(
   "userPlayedSlots",
-  (_, { getState, extra: socketActions }) => {
+  (_, { getState }) => {
     const {
       active: {
         bet: { currency, wager },
@@ -77,7 +77,7 @@ export const userPlayedBlackjack = createAsyncThunk<
   void,
   BlackjackAction,
   ThunkType
->("userPlayedBlackjack", (action, { getState, extra: socketActions }) => {
+>("userPlayedBlackjack", (action, { getState }) => {
   const {
     active: {
       bet: { currency, wager },
@@ -96,18 +96,15 @@ export const userPlayedRoulette = createAsyncThunk<
   void,
   RouletteWager,
   ThunkType
->(
-  "userPlayedRoulette",
-  ({ bet, which }, { getState, extra: socketActions }) => {
-    const {
-      active: {
-        bet: { currency, wager },
-      },
-    } = getState();
+>("userPlayedRoulette", ({ bet, which }, { getState }) => {
+  const {
+    active: {
+      bet: { currency, wager },
+    },
+  } = getState();
 
-    socketActions.userPlayedRoulette(bet, which, currency, wager);
-  }
-);
+  socketActions.userPlayedRoulette(bet, which, currency, wager);
+});
 
 type RacingWager = {
   kind: RacingBet;
@@ -116,7 +113,7 @@ type RacingWager = {
 
 export const userPlayedRacing = createAsyncThunk<void, RacingWager, ThunkType>(
   "userPlayedRacing",
-  ({ kind, selection }, { getState, extra: socketActions }) => {
+  ({ kind, selection }, { getState }) => {
     const {
       active: {
         bet: { currency, wager },
