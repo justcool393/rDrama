@@ -1,8 +1,7 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Carousel, Divider, Space } from "antd";
 import chunk from "lodash.chunk";
 import { useUserGameSession } from "../../state";
-import { useCasino } from "../../useCasino";
 import key from "weak-key";
 import Countdown from "antd/lib/statistic/Countdown";
 

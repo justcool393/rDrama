@@ -3,9 +3,20 @@ import { Button, Divider, Input, Space, Tooltip } from "antd";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { FiSend } from "react-icons/fi";
 import cloneDeep from "lodash.clonedeep";
-import { useRootContext } from "../../../hooks";
-import { useCasino } from "../useCasino";
-import { useChatMessages } from "../state";
+import {
+  useChatMessages,
+  useActiveDraft,
+  useActiveRecipient,
+  useActiveEditing,
+  useActiveReacting,
+  userConversed,
+  userSentMessage,
+  beganEditing,
+  useActiveUser,
+  useCasinoDispatch,
+  draftChanged,
+  quitEditing,
+} from "../state";
 
 const TEXTAREA_ROW_COUNT = 3;
 const TEXTAREA_CHARACTER_LIMIT = 1000;
@@ -14,17 +25,12 @@ const { TextArea } = Input;
 
 export function TextBox() {
   const textareaRef = useRef<null | HTMLTextAreaElement>(null);
-  const { id } = useRootContext();
-  const {
-    draft,
-    recipient,
-    editing,
-    reacting,
-    setDraft,
-    setEditing,
-    userSentMessage,
-    userConversed,
-  } = useCasino();
+  const dispatch = useCasinoDispatch();
+  const { id } = useActiveUser();
+  const draft = useActiveDraft();
+  const recipient = useActiveRecipient();
+  const editing = useActiveEditing();
+  const reacting = useActiveReacting();
   const chatMessageGroups = useChatMessages();
   const handleSend = useMemo(
     () => (recipient ? userConversed : userSentMessage),
@@ -34,8 +40,14 @@ export function TextBox() {
     for (const messageGroup of cloneDeep(chatMessageGroups).reverse()) {
       if (messageGroup.author.id === id) {
         const mostRecentMessage = messageGroup.messages.pop();
-        setDraft(mostRecentMessage.original);
-        setEditing(mostRecentMessage.id);
+
+        dispatch(
+          beganEditing({
+            message: mostRecentMessage.original,
+            editing: mostRecentMessage.id,
+          })
+        );
+
         setTimeout(() => {
           const messageLength = mostRecentMessage.original.length;
           const input = document.getElementById(
@@ -45,7 +57,7 @@ export function TextBox() {
         }, 0);
       }
     }
-  }, [chatMessageGroups]);
+  }, [dispatch, chatMessageGroups]);
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === "ArrowUp") {
@@ -59,7 +71,7 @@ export function TextBox() {
   useEffect(() => {
     const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) => {
       if (!reacting) {
-        setDraft((prev) => `${prev} ${event.detail.emoji} `);
+        dispatch(draftChanged(`${draft} ${event.detail.emoji} `));
       }
     };
 
@@ -68,7 +80,7 @@ export function TextBox() {
     return () => {
       document.removeEventListener("emojiInserted", handleEmojiInsert);
     };
-  }, [reacting]);
+  }, [dispatch, draft, reacting]);
 
   // When "Edit" is selected, re-focus the textbox.
   useEffect(() => {
@@ -83,13 +95,7 @@ export function TextBox() {
         <>
           <Space size="small" style={{ padding: "0 1rem" }}>
             <em>Editing a message</em>
-            <Button
-              type="text"
-              onClick={() => {
-                setEditing(null);
-                setDraft("");
-              }}
-            >
+            <Button type="text" onClick={() => dispatch(quitEditing())}>
               Cancel
             </Button>
           </Space>
@@ -107,7 +113,7 @@ export function TextBox() {
           showCount={true}
           maxLength={TEXTAREA_CHARACTER_LIMIT}
           value={draft}
-          onChange={(e) => setDraft(e.target.value)}
+          onChange={(e) => dispatch(draftChanged(e.target.value))}
           onPressEnter={handleSend}
           onKeyDown={handleKeyDown}
           style={{

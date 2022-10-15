@@ -28,7 +28,10 @@ const EXAMPLE_DATA = Array.from({ length: 10 }, () => {
   return {
     username: "111",
     bet: "20 coins",
-    timestamp: formatTimeAgo(new Date().getTime() / 1000),
+    timestamp: formatTimeAgo({
+      timestamp: new Date().getTime() / 1000,
+      edited: false,
+    }),
   };
 });
 

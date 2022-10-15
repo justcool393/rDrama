@@ -1,34 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { Affix, Button, Grid, Layout, message, notification, Tabs } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import { AiOutlineMenuUnfold } from "react-icons/ai";
+import React, { useCallback, useEffect, useState } from "react";
+import { Layout, Modal, message, notification } from "antd";
 import {
-  GiCardAceSpades,
-  GiCartwheel,
-  GiHorseHead,
-  GiLever,
-} from "react-icons/gi";
-import { TiMessage } from "react-icons/ti";
-import { useActiveCasinoGame, useOnlineUserCount, useUserGameSession } from "./state";
-import { DraggableModal, Game, Lobby, UserList, UsersAndGames } from "./layout";
-import { useCasino } from "./useCasino";
+  CasinoHeader,
+  CasinoFooter,
+  ChatMessageBox,
+  GameModal,
+  UserDrawer,
+} from "./components";
+import {
+  useActiveUserGameSession,
+  useActiveConfirmingDelete,
+  socketActions,
+  useActiveEditing,
+  useCasinoDispatch,
+  confirmedDeleteMessage,
+  userLoaded,
+} from "./state";
+import { useRootContext } from "../../hooks";
 import "antd/dist/antd.css";
 import "antd/dist/antd.dark.css";
 import "./Casino.css";
 
-const PANEL_OFFSET_TOP = 68;
-const GAME_PANEL_WIDTH = 440;
 const MESSAGE_TOP = 100;
 const MESSAGE_DURATION = 2;
 
-const { useBreakpoint } = Grid;
+const { Content } = Layout;
 
 export function Casino() {
-  const { lg } = useBreakpoint();
-  const { userQuitGame } = useCasino();
-  const game = useActiveCasinoGame();
-  const session = useUserGameSession(game?.name as CasinoGame);
-  const [showingSider, setShowingSider] = useState(false);
+  const user = useRootContext();
+  const dispatch = useCasinoDispatch();
+  const session = useActiveUserGameSession();
+  const [userDrawerOpen, setUserDrawerOpen] = useState(false);
+  const openUserDrawer = useCallback(() => setUserDrawerOpen(true), []);
+  const closeUserDrawer = useCallback(() => setUserDrawerOpen(false), []);
+  const confirmingDelete = useActiveConfirmingDelete();
+  const editing = useActiveEditing();
 
   useEffect(() => {
     message.config({
@@ -43,136 +49,63 @@ export function Casino() {
     });
   }, []);
 
+  // Initially load the user.
   useEffect(() => {
-    if (game) {
-      setShowingSider(false);
+    dispatch(userLoaded(user));
+  }, [user, dispatch]);
+
+  // When the "Confirm Delete?" modal appear, focus the Yep button.
+  useEffect(() => {
+    if (confirmingDelete) {
+      setTimeout(() => {
+        const yep = document.getElementById("confirmDeleteYep");
+        yep?.focus();
+      }, 0);
+    } else {
+      const input = document.getElementById("TextBox");
+      input?.focus();
     }
-  }, [game])
+  }, [confirmingDelete]);
 
   return (
-    <Layout
-      style={{ minHeight: "100vh", position: "relative" }}
-      hasSider={true}
-    >
-      <Layout.Content>
-        {session && <DraggableModal session={session} onClose={userQuitGame} />}
-        <Lobby />
-      </Layout.Content>
-      <Layout.Sider
-        breakpoint="lg"
-        collapsedWidth={0}
-        collapsible={true}
-        collapsed={!showingSider}
-        trigger={null}
-        style={{
-          overflow: "auto",
-          height: "100vh",
-          position: "fixed",
-          right: 0,
-          top: PANEL_OFFSET_TOP,
-          bottom: 0,
-          zIndex: 10
-        }}
-      >
-        <UsersAndGames />
-      </Layout.Sider>
-      {!showingSider && (
-        <Button
-          type="text"
-          icon={<AiOutlineMenuUnfold />}
-          onClick={() => setShowingSider(true)}
+    <>
+      <Layout style={{ minHeight: "calc(100vh - 66px)" }}>
+        <CasinoHeader
+          showingUserDrawer={userDrawerOpen}
+          onOpenUserDrawer={openUserDrawer}
+          onCloseUserDrawer={closeUserDrawer}
         />
-      )}
-    </Layout>
-  );
-
-  return lg ? (
-    <Layout style={{ minHeight: "100vh" }}>
-      {game && (
-        <Layout.Sider
-          width={GAME_PANEL_WIDTH}
-          breakpoint="lg"
-          collapsedWidth={0}
-          collapsible={true}
-          trigger={null}
+        <Content
+          style={{
+            padding: 4,
+            marginTop: 60,
+            marginBottom: 170,
+            position: "relative",
+            overflow: "hidden",
+          }}
         >
-          <Affix offsetTop={PANEL_OFFSET_TOP} offsetBottom={PANEL_OFFSET_TOP}>
-            <Game />
-          </Affix>
-        </Layout.Sider>
-      )}
-      <Layout.Content>
-        <Lobby />
-      </Layout.Content>
-      <Layout.Sider
-        breakpoint="lg"
-        collapsedWidth={0}
-        collapsible={true}
-        trigger={null}
+          <ChatMessageBox />
+          {userDrawerOpen && <UserDrawer onClose={closeUserDrawer} />}
+          {session && <GameModal />}
+        </Content>
+        <CasinoFooter />
+      </Layout>
+      <Modal
+        title="Really delete?"
+        open={confirmingDelete}
+        onOk={() => {
+          socketActions.userDeletedMessage(editing);
+          dispatch(confirmedDeleteMessage());
+        }}
+        okButtonProps={{
+          id: "confirmDeleteYep",
+        }}
+        onCancel={() => dispatch(confirmedDeleteMessage())}
+        okText="Yep"
+        cancelText="Nope"
       >
-        <Affix offsetTop={PANEL_OFFSET_TOP}>
-          <UsersAndGames />
-        </Affix>
-      </Layout.Sider>
-    </Layout>
-  ) : (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Layout.Content>
-        <MobileNavTabs />
-      </Layout.Content>
-    </Layout>
-  );
-}
-
-function MobileNavTabs() {
-  const { userStartedGame } = useCasino();
-  const usersOnline = useOnlineUserCount();
-  const game = useActiveCasinoGame();
-
-  return (
-    <Tabs
-      items={[
-        {
-          key: "lobby",
-          label: <TiMessage />,
-          children: <Lobby />,
-        },
-        {
-          active: game?.name === "slots",
-          key: "slots",
-          label: <GiLever onClick={() => userStartedGame("slots")} />,
-          children: <Game />,
-        },
-        {
-          active: game?.name === "blackjack",
-          key: "blackjack",
-          label: (
-            <GiCardAceSpades onClick={() => userStartedGame("blackjack")} />
-          ),
-          children: <Game />,
-        },
-        {
-          active: game?.name === "roulette",
-          key: "roulette",
-          label: <GiCartwheel onClick={() => userStartedGame("roulette")} />,
-          children: <Game />,
-        },
-        {
-          active: game?.name === "racing",
-          key: "racing",
-          label: <GiHorseHead onClick={() => userStartedGame("racing")} />,
-          children: <Game />,
-        },
-        {
-          key: "users",
-          label: (
-            <>
-              <UserOutlined /> {usersOnline} users
-            </>
-          ),
-          children: <UserList />,
-        },
-      ]}
-    />
+        <p>Do you want to delete this message?</p>
+      </Modal>
+    </>
   );
 }

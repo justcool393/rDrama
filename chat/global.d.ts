@@ -337,3 +337,15 @@ declare type PlayingCardRank =
   | "A";
 
 declare type PlayingCardSuit = "C" | "H" | "D" | "S";
+
+declare interface ActiveUser {
+  admin: boolean;
+  id: string;
+  username: string;
+  censored: boolean;
+  siteName: string;
+  themeColor: string;
+  nameColor: string;
+  avatar: string;
+  hat: string;
+}

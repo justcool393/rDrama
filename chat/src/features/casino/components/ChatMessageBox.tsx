@@ -20,9 +20,20 @@ import {
 import type { ItemType } from "antd/lib/menu/hooks/useItems";
 import key from "weak-key";
 import { formatTimeAgo } from "../../../helpers";
-import { useRootContext } from "../../../hooks";
-import { useCasino } from "../useCasino";
-import { useCasinoUser, useChatMessages } from "../state";
+import {
+  useCasinoDispatch,
+  useActiveEditing,
+  useActiveRecipient,
+  useActiveUser,
+  useCasinoUser,
+  useChatMessages,
+  openedReactionModal,
+  userReactedToMessage,
+  beganEditing,
+  quitEditing,
+  recipientChanged,
+  socketActions,
+} from "../state";
 import { CasinoUsername } from "./CasinoUsername";
 
 const SCROLL_CANCEL_THRESHOLD = 500;
@@ -30,7 +41,8 @@ const SCROLL_CANCEL_THRESHOLD = 500;
 const { Title, Text } = Typography;
 
 export function ChatMessageBox() {
-  const { recipient, setRecipient } = useCasino();
+  const dispatch = useCasinoDispatch();
+  const recipient = useActiveRecipient();
   const recipientUser = useCasinoUser(recipient);
   const chatMessageGroups = useChatMessages();
   const initiallyScrolledDown = useRef(false);
@@ -69,7 +81,7 @@ export function ChatMessageBox() {
     >
       {recipientUser && (
         <PageHeader
-          onBack={() => setRecipient("")}
+          onBack={() => dispatch(recipientChanged(""))}
           title={
             <Space>
               <CasinoUsername user={recipientUser.account} />
@@ -178,26 +190,26 @@ interface ChatMessageMenuProps {
 
 export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
   const dumbassButton = useRef<null | HTMLButtonElement>(null);
-  const { id, admin } = useRootContext();
-  const {
-    recipient,
-    editing,
-    setDraft,
-    setRecipient,
-    setEditing,
-    setReacting,
-    userReactedToMessage,
-    userDeletedMessage,
-  } = useCasino();
+  const dispatch = useCasinoDispatch();
+  const { id, admin } = useActiveUser();
+  const recipient = useActiveRecipient();
+  const editing = useActiveEditing();
   const reactToMessage = useCallback(() => {
-    setReacting(true);
+    dispatch(openedReactionModal());
 
     const handleEmojiInsert = (event: CustomEvent<{ emoji: string }>) => {
-      userReactedToMessage(message.id, event.detail.emoji);
+      dispatch(
+        userReactedToMessage({
+          messageId: message.id,
+          reaction: event.detail.emoji,
+        })
+      );
       document.removeEventListener("emojiInserted", handleEmojiInsert);
 
-      const dismissButton = document.querySelector('[data-bs-dismiss=modal]') as HTMLButtonElement;
-      dismissButton?.click()
+      const dismissButton = document.querySelector(
+        "[data-bs-dismiss=modal]"
+      ) as HTMLButtonElement;
+      dismissButton?.click();
     };
 
     document.addEventListener("emojiInserted", handleEmojiInsert);
@@ -221,19 +233,19 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
       items.push({
         key: "cancel",
         label: "Cancel",
-        onClick: () => {
-          setDraft("");
-          setEditing(null);
-        },
+        onClick: () => dispatch(quitEditing()),
       });
     } else {
       items.push({
         key: "edit",
         label: "Edit",
-        onClick: () => {
-          setDraft(message.original);
-          setEditing(message.id);
-        },
+        onClick: () =>
+          dispatch(
+            beganEditing({
+              message: message.original,
+              editing: message.id,
+            })
+          ),
       });
     }
   } else {
@@ -247,7 +259,7 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
       items.push({
         key: "dm",
         label: "DM",
-        onClick: () => setRecipient(author.id),
+        onClick: () => dispatch(recipientChanged(author.id)),
       });
     }
   }
@@ -258,7 +270,7 @@ export function ChatMessageMenu({ author, message }: ChatMessageMenuProps) {
       label: (
         <Popconfirm
           title="Delete this message?"
-          onConfirm={() => userDeletedMessage(message.id)}
+          onConfirm={() => socketActions.userDeletedMessage(message.id)}
           okText="Yes"
           cancelText="No"
         >
@@ -291,42 +303,49 @@ function ChatMessageReactions({
   messageId: string;
   reactions: MessageReactions[];
 }) {
-  const { userReactedToMessage } = useCasino();
+  const dispatch = useCasinoDispatch();
 
   return (
     <>
-    <Space>
-      {reactions.map(({ reaction, users }) => (
-        <Tooltip
-          key={reaction}
-          placement="top"
-          title={
-            <>
-              {reaction}
-              <ul style={{ listStyle: "none" }}>
-                {users.map((user) => (
-                  <li key={user}>{user}</li>
-                ))}
-              </ul>
-            </>
-          }
-        >
-          <Button
-            type="text"
-            onClick={() => userReactedToMessage(messageId, reaction)}
+      <Space>
+        {reactions.map(({ reaction, users }) => (
+          <Tooltip
+            key={reaction}
+            placement="top"
+            title={
+              <>
+                {reaction}
+                <ul style={{ listStyle: "none" }}>
+                  {users.map((user) => (
+                    <li key={user}>{user}</li>
+                  ))}
+                </ul>
+              </>
+            }
           >
-            <Space>
-              <img
-                loading="lazy"
-                src={`/e/${reaction.replace(/\:/g, "")}.webp`}
-                width={24}
-              />
-              <Tag>{users.length}</Tag>
-            </Space>
-          </Button>
-        </Tooltip>
-      ))}
-    </Space>
-  </>
+            <Button
+              type="text"
+              onClick={() =>
+                dispatch(
+                  userReactedToMessage({
+                    messageId,
+                    reaction,
+                  })
+                )
+              }
+            >
+              <Space>
+                <img
+                  loading="lazy"
+                  src={`/e/${reaction.replace(/\:/g, "")}.webp`}
+                  width={24}
+                />
+                <Tag>{users.length}</Tag>
+              </Space>
+            </Button>
+          </Tooltip>
+        ))}
+      </Space>
+    </>
   );
 }

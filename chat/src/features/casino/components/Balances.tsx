@@ -1,23 +1,15 @@
 import React from "react";
 import { Space } from "antd";
-import { useRootContext } from "../../../hooks";
-import { useCasinoSelector } from "../state";
+import { useActiveUserBalances } from "../state";
 import { Currency } from "./Currency";
 
 export function Balances() {
-  const { id } = useRootContext();
-  const balances = useCasinoSelector(
-    (state) =>
-      state.user.by_id[id]?.balances ?? {
-        coins: 0,
-        procoins: 0,
-      }
-  );
+  const { coins, procoins } = useActiveUserBalances();
 
   return (
     <Space>
-      <Currency kind="coins" amount={balances.coins} />
-      <Currency kind="procoins" amount={balances.procoins} />
+      <Currency kind="coins" amount={coins} />
+      <Currency kind="procoins" amount={procoins} />
     </Space>
   );
 }

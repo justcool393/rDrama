@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { Button, Col, Grid, Row, Space, Statistic } from "antd";
 import chunk from "lodash.chunk";
 import key from "weak-key";
-import { useCasino } from "../../useCasino";
-import { useUserGameSession } from "../../state";
-import "./Roulette.css";
+import {
+  useUserGameSession,
+  userPlayedRoulette,
+  useCasinoDispatch,
+} from "../../state";
 import Countdown from "antd/lib/statistic/Countdown";
+import "./Roulette.css";
 
 const RED_NUMBERS = [
   1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36,
@@ -27,14 +30,13 @@ const { useBreakpoint } = Grid;
 
 export function Roulette() {
   const { md } = useBreakpoint();
+  const dispatch = useCasinoDispatch();
   const [finished, setFinished] = useState(false);
-  const { userPlayedRoulette } = useCasino();
   const session = useUserGameSession("roulette");
 
   if (!session) {
     return null;
   }
-
   const roulette = session.game_state as RouletteGameState;
   const isSpinning = roulette.game_status === "started";
   const wheelStyle: React.HTMLAttributes<HTMLImageElement>["style"] = md

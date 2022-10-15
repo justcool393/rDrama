@@ -5,11 +5,10 @@ import {
   useActiveCasinoGame,
   useCasinoGameNames,
   useGameIcons,
+  socketActions,
 } from "../state";
-import { useCasino } from "../useCasino";
 
 export function CasinoFooter() {
-  const { userStartedGame } = useCasino();
   const activeGame = useActiveCasinoGame();
   const availableGames = useCasinoGameNames();
   const gameIcons = useGameIcons();
@@ -37,7 +36,7 @@ export function CasinoFooter() {
           return {
             key: game,
             label: <Icon />,
-            onClick: () => userStartedGame(game as CasinoGame),
+            onClick: () => socketActions.userStartedGame(game as CasinoGame),
             disabled: activeGame?.name === game,
           };
         })}

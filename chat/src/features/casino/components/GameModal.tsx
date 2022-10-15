@@ -7,8 +7,8 @@ import {
   useActiveUserGameSession,
   useGameActions,
   useGameIcons,
+  socketActions,
 } from "../state";
-import { useCasino } from "../useCasino";
 import { ActiveGame } from "./ActiveGame";
 import { GameLeaderboard } from "./GameLeaderboard";
 import { GameHelp } from "./GameHelp";
@@ -21,7 +21,6 @@ enum GameModalMode {
 }
 
 export function GameModal() {
-  const { userQuitGame } = useCasino();
   const gameActions = useGameActions();
   const session = useActiveUserGameSession();
   const [mode, setMode] = useState(GameModalMode.Play);
@@ -64,14 +63,14 @@ export function GameModal() {
       }
       closeIcon={<ImExit />}
       onOk={() => {}}
-      onCancel={userQuitGame}
+      onCancel={socketActions.userQuitGame}
       footer={
         mode === GameModalMode.Play ? (
           <Space direction="vertical" style={{ width: "100%" }}>
             <Wager />
             <Divider style={{ margin: 0 }} />
             <Space>
-              <Button key="exit" onClick={userQuitGame}>
+              <Button key="exit" onClick={socketActions.userQuitGame}>
                 <ImExit style={{ marginRight: 8 }} /> Exit
               </Button>
               {gameActions.map(

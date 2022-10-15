@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Divider, Layout, Typography } from "antd";
+import { Button, Layout, Typography } from "antd";
 import { CgClose } from "react-icons/cg";
 import { FiUsers } from "react-icons/fi";
 import { useOnlineUserCount } from "../state";

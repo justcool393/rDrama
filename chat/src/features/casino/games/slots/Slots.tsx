@@ -7,8 +7,11 @@ import React, {
 } from "react";
 import { Grid, notification } from "antd";
 import { sleep } from "../../../../helpers";
-import { useCasino } from "../../useCasino";
-import { useUserGameSession } from "../../state";
+import {
+  useUserGameSession,
+  userPlayedSlots,
+  useCasinoDispatch,
+} from "../../state";
 import { SlotReel } from "./SlotReel";
 import "./Slots.css";
 
@@ -21,7 +24,7 @@ export function Slots() {
   const leverRef = useRef<HTMLDivElement>(null);
   const leverBallRef = useRef<HTMLDivElement>(null);
   const pullingLever = useRef(false);
-  const { userPlayedSlots } = useCasino();
+  const dispatch = useCasinoDispatch();
   const { sm } = useBreakpoint();
   const session = useUserGameSession("slots");
   const [rolling, setRolling] = useState([false, false, false]);
@@ -35,23 +38,26 @@ export function Slots() {
       return emptySet;
     }
   }, [session]);
-  const handleLeverPull = useCallback(async (active = true) => {
-    if (!pullingLever.current) {
-      if (active) {
-        userPlayedSlots();
+  const handleLeverPull = useCallback(
+    async (active = true) => {
+      if (!pullingLever.current) {
+        if (active) {
+          dispatch(userPlayedSlots());
+        }
+
+        pullingLever.current = true;
+        leverRef.current?.classList.add("Slots-lever__pulled");
+        leverBallRef.current?.classList.add("Slots-leverBall__pulled");
+
+        await sleep(LEVER_PULL_DURATION);
+
+        pullingLever.current = false;
+        leverRef.current?.classList.remove("Slots-lever__pulled");
+        leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
       }
-
-      pullingLever.current = true;
-      leverRef.current?.classList.add("Slots-lever__pulled");
-      leverBallRef.current?.classList.add("Slots-leverBall__pulled");
-
-      await sleep(LEVER_PULL_DURATION);
-
-      pullingLever.current = false;
-      leverRef.current?.classList.remove("Slots-lever__pulled");
-      leverBallRef.current?.classList.remove("Slots-leverBall__pulled");
-    }
-  }, []);
+    },
+    [dispatch]
+  );
   const handleSlotsStart = useCallback(async () => {
     setRolling([true, false, false]);
     await sleep(REEL_DELAY);

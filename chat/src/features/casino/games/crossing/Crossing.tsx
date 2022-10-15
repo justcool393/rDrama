@@ -1,6 +1,5 @@
-import React from "react"
-import { useCasino } from "../../useCasino";
+import React from "react";
 
 export function Crossing() {
-    return <div>Crossing</div>
+  return <div>Crossing</div>;
 }

@@ -1,24 +1,23 @@
 import React, { useMemo } from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Alert, InputNumber, Tabs, Typography } from "antd";
-import { useRootContext } from "../../../hooks";
 import { Currency } from "./Currency";
-import { useActiveUserGameSession, useCasinoSelector } from "../state";
-import { MINIMUM_WAGER, useCasino } from "../useCasino";
+import {
+  MINIMUM_WAGER,
+  useActiveUserGameSession,
+  useActiveUserBalances,
+  useActiveBet,
+  useCasinoDispatch,
+  betChanged,
+} from "../state";
 
 const { Text } = Typography;
 
 export function Wager() {
-  const { id } = useRootContext();
+  const dispatch = useCasinoDispatch();
   const session = useActiveUserGameSession();
-  const { wager, currency, setWager, setCurrency } = useCasino();
-  const balances = useCasinoSelector(
-    (state) =>
-      state.user.by_id[id]?.balances ?? {
-        coins: 0,
-        procoins: 0,
-      }
-  );
+  const { wager, currency } = useActiveBet();
+  const balances = useActiveUserBalances();
   const balanceError = useMemo(() => {
     const maximumWager = balances[currency];
     return wager > maximumWager ? "Insufficient balance." : "";
@@ -40,7 +39,9 @@ export function Wager() {
             min={MINIMUM_WAGER}
             value={wager}
             status={balanceError ? "error" : ""}
-            onChange={(value) => setWager(value)}
+            onChange={(value) =>
+              dispatch(betChanged({ wager: value, currency }))
+            }
             prefix={balanceError ? <ExclamationCircleOutlined /> : <span />}
             size="large"
             style={{ padding: 0 }}
@@ -59,7 +60,9 @@ export function Wager() {
 
       <Tabs
         tabPosition="right"
-        onChange={(tab) => setCurrency(tab as CasinoCurrency)}
+        onChange={(tab) =>
+          dispatch(betChanged({ wager, currency: tab as CasinoCurrency }))
+        }
         items={[
           {
             key: "coins",
