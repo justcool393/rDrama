@@ -10,7 +10,6 @@ import {
   Comment,
   Dropdown,
   Menu,
-  Modal,
   PageHeader,
   Popconfirm,
   Space,

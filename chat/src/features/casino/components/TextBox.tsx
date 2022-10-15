@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Button, Divider, Input, Space, Tooltip } from "antd";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { FiSend } from "react-icons/fi";
+import cloneDeep from "lodash.clonedeep";
+import { useRootContext } from "../../../hooks";
 import { useCasino } from "../useCasino";
+import { useChatMessages } from "../state";
 
 const TEXTAREA_ROW_COUNT = 3;
 const TEXTAREA_CHARACTER_LIMIT = 1000;
@@ -11,6 +14,7 @@ const { TextArea } = Input;
 
 export function TextBox() {
   const textareaRef = useRef<null | HTMLTextAreaElement>(null);
+  const { id } = useRootContext();
   const {
     draft,
     recipient,
@@ -21,9 +25,34 @@ export function TextBox() {
     userSentMessage,
     userConversed,
   } = useCasino();
+  const chatMessageGroups = useChatMessages();
   const handleSend = useMemo(
     () => (recipient ? userConversed : userSentMessage),
     [recipient, userConversed, userSentMessage]
+  );
+  const handleEditLastMessage = useCallback(() => {
+    for (const messageGroup of cloneDeep(chatMessageGroups).reverse()) {
+      if (messageGroup.author.id === id) {
+        const mostRecentMessage = messageGroup.messages.pop();
+        setDraft(mostRecentMessage.original);
+        setEditing(mostRecentMessage.id);
+        setTimeout(() => {
+          const messageLength = mostRecentMessage.original.length;
+          const input = document.getElementById(
+            "TextBox"
+          ) as HTMLTextAreaElement;
+          input.setSelectionRange(messageLength, messageLength);
+        }, 0);
+      }
+    }
+  }, [chatMessageGroups]);
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === "ArrowUp") {
+        handleEditLastMessage();
+      }
+    },
+    [handleEditLastMessage]
   );
 
   // Listen for changes from the Emoji Modal and reflect them in draft
@@ -80,6 +109,7 @@ export function TextBox() {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onPressEnter={handleSend}
+          onKeyDown={handleKeyDown}
           style={{
             flex: 1,
           }}

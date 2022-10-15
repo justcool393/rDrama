@@ -163,15 +163,26 @@ class CasinoHandlers():
     @staticmethod
     def handle_user_deleted_message(state, payload):
         message_id = payload['message_id']
-        all_messages = CasinoSelectors.select_message_ids(state)
-        message_lookup = CasinoSelectors.select_message_lookup(state)
 
-        if message_id in all_messages:
-            all_messages.remove(message_id)
+        def remove_from(all_selector, lookup_selector):
+            all_selection = all_selector(state)
+            lookup_selection = lookup_selector(state)
 
-        if message_lookup.get(message_id):
-            del message_lookup[message_id]
+            if message_id in all_selection:
+                all_selection.remove(message_id)
 
+            if lookup_selection.get(message_id):
+                del lookup_selection[message_id]
+
+        remove_from(
+            CasinoSelectors.select_message_ids,
+            CasinoSelectors.select_message_lookup
+        )
+        remove_from(
+            CasinoSelectors.select_reaction_ids,
+            CasinoSelectors.select_reaction_lookup
+        )
+        
         return state
 
     @staticmethod
