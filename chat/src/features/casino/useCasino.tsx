@@ -313,6 +313,19 @@ export function CasinoProvider({ children }: PropsWithChildren) {
     }
   });
 
+  // When the "Confirm Delete?" modal appear, focus the Yep button.
+  useEffect(() => {
+    if (confirmingDelete) {
+      setTimeout(() => {
+        const yep = document.getElementById("confirmDeleteYep");
+        yep?.focus();
+      }, 0);
+    } else {
+      const input = document.getElementById("TextBox");
+      input?.focus();
+    }
+  }, [confirmingDelete]);
+
   if (joinedAgain) {
     return (
       <div
@@ -354,6 +367,9 @@ export function CasinoProvider({ children }: PropsWithChildren) {
           onOk={() => {
             userDeletedMessage(editing);
             finishConfirmingDelete();
+          }}
+          okButtonProps={{
+            id: "confirmDeleteYep",
           }}
           onCancel={finishConfirmingDelete}
           okText="Yep"

@@ -23,10 +23,10 @@ export function formatTimeAgo(options: FormatTimeAgoOptions) {
       },
     },
     round: true,
-    units: ["h", "m", "s"],
+    units: ["h", "m"],
     largest: 2,
     spacer: "",
-    delimiter: ", ",
+    delimiter: "",
   });
   const now = new Date().getTime();
   const toFormat: string[] = [];
@@ -36,7 +36,7 @@ export function formatTimeAgo(options: FormatTimeAgoOptions) {
       options.timestamp * 1000 - now
     )} ago`;
     const finalTimeAgo =
-      humanizedTimeAgo === "0s ago" ? "just now" : humanizedTimeAgo;
+      humanizedTimeAgo === "0m ago" ? "recently" : humanizedTimeAgo;
 
     toFormat.push(finalTimeAgo);
   }
@@ -46,7 +46,7 @@ export function formatTimeAgo(options: FormatTimeAgoOptions) {
       options.edited * 1000 - now
     )} ago)`;
     const finalEdited =
-      humanizedEdited === "0s ago" ? "just now" : humanizedEdited;
+      humanizedEdited === "0m ago" ? "recently" : humanizedEdited;
 
     toFormat.push(finalEdited);
   }
