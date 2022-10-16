@@ -1229,7 +1229,6 @@ def settings_kofi(v):
 	tier = kofi_tiers[transaction.amount]
 
 	v.patron = tier
-	if v.discord_id: add_role(v, f"{tier}")
 
 	procoins = procoins_li[tier]
 
