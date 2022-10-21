@@ -522,7 +522,7 @@
 
 
 {% if comment_info and not comment_info.is_banned and not comment_info.deleted_utc %}
-	<title>{{'@'+comment_info.author_name}} comments on "{{p.plaintitle(v)}} - {{SITE_NAME}}"</title>
+	<title>{% block pagetitle %}{{'@'+comment_info.author_name}} comments on "{{p.plaintitle(v)}} - {{SITE_NAME}}" {% endblock %}</title>
 
 	<meta property="og:author" content="{{'@'+comment_info.author_name}}">
 	<meta property="og:description" name="description" content="{{comment_info.plainbody(v)}}">
@@ -540,7 +540,7 @@
 	<meta name="twitter:description" content="{{comment_info.plainbody(v)}}">
 	<meta name="twitter:url" content="{{comment_info.permalink}}">
 {% else %}
-	<title>{{p.plaintitle(v)}} - {{SITE_NAME}}</title>
+	<title>{% block pagetitle %}{{p.plaintitle(v)}} - {{SITE_NAME}}{% endblock%}</title>
 
 	<meta property="og:author" name="author" content="{{'@'+p.author_name}}">
 	<meta property="og:description" name="description" content="{{p.plainbody(v)}}">
