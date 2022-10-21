@@ -16,12 +16,14 @@
 	{% if include_seo %}
 		{{seo()}}
 	{% endif %}
-	{% if SITE == 'rdrama.net' %}
-		<meta name="cf-2fa-verify" content="4f40ca1ca249313">
-	{% elif SITE == 'watchpeopledie.tv' %}
-		<meta name="cf-2fa-verify" content="372aba5b9338e00">
-	{% elif SITE == 'pcmemes.net' %}
-		<meta name="cf-2fa-verify" content="bf22ffe56e4bcda">
+	{% if include_2fa_verify %}
+		{% if SITE == 'rdrama.net' %}
+			<meta name="cf-2fa-verify" content="4f40ca1ca249313">
+		{% elif SITE == 'watchpeopledie.tv' %}
+			<meta name="cf-2fa-verify" content="372aba5b9338e00">
+		{% elif SITE == 'pcmemes.net' %}
+			<meta name="cf-2fa-verify" content="bf22ffe56e4bcda">
+		{% endif %}
 	{% endif %}
 </head>
 {% endmacro %}
