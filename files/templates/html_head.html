@@ -7,7 +7,7 @@
 	{{stylesheets(include_user_css, extra_css)}}
 	{% if title2 %}
 		<title>{{title2 | default(SITE_NAME, true)}}</title>
-		{{meta_tags_2(title2)}
+		{{meta_tags_2(title2)}}
 	{% else %}
 		{% block title %}
 			<title>{% block pagetitle %}{{SITE_NAME}}{% endblock %}</title>
