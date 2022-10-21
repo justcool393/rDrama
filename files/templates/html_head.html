@@ -6,10 +6,7 @@
 	{{meta_tags_1(csp, author)}}
 	{{stylesheets(include_user_css, extra_css)}}
 	{% block title %}
-	{% if not title %}
-		{% set title = SITE_NAME %}
-	{% endif %}
-	<title>{% block pagetitle %}{{title}}{% endblock %}</title>
+	<title>{% block pagetitle %}{{title | default(SITE_NAME, true)}}{% endblock %}</title>
 
 	{{meta_tags_2(title)}}
 	{% endblock %}
