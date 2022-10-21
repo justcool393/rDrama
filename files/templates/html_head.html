@@ -22,15 +22,19 @@
 		{{seo()}}
 	{% endif %}
 	{% if include_2fa_verify %}
-		{% if SITE == 'rdrama.net' %}
-			<meta name="cf-2fa-verify" content="4f40ca1ca249313">
-		{% elif SITE == 'watchpeopledie.tv' %}
-			<meta name="cf-2fa-verify" content="372aba5b9338e00">
-		{% elif SITE == 'pcmemes.net' %}
-			<meta name="cf-2fa-verify" content="bf22ffe56e4bcda">
-		{% endif %}
+		{{cf_2fa_verify()}}
 	{% endif %}
 </head>
+{% endmacro %}
+
+{% macro cf_2fa_verify() %}
+	{% if SITE == 'rdrama.net' %}
+		<meta name="cf-2fa-verify" content="4f40ca1ca249313">
+	{% elif SITE == 'watchpeopledie.tv' %}
+		<meta name="cf-2fa-verify" content="372aba5b9338e00">
+	{% elif SITE == 'pcmemes.net' %}
+		<meta name="cf-2fa-verify" content="bf22ffe56e4bcda">
+	{% endif %}
 {% endmacro %}
 
 {% macro javascript() %}
@@ -38,13 +42,15 @@
 	<script defer src="{{'js/core.js' | asset}}"></script>
 {% endmacro %}
 
-{% macro meta_tags_1(csp, author) %}
+{% macro meta_tags_1(csp, author, exclude_author) %}
 	<meta charset="utf-8">
 	<meta name="description" content="{{DESCRIPTION}}">
 	<meta http-equiv="Content-Security-Policy" content="{{csp | default(CONTENT_SECURITY_POLICY_DEFAULT, true)}}">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="thumbnail" content="{{'site_preview.webp' | asset_siteimg}}">
-	<meta name="author" content="{{author}}">
+	{% if not exclude_author %}
+		<meta name="author" content="{{author}}">
+	{% endif %}
 {% endmacro %}
 
 {% macro meta_tags_2(title, author) %}
