@@ -16,7 +16,7 @@
 			{{meta_tags_2(self.pagetitle(), author)}}
 		{% endblock %}
 	{% else %}
-		{% block title %}{% endblock %}
+		{{self.title()}}
 	{% endif %}
 	{% if include_seo %}
 		{{seo()}}
