@@ -1,4 +1,4 @@
-{% macro html_head(js, include_seo, include_user_css, csp, title, author, extra_css) %}
+{% macro html_head(js, include_seo, include_user_css, csp, title, author, extra_css, include_2fa_verify) %}
 <head>
 	{% if js %}
 		{{javascript()}}
@@ -9,7 +9,7 @@
 	{% if not title %}
 		{% set title = SITE_NAME %}
 	{% endif %}
-	<title>{{title}}</title>
+	<title>{% block pagetitle %}{{title}}{% endblock %}</title>
 
 	{{meta_tags_2(title)}}
 	{% endblock %}
@@ -34,7 +34,7 @@
 {% macro meta_tags_1(csp, author) %}
 	<meta charset="utf-8">
 	<meta name="description" content="{{DESCRIPTION}}">
-	<meta http-equiv="Content-Security-Policy" content="{{csp}}">
+	<meta http-equiv="Content-Security-Policy" content="{{csp | default(CONTENT_SECURITY_POLICY_DEFAULT, true)}}">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="thumbnail" content="{{'site_preview.webp' | asset_siteimg}}">
 	<meta name="author" content="{{author}}">
