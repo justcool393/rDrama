@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% if request.path == '/' %}
-	{% set csp="script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' tls-use1.fpapi.io api.fpjs.io {% if PUSHER_ID != 'blahblahblah' %}{{PUSHER_ID}}.pushnotifications.pusher.com{% endif %}; object-src 'none';"> %}
+	{% set csp=CONTENT_SECURITY_POLICY_HOME %}
 {% endif %}
 {{html_head(true, true, true, csp, SITE_NAME, "", "", true)}}
 
