@@ -2,7 +2,7 @@
 {%- import 'html_head.html' as html_head with context -%}
 <!DOCTYPE html>
 <html lang="en">
-{{html_head(true, false, false, none, "Settings - {{SITE_NAME}}", "", "")}}
+{{html_head.html_head(true, false, false, none, "Settings - {{SITE_NAME}}", "", "")}}
 <head>
 	<title>{% block pagetitle %}Settings - {{SITE_NAME}}{% endblock %}</title>
 </head>

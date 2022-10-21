@@ -1,4 +1,4 @@
-{% macro html_head(js, include_seo, include_user_css, csp, title, author, extra_css, include_2fa_verify) %}
+{% macro html_head.html_head(js, include_seo, include_user_css, csp, title, author, extra_css, include_2fa_verify) %}
 <head>
 	{% if js %}
 		{{javascript()}}
