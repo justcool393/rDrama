@@ -5,7 +5,115 @@
 {% if request.path == '/' %}
 	{% set csp=CONTENT_SECURITY_POLICY_HOME %}
 {% endif %}
-{{html_head.html_head(true, true, true, csp, none, "", "", true, 'post/' in request.path)}}
+{% if not 'post/' in request.path %}
+	{{html_head.html_head(true, true, true, csp, none, "", "", true, 'post/' in request.path)}}
+{% else %}
+<head>
+	<script defer src="{{'js/bootstrap.js' | asset}}"></script>
+	<script defer src="{{'js/core.js' | asset}}"></script>
+
+	<meta name="description" content="{{DESCRIPTION}}">
+
+	{% if request.path == '/' %}
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' tls-use1.fpapi.io api.fpjs.io {% if PUSHER_ID != 'blahblahblah' %}{{PUSHER_ID}}.pushnotifications.pusher.com{% endif %}; object-src 'none';">
+	{% else %}
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' ajax.cloudflare.com; connect-src 'self'; object-src 'none';">
+	{% endif %}
+
+	{% if v %}
+		<style>:root{--primary:#{{v.themecolor}}}</style>
+		<link rel="stylesheet" href="{{'css/main.css' | asset}}">
+		<link rel="stylesheet" href="{{('css/'~v.theme~'.css') | asset}}">
+		<link rel="stylesheet" href="{{'css/awards.css' | asset}}">
+		{% if v.agendaposter %}
+			<style>
+				html {
+					cursor:url('/i/dildo.webp?v=2000'), auto;
+				}
+			</style>
+		{% elif v.css %}
+			<style>
+				{{v.css | safe}}
+			</style>
+		{% endif %}
+	{% else %}
+		<style>:root{--primary:#{{DEFAULT_COLOR}}</style>
+		<link rel="stylesheet" href="{{'css/main.css' | asset}}">
+		<link rel="stylesheet" href="{{('css/'~DEFAULT_THEME~'.css') | asset}}">
+		<link rel="stylesheet" href="{{'css/awards.css' | asset}}">
+	{% endif %}
+
+	{% if request.path.endswith('/catalog') %}
+		<link rel="stylesheet" href="{{'css/catalog.css' | asset}}">
+	{% endif %}
+
+	{% if sub and sub.css and not request.path.endswith('settings') and not request.values.get('nocss') %}
+		<link rel="stylesheet" href="/h/{{sub}}/css" type="text/css">
+	{% endif %}
+
+	{% if v and v.themecolor == '30409f' %}
+		<style>
+			p a {
+				color: #2a96f3;
+			}
+		</style>
+	{% endif %}
+
+	{% if SITE_NAME == 'rDrama' %}
+		<style>
+			.mod:before {
+				content: '(((';
+			}
+
+			.mod:after {
+				content: ')))';
+			}
+		</style>
+	{% endif %}
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<meta name="thumbnail" content="{{'site_preview.webp' | asset_siteimg}}">
+
+	<link rel="icon" type="image/webp" href="{{'icon.webp' | asset_siteimg}}">
+	{% block title %}
+	<title>{{SITE_NAME}}</title>
+
+	<meta property="og:type" content="article">
+	<meta property="og:title" content="{{SITE_NAME}}">
+	<meta property="og:site_name" content="{{SITE}}">
+	<meta property="og:image" content="{{'site_preview.webp' | asset_siteimg}}">
+	<meta property="og:url" content="{{request.full_path}}">
+	<meta property="og:description" name="description" content="{{SITE_NAME}} - {{DESCRIPTION}}">
+	<meta property="og:author" name="author" content="{{SITE_FULL}}">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="{{SITE_FULL}}">
+	<meta name="twitter:title" content="{{SITE_NAME}}">
+	<meta name="twitter:creator" content="{{SITE_FULL}}">
+	<meta name="twitter:description" content="{{SITE_NAME}} - {{DESCRIPTION}}">
+	<meta name="twitter:image" content="{{'site_preview.webp' | asset_siteimg}}">
+	<meta name="twitter:url" content="{{request.full_path}}">
+	{% endblock %}
+
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-touch-fullscreen" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	{{html_head.seo()}}
+		{% if 'slackernews' in request.path %}
+			<meta name="cf-2fa-verify" content="ea6d12c0fb87b3b">
+		{% elif SITE == 'rdrama.net' %}
+			<meta name="cf-2fa-verify" content="4f40ca1ca249313">
+		{% elif SITE == 'watchpeopledie.tv' %}
+			<meta name="cf-2fa-verify" content="372aba5b9338e00">
+		{% elif SITE == 'pcmemes.net' %}
+			<meta name="cf-2fa-verify" content="bf22ffe56e4bcda">
+		{% endif %}
+ </head>
+{% endif %}
+
 
  <body id="{% if request.path != '/comments' %}{% block pagetype %}frontpage{% endblock %}{% endif %}" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="{% if path != '/formatting' %}overflow-x: hidden; {% endif %} background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background){% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>
 
