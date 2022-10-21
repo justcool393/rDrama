@@ -1,0 +1,19 @@
+<head>
+	<meta charset="utf-8">
+	<meta name="{{DESCRIPTION}}">
+	<meta http-equiv="Content-Security-Policy" content="{{csp | default(CONTENT_SECURITY_POLICY_DEFAULT, true)}}">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="thumbnail" content="{{'site_preview.webp' | asset_siteimg}}">
+	{% if js %}
+		<script defer src="{{'js/bootstrap.js' | asset}}"></script>
+		<script defer src="{{'js/core.js' | asset}}"></script>
+	{% endif %}
+	{% if author %}
+		<meta name="author" content="{{author}}">
+	{% endif %}
+	<title>{{% block title %}}{{SITE_NAME}}{{% endblock %}}</title>
+
+	{% if cloudflare_2fa_verify and CF_2FA_VERIFY %}
+		<meta name="cf-2fa-verify" content="{{CF_2FA_VERIFY}}">
+	{% endif %}
+</head>
