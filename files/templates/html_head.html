@@ -6,7 +6,7 @@
 	{{meta_tags_1(csp, author)}}
 	{{stylesheets(include_user_css, extra_css)}}
 	{% if title2 %}
-		<title>{{title2 | default(SITE_NAME, true)}}</title>
+		<title>{{title2 | default(SITE_NAME, true)}} - {{SITE_NAME}}</title>
 		{{meta_tags_2(title2)}}
 	{% else %}
 		{% block title %}

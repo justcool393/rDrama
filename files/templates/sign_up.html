@@ -2,7 +2,12 @@
 {%- import 'html_head.html' as html_head with context -%}
 <!DOCTYPE html>
 <html lang="en">
-{{html_head.html_head(true, false, false, none, "{% if ref_user %}{{ref_user.username}} invites you to {{SITE_NAME}}{% else %}Sign up - {{SITE_NAME}}{% endif %}", none, "", false)}}
+{% if ref_user %}
+	{% set title= ref_user.username + "invites you to " + SITE_NAME %}
+{% else %}
+	{% set title="Sign up" %}
+{% endif %}
+{{html_head.html_head(true, false, false, none, title, none, "", false)}}
 <body id="login">
 
 <div class="container-fluid position-absolute h-100 p-0 overflow-auto">
