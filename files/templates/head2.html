@@ -16,4 +16,17 @@
 	{% if cloudflare_2fa_verify and CF_2FA_VERIFY %}
 		<meta name="cf-2fa-verify" content="{{CF_2FA_VERIFY}}">
 	{% endif %}
+	{% if v %}
+		<style type="text/css">
+			body {
+				{% if v.actual_background %}
+					background: url({{v.actual_background}}) center center fixed;
+					{% if 'anime' not in v.actual_background %}
+						background-size: cover;
+					{% endif %}
+				{% endif %}
+				background-color: var(--background);
+			}
+		</style>
+	{% endif %}
 </head>

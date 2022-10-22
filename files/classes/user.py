@@ -196,6 +196,12 @@ class User(Base):
 
 	@property
 	@lazy
+	def actual_background(self):
+		if self.agendaposter or self.is_banned: return '/assets/images/backgrounds/anime/1.webp?v=3'
+		return f"/assets/images/backgrounds/{self.background}?v=3"
+
+	@property
+	@lazy
 	def num_of_owned_hats(self):
 		return len(self.owned_hats)
 
