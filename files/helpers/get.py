@@ -276,7 +276,7 @@ def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_fun
 	if not include_shadowbanned and not v.can_see_shadowbanned:
 		comments = comments.join(Comment.author).filter(User.shadowbanned == None)
 
-	comments = comments.filter(criterion)
+	comments = comments.filter(*criterion)
 	comments = comments.join(
 		votes,
 		votes.c.comment_id == Comment.id,
@@ -289,18 +289,19 @@ def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_fun
 		blocked,
 		blocked.c.user_id == Comment.author_id,
 		isouter=True
-	).all()
+	)
+	queried = comments.all()
 	output = []
 	dump = []
-	for c in comments:
+	for c in queried:
 		comment = c[0]
 		comment.voted = c[1] or 0
 		comment.is_blocking = c[2] or 0
 		comment.is_blocked = c[3] or 0
+		print(f"logging {comment.id}, voted {comment.voted}, block bully {comment.is_blocked}, block victim {comment.is_blocked}")
 		if should_keep_func and should_keep_func(c[0]): output.append(comment)
 		else: dump.append(comment)
 	return (comments, output)
-	#return comments
 
 def get_sub_by_name(sub:str, v:Optional[User]=None, graceful=False) -> Optional[Sub]:
 	if not sub:
