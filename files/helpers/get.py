@@ -256,6 +256,8 @@ def get_comments(cids:Iterable[int], v:Optional[User]=None) -> List[Comment]:
 	if not cids: return []
 	if v:
 		output = get_comments_v_properties(v, True, None, Comment.id.in_(cids))[1]
+		for comment in output:
+			print(f"comment id {comment.id} (log 6 - get), voted {comment.voted}, block bully {comment.is_blocking}, block victim {comment.is_blocked}")
 	else:
 		output = g.db.query(Comment).join(Comment.author).filter(User.shadowbanned == None, Comment.id.in_(cids)).all()
 	return sorted(output, key=lambda x: cids.index(x.id))
@@ -298,7 +300,7 @@ def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_fun
 		comment.voted = c[1] or 0
 		comment.is_blocking = c[2] or 0
 		comment.is_blocked = c[3] or 0
-		print(f"logging {comment.id}, voted {comment.voted}, block bully {comment.is_blocked}, block victim {comment.is_blocked}")
+		print(f"comment id {comment.id} (log 1), voted {comment.voted}, block bully {comment.is_blocking}, block victim {comment.is_blocked}")
 		if should_keep_func and should_keep_func(c[0]): output.append(comment)
 		else: dump.append(comment)
 	return (comments, output)

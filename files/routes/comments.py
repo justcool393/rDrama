@@ -75,6 +75,8 @@ def post_pid_comment_cid(cid, pid=None, anything=None, v=None, sub=None):
 		# this is required because otherwise the vote and block
 		# props won't save properly unless you put them in a list
 		output = get_comments_v_properties(v, False, None, Comment.top_comment_id == c.top_comment_id)[1]
+		for comment in output:
+			print(f"comment id {comment.id} (log 2 - page), voted {comment.voted}, block bully {comment.is_blocking}, block victim {comment.is_blocked}")
 	post.replies=[top_comment]
 			
 	if v and v.client: return top_comment.json
