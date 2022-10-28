@@ -301,7 +301,7 @@ def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_fun
 		comment.is_blocking = c[2] or 0
 		comment.is_blocked = c[3] or 0
 		print(f"comment id {comment.id} (log 1), voted {comment.voted}, block bully {comment.is_blocking}, block victim {comment.is_blocked}")
-		if should_keep_func and should_keep_func(c[0]): output.append(comment)
+		if not should_keep_func or should_keep_func(c[0]): output.append(comment)
 		else: dump.append(comment)
 	return (comments, output)
 
