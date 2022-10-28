@@ -135,9 +135,24 @@ def vote_post_comment(target_id, new, v, cls, vote_cls):
 			return 0
 		return votes.count()
 
-	target.upvotes = get_vote_count(1, False)
-	target.downvotes = get_vote_count(-1, False)
-	target.realupvotes = get_vote_count(0, True) # first arg is ignored here
+	should_recompute = target.realupvotes == 1 or target.realupvotes % VOTE_RECOMPUTE_SCORE_MOD == 0
+	upvotes_mod = -1 if existing == 1 else 0
+	downvotes_mod = -1 if existing == -1 else 0
+	realvotes_mod = 1 if not existing else 0
+
+	if existing == 0:
+		upvotes_mod = 1 if new == 1 else 0
+		downvotes_mod = 1 if new == -1 else 0
+	else:
+		if existing == 1:
+			downvotes_mod = 1 if new == -1 else 0
+		elif existing == -1:
+			upvotes_mod = 1 if new == 1 else 0
+		realvotes_mod = -1 if not new else 0
+	
+	target.upvotes = get_vote_count(1, False) if should_recompute else target.upvotes + upvotes_mod
+	target.downvotes = get_vote_count(-1, False) if should_recompute else target.downvotes + downvotes_mod
+	target.realupvotes = get_vote_count(0, True) if should_recompute else target.realupvotes + realvotes_mod # first arg is ignored here
 
 	if target.author.progressivestack or (cls == Submission and (target.sub in ('space', 'istory', 'dinos') or target.domain.endswith('.win'))):
 		target.realupvotes *= 2

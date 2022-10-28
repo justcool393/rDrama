@@ -398,6 +398,8 @@ MAX_VIDEO_SIZE_MB_PATRON = 64
 
 ANTISPAM_BYPASS_IDS = ()
 
+VOTE_RECOMPUTE_SCORE_MOD = 3
+
 if SITE == 'rdrama.net':
 	FEATURES['PRONOUNS'] = True
 	FEATURES['HOUSES'] = True
@@ -507,6 +509,7 @@ elif SITE == 'watchpeopledie.tv':
 else: # localhost or testing environment implied
 	FEATURES['PRONOUNS'] = True
 	FEATURES['HOUSES'] = True
+	VOTE_RECOMPUTE_SCORE_MOD = 1
 
 bots = {AUTOJANNY_ID, SNAPPY_ID, LONGPOSTBOT_ID, ZOZBOT_ID, BASEDBOT_ID}
 
