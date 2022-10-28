@@ -271,11 +271,12 @@ def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_fun
 		votes.c.vote_type,
 		blocking.c.target_id,
 		blocked.c.target_id,
-	).filter(criterion)
+	)
 
 	if not include_shadowbanned and not v.can_see_shadowbanned:
 		comments = comments.join(Comment.author).filter(User.shadowbanned == None)
- 
+
+	comments = comments.filter(criterion)
 	comments = comments.join(
 		votes,
 		votes.c.comment_id == Comment.id,
