@@ -136,11 +136,11 @@ def vote_post_comment(target_id, new, v, cls, vote_cls):
 		return votes.count()
 
 	should_recompute = target.realupvotes == 1 or target.realupvotes % VOTE_RECOMPUTE_SCORE_MOD == 0
-	upvotes_mod = -1 if existing == 1 else 0
-	downvotes_mod = -1 if existing == -1 else 0
-	realvotes_mod = 1 if not existing else 0
+	upvotes_mod = -1 if existing and existing.vote_type == 1 else 0
+	downvotes_mod = -1 if existing and existing.vote_type == -1 else 0
+	realvotes_mod = 1 if not existing or not existing.vote_type else 0
 
-	if existing == 0:
+	if existing == 0 or target.realupvotes == 1:
 		upvotes_mod = 1 if new == 1 else 0
 		downvotes_mod = 1 if new == -1 else 0
 	else:
