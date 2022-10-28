@@ -263,7 +263,7 @@ def get_comments(cids:Iterable[int], v:Optional[User]=None) -> List[Comment]:
 def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_func:Optional[Callable[[Comment], bool]]=None, *criterion):
 	if not v:
 		raise TypeError("A user is required")
-	votes = g.db.query(criterion).filter_by(user_id=v.id).subquery()
+	votes = g.db.query(CommentVote.vote_type, CommentVote.comment_id).filter_by(user_id=v.id).subquery()
 	blocking = v.blocking.subquery()
 	blocked = v.blocked.subquery()
 	comments = g.db.query(
@@ -271,7 +271,7 @@ def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_fun
 		votes.c.vote_type,
 		blocking.c.target_id,
 		blocked.c.target_id,
-	).filter(filter)
+	).filter(criterion)
 
 	if not include_shadowbanned and not v.can_see_shadowbanned:
 		comments = comments.join(Comment.author).filter(User.shadowbanned == None)
