@@ -154,8 +154,6 @@ def post_id(pid, anything=None, v=None, sub=None):
 		# shadowban check is done in sort_objects
 		# output is needed: see comments.py
 		comments, output = get_comments_v_properties(v, True, None, Comment.parent_submission == post.id, Comment.level < 10)
-		for comment in output:
-			print(f"comment id {comment.id} (log 3 - post_id), voted {comment.voted}, block bully {comment.is_blocking}, block victim {comment.is_blocked}")
 		pinned = [c[0] for c in comments.filter(Comment.stickied != None).all()]
 		comments = comments.filter(Comment.level == 1, Comment.stickied == None)
 		comments = sort_objects(sort, comments, Comment,
@@ -246,8 +244,6 @@ def viewmore(v, pid, sort, offset):
 		# shadowban check is done in sort_objects
 		# output is needed: see comments.py
 		comments, output = get_comments_v_properties(v, True, None, Comment.parent_submission == pid, Comment.stickied == None, Comment.id.notin_(ids), Comment.level < 10)
-		for comment in output:
-			print(f"comment id {comment.id} (log 4 - viewmore), voted {comment.voted}, block bully {comment.is_blocking}, block victim {comment.is_blocked}")
 		comments = comments.filter(Comment.level == 1)
 		comments = sort_objects(sort, comments, Comment,
 			include_shadowbanned=(v and v.can_see_shadowbanned))
@@ -301,8 +297,6 @@ def morecomments(v, cid):
 		# shadowban check is done in sort_objects i think
 		# output is needed: see comments.py
 		comments, output = get_comments_v_properties(v, True, lambda c:bool(c.parent_comment_id == int(cid)), Comment.top_comment_id == tcid, Comment.level > 9)
-		for comment in output:
-			print(f"comment id {comment.id} (log 5 - morecomments), voted {comment.voted}, block bully {comment.is_blocking}, block victim {comment.is_blocked}")
 		comments = output
 	else:
 		c = get_comment(cid)
