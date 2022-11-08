@@ -666,7 +666,6 @@ def visitors(v):
 
 @app.get("/@<username>")
 @app.get("/@<username>.json")
-@app.get("/logged_out/@<username>")
 @auth_desired_with_logingate
 def u_username(username, v=None):
 	u = get_user(username, v=v, include_blocks=True, include_shadowbanned=False)

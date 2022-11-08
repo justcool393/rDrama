@@ -6,12 +6,12 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
 <url>
-  <loc>https://rdrama.net/logged_out</loc>
+  <loc>https://rdrama.net</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/</loc>
+  <loc>https://rdrama.net/post/19236/</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -71,107 +71,107 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583</loc>
+  <loc>https://rdrama.net/post/16583</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459</loc>
+  <loc>https://rdrama.net/post/18459</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878</loc>
+  <loc>https://rdrama.net/post/75878</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/33652</loc>
+  <loc>https://rdrama.net/post/33652</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/35835</loc>
+  <loc>https://rdrama.net/post/35835</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/37677</loc>
+  <loc>https://rdrama.net/post/37677</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/39413</loc>
+  <loc>https://rdrama.net/post/39413</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19711/a-short-guide-on-how-to</loc>
+  <loc>https://rdrama.net/post/19711/a-short-guide-on-how-to</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=hot&amp;t=hour&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=hot&amp;t=hour&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=hot&amp;t=week&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=hot&amp;t=week&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=hot&amp;t=month&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=hot&amp;t=month&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=hot&amp;t=year&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=hot&amp;t=year&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=hot&amp;t=all&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=hot&amp;t=all&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=bump&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=bump&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=top&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=top&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=bottom&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=bottom&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=new&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=new&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=old&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=old&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=controversial&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=controversial&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=comments&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=comments&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75837/dramafitness-megathread-9-the-biggining-of</loc>
+  <loc>https://rdrama.net/post/75837/dramafitness-megathread-9-the-biggining-of</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -186,7 +186,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75977/india-is-currently-feuding-with-the</loc>
+  <loc>https://rdrama.net/post/75977/india-is-currently-feuding-with-the</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -201,7 +201,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75950/grift-zero-of-the-adderall-epidemic</loc>
+  <loc>https://rdrama.net/post/75950/grift-zero-of-the-adderall-epidemic</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -211,7 +211,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75959/twitter-marseytrain-activates-the-nuclear-option</loc>
+  <loc>https://rdrama.net/post/75959/twitter-marseytrain-activates-the-nuclear-option</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -221,7 +221,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75968/marseylove-love-for-metadrama-marseylove</loc>
+  <loc>https://rdrama.net/post/75968/marseylove-love-for-metadrama-marseylove</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -256,7 +256,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75957/they-hated-her-because-she-told</loc>
+  <loc>https://rdrama.net/post/75957/they-hated-her-because-she-told</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -266,7 +266,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75945/who-factchecks-the-factchecker</loc>
+  <loc>https://rdrama.net/post/75945/who-factchecks-the-factchecker</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -276,7 +276,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/76001/scrotes-are-so-fucking-pathetic-omg</loc>
+  <loc>https://rdrama.net/post/76001/scrotes-are-so-fucking-pathetic-omg</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -291,7 +291,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75914/gentlemen-ladies-after-a-month-of</loc>
+  <loc>https://rdrama.net/post/75914/gentlemen-ladies-after-a-month-of</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -301,7 +301,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/58808/alright-dramatards-time-to-vote-marseyridin</loc>
+  <loc>https://rdrama.net/post/58808/alright-dramatards-time-to-vote-marseyridin</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -311,7 +311,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75921/this-schizosorenspam-shit-is-annoying-and</loc>
+  <loc>https://rdrama.net/post/75921/this-schizosorenspam-shit-is-annoying-and</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -321,7 +321,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/schizocel/post/75609/replace-soren-with-schizocel-and-this</loc>
+  <loc>https://rdrama.net/h/schizocel/post/75609/replace-soren-with-schizocel-and-this</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -376,12 +376,12 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/schizocel/post/75884/the-magnitude-of-convoluted-inside-jokes</loc>
+  <loc>https://rdrama.net/h/schizocel/post/75884/the-magnitude-of-convoluted-inside-jokes</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/schizocel</loc>
+  <loc>https://rdrama.net/h/schizocel</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -391,7 +391,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75989/foid-refused-mandatory-sympathy-while-posting</loc>
+  <loc>https://rdrama.net/post/75989/foid-refused-mandatory-sympathy-while-posting</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -401,7 +401,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75987/tw-i-need-to-get-a</loc>
+  <loc>https://rdrama.net/post/75987/tw-i-need-to-get-a</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -411,7 +411,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75976/internal-server-error</loc>
+  <loc>https://rdrama.net/post/75976/internal-server-error</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -421,17 +421,17 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/braincels</loc>
+  <loc>https://rdrama.net/h/braincels</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75897/jokers-2-is-confirmed</loc>
+  <loc>https://rdrama.net/post/75897/jokers-2-is-confirmed</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75994/i-really-love-marseyismywaifu</loc>
+  <loc>https://rdrama.net/post/75994/i-really-love-marseyismywaifu</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -441,7 +441,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75931/marseyklennyclap</loc>
+  <loc>https://rdrama.net/post/75931/marseyklennyclap</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -451,7 +451,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75899/do-not-forgive-do-not-forget</loc>
+  <loc>https://rdrama.net/post/75899/do-not-forgive-do-not-forget</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -461,7 +461,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75913/just-found-out-that-im-trans</loc>
+  <loc>https://rdrama.net/post/75913/just-found-out-that-im-trans</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -471,7 +471,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75981/you-dont-want-to-try-anything</loc>
+  <loc>https://rdrama.net/post/75981/you-dont-want-to-try-anything</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -481,7 +481,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75820/what-do-most-people-not-realize</loc>
+  <loc>https://rdrama.net/post/75820/what-do-most-people-not-realize</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -496,7 +496,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75819/terf-islanders-decide-theyd-rather-die</loc>
+  <loc>https://rdrama.net/post/75819/terf-islanders-decide-theyd-rather-die</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -506,7 +506,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75815/trans-allies-get-what-they-asked</loc>
+  <loc>https://rdrama.net/post/75815/trans-allies-get-what-they-asked</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -516,12 +516,12 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/anime</loc>
+  <loc>https://rdrama.net/h/anime</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/anime/post/75831/this-is-cirno</loc>
+  <loc>https://rdrama.net/h/anime/post/75831/this-is-cirno</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -626,7 +626,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75847/terf-island-people-study-disturbing-moment</loc>
+  <loc>https://rdrama.net/post/75847/terf-island-people-study-disturbing-moment</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -636,7 +636,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75943/serious-question-is-russia-winning-the</loc>
+  <loc>https://rdrama.net/post/75943/serious-question-is-russia-winning-the</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -651,7 +651,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/76000/marseymuhammad-pbuh</loc>
+  <loc>https://rdrama.net/post/76000/marseymuhammad-pbuh</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -661,12 +661,12 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out?sort=hot&amp;page=2&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net?sort=hot&amp;page=2&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=new&amp;t=all</loc>
+  <loc>https://rdrama.net/?sort=new&amp;t=all</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -676,12 +676,12 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=/logged_out/post/19236/</loc>
+  <loc>https://rdrama.net/login?redirect=/post/19236/</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -691,22 +691,22 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/?sort=bottom</loc>
+  <loc>https://rdrama.net/post/19236/?sort=bottom</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/?sort=new</loc>
+  <loc>https://rdrama.net/post/19236/?sort=new</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/?sort=old</loc>
+  <loc>https://rdrama.net/post/19236/?sort=old</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/?sort=controversial</loc>
+  <loc>https://rdrama.net/post/19236/?sort=controversial</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -716,7 +716,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/477392?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/477392?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -731,7 +731,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/477413?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/477413?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -741,7 +741,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/478434?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/478434?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -751,7 +751,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475015?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475015?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -761,7 +761,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475051?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475051?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -771,7 +771,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475057?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475057?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -781,7 +781,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475105?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475105?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -791,7 +791,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475734?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475734?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -801,7 +801,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475737?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475737?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -811,7 +811,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475766?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475766?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -821,7 +821,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475773?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475773?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -831,7 +831,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475949?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475949?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -841,12 +841,12 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/476002?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/476002?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/476002</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/476002</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -861,7 +861,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/478275?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/478275?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -871,7 +871,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/478149?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/478149?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -881,7 +881,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/478992?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/478992?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -891,7 +891,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/479126?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/479126?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -901,7 +901,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/479546?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/479546?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -911,7 +911,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/478895?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/478895?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -921,7 +921,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475025?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475025?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -931,7 +931,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475043?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475043?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -941,7 +941,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475068?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475068?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -951,7 +951,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475084?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475084?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -961,7 +961,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475089?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475089?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -971,7 +971,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475097?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475097?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -981,7 +981,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475112?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475112?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -991,7 +991,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475220?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475220?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1001,7 +1001,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475026?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475026?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1016,7 +1016,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475028?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475028?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1026,7 +1026,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475035?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475035?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1036,7 +1036,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475085?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475085?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1046,7 +1046,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475044?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475044?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1056,7 +1056,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475081?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475081?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1066,7 +1066,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475140?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475140?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1076,7 +1076,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475215?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475215?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1086,7 +1086,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/1892325?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/1892325?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1096,7 +1096,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/1892423?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/1892423?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1106,7 +1106,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/1894344?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/1894344?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1116,7 +1116,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475036?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475036?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1126,7 +1126,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475134?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475134?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1136,7 +1136,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475717?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475717?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1146,7 +1146,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/479427?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/479427?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1156,7 +1156,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/476009?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/476009?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1171,7 +1171,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475118?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475118?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1181,7 +1181,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475159?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475159?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1191,7 +1191,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475304?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475304?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1201,7 +1201,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475082?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475082?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1211,7 +1211,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/475325?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/475325?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1221,77 +1221,77 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/19236/marseylaugh-marseylaugh-marseylaugh/476597?context=8</loc>
+  <loc>https://rdrama.net/post/19236/marseylaugh-marseylaugh-marseylaugh/476597?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/60443/</loc>
+  <loc>https://rdrama.net/post/60443/</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=hot&amp;t=hour&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=hour&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=hot&amp;t=week&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=week&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=hot&amp;t=month&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=month&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=hot&amp;t=year&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=year&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=hot&amp;t=all&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=all&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=bump&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=bump&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=top&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=top&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=bottom&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=bottom&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=new&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=new&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=old&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=old&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=controversial&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=controversial&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=comments&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=comments&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/?sort=hot&amp;page=2&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;page=2&amp;t=day&amp;ccmode=false</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1341,7 +1341,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/64305/</loc>
+  <loc>https://rdrama.net/post/64305/</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1351,7 +1351,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/furry</loc>
+  <loc>https://rdrama.net/h/furry</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1366,7 +1366,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/moemorphism</loc>
+  <loc>https://rdrama.net/h/moemorphism</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1381,7 +1381,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/music</loc>
+  <loc>https://rdrama.net/h/music</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1396,7 +1396,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/random</loc>
+  <loc>https://rdrama.net/h/random</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1431,7 +1431,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/dankchristianmemes</loc>
+  <loc>https://rdrama.net/h/dankchristianmemes</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1446,7 +1446,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/slackernews</loc>
+  <loc>https://rdrama.net/h/slackernews</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1461,7 +1461,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/ducks</loc>
+  <loc>https://rdrama.net/h/ducks</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1476,7 +1476,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/eevee</loc>
+  <loc>https://rdrama.net/h/eevee</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1491,7 +1491,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/borgar</loc>
+  <loc>https://rdrama.net/h/borgar</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1506,7 +1506,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/shrek_dick_dimension</loc>
+  <loc>https://rdrama.net/h/shrek_dick_dimension</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1521,7 +1521,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/h/carpathianflorist</loc>
+  <loc>https://rdrama.net/h/carpathianflorist</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1536,12 +1536,12 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=/logged_out/post/16583</loc>
+  <loc>https://rdrama.net/login?redirect=/post/16583</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1551,22 +1551,22 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583?sort=top</loc>
+  <loc>https://rdrama.net/post/16583?sort=top</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583?sort=bottom</loc>
+  <loc>https://rdrama.net/post/16583?sort=bottom</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583?sort=old</loc>
+  <loc>https://rdrama.net/post/16583?sort=old</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583?sort=controversial</loc>
+  <loc>https://rdrama.net/post/16583?sort=controversial</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1576,7 +1576,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2099220?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2099220?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1586,7 +1586,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2098425?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2098425?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1596,7 +1596,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2099170?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2099170?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1606,7 +1606,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2098186?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2098186?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1616,7 +1616,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2097709?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2097709?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1626,7 +1626,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2096229?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2096229?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1636,7 +1636,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2094034?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2094034?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1646,7 +1646,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2093551?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2093551?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1656,7 +1656,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2087416?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2087416?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1666,7 +1666,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2086725?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2086725?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1676,17 +1676,17 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/16583/megathread-posts-here-marseys-or-other/2084709?context=8</loc>
+  <loc>https://rdrama.net/post/16583/megathread-posts-here-marseys-or-other/2084709?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=/logged_out/post/18459</loc>
+  <loc>https://rdrama.net/login?redirect=/post/18459</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1696,22 +1696,22 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459?sort=top</loc>
+  <loc>https://rdrama.net/post/18459?sort=top</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459?sort=bottom</loc>
+  <loc>https://rdrama.net/post/18459?sort=bottom</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459?sort=old</loc>
+  <loc>https://rdrama.net/post/18459?sort=old</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459?sort=controversial</loc>
+  <loc>https://rdrama.net/post/18459?sort=controversial</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1721,12 +1721,12 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2099175?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2099175?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75637/changelog-hole-improvements-follow-holes-for/2091847?context=8</loc>
+  <loc>https://rdrama.net/post/75637/changelog-hole-improvements-follow-holes-for/2091847?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1736,7 +1736,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2093336?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2093336?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1746,7 +1746,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2090949?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2090949?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1756,7 +1756,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2091000?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2091000?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1766,7 +1766,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2089369?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2089369?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1776,7 +1776,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2089221?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2089221?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1786,7 +1786,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2088542?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2088542?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1796,7 +1796,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2088023?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2088023?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1806,7 +1806,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2086651?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2086651?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1816,7 +1816,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2086711?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2086711?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1826,7 +1826,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2091665?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2091665?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1836,7 +1836,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2091794?context=8</loc>
+  <loc>https://rdrama.net/post/18459/marseycapywalking-megathread-for-bugs-and-suggestions/2091794?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1846,12 +1846,12 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=/logged_out/post/75878</loc>
+  <loc>https://rdrama.net/login?redirect=/post/75878</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1861,22 +1861,22 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878?sort=top</loc>
+  <loc>https://rdrama.net/post/75878?sort=top</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878?sort=bottom</loc>
+  <loc>https://rdrama.net/post/75878?sort=bottom</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878?sort=old</loc>
+  <loc>https://rdrama.net/post/75878?sort=old</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878?sort=controversial</loc>
+  <loc>https://rdrama.net/post/75878?sort=controversial</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1886,7 +1886,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097292?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097292?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1896,7 +1896,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097440?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097440?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1906,7 +1906,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097510?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097510?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1916,7 +1916,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097560?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097560?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1926,7 +1926,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097768?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097768?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1936,7 +1936,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097794?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097794?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1946,7 +1946,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097830?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097830?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1961,7 +1961,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097659?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097659?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1971,50 +1971,48 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097668?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097668?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097707?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097707?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097783?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097783?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2098316?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2098316?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2098333?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2098333?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2099121?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2099121?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2099067?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2099067?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097681?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097681?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097537?context=8</loc>
+  <loc>https://rdrama.net/post/75878/megathread-post-your-favourite-rdramathemed-oc/2097537?context=8</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
-
-
 </urlset>
