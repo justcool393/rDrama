@@ -16,22 +16,12 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/logged_out/</loc>
-  <lastmod>2022-06-10T23:42:26+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
   <loc>https://rdrama.net/login</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://rdrama.net/login?redirect=%2Fcontact%3F</loc>
-  <lastmod>2022-06-10T23:42:26+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://rdrama.net/login?redirect=/logged_out</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -1237,11 +1227,6 @@
 </url>
 <url>
   <loc>https://rdrama.net/logged_out/post/60443/</loc>
-  <lastmod>2022-06-10T23:42:26+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://rdrama.net/login?redirect=/logged_out/</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>

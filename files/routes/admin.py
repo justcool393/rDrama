@@ -1149,7 +1149,7 @@ def remove_post(post_id, v):
 
 	v.coins += 1
 	g.db.add(v)
-	cloudflare.purge_files_in_cache(f"https://{SITE}/logged_out")
+	cloudflare.purge_files_in_cache(f"https://{SITE}/")
 	return {"message": "Post removed!"}
 
 
