@@ -111,8 +111,9 @@ def before_request():
 @app.after_request
 def after_request(response):
 	if response.status_code < 400:
-		if CLOUDFLARE_AVAILABLE and CLOUDFLARE_COOKIE_VALUE:
-			response.set_cookie("lo", CLOUDFLARE_COOKIE_VALUE if hasattr(g, 'v') and g.v else '', max_age=60*60*24*365 if g.v else 1)
+		if CLOUDFLARE_AVAILABLE and CLOUDFLARE_COOKIE_VALUE and getattr(g, 'desires_auth', False):
+			logged_in = bool(getattr(g, 'v', None))
+			response.set_cookie("lo", CLOUDFLARE_COOKIE_VALUE if logged_in else '', max_age=60*60*24*365 if logged_in else 1)
 		g.db.commit()
 		g.db.close()
 		del g.db
@@ -120,7 +121,7 @@ def after_request(response):
 
 @app.teardown_appcontext
 def teardown_request(error):
-	if hasattr(g, 'db') and g.db:
+	if getattr(g, 'db', None):
 		g.db.rollback()
 		g.db.close()
 		del g.db

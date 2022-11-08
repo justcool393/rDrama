@@ -33,6 +33,7 @@ def calc_users(v):
 def get_logged_in_user():
 	if hasattr(g, 'v'): return g.v
 	if not (hasattr(g, 'db') and g.db): g.db = db_session()
+	g.desires_auth = True
 	v = None
 	token = request.headers.get("Authorization","").strip()
 	if token:
