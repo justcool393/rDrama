@@ -111,62 +111,62 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=hot&amp;t=hour&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=hour</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=hot&amp;t=week&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=week</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=hot&amp;t=month&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=month</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=hot&amp;t=year&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=year</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=hot&amp;t=all&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=all</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=bump&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=bump&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=top&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=top&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=bottom&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=bottom&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=new&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=new&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=old&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=old&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=controversial&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=controversial&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=comments&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=comments&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -231,22 +231,22 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F6345%3F</loc>
+  <loc>https://rdrama.net/id/6345</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F5800%3F</loc>
+  <loc>https://rdrama.net/id/5800</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F2663%3F</loc>
+  <loc>https://rdrama.net/id/2663</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F8494%3F</loc>
+  <loc>https://rdrama.net/id/8494</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -306,7 +306,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F5526%3F</loc>
+  <loc>https://rdrama.net/id/5526</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -326,52 +326,52 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F1376%3F</loc>
+  <loc>https://rdrama.net/id/1376</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F2546%3F</loc>
+  <loc>https://rdrama.net/id/2546</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F10092%3F</loc>
+  <loc>https://rdrama.net/id/10092</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F3511%3F</loc>
+  <loc>https://rdrama.net/id/3511</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F560%3F</loc>
+  <loc>https://rdrama.net/id/560</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F636%3F</loc>
+  <loc>https://rdrama.net/id/636</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F541%3F</loc>
+  <loc>https://rdrama.net/id/541</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F4003%3F</loc>
+  <loc>https://rdrama.net/id/4003</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F9334%3F</loc>
+  <loc>https://rdrama.net/id/9334</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F5188%3F</loc>
+  <loc>https://rdrama.net/id/5188</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -531,92 +531,92 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F7813%3F</loc>
+  <loc>https://rdrama.net/id/7813</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F296%3F</loc>
+  <loc>https://rdrama.net/id/296</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F1994%3F</loc>
+  <loc>https://rdrama.net/id/1994</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F9397%3F</loc>
+  <loc>https://rdrama.net/id/9397</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F1357%3F</loc>
+  <loc>https://rdrama.net/id/1357</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F8654%3F</loc>
+  <loc>https://rdrama.net/id/8654</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F1203%3F</loc>
+  <loc>https://rdrama.net/id/1203</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F7466%3F</loc>
+  <loc>https://rdrama.net/id/7466</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F7580%3F</loc>
+  <loc>https://rdrama.net/id/7580</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F3016%3F</loc>
+  <loc>https://rdrama.net/id/3016</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F9755%3F</loc>
+  <loc>https://rdrama.net/id/9755</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F5099%3F</loc>
+  <loc>https://rdrama.net/id/5099</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F7615%3F</loc>
+  <loc>https://rdrama.net/id/7615</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F10272%3F</loc>
+  <loc>https://rdrama.net/id/10272</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F9287%3F</loc>
+  <loc>https://rdrama.net/id/9287</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F10881%3F</loc>
+  <loc>https://rdrama.net/id/10881</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F1378%3F</loc>
+  <loc>https://rdrama.net/id/1378</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F1387%3F</loc>
+  <loc>https://rdrama.net/id/1387</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -646,7 +646,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F30%3F</loc>
+  <loc>https://rdrama.net/id/30</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -661,7 +661,7 @@
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rdrama.net?sort=hot&amp;page=2&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;page=2&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
@@ -1231,67 +1231,67 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=hot&amp;t=hour&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=hour</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=hot&amp;t=week&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=week</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=hot&amp;t=month&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=month</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=hot&amp;t=year&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=year</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=hot&amp;t=all&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;t=all</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=bump&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=bump&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=top&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=top&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=bottom&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=bottom&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=new&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=new&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=old&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=old&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=controversial&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=controversial&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=comments&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=comments&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/?sort=hot&amp;page=2&amp;t=day&amp;ccmode=false</loc>
+  <loc>https://rdrama.net/?sort=hot&amp;page=2&amp;t=day</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -1951,7 +1951,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://rdrama.net/login?redirect=%2Fid%2F4284%3F</loc>
+  <loc>https://rdrama.net/id/4284</loc>
   <lastmod>2022-06-10T23:42:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
