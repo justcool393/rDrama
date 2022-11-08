@@ -2,6 +2,7 @@ import gevent.monkey
 gevent.monkey.patch_all()
 from os import environ, path
 import secrets
+from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
 from flask import *
 from flask_caching import Cache
 from flask_limiter import Limiter
@@ -103,7 +104,6 @@ def before_request():
 	if not request.path: request.path = '/'
 	request.full_path = request.full_path.rstrip('?').rstrip('/')
 	if not request.full_path: request.full_path = '/'
-
 	if not session.get("session_id"):
 		session.permanent = True
 		session["session_id"] = secrets.token_hex(49)
@@ -111,6 +111,8 @@ def before_request():
 @app.after_request
 def after_request(response):
 	if response.status_code < 400:
+		if CLOUDFLARE_AVAILABLE and CLOUDFLARE_COOKIE_VALUE:
+			response.set_cookie("lo", CLOUDFLARE_COOKIE_VALUE if hasattr(g, 'v') and g.v else '', max_age=60*60*24*365 if g.v else 1)
 		g.db.commit()
 		g.db.close()
 		del g.db

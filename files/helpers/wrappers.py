@@ -3,6 +3,7 @@ from .alerts import *
 from files.helpers.const import *
 from files.helpers.get import *
 from files.__main__ import db_session, limiter
+from flask import g, request
 from random import randint
 import functools
 import user_agents
@@ -63,7 +64,6 @@ def get_logged_in_user():
 
 	if request.method.lower() != "get" and app.config['SETTINGS']['Read-only mode'] and not (v and v.admin_level >= PERMS['SITE_BYPASS_READ_ONLY_MODE']):
 		abort(403)
-
 
 	g.v = v
 

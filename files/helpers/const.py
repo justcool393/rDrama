@@ -54,6 +54,8 @@ if PUSHER_ID != "blahblahblah":
 CONTENT_SECURITY_POLICY_DEFAULT = "script-src 'self' 'unsafe-inline' ajax.cloudflare.com; connect-src 'self'; object-src 'none';"
 CONTENT_SECURITY_POLICY_HOME = f"script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' tls-use1.fpapi.io api.fpjs.io{PUSHER_ID_CSP}; object-src 'none';"
 
+CLOUDFLARE_COOKIE_VALUE = "yes."
+
 if SITE == "localhost": SITE_FULL = 'http://' + SITE
 else: SITE_FULL = 'https://' + SITE
 
