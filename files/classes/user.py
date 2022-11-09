@@ -2,6 +2,7 @@ from sqlalchemy.orm import deferred, aliased
 from sqlalchemy.sql import func
 from secrets import token_hex
 import pyotp
+from files.classes import Base
 from files.classes.sub import Sub
 from files.helpers.media import *
 from files.helpers.const import *
@@ -24,9 +25,8 @@ from .sub_block import *
 from .sub_subscription import *
 from .sub_join import *
 from .hats import *
-from files.classes import Base, cache
+from files.__main__ import cache
 from files.helpers.security import *
-from copy import deepcopy
 import random
 from os import remove, path
 
