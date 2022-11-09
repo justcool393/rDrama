@@ -225,7 +225,7 @@ def post_id(pid, anything=None, v=None, sub=None):
 
 	return render_template(template, v=v, p=post, ids=list(ids),
 		sort=sort, render_replies=True, offset=offset, sub=post.subr,
-		fart=app.config['SETTINGS']['Fart mode'])
+		fart=CONFIG['Fart mode'])
 
 @app.get("/viewmore/<pid>/<sort>/<offset>")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")

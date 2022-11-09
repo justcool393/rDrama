@@ -13,7 +13,7 @@ from files.helpers.security import *
 from files.helpers.get import *
 from files.helpers.media import *
 from files.helpers.const import *
-from files.helpers.const_stateful import reload_config
+from files.helpers.const_stateful import CONFIG, reload_config
 from files.helpers.actions import *
 from files.helpers.useractions import *
 import files.helpers.cloudflare as cloudflare
@@ -460,7 +460,7 @@ def admin_git_head():
 @app.post("/admin/site_settings/<setting>")
 @admin_level_required(PERMS['SITE_SETTINGS'])
 def change_settings(v, setting):
-	site_settings = app.config['SETTINGS']
+	site_settings = CONFIG
 	site_settings[setting] = not site_settings[setting] 
 	with open("/site_settings.json", "w", encoding='utf_8') as f:
 		json.dump(site_settings, f)

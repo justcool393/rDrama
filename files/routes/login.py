@@ -5,6 +5,7 @@ import requests
 
 from files.helpers.actions import *
 from files.helpers.const import *
+from files.helpers.const_stateful import CONFIG
 from files.helpers.get import *
 from files.helpers.mail import send_mail, send_verification_email
 from files.helpers.regex import *
@@ -199,7 +200,7 @@ def logout(v):
 @app.get("/signup")
 @auth_desired
 def sign_up_get(v):
-	if not app.config['SETTINGS']['Signups']:
+	if not CONFIG['Signups']:
 		return {"error": "New account registration is currently closed. Please come back later."}, 403
 
 	if v: return redirect(SITE_FULL)
@@ -247,7 +248,7 @@ def sign_up_get(v):
 @limiter.limit("1/second;10/day")
 @auth_desired
 def sign_up_post(v):
-	if not app.config['SETTINGS']['Signups']:
+	if not CONFIG['Signups']:
 		return {"error": "New account registration is currently closed. Please come back later."}, 403
 
 	if v: abort(403)
@@ -259,18 +260,14 @@ def sign_up_post(v):
 	if not submitted_token: abort(400)
 
 	correct_formkey_hashstr = form_timestamp + submitted_token + g.agent
-
 	correct_formkey = hmac.new(key=bytes(SECRET_KEY, "utf-16"),
 								msg=bytes(correct_formkey_hashstr, "utf-16"),
 								digestmod='md5'
 							).hexdigest()
 
 	now = int(time.time())
-
 	username = request.values.get("username")
-	
 	if not username: abort(400)
-
 	username = username.strip()
 
 	def signup_error(error):
