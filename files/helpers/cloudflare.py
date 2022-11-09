@@ -1,6 +1,6 @@
 import json
 from typing import List, Union, Optional
-from files.helpers.const import *
+from files.helpers.const import CF_HEADERS, CF_ZONE
 import requests
 
 CLOUDFLARE_API_URL = "https://api.cloudflare.com/client/v4"

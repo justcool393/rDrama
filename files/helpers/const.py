@@ -2,7 +2,6 @@ from os import environ
 import re
 from copy import deepcopy
 from json import loads
-from files.__main__ import db_session
 from files.classes.sub import Sub
 from files.classes.marsey import Marsey
 from flask import request
@@ -1409,6 +1408,7 @@ christian_emojis = [':#marseyjesus:',':#marseyimmaculate:',':#marseymothermary:'
 	':#marseycrucified:',':#chadjesus:',':#marseyandjesus:',':#marseyjesus2:',
 	':#marseyorthodoxsmug:',':#marseypastor:',':#marseypope:',]
 
+from files.__main__ import db_session
 db = db_session()
 marseys_const = [x[0] for x in db.query(Marsey.name).filter(Marsey.submitter_id==None, Marsey.name!='chudsey').all()]
 marseys_const2 = marseys_const + ['chudsey','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','exclamationpoint','period','questionmark']
