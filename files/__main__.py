@@ -96,6 +96,7 @@ def before_request():
 	g.db = db_session()
 	g.webview = '; wv) ' in ua
 	g.inferior_browser = 'iphone' in ua or 'ipad' in ua or 'ipod' in ua or 'mac os' in ua or ' firefox/' in ua
+	g.is_tor = request.headers.get("cf-ipcountry") == "T1"
 
 	request.path = request.path.rstrip('/')
 	if not request.path: request.path = '/'

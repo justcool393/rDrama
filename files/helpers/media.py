@@ -1,10 +1,8 @@
-from PIL import Image, ImageOps
+from PIL import Image
 from PIL.ImageSequence import Iterator
-from webptools import gifwebp
 import subprocess
 import os
-from flask import abort, g
-import requests
+from flask import abort, g, request
 import time
 from .const import *
 import gevent
@@ -13,9 +11,9 @@ from shutil import copyfile
 from files.classes.media import *
 from files.helpers.cloudflare import purge_files_in_cache
 
-def process_files():
+def process_files(files):
 	body = ''
-	if request.files.get("file") and request.headers.get("cf-ipcountry") != "T1":
+	if files.get("file") and not g.is_tor:
 		files = request.files.getlist('file')[:4]
 		for file in files:
 			if file.content_type.startswith('image/'):

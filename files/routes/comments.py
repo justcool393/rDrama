@@ -141,7 +141,7 @@ def comment(v):
 		choices.append(i.group(1))
 		body = body.replace(i.group(0), "")
 
-	if request.files.get("file") and request.headers.get("cf-ipcountry") != "T1":
+	if request.files.get("file") and not g.is_tor:
 		files = request.files.getlist('file')[:4]
 		for file in files:
 			if file.content_type.startswith('image/'):
@@ -378,10 +378,10 @@ def edit_comment(cid, v):
 
 	body = sanitize_raw_body(request.values.get("body", ""), False)
 
-	if len(body) < 1 and not (request.files.get("file") and request.headers.get("cf-ipcountry") != "T1"):
+	if len(body) < 1 and not (request.files.get("file") and not g.is_tor):
 		abort(400, "You have to actually type something!")
 
-	if body != c.body or request.files.get("file") and request.headers.get("cf-ipcountry") != "T1":
+	if body != c.body or request.files.get("file") and not g.is_tor:
 		if v.longpost and (len(body) < 280 or ' [](' in body or body.startswith('[](')):
 			abort(403, "You have to type more than 280 characters!")
 		elif v.bird and len(body) > 140:
@@ -407,7 +407,7 @@ def edit_comment(cid, v):
 
 		execute_antispam_comment_check(body, v)
 
-		body += process_files()
+		body += process_files(request.files)
 		body = body.strip()[:COMMENT_BODY_LENGTH_LIMIT] # process_files potentially adds characters to the post
 
 		body_for_sanitize = body

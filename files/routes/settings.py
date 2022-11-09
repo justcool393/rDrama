@@ -221,7 +221,7 @@ def settings_personal_post(v):
 	elif not updated and FEATURES['USERS_PROFILE_BODYTEXT'] and \
 			(request.values.get("bio") or request.files.get('file')):
 		bio = request.values.get("bio")[:1500]
-		bio += process_files()
+		bio += process_files(request.files)
 		bio = bio.strip()
 		bio_html = sanitize(bio)
 
@@ -476,7 +476,7 @@ def settings_log_out_others(v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def settings_images_profile(v):
-	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
+	if g.is_tor: abort(403, "Image uploads are not allowed through TOR.")
 
 	file = request.files["profile"]
 
@@ -512,7 +512,7 @@ def settings_images_profile(v):
 @auth_required
 @feature_required('USERS_PROFILE_BANNER')
 def settings_images_banner(v):
-	if request.headers.get("cf-ipcountry") == "T1": abort(403, "Image uploads are not allowed through TOR.")
+	if g.is_tor: abort(403, "Image uploads are not allowed through TOR.")
 
 	file = request.files["banner"]
 

@@ -56,7 +56,7 @@ def submit_marsey(v):
 			marsey.submitter = g.db.query(User.username).filter_by(id=marsey.submitter_id).one()[0]
 		return render_template("submit_marseys.html", v=v, marseys=marseys, error=error, name=name, tags=tags, username=username, file=file), 400
 
-	if request.headers.get("cf-ipcountry") == "T1":
+	if g.is_tor:
 		return error("Image uploads are not allowed through TOR.")
 
 	if not file or not file.content_type.startswith('image/'):
@@ -218,7 +218,7 @@ def submit_hat(v):
 		else: hats = g.db.query(HatDef).filter(HatDef.submitter_id == v.id).all()
 		return render_template("submit_hats.html", v=v, hats=hats, error=error, name=name, description=description, username=username), 400
 
-	if request.headers.get("cf-ipcountry") == "T1":
+	if g.is_tor:
 		return error("Image uploads are not allowed through TOR.")
 
 	file = request.files["image"]
@@ -370,7 +370,7 @@ def update_marsey(v):
 		return error("A marsey with this name doesn't exist!")
 
 	if file:
-		if request.headers.get("cf-ipcountry") == "T1":
+		if g.is_tor:
 			return error("Image uploads are not allowed through TOR.")
 		if not file.content_type.startswith('image/'):
 			return error("You need to submit an image!")
@@ -425,7 +425,7 @@ def update_hat(v):
 	def error(error):
 		return render_template("update_assets.html", v=v, error=error, type="Hat")
 
-	if request.headers.get("cf-ipcountry") == "T1":
+	if g.is_tor:
 		return error("Image uploads are not allowed through TOR.")
 
 	if not file or not file.content_type.startswith('image/'):
