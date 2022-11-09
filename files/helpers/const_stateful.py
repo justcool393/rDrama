@@ -5,21 +5,24 @@ from os import path
 
 marseys_const = []
 marseys_const2 = []
+marsey_mappings = {}
 SNAPPY_MARSEYS = []
 SNAPPY_QUOTES = []
 
 def const_initialize(db:scoped_session):
+	_initialize_marseys(db)
+	_initialize_snappy_marseys_and_quotes()
+
+def _initialize_marseys(db:scoped_session):
 	marseys_const = [x[0] for x in db.query(Marsey.name).filter(Marsey.submitter_id==None, Marsey.name!='chudsey').all()]
 	marseys_const2 = marseys_const + ['chudsey','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','exclamationpoint','period','questionmark']
 	marseys = db.query(Marsey).filter(Marsey.submitter_id==None).all()
-	marsey_mappings = {}
 	for marsey in marseys:
 		for tag in marsey.tags.split():
 			if tag in marsey_mappings:
 				marsey_mappings[tag].append(marsey.name)
 			else:
 				marsey_mappings[tag] = [marsey.name]
-	_initialize_snappy_marseys_and_quotes()
 
 def _initialize_snappy_marseys_and_quotes():
 	if SITE_NAME != 'PCM':
