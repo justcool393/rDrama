@@ -14,6 +14,7 @@ from .errors import *
 from .reporting import *
 from .front import *
 from .login import *
+from .mail import *
 from .oauth import *
 from .posts import *
 from .search import *

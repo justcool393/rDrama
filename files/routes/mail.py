@@ -1,53 +1,13 @@
-import requests
 import time
 from flask import *
-from urllib.parse import quote
 
-from files.helpers.security import *
+from files.helpers.mail import *
 from files.helpers.wrappers import *
 from files.helpers.const import *
 from files.helpers.get import *
 from files.helpers.useractions import *
 from files.classes import *
 from files.__main__ import app, limiter
-
-
-def send_mail(to_address, subject, html):
-	if MAILGUN_KEY == 'blahblahblah': return
-
-	url = f"https://api.mailgun.net/v3/{SITE}/messages"
-
-	auth = ("api", MAILGUN_KEY)
-
-	data = {"from": EMAIL,
-			"to": [to_address],
-			"subject": subject,
-			"html": html,
-			}
-	
-	requests.post(url, auth=auth, data=data)
-
-
-def send_verification_email(user, email=None):
-
-	if not email:
-		email = user.email
-
-	url = f"https://{SITE}/activate"
-	now = int(time.time())
-
-	token = generate_hash(f"{email}+{user.id}+{now}")
-	params = f"?email={quote(email)}&id={user.id}&time={now}&token={token}"
-
-	link = url + params
-
-	send_mail(to_address=email,
-			html=render_template("email/email_verify.html",
-								action_url=link,
-								v=user),
-			subject=f"Validate your {SITE_NAME} account email."
-			)
-
 
 @app.post("/verify_email")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")

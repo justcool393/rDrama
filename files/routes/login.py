@@ -1,10 +1,10 @@
 from urllib.parse import urlencode
-from files.mail import *
-from files.__main__ import app, get_CF, limiter
 from files.helpers.const import *
 from files.helpers.regex import *
 from files.helpers.actions import *
 from files.helpers.get import *
+from files.helpers.mail import send_mail, send_verification_email
+from files.__main__ import app, get_CF, limiter
 import requests
 import secrets
 
