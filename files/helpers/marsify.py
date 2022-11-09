@@ -1,4 +1,4 @@
-from const_stateful import marsey_mappings
+from .const_stateful import marsey_mappings
 from random import choice
 
 def marsify(text):
