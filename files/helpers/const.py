@@ -137,7 +137,7 @@ if SITE_NAME == 'rDrama':
 		" kys": " keep yourself safe",
 		"kys ": "keep yourself safe ",
 		"republican": 'republiKKKan',
-		"america": 'amerikkka',
+		"america": 'ameriKKKa',
 	}
 	SLURS.update(RDRAMA_SLURS)
 
@@ -227,7 +227,6 @@ PERMS = { # Minimum admin_level to perform action.
 	'POST_TO_POLL_THREAD': 2,
 	'POST_BETS': 3,
 	'POST_BETS_DISTRIBUTE': 3, # probably should be the same as POST_BETS but w/e
-	'BYPASS_PIN_LIMIT_IF_TEMPORARY': 2,
 	'VIEW_PENDING_SUBMITTED_MARSEYS': 3,
 	'VIEW_PENDING_SUBMITTED_HATS': 3,
 	'MODERATE_PENDING_SUBMITTED_MARSEYS': 3, # note: there is an extra check so that only """carp""" can approve them
@@ -1625,6 +1624,8 @@ BOOSTED_SITES = {
 	'shitposter.club',
 	'sneed.social',
 	'seal.cafe',
+	'lobste.rs',
+	'stacker.news',
 }
 
 IMAGE_FORMATS = ['png','gif','jpg','jpeg','webp']

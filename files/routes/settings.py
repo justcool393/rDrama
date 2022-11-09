@@ -540,12 +540,9 @@ def settings_css_get(v):
 @auth_required
 def settings_css(v):
 	if v.agendaposter: abort(400, "Agendapostered users can't edit CSS!")
-
-	css = request.values.get("css").strip().replace('\\', '').strip()[:4000]
-
+	css = request.values.get("css", v.css).strip().replace('\\', '').strip()[:4000]
 	if '</style' in css.lower():
 		abort(400, "Please message @Aevann if you get this error")
-
 	v.css = css
 	g.db.add(v)
 
@@ -556,15 +553,13 @@ def settings_css(v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def settings_profilecss(v):
-	profilecss = request.values.get("profilecss").strip().replace('\\', '').strip()[:4000]
-
+	profilecss = request.values.get("profilecss", v.profilecss).strip().replace('\\', '').strip()[:4000]
 	valid, error = validate_css(profilecss)
 	if not valid:
 		return render_template("settings_css.html", error=error, v=v)
-
 	v.profilecss = profilecss
 	g.db.add(v)
-	return render_template("settings_css.html", v=v)
+	return redirect('/settings/css')
 
 @app.get("/settings/security")
 @auth_required
@@ -825,7 +820,7 @@ def settings_pronouns_change(v):
 @auth_required
 def settings_checkmark_text(v):
 	if not v.verified: abort(403)
-	new_name = sanitize_settings_text(request.values.get("title"), 100)
+	new_name = sanitize_settings_text(request.values.get("checkmark-text"), 100)
 	if not new_name: abort(400)
 	if new_name == v.verified: return render_template("settings_personal.html", v=v, error="You didn't change anything")
 	v.verified = new_name

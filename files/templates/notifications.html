@@ -28,7 +28,7 @@
 		Posts {% if v.post_notifications_count %}<span class="font-weight-bold" style="color:#0000ff">({{v.post_notifications_count}})</span>{% endif %}
 		</a>
 	</li>
-	{% if v.admin_level >= PERMS['NOTIFICATIONS_MODERATOR_ACTIONS'] %}
+	{% if v.admin_level >= PERMS['NOTIFICATIONS_MODERATOR_ACTIONS'] or v.moderated_subs %}
 		<li class="nav-item">
 			<a class="nav-link py-3{% if request.path == '/notifications/modactions' %} active{% endif %}" href="/notifications/modactions">
 			Modactions {% if v.modaction_notifications_count %}<span class="font-weight-bold" style="color:#1ad80d">({{v.modaction_notifications_count}})</span>{% endif %}
@@ -117,18 +117,14 @@
 	{% endif %}
 
 	{% if not notifications %}
-	<div class="text-center py-7 py-md-8">
+		<div class="text-center py-7 py-md-8">
+			<span class="fa-stack fa-2x text-muted mb-4">
+				<i class="fas fa-square text-gray-400 fa-stack-2x"></i>
+				<i class="fas text-gray-600 fa-envelope fa-stack-1x text-lg"></i>
+			</span>
 
-		<span class="fa-stack fa-2x text-muted mb-4">
-			<i class="fas fa-square text-gray-400 fa-stack-2x"></i>
-			<i class="fas text-gray-600 fa-envelope fa-stack-1x text-lg"></i>
-		</span>
-
-		<h5>No unread messages</h5>
-		<div class="text-small text-muted mb-3">When someone comments or replies, it will show up here.</div>
-		<a href="/notifications" class="btn btn-primary ">View entire inbox</a>
-	</div>
-
+			<h5>No notifications</h5>
+		</div>
 	{% endif %}
 
 </div>

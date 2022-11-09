@@ -1015,11 +1015,9 @@ def agendaposter(user_id, v):
 	if reason and reason.startswith("/") and '\\' not in reason:
 		reason = f'<a href="{reason.split()[0]}">{reason}</a>'
 
-	user.agendaposter = int(time.time()) + (days * 86400)
-	g.db.add(user)
-
 	duration = "permanently"
 	if days:
+		user.agendaposter = int(time.time()) + (days * 86400)
 		days_txt = str(days)
 		if days_txt.endswith('.0'): days_txt = days_txt[:-2]
 		duration = f"for {days_txt} day"
@@ -1027,8 +1025,11 @@ def agendaposter(user_id, v):
 		if reason: text = f"@{v.username} (Admin) has chudded you for **{days_txt}** days for the following reason:\n\n> {reason}"
 		else: text = f"@{v.username} (Admin) has chudded you for **{days_txt}** days."
 	else:
+		user.agendaposter = 1
 		if reason: text = f"@{v.username} (Admin) has chudded you permanently for the following reason:\n\n> {reason}"
 		else: text = f"@{v.username} (Admin) has chudded you permanently."
+
+	g.db.add(user)
 
 	send_repeatable_notification(user.id, text)
 
@@ -1224,7 +1225,7 @@ def sticky_post(post_id, v):
 	extra_pin_slots = 1 if post.stickied else 0
 	sticky_time = int(time.time()) + 3600 if not post.stickied else None
 
-	if pins >= PIN_LIMIT + extra_pin_slots and v.admin_level < PERMS['BYPASS_PIN_LIMIT_IF_TEMPORARY'] and not sticky_time:
+	if pins >= PIN_LIMIT + extra_pin_slots and not sticky_time:
 		abort(403, f"Can't exceed {PIN_LIMIT} pinned posts limit!")
 
 	if not post.stickied_utc:
