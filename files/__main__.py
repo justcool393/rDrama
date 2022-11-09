@@ -65,13 +65,14 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URL'])
 db_session = scoped_session(sessionmaker(bind=engine, autoflush=False))
 
 const_initialize(db_session)
-print(CONFIG)
 
 cache = Cache(app)
 Compress(app)
 
 @app.before_request
 def before_request():
+	print(CONFIG)
+	print(SITE)
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
 
