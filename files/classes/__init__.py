@@ -13,7 +13,6 @@ from .submission import *
 from .votes import *
 from .domains import *
 from .subscriptions import *
-from files.__main__ import app
 from .mod_logs import *
 from .award import *
 from .sub_block import *
