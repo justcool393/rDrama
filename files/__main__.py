@@ -85,7 +85,7 @@ def before_request():
 
 	if request.headers.get("CF-Worker"): return {"error": "Cloudflare workers are not allowed to access this website."}, 403
 
-	if not app.config['SETTINGS']['Bots'] and request.headers.get("Authorization"): abort(403)
+	if not CONFIG['Bots'] and request.headers.get("Authorization"): abort(403)
 
 	g.db = db_session()
 	g.webview = '; wv) ' in ua
