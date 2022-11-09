@@ -2,7 +2,8 @@
 from files.helpers.const import FEATURES
 
 # import flask then...
-from flask import g, request, render_template
+from flask.wrappers import Response
+from flask import g, request, render_template, make_response
 
 # import our app then...
 from files.__main__ import app
