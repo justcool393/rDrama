@@ -6,7 +6,6 @@ from os import path
 
 DEFAULT_CONFIG_VALUE = "blahblahblah"
 SITE = environ.get("SITE", "localhost").strip()
-print(SITE)
 SITE_NAME = environ.get("SITE_NAME", "rdrama.net").strip()
 SECRET_KEY = environ.get("SECRET_KEY", DEFAULT_CONFIG_VALUE).strip()
 if SECRET_KEY == DEFAULT_CONFIG_VALUE:
