@@ -11,8 +11,6 @@ from files.helpers.wrappers import *
 from files.helpers.cloudflare import purge_files_in_cache
 from files.routes.static import marsey_list
 
-# site check moved to __init__
-
 ASSET_TYPES = (Marsey, HatDef)
 CAN_APPROVE_ASSETS = (AEVANN_ID, CARP_ID, SNAKES_ID)
 CAN_UPDATE_ASSETS = (AEVANN_ID, CARP_ID, SNAKES_ID, GEESE_ID, JUSTCOOL_ID)
