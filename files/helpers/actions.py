@@ -1,22 +1,15 @@
 from flask import g
 from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *
+from files.helpers.const_stateful import *
 from files.helpers.get import *
 from files.helpers.sanitize import *
 from files.helpers.slots import check_slots_command
 import random
+import requests
 from urllib.parse import quote
 
 headers = {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}
-
-SNAPPY_MARSEYS = []
-if SITE_NAME != 'PCM':
-	SNAPPY_MARSEYS = [f':#{x}:' for x in marseys_const2]
-
-SNAPPY_QUOTES = []
-if path.isfile(f'snappy_{SITE_NAME}.txt'):
-	with open(f'snappy_{SITE_NAME}.txt', "r", encoding="utf-8") as f:
-		SNAPPY_QUOTES = f.read().split("\n{[para]}\n")
 
 def archiveorg(url):
 	try: requests.get(f'https://web.archive.org/save/{url}', headers=headers, timeout=10, proxies=proxies)

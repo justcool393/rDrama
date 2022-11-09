@@ -1,8 +1,12 @@
 from sqlalchemy.orm import scoped_session
 from files.classes import Marsey
+from files.helpers.const import SITE_NAME
+from os import path
 
 marseys_const = []
 marseys_const2 = []
+SNAPPY_MARSEYS = []
+SNAPPY_QUOTES = []
 
 def const_initialize(db:scoped_session):
 	marseys_const = [x[0] for x in db.query(Marsey.name).filter(Marsey.submitter_id==None, Marsey.name!='chudsey').all()]
@@ -15,3 +19,12 @@ def const_initialize(db:scoped_session):
 				marsey_mappings[tag].append(marsey.name)
 			else:
 				marsey_mappings[tag] = [marsey.name]
+	_initialize_snappy_marseys_and_quotes()
+
+def _initialize_snappy_marseys_and_quotes():
+	if SITE_NAME != 'PCM':
+		SNAPPY_MARSEYS = [f':#{x}:' for x in marseys_const2]
+
+	if path.isfile(f'snappy_{SITE_NAME}.txt'):
+		with open(f'snappy_{SITE_NAME}.txt', "r", encoding="utf-8") as f:
+			SNAPPY_QUOTES = f.read().split("\n{[para]}\n")

@@ -30,8 +30,8 @@ def casino_game_page(v, game):
 	elif game not in CASINO_GAME_KINDS:
 		abort(404)
 
-	feed = json.dumps(get_game_feed(game, g.db)))
-	leaderboard = json.dumps(get_game_leaderboard(game, g.db)))
+	feed = json.dumps(get_game_feed(game, g.db))
+	leaderboard = json.dumps(get_game_leaderboard(game, g.db))
 
 	game_state = ''
 	if game == 'blackjack':
@@ -58,7 +58,7 @@ def casino_game_feed(v, game):
 	elif game not in CASINO_GAME_KINDS:
 		abort(404)
 
-	feed = get_game_feed(game)
+	feed = get_game_feed(game, g.db)
 	return {"feed": feed}
 
 
