@@ -25,7 +25,6 @@ from .sub_block import *
 from .sub_subscription import *
 from .sub_join import *
 from .hats import *
-from files.__main__ import cache
 from files.helpers.security import *
 import random
 from os import remove, path
@@ -459,24 +458,6 @@ class User(Base):
 		for u in self.alts_unique:
 			if u.patron: return True
 		return False
-
-	@cache.memoize(timeout=86400)
-	def userpagelisting(self, site=None, v=None, page=1, sort="new", t="all"):
-		if self.shadowbanned and not (v and v.can_see_shadowbanned): return []
-
-		posts = g.db.query(Submission.id).filter_by(author_id=self.id, is_pinned=False, is_banned=False)
-
-		if not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.id)):
-			posts = posts.filter_by(is_banned=False, private=False, ghost=False, deleted_utc=0)
-
-		posts = apply_time_filter(t, posts, Submission)
-
-		posts = sort_objects(sort, posts, Submission,
-			include_shadowbanned=(v and v.can_see_shadowbanned))
-	
-		posts = posts.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE+1).all()
-
-		return [x[0] for x in posts]
 
 	@property
 	@lazy

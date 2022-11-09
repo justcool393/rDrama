@@ -663,6 +663,16 @@ def visitors(v):
 	viewers=sorted(v.viewers, key = lambda x: x.last_view_utc, reverse=True)
 	return render_template("userpage/viewers.html", v=v, viewers=viewers)
 
+@cache.memoize(timeout=86400)
+def userpagelisting(user:User, site=None, v=None, page:int=1, sort="new", t="all"):
+	if user.shadowbanned and not (v and v.can_see_shadowbanned): return []
+	posts = g.db.query(Submission.id).filter_by(author_id=user.id, is_pinned=False, is_banned=False)
+	if not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == user.id)):
+		posts = posts.filter_by(is_banned=False, private=False, ghost=False, deleted_utc=0)
+		posts = apply_time_filter(t, posts, Submission)
+		posts = sort_objects(sort, posts, Submission, include_shadowbanned=v and v.can_see_shadowbanned)
+		posts = posts.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE+1).all()
+		return [x[0] for x in posts]
 
 @app.get("/@<username>")
 @app.get("/@<username>.json")
@@ -701,7 +711,7 @@ def u_username(username, v=None):
 	try: page = max(int(request.values.get("page", 1)), 1)
 	except: page = 1
 
-	ids = u.userpagelisting(site=SITE, v=v, page=page, sort=sort, t=t)
+	ids = userpagelisting(u, site=SITE, v=v, page=page, sort=sort, t=t)
 
 	next_exists = (len(ids) > PAGE_SIZE)
 	ids = ids[:PAGE_SIZE]

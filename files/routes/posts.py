@@ -17,6 +17,7 @@ from io import BytesIO
 from files.__main__ import app, limiter, cache, db_session
 from PIL import Image
 from .front import frontlist
+from .users import userpagelisting
 from urllib.parse import ParseResult, urlunparse, urlparse, quote, unquote
 from os import path
 import requests
@@ -100,7 +101,7 @@ def publish(pid, v):
 
 
 	cache.delete_memoized(frontlist)
-	cache.delete_memoized(User.userpagelisting)
+	cache.delete_memoized(userpagelisting)
 
 	if post.sub == 'changelog':
 		send_changelog_message(post.permalink)
@@ -914,7 +915,7 @@ def submit_post(v, sub=None):
 	execute_lawlz_actions(v, post)
 
 	cache.delete_memoized(frontlist)
-	cache.delete_memoized(User.userpagelisting)
+	cache.delete_memoized(userpagelisting)
 
 	if post.sub == 'changelog' and not post.private:
 		send_changelog_message(post.permalink)
@@ -950,7 +951,7 @@ def delete_post_pid(pid, v):
 		g.db.add(post)
 
 		cache.delete_memoized(frontlist)
-		cache.delete_memoized(User.userpagelisting)
+		cache.delete_memoized(userpagelisting)
 
 		g.db.flush()
 		v.post_count = g.db.query(Submission).filter_by(author_id=v.id, deleted_utc=0).count()
@@ -971,7 +972,7 @@ def undelete_post_pid(pid, v):
 		g.db.add(post)
 
 		cache.delete_memoized(frontlist)
-		cache.delete_memoized(User.userpagelisting)
+		cache.delete_memoized(userpagelisting)
 
 		g.db.flush()
 		v.post_count = g.db.query(Submission).filter_by(author_id=v.id, deleted_utc=0).count()
@@ -1053,7 +1054,7 @@ def pin_post(post_id, v):
 		if v.id != post.author_id: abort(403, "Only the post author can do that!")
 		post.is_pinned = not post.is_pinned
 		g.db.add(post)
-		cache.delete_memoized(User.userpagelisting)
+		cache.delete_memoized(userpagelisting)
 		if post.is_pinned: return {"message": "Post pinned!"}
 		else: return {"message": "Post unpinned!"}
 	return abort(404, "Post not found!")
