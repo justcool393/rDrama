@@ -2,7 +2,7 @@ from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.get import *
 from files.__main__ import app, db_session
-from flask import g, request
+from flask import g, request, session
 from random import randint
 import functools
 import user_agents
