@@ -1,18 +1,20 @@
+import time
+from os import environ, listdir
 
 from jinja2 import pass_context
-from files.helpers.sorting_and_time import make_age_string
-from files.__main__ import app, cache
-from os import listdir, environ
-from files.helpers.const import * 
-from files.helpers.const_stateful import CONFIG
-import time
+
 from files.helpers.assetcache import assetcache_path
+from files.helpers.const import *
+from files.helpers.const_stateful import CONFIG
+from files.helpers.sorting_and_time import make_age_string
 from files.routes.wrappers import calc_users
+from files.__main__ import app, cache
 
 @app.template_filter("post_embed")
 def post_embed(id, v):
-	from files.helpers.get import get_post
 	from flask import render_template
+
+	from files.helpers.get import get_post
 	p = get_post(id, v, graceful=True)
 	if p: return render_template("submission_listing.html", listing=[p], v=v)
 	return ''

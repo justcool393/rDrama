@@ -1,15 +1,17 @@
-from files.__main__ import app, cache, limiter
+import os
+from shutil import copyfile, move
+
+from sqlalchemy import func, nullslast
+
+import files.helpers.stats as statshelper
+from files.classes.award import AWARDS
+from files.classes.badges import BadgeDef
+from files.classes.mod_logs import ACTIONTYPES, ACTIONTYPES2
+from files.helpers.actions import *
 from files.helpers.alerts import *
 from files.helpers.const import *
-from files.helpers.actions import *
-from files.classes.award import AWARDS
 from files.routes.wrappers import *
-from sqlalchemy import func, nullslast
-import os
-from files.classes.mod_logs import ACTIONTYPES, ACTIONTYPES2
-from files.classes.badges import BadgeDef
-import files.helpers.stats as statshelper
-from shutil import move, copyfile
+from files.__main__ import app, cache, limiter
 
 
 @app.get("/r/drama/comments/<id>/<title>")

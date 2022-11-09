@@ -1,21 +1,26 @@
 from __future__ import unicode_literals
-from files.helpers.alerts import *
-from files.helpers.sanitize import *
-from files.helpers.const import *
-from files.helpers.regex import *
-from files.helpers.actions import *
-from files.helpers.useractions import *
-from files.helpers.get import *
-from files.helpers.security import *
-from files.helpers.mail import *
-from files.routes.wrappers import *
-from files.__main__ import app, cache, limiter
-import youtube_dl
-from .front import frontlist
+
 import os
-from files.helpers.sanitize import filter_emojis_only
 from shutil import copyfile
+
 import requests
+import youtube_dl
+
+from files.helpers.actions import *
+from files.helpers.alerts import *
+from files.helpers.const import *
+from files.helpers.get import *
+from files.helpers.mail import *
+from files.helpers.regex import *
+from files.helpers.sanitize import *
+from files.helpers.sanitize import filter_emojis_only
+from files.helpers.security import *
+from files.helpers.useractions import *
+from files.routes.wrappers import *
+
+from .front import frontlist
+from files.__main__ import app, cache, limiter
+
 
 @app.get("/settings")
 @auth_required

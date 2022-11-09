@@ -1,29 +1,33 @@
+import os
 import time
-import gevent
-import requests
-from files.routes.wrappers import *
-from files.helpers.sanitize import *
-from files.helpers.alerts import *
-from files.helpers.discord import *
-from files.helpers.const import *
-from files.helpers.regex import *
-from files.helpers.slots import *
-from files.helpers.get import *
-from files.helpers.actions import *
-from files.helpers.sorting_and_time import *
-from files.classes import *
-from flask import *
 from io import BytesIO
-from files.__main__ import app, limiter, cache
-from PIL import Image
-from .front import frontlist
-from .users import userpagelisting
-from urllib.parse import ParseResult, urlunparse, urlparse, quote, unquote
 from os import path
-import requests
 from shutil import copyfile
 from sys import stdout
-import os
+from urllib.parse import ParseResult, quote, unquote, urlparse, urlunparse
+
+import gevent
+import requests
+from flask import *
+from PIL import Image
+
+from files.__main__ import app, cache, limiter
+from files.classes import *
+from files.helpers.actions import *
+from files.helpers.alerts import *
+from files.helpers.const import *
+from files.helpers.discord import *
+from files.helpers.get import *
+from files.helpers.regex import *
+from files.helpers.sanitize import *
+from files.helpers.slots import *
+from files.helpers.sorting_and_time import *
+from files.routes.wrappers import *
+
+from .front import frontlist
+from .users import userpagelisting
+
+from files.__main__ import app, limiter
 
 titleheaders = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36"}
 

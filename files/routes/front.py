@@ -1,10 +1,10 @@
-from files.routes.wrappers import *
-from files.helpers.get import *
-from files.helpers.const import *
-from files.helpers.sorting_and_time import *
-from files.__main__ import app, cache, limiter
 from files.classes.submission import Submission
 from files.helpers.awards import award_timers
+from files.helpers.const import *
+from files.helpers.get import *
+from files.helpers.sorting_and_time import *
+from files.routes.wrappers import *
+from files.__main__ import app, cache, limiter
 
 @app.get("/")
 @app.get("/h/<sub>")
@@ -13,8 +13,9 @@ from files.helpers.awards import award_timers
 @auth_desired_with_logingate
 def front_all(v, sub=None, subdomain=None):
 	#### WPD TEMP #### special front logic
-	from files.helpers.security import generate_hash, validate_hash
 	from datetime import datetime
+
+	from files.helpers.security import generate_hash, validate_hash
 	now = datetime.utcnow()
 	if SITE == 'watchpeopledie.co':
 		if v and not v.admin_level and not v.id <= 9: # security: don't auto login admins or bots

@@ -1,9 +1,11 @@
-from files.routes.wrappers import *
-from files.helpers.get import *
-from files.helpers.const import *
-from files.classes import *
 from flask import *
+
+from files.classes import *
+from files.helpers.const import *
+from files.helpers.get import *
+from files.routes.wrappers import *
 from files.__main__ import app, limiter
+
 
 @app.get("/votes/<link>")
 @admin_level_required(PERMS['VOTES_VISIBLE'])

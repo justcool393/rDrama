@@ -1,11 +1,11 @@
-from files.routes.wrappers import *
-from files.helpers.alerts import *
-from files.helpers.get import *
-from files.helpers.const import *
-from files.classes import *
-from flask import *
-from files.__main__ import app, limiter
 import sqlalchemy.exc
+
+from files.classes import *
+from files.helpers.alerts import *
+from files.helpers.const import *
+from files.helpers.get import *
+from files.routes.wrappers import *
+from files.__main__ import app, limiter
 
 @app.get("/authorize")
 @auth_required

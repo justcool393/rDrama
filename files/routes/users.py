@@ -1,29 +1,33 @@
-from typing import Literal
-import qrcode
 import io
-import time
-import math
-from files.classes.leaderboard import Leaderboard
-from files.classes.views import *
-from files.classes.transactions import *
-from files.helpers.alerts import *
-from files.helpers.sanitize import *
-from files.helpers.const import *
-from files.helpers.sorting_and_time import *
-from files.helpers.actions import *
-from files.helpers.mail import *
-from files.routes.wrappers import *
-from flask import *
-from files.__main__ import app, cache, limiter
-import sqlalchemy
-from sqlalchemy.orm import aliased
-from sqlalchemy import desc
-from collections import Counter
-import gevent
-from sys import stdout
-import os
 import json
+import math
+import os
+import time
+from collections import Counter
+from sys import stdout
+from typing import Literal
+
+import gevent
+import qrcode
+import sqlalchemy
+from flask import *
+from sqlalchemy import desc
+from sqlalchemy.orm import aliased
+
+from files.classes.leaderboard import Leaderboard
+from files.classes.transactions import *
+from files.classes.views import *
+from files.helpers.actions import *
+from files.helpers.alerts import *
+from files.helpers.const import *
+from files.helpers.mail import *
+from files.helpers.sanitize import *
+from files.helpers.sorting_and_time import *
+from files.routes.wrappers import *
+
 from .login import check_for_alts
+from files.__main__ import app, cache, limiter
+
 
 def upvoters_downvoters(v, username, uid, cls, vote_cls, vote_dir, template, standalone):
 	u = get_user(username, v=v, include_shadowbanned=False)

@@ -1,8 +1,8 @@
-from files.routes.wrappers import *
-from flask import *
-from urllib.parse import quote, urlencode
 import time
-from files.__main__ import app, limiter
+from urllib.parse import quote, urlencode
+
+from files.routes.wrappers import *
+from files.__main__ import app
 
 # If you're adding an error, go here:
 # https://github.com/pallets/werkzeug/blob/main/src/werkzeug/exceptions.py

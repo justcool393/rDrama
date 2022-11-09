@@ -1,26 +1,27 @@
-from files.routes.wrappers import *
+import os
+from collections import Counter
+from json import loads
+from shutil import copyfile
+
+import gevent
+import requests
+
+from files.classes import *
+from files.helpers.actions import *
 from files.helpers.alerts import *
-from files.helpers.media import *
+from files.helpers.cloudflare import purge_files_in_cache
 from files.helpers.const import *
+from files.helpers.get import *
+from files.helpers.marsify import marsify
+from files.helpers.media import *
+from files.helpers.owoify import owoify
 from files.helpers.regex import *
+from files.helpers.sanitize import filter_emojis_only
 from files.helpers.slots import *
 from files.helpers.treasure import *
-from files.helpers.actions import *
-from files.helpers.get import *
-from files.classes import *
 from files.routes.front import comment_idlist
-from flask import *
+from files.routes.wrappers import *
 from files.__main__ import app, limiter
-from files.helpers.sanitize import filter_emojis_only
-from files.helpers.marsify import marsify
-from files.helpers.owoify import owoify
-from files.helpers.cloudflare import purge_files_in_cache
-import requests
-from shutil import copyfile
-from json import loads
-from collections import Counter
-import gevent
-import os
 
 WORDLE_COLOR_MAPPINGS = {-1: "🟥", 0: "🟨", 1: "🟩"}
 

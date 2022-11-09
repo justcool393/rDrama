@@ -1,13 +1,15 @@
+import secrets
 from urllib.parse import urlencode
-from files.helpers.const import *
-from files.helpers.regex import *
-from files.routes.wrappers import *
+
+import requests
+
 from files.helpers.actions import *
+from files.helpers.const import *
 from files.helpers.get import *
 from files.helpers.mail import send_mail, send_verification_email
+from files.helpers.regex import *
+from files.routes.wrappers import *
 from files.__main__ import app, get_CF, limiter
-import requests
-import secrets
 
 @app.get("/login")
 @auth_desired

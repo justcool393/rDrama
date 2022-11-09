@@ -1,10 +1,11 @@
+import requests
+
+from files.helpers.alerts import *
+from files.helpers.const import *
+from files.helpers.get import *
+from files.helpers.lottery import *
 from files.routes.wrappers import *
 from files.__main__ import app, limiter
-from files.helpers.alerts import *
-from files.helpers.get import *
-from files.helpers.const import *
-from files.helpers.lottery import *
-import requests
 
 @app.post("/lottery/end")
 @admin_level_required(PERMS['LOTTERY_ADMIN'])
