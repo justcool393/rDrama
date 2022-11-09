@@ -12,7 +12,6 @@ import imagehash
 from shutil import copyfile
 from files.classes.media import *
 from files.helpers.cloudflare import purge_files_in_cache
-from files.__main__ import db_session
 
 def process_files():
 	body = ''
@@ -60,13 +59,12 @@ def process_audio(file):
 	return name
 
 
-def webm_to_mp4(old, new, vid):
+def webm_to_mp4(old, new, vid, db):
 	tmp = new.replace('.mp4', '-t.mp4')
 	subprocess.run(["ffmpeg", "-y", "-loglevel", "warning", "-nostats", "-threads:v", "1", "-i", old, "-map_metadata", "-1", tmp], check=True, stderr=subprocess.STDOUT)
 	os.replace(tmp, new)
 	os.remove(old)
 	purge_files_in_cache(f"{SITE_FULL}{new}")
-	db = db_session()
 
 	media = db.query(Media).filter_by(filename=new, kind='video').one_or_none()
 	if media: db.delete(media)
@@ -99,7 +97,7 @@ def process_video(file):
 	if extension == 'webm':
 		new = new.replace('.webm', '.mp4')
 		copyfile(old, new)
-		gevent.spawn(webm_to_mp4, old, new, g.v.id)
+		gevent.spawn(webm_to_mp4, old, new, g.v.id, g.db)
 	else:
 		subprocess.run(["ffmpeg", "-y", "-loglevel", "warning", "-nostats", "-i", old, "-map_metadata", "-1", "-c:v", "copy", "-c:a", "copy", new], check=True)
 		os.remove(old)
