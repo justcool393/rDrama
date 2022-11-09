@@ -4,7 +4,6 @@ from datetime import datetime
 from files.helpers.get import *
 from yattag import Doc
 from files.routes.wrappers import *
-from files.routes.jinja2 import *
 
 from files.__main__ import app
 

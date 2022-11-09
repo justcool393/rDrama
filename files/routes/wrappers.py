@@ -1,7 +1,7 @@
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.get import *
-from files.__main__ import app, db_session, limiter
+from files.__main__ import app, db_session
 from flask import g, request
 from random import randint
 import functools
@@ -84,7 +84,6 @@ def get_logged_in_user():
 				if f'@{v.username}, ' not in f.read():
 					t = str(time.strftime("%d/%B/%Y %H:%M:%S UTC", time.gmtime(time.time())))
 					f.write(f'@{v.username}, {v.truescore}, {ip}, {t}\n')
-
 	return v
 
 def auth_desired(f):

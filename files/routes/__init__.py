@@ -4,11 +4,14 @@ from files.helpers.const import FEATURES
 # import flask then...
 from flask import g, request
 
+# import our app then...
+from files.__main__ import app
+
 # import wrappers then...
 from files.routes.wrappers import *
 
-# import our app then...
-from files.__main__ import app
+# import jinja2 then... (lmao this was in feeds.py before wtf)
+from files.routes.jinja2 import *
 
 # import routes :)
 from .admin import *
