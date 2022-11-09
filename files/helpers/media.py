@@ -32,10 +32,8 @@ def process_files(files):
 
 def process_audio(file):
 	name = f'/audio/{time.time()}'.replace('.','')
-
 	extension = file.filename.split('.')[-1].lower()
 	name = name + '.' + extension
-
 	file.save(name)
 
 	size = os.stat(name).st_size

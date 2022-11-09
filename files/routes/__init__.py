@@ -2,9 +2,12 @@
 from files.helpers.const import FEATURES
 
 # import flask then...
-from flask import request
+from flask import g, request
 
-# import routes
+# import our app then...
+from files.__main__ import app
+
+# import routes :)
 from .admin import *
 from .comments import *
 from .errors import *
