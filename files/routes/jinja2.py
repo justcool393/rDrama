@@ -1,8 +1,11 @@
-from files.__main__ import app, cache
+
 from jinja2 import pass_context
-from files.helpers.get import *
+from files.helpers.get import get_post
+from files.helpers.sorting_and_time import make_age_string
+from files.__main__ import app, cache
 from os import listdir, environ
 from files.helpers.const import * 
+from files.helpers.const_stateful import CONFIG
 import time
 from files.helpers.assetcache import assetcache_path
 from files.routes.wrappers import calc_users
@@ -43,7 +46,7 @@ def inject_constants():
 			"BADGE_THREAD":BADGE_THREAD, "SNAPPY_THREAD":SNAPPY_THREAD,
 			"KOFI_TOKEN":KOFI_TOKEN, "KOFI_LINK":KOFI_LINK,
 			"approved_embed_hosts":approved_embed_hosts,
-			"site_settings":app.config['SETTINGS'], "EMAIL":EMAIL, "calc_users":calc_users, 
+			"site_settings":CONFIG, "EMAIL":EMAIL, "calc_users":calc_users, 
 			"TELEGRAM_LINK":TELEGRAM_LINK, "EMAIL_REGEX_PATTERN":EMAIL_REGEX_PATTERN,
 			"CONTENT_SECURITY_POLICY_DEFAULT":CONTENT_SECURITY_POLICY_DEFAULT,
 			"CONTENT_SECURITY_POLICY_HOME":CONTENT_SECURITY_POLICY_HOME,

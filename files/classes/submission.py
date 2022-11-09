@@ -2,7 +2,6 @@ import random
 import re
 import time
 from urllib.parse import urlparse
-from flask import render_template
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, deferred
 from files.classes import Base

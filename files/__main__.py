@@ -68,13 +68,6 @@ const_initialize(db_session)
 cache = Cache(app)
 Compress(app)
 
-if not path.isfile(f'/site_settings.json'):
-	with open('/site_settings.json', 'w', encoding='utf_8') as f:
-		f.write(
-			'{"Bots": true, "Fart mode": false, "Read-only mode": false, ' + \
-			'"Signups": true, "login_required": false}')
-
-
 @app.before_request
 def before_request():
 	if SITE == 'marsey.world' and request.path != '/kofi':
@@ -86,9 +79,6 @@ def before_request():
 
 	ua = g.agent or ''
 	ua = ua.lower()
-
-	with open('/site_settings.json', 'r', encoding='utf_8') as f:
-		app.config['SETTINGS'] = json.load(f)
 
 	if request.host != SITE:
 		return {"error": "Unauthorized host provided"}, 403

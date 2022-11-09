@@ -1,4 +1,4 @@
-from flask import *
+from flask import g
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from .submission import Submission

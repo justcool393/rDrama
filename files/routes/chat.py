@@ -9,7 +9,6 @@ from files.helpers.regex import *
 from files.helpers.actions import *
 from flask_socketio import SocketIO, emit
 from files.__main__ import app, limiter, cache
-from flask import render_template
 import sys
 import atexit
 

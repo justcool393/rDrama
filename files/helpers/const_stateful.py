@@ -2,16 +2,29 @@ from sqlalchemy.orm import scoped_session
 from files.classes import Marsey
 from files.helpers.const import SITE_NAME
 from os import path
+from json import load
 
 marseys_const = []
 marseys_const2 = []
 marsey_mappings = {}
 SNAPPY_MARSEYS = []
 SNAPPY_QUOTES = []
+CONFIG = {}
 
 def const_initialize(db:scoped_session):
+	reload_config()
 	_initialize_marseys(db)
 	_initialize_snappy_marseys_and_quotes()
+
+def reload_config():
+	CONFIG_PATH = '/site_settings.json'
+	if not path.isfile(CONFIG_PATH):
+		with open(CONFIG_PATH, 'w', encoding='utf_8') as f:
+			f.write(
+				'{"Bots": true, "Fart mode": false, "Read-only mode": false, ' + \
+				'"Signups": true, "login_required": false}')
+	with open(CONFIG_PATH, 'r', encoding='utf_8') as f:
+		CONFIG = load(f)
 
 def _initialize_marseys(db:scoped_session):
 	marseys_const = [x[0] for x in db.query(Marsey.name).filter(Marsey.submitter_id==None, Marsey.name!='chudsey').all()]

@@ -10,6 +10,7 @@ from files.helpers.security import *
 from files.helpers.get import *
 from files.helpers.media import *
 from files.helpers.const import *
+from files.helpers.const_stateful import reload_config
 from files.helpers.actions import *
 from files.helpers.useractions import *
 import files.helpers.cloudflare as cloudflare
@@ -462,6 +463,7 @@ def change_settings(v, setting):
 	site_settings[setting] = not site_settings[setting] 
 	with open("/site_settings.json", "w", encoding='utf_8') as f:
 		json.dump(site_settings, f)
+	reload_config() # removing this will break the configs
 
 	if site_settings[setting]: word = 'enable'
 	else: word = 'disable'

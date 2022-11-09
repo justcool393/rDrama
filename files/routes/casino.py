@@ -1,4 +1,4 @@
-from files.__main__ import app
+from files.__main__ import app, limiter
 from files.routes.wrappers import *
 from files.helpers.alerts import *
 from files.helpers.get import *

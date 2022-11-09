@@ -1,7 +1,7 @@
 import re
 import time
 from urllib.parse import urlencode, urlparse, parse_qs
-from flask import *
+from flask import g
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import TSVECTOR
@@ -99,12 +99,10 @@ class Comment(Base):
 			if v.id == self.post.author_id: return True
 		return False
 
-
 	@property
 	@lazy
 	def top_comment(self):
 		return g.db.get(Comment, self.top_comment_id)
-
 
 	@property
 	@lazy
