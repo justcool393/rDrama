@@ -1,6 +1,5 @@
 
 from jinja2 import pass_context
-from files.helpers.get import get_post
 from files.helpers.sorting_and_time import make_age_string
 from files.__main__ import app, cache
 from os import listdir, environ
@@ -12,6 +11,8 @@ from files.routes.wrappers import calc_users
 
 @app.template_filter("post_embed")
 def post_embed(id, v):
+	from files.helpers.get import get_post
+	from flask import render_template
 	p = get_post(id, v, graceful=True)
 	if p: return render_template("submission_listing.html", listing=[p], v=v)
 	return ''

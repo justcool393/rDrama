@@ -1,6 +1,5 @@
 from files.helpers.alerts import *
 from files.helpers.const import *
-from files.helpers.get import *
 from files.__main__ import app, db_session
 from flask import g, request, session
 from random import randint
@@ -31,8 +30,9 @@ def calc_users(v):
 	return ''
 
 def get_logged_in_user():
+	from files.helpers.get import get_account
 	if hasattr(g, 'v'): return g.v
-	if not (hasattr(g, 'db') and g.db): g.db = db_session()
+	if not getattr(g, 'db', None): g.db = db_session()
 	g.desires_auth = True
 	v = None
 	token = request.headers.get("Authorization","").strip()
