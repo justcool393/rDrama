@@ -4,11 +4,11 @@ from files.helpers.const import FEATURES
 # import flask then...
 from flask import g, request
 
-# import our app then...
-from files.__main__ import app
-
 # import required helpers then...
 from files.helpers.wrappers import *
+
+# import our app then...
+from files.__main__ import app
 
 # import routes :)
 from .admin import *

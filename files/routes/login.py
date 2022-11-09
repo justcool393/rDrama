@@ -1,6 +1,7 @@
 from urllib.parse import urlencode
 from files.helpers.const import *
 from files.helpers.regex import *
+from files.helpers.wrappers import *
 from files.helpers.actions import *
 from files.helpers.get import *
 from files.helpers.mail import send_mail, send_verification_email
@@ -80,8 +81,7 @@ def login_deduct_when(resp):
 	return g.login_failed
 
 @app.post("/login")
-@limiter.limit("6/minute;10/day",
-	deduct_when=login_deduct_when)
+@limiter.limit("6/minute;10/day", deduct_when=login_deduct_when)
 def login_post():
 	template = ''
 	g.login_failed = True
