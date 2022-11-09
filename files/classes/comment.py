@@ -5,7 +5,7 @@ from flask import *
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import TSVECTOR
-from files.__main__ import Base
+from files.classes import Base
 from files.classes.votes import CommentVote
 from files.helpers.const import *
 from files.helpers.regex import *

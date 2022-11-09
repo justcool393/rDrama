@@ -2,7 +2,7 @@ from files.helpers.const import KOFI_TOKEN
 
 if KOFI_TOKEN:
 	from sqlalchemy import *
-	from files.__main__ import Base
+	from files.classes import Base
 
 	class Transaction(Base):
 

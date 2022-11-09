@@ -2,7 +2,7 @@ from files.helpers.const import SITE
 
 if SITE == 'pcmemes.net':
 	from sqlalchemy import *
-	from files.__main__ import Base
+	from files.classes import Base
 	import time
 
 	class Streamer(Base):

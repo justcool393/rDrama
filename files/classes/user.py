@@ -24,7 +24,7 @@ from .sub_block import *
 from .sub_subscription import *
 from .sub_join import *
 from .hats import *
-from files.__main__ import Base, cache
+from files.classes import Base, cache
 from files.helpers.security import *
 from copy import deepcopy
 import random

@@ -7,7 +7,6 @@ from flask import *
 from flask_caching import Cache
 from flask_limiter import Limiter
 from flask_compress import Compress
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import *
 import gevent
@@ -58,8 +57,6 @@ limiter = Limiter(
 	application_limits=["10/second;200/minute;5000/hour;10000/day"],
 	storage_uri=environ.get("REDIS_URL", "redis://localhost")
 )
-
-Base = declarative_base()
 
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URL'])
 

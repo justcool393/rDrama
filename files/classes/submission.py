@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from flask import render_template
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, deferred
-from files.__main__ import Base
+from files.classes import Base
 from files.helpers.const import *
 from files.helpers.regex import *
 from files.helpers.lazy import lazy

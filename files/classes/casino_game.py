@@ -1,5 +1,5 @@
 from sqlalchemy import *
-from files.__main__ import Base
+from files.classes import Base
 import time
 from files.helpers.lazy import lazy
 import json

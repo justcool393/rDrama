@@ -1,6 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
-from files.__main__ import Base
+from files.classes import Base
 import time
 
 class Exile(Base):
