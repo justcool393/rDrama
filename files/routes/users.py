@@ -11,7 +11,8 @@ from files.helpers.sanitize import *
 from files.helpers.const import *
 from files.helpers.sorting_and_time import *
 from files.helpers.actions import *
-from files.mail import *
+from files.helpers.mail import *
+from files.routes.wrappers import *
 from flask import *
 from files.__main__ import app, limiter
 import sqlalchemy
