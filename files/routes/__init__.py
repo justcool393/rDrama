@@ -1,5 +1,5 @@
 # import constants then...
-from files.helpers.const import *
+from files.helpers.const import SITE
 
 # import flask then...
 from flask import request
@@ -27,4 +27,5 @@ from .casino import *
 from .polls import *
 from .notifications import *
 from .hats import *
-from .asset_submissions import *
+if SITE not in ('pcmemes.net', 'watchpeopledie.tv'):
+	from .asset_submissions import *
