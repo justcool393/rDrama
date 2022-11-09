@@ -2,7 +2,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from files.classes import Base
 from files.helpers.lazy import lazy
-from files.helpers.const import *
+from files.helpers.const import AWARDS, HOUSE_AWARDS
 import time
 
 class AwardRelationship(Base):

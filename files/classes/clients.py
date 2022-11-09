@@ -5,11 +5,10 @@ from .submission import Submission
 from .comment import Comment
 from files.classes import Base
 from files.helpers.lazy import lazy
-from files.helpers.const import *
+from files.helpers.const import SITE_FULL
 import time
 
 class OauthApp(Base):
-
 	__tablename__ = "oauth_apps"
 
 	id = Column(Integer, primary_key=True)
@@ -37,26 +36,17 @@ class OauthApp(Base):
 
 	@lazy
 	def idlist(self, page=1):
-
 		posts = g.db.query(Submission.id).filter_by(app_id=self.id)
-		
 		posts=posts.order_by(Submission.created_utc.desc())
-
 		posts=posts.offset(100*(page-1)).limit(101)
-
 		return [x[0] for x in posts.all()]
 
 	@lazy
 	def comments_idlist(self, page=1):
-
 		posts = g.db.query(Comment.id).filter_by(app_id=self.id)
-		
 		posts=posts.order_by(Comment.id.desc())
-
 		posts=posts.offset(100*(page-1)).limit(101)
-
 		return [x[0] for x in posts.all()]
-
 
 
 class ClientAuth(Base):
