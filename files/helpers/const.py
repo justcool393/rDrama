@@ -2,8 +2,6 @@ from os import environ
 import re
 from copy import deepcopy
 from json import loads
-from files.classes.sub import Sub
-from files.classes.marsey import Marsey
 from flask import request
 import tldextract
 from os import path

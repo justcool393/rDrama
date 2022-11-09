@@ -11,6 +11,7 @@ from mistletoe import markdown
 from random import random, choice
 import signal
 from files.__main__ import db_session
+from files.classes.marsey import Marsey
 
 db = db_session()
 marseys_const = [x[0] for x in db.query(Marsey.name).filter(Marsey.submitter_id==None, Marsey.name!='chudsey').all()]
