@@ -13,7 +13,7 @@ from files.helpers.sorting_and_time import *
 from files.helpers.actions import *
 from files.mail import *
 from flask import *
-from files.__main__ import app, limiter, db_session
+from files.__main__ import app, limiter
 import sqlalchemy
 from sqlalchemy.orm import aliased
 from sqlalchemy import desc

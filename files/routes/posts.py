@@ -14,7 +14,7 @@ from files.helpers.sorting_and_time import *
 from files.classes import *
 from flask import *
 from io import BytesIO
-from files.__main__ import app, limiter, cache, db_session
+from files.__main__ import app, limiter, cache
 from PIL import Image
 from .front import frontlist
 from .users import userpagelisting
@@ -25,9 +25,7 @@ from shutil import copyfile
 from sys import stdout
 import os
 
-
 titleheaders = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36"}
-
 
 @app.post("/club_post/<pid>")
 @auth_required
@@ -407,12 +405,8 @@ def edit_post(pid, v):
 	return redirect(p.permalink)
 
 
-def thumbnail_thread(pid):
-
-	db = db_session()
-
+def thumbnail_thread(pid, db):
 	def expand_url(post_url, fragment_url):
-
 		if fragment_url.startswith("https://"):
 			return fragment_url
 		elif fragment_url.startswith("https://"):
@@ -856,13 +850,9 @@ def submit_post(v, sub=None):
 			abort(415)
 		
 	if not post.thumburl and post.url:
-		gevent.spawn(thumbnail_thread, post.id)
-
-
-
+		gevent.spawn(thumbnail_thread, post.id, g.db)
 
 	if not post.private and not post.ghost:
-
 		notify_users = NOTIFY_USERS(f'{title} {body}', v)
 
 		if notify_users:

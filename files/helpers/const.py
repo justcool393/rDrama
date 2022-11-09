@@ -63,6 +63,8 @@ if SITE_NAME == 'PCM': CC = "SPLASH MOUNTAIN"
 else: CC = "COUNTRY CLUB"
 CC_TITLE = CC.title()
 
+CASINO_RELEASE_DAY = 0
+
 if SITE_NAME == 'rDrama': patron = 'Paypig'
 else: patron = 'Patron'
 
