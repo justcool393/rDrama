@@ -65,6 +65,7 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URL'])
 db_session = scoped_session(sessionmaker(bind=engine, autoflush=False))
 
 const_initialize(db_session)
+print(CONFIG)
 
 cache = Cache(app)
 Compress(app)
