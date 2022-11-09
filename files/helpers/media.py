@@ -2,7 +2,7 @@ from PIL import Image
 from PIL.ImageSequence import Iterator
 import subprocess
 import os
-from flask import abort, g, request
+from flask import abort, g
 import time
 from .const import *
 import gevent
@@ -13,20 +13,20 @@ from files.helpers.cloudflare import purge_files_in_cache
 
 def process_files(files):
 	body = ''
-	if files.get("file") and not g.is_tor:
-		files = request.files.getlist('file')[:4]
-		for file in files:
-			if file.content_type.startswith('image/'):
-				name = f'/images/{time.time()}'.replace('.','') + '.webp'
-				file.save(name)
-				url = process_image(name, patron=g.v.patron)
-				body += f"\n\n![]({url})"
-			elif file.content_type.startswith('video/'):
-				body += f"\n\n{SITE_FULL}{process_video(file)}"
-			elif file.content_type.startswith('audio/'):
-				body += f"\n\n{SITE_FULL}{process_audio(file)}"
-			else:
-				abort(415)
+	if g.is_tor or not files.get("file"): return body
+	files = files.getlist('file')[:4]
+	for file in files:
+		if file.content_type.startswith('image/'):
+			name = f'/images/{time.time()}'.replace('.','') + '.webp'
+			file.save(name)
+			url = process_image(name, patron=g.v.patron)
+			body += f"\n\n![]({url})"
+		elif file.content_type.startswith('video/'):
+			body += f"\n\n{SITE_FULL}{process_video(file)}"
+		elif file.content_type.startswith('audio/'):
+			body += f"\n\n{SITE_FULL}{process_audio(file)}"
+		else:
+			abort(415)
 	return body
 
 
