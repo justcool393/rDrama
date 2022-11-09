@@ -1,4 +1,4 @@
-from files.helpers.wrappers import *
+from files.routes.wrappers import *
 from flask import *
 from urllib.parse import quote, urlencode
 import time

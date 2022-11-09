@@ -3,7 +3,7 @@ import re
 from os import remove
 from PIL import Image as IMAGE
 
-from files.helpers.wrappers import *
+from files.routes.wrappers import *
 from files.helpers.alerts import *
 from files.helpers.sanitize import *
 from files.helpers.security import *

@@ -1,7 +1,7 @@
 import time
 import gevent
 import requests
-from files.helpers.wrappers import *
+from files.routes.wrappers import *
 from files.helpers.sanitize import *
 from files.helpers.alerts import *
 from files.helpers.discord import *

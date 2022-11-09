@@ -1,8 +1,7 @@
-from .get import *
-from .alerts import *
+from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.get import *
-from files.__main__ import db_session, limiter
+from files.__main__ import app, db_session, limiter
 from flask import g, request
 from random import randint
 import functools

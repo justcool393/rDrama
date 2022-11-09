@@ -1,4 +1,4 @@
-from files.helpers.wrappers import *
+from files.routes.wrappers import *
 from files.helpers.alerts import *
 from files.helpers.media import *
 from files.helpers.const import *

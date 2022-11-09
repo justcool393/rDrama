@@ -1,7 +1,7 @@
 import time
 import uuid
-from files.helpers.jinja2 import timestamp
-from files.helpers.wrappers import *
+from files.routes.jinja2 import timestamp
+from files.routes.wrappers import *
 from files.helpers.sanitize import sanitize
 from files.helpers.const import *
 from files.helpers.alerts import *

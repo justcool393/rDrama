@@ -3,6 +3,7 @@ gevent.monkey.patch_all()
 from os import environ, path
 import secrets
 from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
+from files.helpers.const_stateful import const_initialize
 from flask import *
 from flask_caching import Cache
 from flask_limiter import Limiter
@@ -62,6 +63,8 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URL'])
 
 db_session = scoped_session(sessionmaker(bind=engine, autoflush=False))
 
+const_initialize(db_session)
+
 cache = Cache(app)
 Compress(app)
 
@@ -70,6 +73,7 @@ if not path.isfile(f'/site_settings.json'):
 		f.write(
 			'{"Bots": true, "Fart mode": false, "Read-only mode": false, ' + \
 			'"Signups": true, "login_required": false}')
+
 
 @app.before_request
 def before_request():

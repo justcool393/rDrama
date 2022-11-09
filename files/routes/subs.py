@@ -1,6 +1,6 @@
 from files.__main__ import app, limiter
 from files.helpers.alerts import *
-from files.helpers.wrappers import *
+from files.routes.wrappers import *
 from files.helpers.get import *
 from files.helpers.regex import *
 from files.classes import *

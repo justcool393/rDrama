@@ -2,12 +2,12 @@ from shutil import move, copyfile
 from os import rename, path
 from typing import Union
 
-from files.__main__ import app, limiter
 from files.helpers.const import *
 from files.helpers.useractions import *
 from files.helpers.media import *
 from files.helpers.get import *
-from files.helpers.wrappers import *
+from files.routes.wrappers import *
+from files.__main__ import app, limiter
 from files.helpers.cloudflare import purge_files_in_cache
 from files.routes.static import marsey_list
 
