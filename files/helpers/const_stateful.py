@@ -17,6 +17,7 @@ def const_initialize(db:scoped_session):
 	_initialize_snappy_marseys_and_quotes()
 
 def reload_config():
+	global CONFIG
 	CONFIG_PATH = '/site_settings.json'
 	if not path.isfile(CONFIG_PATH):
 		with open(CONFIG_PATH, 'w', encoding='utf_8') as f:
@@ -28,6 +29,7 @@ def reload_config():
 		print("loaded config")
 
 def _initialize_marseys(db:scoped_session):
+	global marseys_const, marseys_const2, marsey_mappings
 	marseys_const = [x[0] for x in db.query(Marsey.name).filter(Marsey.submitter_id==None, Marsey.name!='chudsey').all()]
 	marseys_const2 = marseys_const + ['chudsey','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','exclamationpoint','period','questionmark']
 	marseys = db.query(Marsey).filter(Marsey.submitter_id==None).all()

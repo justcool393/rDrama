@@ -8,9 +8,8 @@ from flask import g, request, session
 from files.__main__ import app, db_session
 from files.helpers.alerts import *
 from files.helpers.const import *
-from files.helpers.const_stateful import CONFIG, reload_config
+from files.helpers.const_stateful import CONFIG
 
-reload_config()
 print(CONFIG["Bots"])
 
 def calc_users(v):
