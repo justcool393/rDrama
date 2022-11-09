@@ -1,8 +1,10 @@
+from json import load
+from os import path
+
 from sqlalchemy.orm import scoped_session
+
 from files.classes import Marsey
 from files.helpers.const import SITE_NAME
-from os import path
-from json import load
 
 marseys_const = []
 marseys_const2 = []
@@ -21,11 +23,14 @@ def reload_config():
 	CONFIG_PATH = '/site_settings.json'
 	if not path.isfile(CONFIG_PATH):
 		with open(CONFIG_PATH, 'w', encoding='utf_8') as f:
+			print("writing new config")
 			f.write(
 				'{"Bots": true, "Fart mode": false, "Read-only mode": false, ' + \
 				'"Signups": true, "login_required": false}')
 	with open(CONFIG_PATH, 'r', encoding='utf_8') as f:
+		print("reading from config")
 		CONFIG = load(f)
+		print(CONFIG)
 		print("loaded config")
 
 def _initialize_marseys(db:scoped_session):
