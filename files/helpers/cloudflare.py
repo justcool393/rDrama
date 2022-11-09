@@ -29,7 +29,7 @@ def set_security_level(under_attack="high") -> bool:
 	return _request_from_cloudflare("settings/security_level", "PATCH", f'{{"value":"{under_attack}"}}')
 
 def clear_entire_cache() -> bool:
-	return _request_from_cloudflare("clear_cloudflare_cache", "POST", '{"purge_everything":true}')
+	return _request_from_cloudflare("purge_cache", "POST", '{"purge_everything":true}')
 
 def purge_files_in_cache(files:Union[List[str],str]) -> bool:
 	if not CLOUDFLARE_AVAILABLE: return False
