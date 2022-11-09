@@ -3,7 +3,7 @@ from files.helpers.const import FEATURES
 
 # import flask then...
 from flask.wrappers import Response
-from flask import g, request, render_template, make_response
+from flask import * # g, request, render_template, make_response, redirect, jsonify, send_from_directory
 
 # import our app then...
 from files.__main__ import app
