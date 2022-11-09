@@ -25,6 +25,7 @@ def reload_config():
 				'"Signups": true, "login_required": false}')
 	with open(CONFIG_PATH, 'r', encoding='utf_8') as f:
 		CONFIG = load(f)
+		print("loaded config")
 
 def _initialize_marseys(db:scoped_session):
 	marseys_const = [x[0] for x in db.query(Marsey.name).filter(Marsey.submitter_id==None, Marsey.name!='chudsey').all()]
