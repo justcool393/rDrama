@@ -6,38 +6,41 @@ from flask import request
 import tldextract
 from os import path
 
+DEFAULT_CONFIG_VALUE = "blahblahblah"
 SITE = environ.get("SITE").strip()
 SITE_NAME = environ.get("SITE_NAME").strip()
-SECRET_KEY = environ.get("SECRET_KEY").strip()
+SECRET_KEY = environ.get("SECRET_KEY", DEFAULT_CONFIG_VALUE).strip()
+if SECRET_KEY == DEFAULT_CONFIG_VALUE:
+	print("Warning: secret key is the default config value!")
 PROXY_URL = environ.get("PROXY_URL").strip()
-GIPHY_KEY = environ.get('GIPHY_KEY').strip()
-DISCORD_BOT_TOKEN = environ.get("DISCORD_BOT_TOKEN").strip()
-HCAPTCHA_SITEKEY = environ.get("HCAPTCHA_SITEKEY").strip()
-HCAPTCHA_SECRET = environ.get("HCAPTCHA_SECRET").strip()
-YOUTUBE_KEY = environ.get("YOUTUBE_KEY").strip()
-PUSHER_ID = environ.get("PUSHER_ID").strip()
-PUSHER_KEY = environ.get("PUSHER_KEY").strip()
-IMGUR_KEY = environ.get("IMGUR_KEY").strip()
+GIPHY_KEY = environ.get('GIPHY_KEY', DEFAULT_CONFIG_VALUE).strip()
+DISCORD_BOT_TOKEN = environ.get("DISCORD_BOT_TOKEN", DEFAULT_CONFIG_VALUE).strip()
+HCAPTCHA_SITEKEY = environ.get("HCAPTCHA_SITEKEY", DEFAULT_CONFIG_VALUE).strip()
+HCAPTCHA_SECRET = environ.get("HCAPTCHA_SECRET", DEFAULT_CONFIG_VALUE).strip()
+YOUTUBE_KEY = environ.get("YOUTUBE_KEY", DEFAULT_CONFIG_VALUE).strip()
+PUSHER_ID = environ.get("PUSHER_ID", DEFAULT_CONFIG_VALUE).strip()
+PUSHER_KEY = environ.get("PUSHER_KEY", DEFAULT_CONFIG_VALUE).strip()
+IMGUR_KEY = environ.get("IMGUR_KEY", DEFAULT_CONFIG_VALUE).strip()
 SPAM_SIMILARITY_THRESHOLD = float(environ.get("SPAM_SIMILARITY_THRESHOLD").strip())
 SPAM_URL_SIMILARITY_THRESHOLD = float(environ.get("SPAM_URL_SIMILARITY_THRESHOLD").strip())
 SPAM_SIMILAR_COUNT_THRESHOLD = int(environ.get("SPAM_SIMILAR_COUNT_THRESHOLD").strip())
 COMMENT_SPAM_SIMILAR_THRESHOLD = float(environ.get("COMMENT_SPAM_SIMILAR_THRESHOLD").strip())
 COMMENT_SPAM_COUNT_THRESHOLD = int(environ.get("COMMENT_SPAM_COUNT_THRESHOLD").strip())
 DEFAULT_TIME_FILTER = environ.get("DEFAULT_TIME_FILTER").strip()
-GUMROAD_TOKEN = environ.get("GUMROAD_TOKEN").strip()
-GUMROAD_LINK = environ.get("GUMROAD_LINK").strip()
-GUMROAD_ID = environ.get("GUMROAD_ID").strip()
+GUMROAD_TOKEN = environ.get("GUMROAD_TOKEN", DEFAULT_CONFIG_VALUE).strip()
+GUMROAD_LINK = environ.get("GUMROAD_LINK", DEFAULT_CONFIG_VALUE).strip()
+GUMROAD_ID = environ.get("GUMROAD_ID", DEFAULT_CONFIG_VALUE).strip()
 CARD_VIEW = bool(int(environ.get("CARD_VIEW").strip()))
 DISABLE_DOWNVOTES = bool(int(environ.get("DISABLE_DOWNVOTES").strip()))
 DUES = int(environ.get("DUES").strip())
 DEFAULT_THEME = environ.get("DEFAULT_THEME").strip()
 DEFAULT_COLOR = environ.get("DEFAULT_COLOR").strip()
-EMAIL = environ.get("EMAIL").strip()
-MAILGUN_KEY = environ.get("MAILGUN_KEY").strip()
+EMAIL = environ.get("EMAIL", "blahblahblah@gmail.com").strip()
+MAILGUN_KEY = environ.get("MAILGUN_KEY", DEFAULT_CONFIG_VALUE).strip()
 DESCRIPTION = environ.get("DESCRIPTION").strip()
-CF_KEY = environ.get("CF_KEY").strip()
-CF_ZONE = environ.get("CF_ZONE").strip()
-TELEGRAM_LINK = environ.get("TELEGRAM_LINK").strip()
+CF_KEY = environ.get("CF_KEY", DEFAULT_CONFIG_VALUE).strip()
+CF_ZONE = environ.get("CF_ZONE", DEFAULT_CONFIG_VALUE).strip()
+TELEGRAM_LINK = environ.get("TELEGRAM_LINK", DEFAULT_CONFIG_VALUE).strip()
 
 GLOBAL = environ.get("GLOBAL", "").strip()
 blackjack = environ.get("BLACKJACK", "").strip()
@@ -46,7 +49,7 @@ KOFI_TOKEN = environ.get("KOFI_TOKEN", "").strip()
 KOFI_LINK = environ.get("KOFI_LINK", "").strip()
 
 PUSHER_ID_CSP = ""
-if PUSHER_ID != "blahblahblah":
+if PUSHER_ID != DEFAULT_CONFIG_VALUE:
 	PUSHER_ID_CSP = f" {PUSHER_ID}.pushnotifications.pusher.com"
 CONTENT_SECURITY_POLICY_DEFAULT = "script-src 'self' 'unsafe-inline' ajax.cloudflare.com; connect-src 'self'; object-src 'none';"
 CONTENT_SECURITY_POLICY_HOME = f"script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' tls-use1.fpapi.io api.fpjs.io{PUSHER_ID_CSP}; object-src 'none';"
