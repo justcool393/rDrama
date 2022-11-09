@@ -45,7 +45,6 @@ class User(Base):
 	titlecolor = Column(String, default=DEFAULT_COLOR)
 	theme = Column(String, default=DEFAULT_THEME)
 	themecolor = Column(String, default=DEFAULT_COLOR)
-	cardview = Column(Boolean, default=CARD_VIEW)
 	song = Column(String)
 	highres = Column(String)
 	profileurl = Column(String)
