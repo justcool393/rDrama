@@ -14,21 +14,17 @@ from files.__main__ import app, limiter
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def verify_email(v):
-
 	send_verification_email(v)
-
 	return {"message": "Email has been sent (ETA ~5 minutes)"}
 
 
 @app.get("/activate")
 @auth_required
 def activate(v):
-
 	email = request.values.get("email", "").strip().lower()
 
 	if not email_regex.fullmatch(email):
 		return render_template("message.html", v=v, title="Invalid email.", error="Invalid email."), 400
-
 
 	id = request.values.get("id", "").strip()
 	timestamp = int(request.values.get("time", "0"))

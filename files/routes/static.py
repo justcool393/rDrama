@@ -1,9 +1,9 @@
-from files.mail import *
 from files.__main__ import app, limiter
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.actions import *
 from files.classes.award import AWARDS
+from files.routes.wrappers import *
 from sqlalchemy import func, nullslast
 import os
 from files.classes.mod_logs import ACTIONTYPES, ACTIONTYPES2

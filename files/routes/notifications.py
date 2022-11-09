@@ -34,7 +34,6 @@ def unread(v):
 	return {"data":[x[1].json for x in listing]}
 
 
-
 @app.get("/notifications/modmail")
 @admin_level_required(PERMS['VIEW_MODMAIL'])
 def notifications_modmail(v):

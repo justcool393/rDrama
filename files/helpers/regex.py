@@ -1,6 +1,6 @@
 import random
 import re
-from typing import List, Literal, Optional, Union
+from typing import List, Optional, Union
 from .const import *
 from random import choice, choices
 

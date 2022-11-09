@@ -8,7 +8,7 @@ from files.helpers.useractions import *
 from files.helpers.get import *
 from files.helpers.security import *
 from files.helpers.mail import *
-from .wrappers import *
+from files.routes.wrappers import *
 from files.__main__ import app, cache, limiter
 import youtube_dl
 from .front import frontlist
