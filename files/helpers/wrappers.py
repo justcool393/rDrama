@@ -10,6 +10,7 @@ import user_agents
 import time
 
 def calc_users(v):
+	from files.__main__ import cache
 	loggedin = cache.get(f'{SITE}_loggedin') or {}
 	loggedout = cache.get(f'{SITE}_loggedout') or {}
 	timestamp = int(time.time())

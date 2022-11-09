@@ -291,6 +291,7 @@ FEATURES = {
 	'MARKUP_COMMANDS': True,
 	'REPOST_DETECTION': True,
 	'PATRON_ICONS': False,
+	'ASSET_SUBMISSIONS': False,
 }
 
 WERKZEUG_ERROR_DESCRIPTIONS = {
@@ -460,6 +461,7 @@ if SITE.startswith('rdrama.'):
 	FEATURES['PRONOUNS'] = True
 	FEATURES['HOUSES'] = True
 	FEATURES['USERS_PERMANENT_WORD_FILTERS'] = True
+	FEATURES['ASSET_SUBMISSIONS'] = True
 	PERMS['ADMIN_ADD'] = 4
 
 	SIDEBAR_THREAD = 37696
@@ -586,6 +588,7 @@ elif SITE == 'watchpeopledie.tv':
 	}
 
 else: # localhost or testing environment implied
+	FEATURES['ASSET_SUBMISSIONS'] = True
 	FEATURES['PRONOUNS'] = True
 	FEATURES['HOUSES'] = True
 	FEATURES['USERS_PERMANENT_WORD_FILTERS'] = True
