@@ -1,4 +1,4 @@
-from files.__main__ import app, limiter
+from files.__main__ import app, cache, limiter
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.actions import *
