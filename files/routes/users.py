@@ -14,7 +14,7 @@ from files.helpers.actions import *
 from files.helpers.mail import *
 from files.routes.wrappers import *
 from flask import *
-from files.__main__ import app, limiter
+from files.__main__ import app, cache, limiter
 import sqlalchemy
 from sqlalchemy.orm import aliased
 from sqlalchemy import desc
