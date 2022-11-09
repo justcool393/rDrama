@@ -7,6 +7,9 @@ from flask import g, request
 # import our app then...
 from files.__main__ import app
 
+# import required helpers then...
+from files.helpers.wrappers import *
+
 # import routes :)
 from .admin import *
 from .comments import *
