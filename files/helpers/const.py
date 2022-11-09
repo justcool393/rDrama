@@ -1,8 +1,6 @@
 from os import environ
 import re
 from copy import deepcopy
-from json import loads
-from flask import request
 import tldextract
 from os import path
 

@@ -10,7 +10,6 @@ from files.helpers.twentyone import *
 from files.helpers.roulette import *
 from files.helpers.lottery import *
 
-
 @app.get("/casino")
 @limiter.limit("100/minute;2000/hour;12000/day")
 @auth_required
