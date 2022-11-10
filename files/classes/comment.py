@@ -1,21 +1,23 @@
 import time
-from urllib.parse import urlencode, urlparse, parse_qs
+from math import floor
+from random import randint
+from urllib.parse import parse_qs, urlencode, urlparse
+
 from flask import g
-from sqlalchemy import *
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import TSVECTOR
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import *
+
 from files.classes import Base
 from files.helpers.const import *
-from files.helpers.regex import *
 from files.helpers.lazy import lazy
+from files.helpers.regex import *
 from files.helpers.sorting_and_time import *
-from random import randint
-from math import floor
 
 
 def normalize_urls_runtime(body, v):
 	if not v: return body
-
 	if v.reddit != 'old.reddit.com':
 		body = reddit_to_vreddit_regex.sub(rf'\1https://{v.reddit}/\2/', body)
 	if v.nitter:
@@ -23,11 +25,9 @@ def normalize_urls_runtime(body, v):
 		body = body.replace('https://nitter.lacontrevoie.fr/i/', 'https://twitter.com/i/')
 	if v.imginn:
 		body = body.replace('https://instagram.com/', 'https://imginn.com/')
-
 	return body
 
 class Comment(Base):
-
 	__tablename__ = "comments"
 
 	id = Column(Integer, primary_key=True)

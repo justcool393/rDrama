@@ -1,6 +1,7 @@
 import time
 
-from sqlalchemy import *
+from sqlalchemy import Column
+from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
 

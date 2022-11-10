@@ -3,8 +3,9 @@ import time
 from urllib.parse import urlparse
 
 from flask import g
-from sqlalchemy import *
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.orm import deferred, relationship
+from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
 from files.helpers.const import *

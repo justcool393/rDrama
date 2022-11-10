@@ -1,8 +1,9 @@
 import time
 from os import environ
 
-from sqlalchemy import *
+from sqlalchemy import Column
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
 from files.helpers.lazy import lazy

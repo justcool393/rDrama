@@ -1,7 +1,8 @@
 from files.helpers.const import KOFI_TOKEN
 
 if KOFI_TOKEN:
-	from sqlalchemy import *
+	from sqlalchemy import Column
+	from sqlalchemy.sql.sqltypes import *
 
 	from files.classes import Base
 

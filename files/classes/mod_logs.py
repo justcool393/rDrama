@@ -1,8 +1,9 @@
 import time
 from copy import deepcopy
 
-from sqlalchemy import *
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
 from files.helpers.const import *

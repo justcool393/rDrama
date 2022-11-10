@@ -1,8 +1,9 @@
 import time
 
 from flask import g
-from sqlalchemy import *
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
 from files.helpers.const import SITE_FULL
@@ -53,9 +54,7 @@ class OauthApp(Base):
 
 
 class ClientAuth(Base):
-
 	__tablename__ = "client_auths"
-
 	user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
 	oauth_client = Column(Integer, ForeignKey("oauth_apps.id"), primary_key=True)
 	access_token = Column(String)
