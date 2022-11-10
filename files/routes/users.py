@@ -1,7 +1,6 @@
 import io
 import json
 import math
-import os
 import time
 from collections import Counter
 from sys import stdout
@@ -9,9 +8,6 @@ from typing import Literal
 
 import gevent
 import qrcode
-import sqlalchemy
-from flask import *
-from sqlalchemy import desc
 from sqlalchemy.orm import aliased
 
 from files.classes.leaderboard import Leaderboard
@@ -513,7 +509,7 @@ def messagereply(v):
 			abort(403, "You're blocked by this user.")
 
 	if parent.sentto == 2:
-		body += process_files()
+		body += process_files(request.files)
 
 	body = body.strip()
 

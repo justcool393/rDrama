@@ -1,12 +1,13 @@
+import time
+
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
+
 from files.classes import Base
 from files.helpers.lazy import lazy
 from files.helpers.regex import censor_slurs
-import time
 
 class Flag(Base):
-
 	__tablename__ = "flags"
 
 	post_id = Column(Integer, ForeignKey("submissions.id"), primary_key=True)

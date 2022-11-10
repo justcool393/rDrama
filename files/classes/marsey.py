@@ -1,6 +1,8 @@
-from sqlalchemy import *
-from files.classes import Base
 import time
+
+from sqlalchemy import *
+
+from files.classes import Base
 
 class Marsey(Base):
 	__tablename__ = "marseys"

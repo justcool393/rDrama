@@ -1,8 +1,10 @@
+import time
+
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
+
 from files.classes import Base
 from files.helpers.lazy import lazy
-import time
 
 class Vote(Base):
 

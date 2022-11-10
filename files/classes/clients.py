@@ -1,12 +1,15 @@
+import time
+
 from flask import g
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
-from .submission import Submission
-from .comment import Comment
+
 from files.classes import Base
-from files.helpers.lazy import lazy
 from files.helpers.const import SITE_FULL
-import time
+from files.helpers.lazy import lazy
+
+from .comment import Comment
+from .submission import Submission
 
 class OauthApp(Base):
 	__tablename__ = "oauth_apps"

@@ -1,22 +1,21 @@
 import random
-import re
 import time
 from urllib.parse import urlparse
+
+from flask import g
 from sqlalchemy import *
-from sqlalchemy.orm import relationship, deferred
+from sqlalchemy.orm import deferred, relationship
+
 from files.classes import Base
 from files.helpers.const import *
-from files.helpers.regex import *
 from files.helpers.lazy import lazy
+from files.helpers.regex import *
 from files.helpers.sorting_and_time import make_age_string
-from .flags import Flag
-from .comment import Comment, normalize_urls_runtime
-from .saves import SaveRelationship
+
+from .comment import normalize_urls_runtime
+from .polls import *
 from .sub import *
 from .subscriptions import *
-from .votes import CommentVote
-from .polls import *
-from flask import g
 
 class Submission(Base):
 	__tablename__ = "submissions"

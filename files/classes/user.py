@@ -1,33 +1,34 @@
-from sqlalchemy.orm import deferred, aliased
-from sqlalchemy.sql import func
-from secrets import token_hex
+import random
+
 import pyotp
+from sqlalchemy.orm import aliased, deferred
+from sqlalchemy.sql import func
+
 from files.classes import Base
-from files.classes.sub import Sub
-from files.helpers.media import *
-from files.helpers.const import *
 from files.classes.casino_game import Casino_Game
+from files.classes.sub import Sub
+from files.helpers.const import *
+from files.helpers.media import *
+from files.helpers.security import *
 from files.helpers.sorting_and_time import *
+
 from .alts import Alt
-from .saves import *
-from .notifications import Notification
 from .award import AwardRelationship
-from .follows import *
-from .subscriptions import *
-from .userblock import *
 from .badges import *
 from .clients import *
-from .mod_logs import *
-from .sub_logs import *
-from .mod import *
 from .exiles import *
-from .sub_block import *
-from .sub_subscription import *
-from .sub_join import *
+from .follows import *
 from .hats import *
-from files.helpers.security import *
-import random
-from os import remove, path
+from .mod import *
+from .mod_logs import *
+from .notifications import Notification
+from .saves import *
+from .sub_block import *
+from .sub_join import *
+from .sub_logs import *
+from .sub_subscription import *
+from .subscriptions import *
+from .userblock import *
 
 class User(Base):
 	__tablename__ = "users"

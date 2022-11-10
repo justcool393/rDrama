@@ -1,4 +1,3 @@
-import re
 import time
 from urllib.parse import urlencode, urlparse, parse_qs
 from flask import g
@@ -6,14 +5,10 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from files.classes import Base
-from files.classes.votes import CommentVote
 from files.helpers.const import *
 from files.helpers.regex import *
 from files.helpers.lazy import lazy
 from files.helpers.sorting_and_time import *
-from .flags import CommentFlag
-from .votes import CommentVote
-from .saves import CommentSaveRelationship
 from random import randint
 from math import floor
 

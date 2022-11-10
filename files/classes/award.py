@@ -6,7 +6,6 @@ from files.helpers.const import AWARDS, HOUSE_AWARDS
 import time
 
 class AwardRelationship(Base):
-
 	__tablename__ = "award_relationships"
 
 	id = Column(Integer, primary_key=True)

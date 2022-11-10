@@ -1,7 +1,9 @@
+import time
+
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
+
 from files.classes import Base
-import time
 
 class Subscription(Base):
 	__tablename__ = "subscriptions"

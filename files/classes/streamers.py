@@ -1,12 +1,13 @@
 from files.helpers.const import SITE
 
 if SITE == 'pcmemes.net':
-	from sqlalchemy import *
-	from files.classes import Base
 	import time
 
-	class Streamer(Base):
+	from sqlalchemy import *
 
+	from files.classes import Base
+
+	class Streamer(Base):
 		__tablename__ = "streamers"
 		id = Column(String, primary_key=True)
 		created_utc = Column(Integer)

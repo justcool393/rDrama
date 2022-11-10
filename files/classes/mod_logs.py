@@ -1,10 +1,12 @@
+import time
+from copy import deepcopy
+
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
+
 from files.classes import Base
-import time
-from files.helpers.lazy import lazy
-from copy import deepcopy
 from files.helpers.const import *
+from files.helpers.lazy import lazy
 from files.helpers.regex import censor_slurs
 from files.helpers.sorting_and_time import make_age_string
 

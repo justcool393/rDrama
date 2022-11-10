@@ -1,10 +1,12 @@
+import time
+
+from flask import g
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
+
 from files.classes import Base
 from files.helpers.lazy import lazy
 from files.helpers.regex import censor_slurs
-from flask import g
-import time
 
 class HatDef(Base):
 	__tablename__ = "hat_defs"

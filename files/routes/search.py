@@ -2,13 +2,12 @@ import re
 import time
 from calendar import timegm
 
-from flask import *
 from sqlalchemy import *
 
 from files.helpers.regex import *
 from files.helpers.sorting_and_time import *
 from files.routes.wrappers import *
-from files.__main__ import app, limiter
+from files.__main__ import app
 
 search_operator_hole = HOLE_NAME
 

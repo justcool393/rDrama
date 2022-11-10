@@ -1,10 +1,11 @@
-from sqlalchemy import *
-from sqlalchemy.orm import relationship
-from files.classes import Base
 import time
 
-class SaveRelationship(Base):
+from sqlalchemy import *
+from sqlalchemy.orm import relationship
 
+from files.classes import Base
+
+class SaveRelationship(Base):
 	__tablename__="save_relationship"
 
 	user_id=Column(Integer, ForeignKey("users.id"), primary_key=True)

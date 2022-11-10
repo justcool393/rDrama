@@ -1,5 +1,3 @@
-from flask import *
-
 from files.classes import *
 from files.helpers.const import *
 from files.helpers.get import *

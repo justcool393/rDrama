@@ -1,6 +1,8 @@
-from sqlalchemy import *
-from files.classes import Base
 import time
+
+from sqlalchemy import *
+
+from files.classes import Base
 
 class Alt(Base):
 	__tablename__ = "alts"

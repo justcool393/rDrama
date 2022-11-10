@@ -1,8 +1,10 @@
-from sqlalchemy import *
-from files.classes import Base
-import time
-from files.helpers.lazy import lazy
 import json
+import time
+
+from sqlalchemy import *
+
+from files.classes import Base
+from files.helpers.lazy import lazy
 
 CASINO_GAME_KINDS = ['blackjack', 'slots', 'roulette']
 

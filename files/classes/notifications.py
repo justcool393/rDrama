@@ -1,10 +1,11 @@
-from sqlalchemy import *
-from sqlalchemy.orm import relationship
-from files.classes import Base
 import time
 
-class Notification(Base):
+from sqlalchemy import *
+from sqlalchemy.orm import relationship
 
+from files.classes import Base
+
+class Notification(Base):
 	__tablename__ = "notifications"
 
 	user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)

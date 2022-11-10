@@ -1,9 +1,10 @@
-from sqlalchemy import *
-from sqlalchemy.orm import relationship
-from files.classes import Base
-from files.helpers.lazy import *
 import time
 
+from sqlalchemy import *
+from sqlalchemy.orm import relationship
+
+from files.classes import Base
+from files.helpers.lazy import *
 from files.helpers.sorting_and_time import make_age_string
 
 class ViewerRelationship(Base):

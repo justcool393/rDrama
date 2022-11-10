@@ -1,15 +1,14 @@
-import functools
 import time
 from random import randint
 
 import user_agents
 from flask import g, request, session
 
-from files.__main__ import app, db_session
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.const_stateful import CONFIG
 from files.routes.routehelpers import validate_formkey
+from files.__main__ import app, db_session
 
 def calc_users(v):
 	from files.__main__ import cache
