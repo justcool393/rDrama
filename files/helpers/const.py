@@ -8,6 +8,7 @@ DEFAULT_CONFIG_VALUE = "blahblahblah"
 SITE = environ.get("SITE", "localhost").strip()
 SITE_NAME = environ.get("SITE_NAME", "rdrama.net").strip()
 SECRET_KEY = environ.get("SECRET_KEY", DEFAULT_CONFIG_VALUE).strip()
+print(SECRET_KEY)
 if SECRET_KEY == DEFAULT_CONFIG_VALUE:
 	print("Warning: secret key is the default config value!")
 PROXY_URL = environ.get("PROXY_URL", "http://localhost:18080").strip()

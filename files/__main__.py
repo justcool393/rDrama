@@ -73,6 +73,9 @@ Compress(app)
 @app.before_request
 def before_request():
 	app.config["SETTINGS"] = CONFIG
+	print(SECRET_KEY)
+	print(environ.get('SECRET_KEY').strip())
+	print(app.config["SECRET_KEY"])
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
 
