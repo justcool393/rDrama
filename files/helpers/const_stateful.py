@@ -23,7 +23,6 @@ def reload_config():
 	CONFIG_PATH = '/site_settings.json'
 	if not path.isfile(CONFIG_PATH):
 		with open(CONFIG_PATH, 'w', encoding='utf_8') as f:
-			print("writing new config")
 			f.write(
 				'{"Bots": true, "Fart mode": false, "Read-only mode": false, ' + \
 				'"Signups": true, "login_required": false}')

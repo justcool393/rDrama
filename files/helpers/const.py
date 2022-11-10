@@ -8,7 +8,6 @@ DEFAULT_CONFIG_VALUE = "blahblahblah"
 SITE = environ.get("SITE", "localhost").strip()
 SITE_NAME = environ.get("SITE_NAME", "rdrama.net").strip()
 SECRET_KEY = environ.get("SECRET_KEY", DEFAULT_CONFIG_VALUE).strip()
-print(SECRET_KEY) ###### REMOVE BEFORE FLIGHT ######
 PROXY_URL = environ.get("PROXY_URL", "http://localhost:18080").strip()
 GIPHY_KEY = environ.get('GIPHY_KEY', DEFAULT_CONFIG_VALUE).strip()
 DISCORD_BOT_TOKEN = environ.get("DISCORD_BOT_TOKEN", DEFAULT_CONFIG_VALUE).strip()

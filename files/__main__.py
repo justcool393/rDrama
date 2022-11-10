@@ -79,10 +79,6 @@ Compress(app)
 def before_request():
 	app.config['SESSION_COOKIE_DOMAIN'] = f'.{SITE}' if not is_localhost else SITE
 	app.config["SETTINGS"] = CONFIG
-	##print(SECRET_KEY)  ###### REMOVE BEFORE FLIGHT ######
-	#print(environ.get('SECRET_KEY').strip())  ###### REMOVE BEFORE FLIGHT ######
-	#print(app.config["SECRET_KEY"])  ###### REMOVE BEFORE FLIGHT ######
-	#print(app.secret_key) ###### REMOVE BEFORE FLIGHT ######
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
 
@@ -109,11 +105,9 @@ def before_request():
 	if not request.path: request.path = '/'
 	request.full_path = request.full_path.rstrip('?').rstrip('/')
 	if not request.full_path: request.full_path = '/'
-	print(session) ###### REMOVE BEFORE FLIGHT ######
 	if not session.get("session_id"):
 		session.permanent = True
 		session["session_id"] = secrets.token_hex(49)
-		print(session["session_id"]) ###### REMOVE BEFORE FLIGHT ######
 
 @app.after_request
 def after_request(response):
