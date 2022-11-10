@@ -70,7 +70,6 @@ def get_logged_in_user():
 
 				if request.method != "GET":
 					submitted_key = request.values.get("formkey")
-					if not submitted_key: abort(401)
 					if not validate_formkey(v, submitted_key): abort(401)
 
 				v.client = None
