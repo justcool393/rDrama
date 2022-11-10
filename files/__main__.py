@@ -76,6 +76,7 @@ def before_request():
 	print(SECRET_KEY)
 	print(environ.get('SECRET_KEY').strip())
 	print(app.config["SECRET_KEY"])
+	print(app.secret_key)
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
 
