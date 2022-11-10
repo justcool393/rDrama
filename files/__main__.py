@@ -12,7 +12,7 @@ from sys import argv, stdout
 
 import gevent
 import redis
-from flask import *
+from flask import Flask
 from flask_caching import Cache
 from flask_compress import Compress
 from flask_limiter import Limiter
