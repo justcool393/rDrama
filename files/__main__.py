@@ -1,23 +1,27 @@
 import gevent.monkey
+
 gevent.monkey.patch_all()
-from os import environ, path
-import secrets
-from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
-from files.helpers.const import *
-from files.helpers.const_stateful import const_initialize
-from flask import *
-from flask_caching import Cache
-from flask_limiter import Limiter
-from flask_compress import Compress
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import *
-import gevent
-import redis
-import time
-from sys import stdout, argv
+
 import faulthandler
 import json
 import random
+import secrets
+import time
+from os import environ, path
+from sys import argv, stdout
+
+import gevent
+import redis
+from flask import *
+from flask_caching import Cache
+from flask_compress import Compress
+from flask_limiter import Limiter
+from sqlalchemy import *
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
+from files.helpers.const import *
+from files.helpers.const_stateful import const_initialize
 
 app = Flask(__name__, template_folder='templates')
 app.url_map.strict_slashes = False
