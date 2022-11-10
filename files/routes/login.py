@@ -10,7 +10,7 @@ from files.helpers.get import *
 from files.helpers.mail import send_mail, send_verification_email
 from files.helpers.regex import *
 from files.routes.wrappers import *
-from files.__main__ import app, get_CF, limiter
+from files.__main__ import app, cache, get_CF, limiter
 
 @app.get("/login")
 @auth_desired
