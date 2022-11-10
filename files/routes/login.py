@@ -168,11 +168,8 @@ def log_failed_admin_login_attempt(account:User, type:str):
 			pass
 
 def on_login(account, redir=None):
-	print("on login")
 	session["lo_user"] = account.id
-	print(f"lo_user: {session['lo_user']}")
 	session["login_nonce"] = account.login_nonce
-	print(f"nonce: {session['login_nonce']}")
 	if account.id == AEVANN_ID: session["verified"] = time.time()
 	check_for_alts(account)
 
