@@ -73,10 +73,10 @@ Compress(app)
 @app.before_request
 def before_request():
 	app.config["SETTINGS"] = CONFIG
-	print(SECRET_KEY)
-	print(environ.get('SECRET_KEY').strip())
-	print(app.config["SECRET_KEY"])
-	print(app.secret_key)
+	print(SECRET_KEY)  ###### REMOVE BEFORE FLIGHT ######
+	print(environ.get('SECRET_KEY').strip())  ###### REMOVE BEFORE FLIGHT ######
+	print(app.config["SECRET_KEY"])  ###### REMOVE BEFORE FLIGHT ######
+	print(app.secret_key) ###### REMOVE BEFORE FLIGHT ######
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
 

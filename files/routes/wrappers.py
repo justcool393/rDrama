@@ -36,9 +36,13 @@ def calc_users(v):
 
 def get_logged_in_user():
 	from files.helpers.get import get_account
+	print(f"get logged in wrapper: has v? {hasattr(g, 'v')}")
 	if hasattr(g, 'v'): return g.v
+	print(f"get logged in wrapper: has db? {getattr(g, 'db', None)}")
 	if not getattr(g, 'db', None): g.db = db_session()
+	print(f"get logged in wrapper: db {getattr(g, 'db', None)}")
 	g.desires_auth = True
+	print("desires auth")
 	v = None
 	token = request.headers.get("Authorization","").strip()
 	if token:
@@ -48,15 +52,18 @@ def get_logged_in_user():
 			v.client = client
 	else:
 		lo_user = session.get("lo_user")
+		print(lo_user)
 		if lo_user:
 			id = int(lo_user)
 			v = get_account(id, graceful=True)
 			if not v:
+				print("clearing session 1")
 				session.clear()
 				return None
 			else:
 				nonce = session.get("login_nonce", 0)
 				if nonce < v.login_nonce or v.id != id:
+					print("clearing session 2")
 					session.clear()
 					return None
 
