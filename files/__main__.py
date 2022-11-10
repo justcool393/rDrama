@@ -72,6 +72,7 @@ Compress(app)
 @app.before_request
 def before_request():
 	print(app.config)
+	app.config["SETTINGS"] = CONFIG
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
 
