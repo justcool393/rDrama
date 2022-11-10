@@ -3,6 +3,7 @@ gevent.monkey.patch_all()
 from os import environ, path
 import secrets
 from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
+from files.helpers.const import *
 from files.helpers.const_stateful import const_initialize
 from flask import *
 from flask_caching import Cache
@@ -25,13 +26,12 @@ app.jinja_env.auto_reload = True
 app.jinja_env.add_extension('jinja2.ext.do')
 faulthandler.enable()
 
-SITE = environ.get("SITE").strip()
-is_localhost = SITE == "localhost"
+#SITE = environ.get("SITE").strip()
+#is_localhost = SITE == "localhost"
 
 app.config['SERVER_NAME'] = SITE
 app.config['SECRET_KEY'] = environ.get('SECRET_KEY').strip()
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 3153600
-app.config['SESSION_COOKIE_DOMAIN'] = SITE if is_localhost else f".{SITE}" # don't touch this if you want to live
 app.config["SESSION_COOKIE_NAME"] = "session_" + environ.get("SITE_NAME").strip().lower()
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 app.config["SESSION_COOKIE_SECURE"] = True
