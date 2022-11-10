@@ -1,6 +1,5 @@
 from os import path, rename
 from shutil import copyfile, move
-from typing import Union
 
 from files.helpers.cloudflare import purge_files_in_cache
 from files.helpers.const import *

@@ -1,10 +1,6 @@
 import time
-import re
-import datetime
-from os import remove
 
-import requests
-from PIL import Image as IMAGE
+from files.routes.routehelpers import check_for_alts
 
 from files.routes.wrappers import *
 from files.helpers.alerts import *
@@ -20,7 +16,6 @@ import files.helpers.cloudflare as cloudflare
 from files.classes import *
 from flask import *
 from .front import frontlist
-from .login import check_for_alts
 from urllib.parse import quote, urlencode
 from files.__main__ import app, cache, limiter
 

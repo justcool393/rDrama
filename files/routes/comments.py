@@ -4,7 +4,6 @@ from json import loads
 from shutil import copyfile
 
 import gevent
-import requests
 
 from files.classes import *
 from files.helpers.actions import *

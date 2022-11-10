@@ -1,4 +1,3 @@
-import html
 from datetime import datetime
 
 from yattag import Doc

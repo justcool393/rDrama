@@ -3,7 +3,6 @@ import json
 import math
 import time
 from collections import Counter
-from sys import stdout
 from typing import Literal
 
 import gevent
@@ -19,9 +18,9 @@ from files.helpers.const import *
 from files.helpers.mail import *
 from files.helpers.sanitize import *
 from files.helpers.sorting_and_time import *
+from files.routes.routehelpers import check_for_alts
 from files.routes.wrappers import *
 
-from .login import check_for_alts
 from files.__main__ import app, cache, limiter
 
 

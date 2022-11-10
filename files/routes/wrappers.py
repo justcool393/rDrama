@@ -1,5 +1,4 @@
 import time
-from random import randint
 
 import user_agents
 from flask import g, request, session
