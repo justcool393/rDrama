@@ -52,7 +52,7 @@ if PUSHER_ID != DEFAULT_CONFIG_VALUE:
 CONTENT_SECURITY_POLICY_DEFAULT = "script-src 'self' 'unsafe-inline' ajax.cloudflare.com; connect-src 'self'; object-src 'none';"
 CONTENT_SECURITY_POLICY_HOME = f"script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' tls-use1.fpapi.io api.fpjs.io{PUSHER_ID_CSP}; object-src 'none';"
 
-CLOUDFLARE_COOKIE_VALUE = "yes."
+CLOUDFLARE_COOKIE_VALUE = "yes." # remember to change this in CloudFlare too
 
 if SITE == "localhost": SITE_FULL = 'http://' + SITE
 else: SITE_FULL = 'https://' + SITE
@@ -62,7 +62,7 @@ if SITE_NAME == 'PCM': CC = "SPLASH MOUNTAIN"
 else: CC = "COUNTRY CLUB"
 CC_TITLE = CC.title()
 
-CASINO_RELEASE_DAY = 0
+CASINO_RELEASE_DAY = 1662825600
 
 if SITE_NAME == 'rDrama': patron = 'Paypig'
 else: patron = 'Patron'
