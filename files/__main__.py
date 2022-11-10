@@ -3,11 +3,8 @@ import gevent.monkey
 gevent.monkey.patch_all()
 
 import faulthandler
-import json
-import random
 import secrets
-import time
-from os import environ, path
+from os import environ
 from sys import argv, stdout
 
 import gevent
