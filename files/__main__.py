@@ -103,6 +103,7 @@ def before_request():
 	if not request.path: request.path = '/'
 	request.full_path = request.full_path.rstrip('?').rstrip('/')
 	if not request.full_path: request.full_path = '/'
+	print(session) ###### REMOVE BEFORE FLIGHT ######
 	if not session.get("session_id"):
 		session.permanent = True
 		session["session_id"] = secrets.token_hex(49)
