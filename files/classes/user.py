@@ -492,18 +492,6 @@ class User(Base):
 
 	@property
 	@lazy
-	def formkey(self):
-
-		msg = f"{session['session_id']}+{self.id}+{self.login_nonce}"
-
-		return generate_hash(msg)
-
-	def validate_formkey(self, formkey):
-
-		return validate_hash(f"{session['session_id']}+{self.id}+{self.login_nonce}", formkey)
-
-	@property
-	@lazy
 	def url(self):
 		return f"/@{self.username}"
 

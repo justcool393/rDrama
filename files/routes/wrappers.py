@@ -9,6 +9,7 @@ from files.__main__ import app, db_session
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.const_stateful import CONFIG
+from files.routes.routehelpers import validate_formkey
 
 print(CONFIG["Bots"])
 
@@ -70,7 +71,7 @@ def get_logged_in_user():
 				if request.method != "GET":
 					submitted_key = request.values.get("formkey")
 					if not submitted_key: abort(401)
-					if not v.validate_formkey(submitted_key): abort(401)
+					if not validate_formkey(v, submitted_key): abort(401)
 
 				v.client = None
 	g.is_api_or_xhr = bool((v and v.client) or request.headers.get("xhr"))

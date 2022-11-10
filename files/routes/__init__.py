@@ -7,6 +7,9 @@ from flask import g, request, render_template, make_response, redirect, jsonify,
 # import our app then...
 from files.__main__ import app
 
+# import route helpers then...
+from files.routes.routehelpers import *
+
 # import wrappers then...
 from files.routes.wrappers import *
 

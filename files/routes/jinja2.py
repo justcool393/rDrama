@@ -7,8 +7,13 @@ from files.helpers.assetcache import assetcache_path
 from files.helpers.const import *
 from files.helpers.const_stateful import CONFIG
 from files.helpers.sorting_and_time import make_age_string
+from files.routes.routehelpers import get_formkey
 from files.routes.wrappers import calc_users
 from files.__main__ import app, cache
+
+@app.template_filter("formkey")
+def formkey(u):
+	return get_formkey(u)
 
 @app.template_filter("post_embed")
 def post_embed(id, v):
