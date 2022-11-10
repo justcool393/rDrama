@@ -77,6 +77,7 @@ Compress(app)
 
 @app.before_request
 def before_request():
+	app.config['SESSION_COOKIE_DOMAIN'] = f'.{SITE}' if not is_localhost else SITE
 	app.config["SETTINGS"] = CONFIG
 	##print(SECRET_KEY)  ###### REMOVE BEFORE FLIGHT ######
 	#print(environ.get('SECRET_KEY').strip())  ###### REMOVE BEFORE FLIGHT ######
