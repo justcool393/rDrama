@@ -17,7 +17,6 @@ def send_mail(to_address, subject, html):
 			"subject": subject,
 			"html": html,
 			}
-	
 	requests.post(url, auth=auth, data=data)
 
 

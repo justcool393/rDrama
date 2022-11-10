@@ -1,8 +1,8 @@
-from os import environ
 import re
 from copy import deepcopy
+from os import environ, path
+
 import tldextract
-from os import path
 
 DEFAULT_CONFIG_VALUE = "blahblahblah"
 SITE = environ.get("SITE", "localhost").strip()

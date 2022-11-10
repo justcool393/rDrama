@@ -1,9 +1,11 @@
-from flask import g
 import time
-from files.helpers.alerts import send_repeatable_notification
-from files.helpers.const import *
+
+from flask import g
+
 from files.classes.badges import Badge
 from files.classes.user import User
+from files.helpers.alerts import send_repeatable_notification
+from files.helpers.const import *
 
 def award_timers(v, bot=False):
 	now = time.time()

@@ -7,7 +7,6 @@ from files.classes import Base
 from files.helpers.lazy import lazy
 
 class Vote(Base):
-
 	__tablename__ = "votes"
 
 	submission_id = Column(Integer, ForeignKey("submissions.id"), primary_key=True)

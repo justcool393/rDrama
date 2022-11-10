@@ -2,14 +2,12 @@ import os
 import subprocess
 import time
 from shutil import copyfile
-from typing import Optional
 
 import gevent
 import imagehash
 from flask import abort, g
 from PIL import Image
 from PIL.ImageSequence import Iterator
-from werkzeug.datastructures import FileStorage
 
 from files.classes.media import *
 from files.helpers.cloudflare import purge_files_in_cache

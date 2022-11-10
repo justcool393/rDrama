@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 from files.classes import Base
 
 class UserBlock(Base):
-
 	__tablename__ = "userblocks"
 	user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
 	target_id = Column(Integer, ForeignKey("users.id"), primary_key=True)

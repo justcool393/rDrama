@@ -1,4 +1,5 @@
 from werkzeug.security import *
+
 from .const import *
 
 def generate_hash(string):

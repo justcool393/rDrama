@@ -1,6 +1,8 @@
 from typing import Callable, Iterable, List, Optional, Union
-from files.classes import *
+
 from flask import *
+
+from files.classes import *
 
 def sanitize_username(username:str) -> str:
 	if not username: return username

@@ -6,7 +6,6 @@ if KOFI_TOKEN:
 	from files.classes import Base
 
 	class Transaction(Base):
-
 		__tablename__ = "transactions"
 		id = Column(String, primary_key=True)
 		created_utc = Column(Integer)

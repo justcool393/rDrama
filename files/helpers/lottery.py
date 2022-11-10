@@ -1,9 +1,12 @@
 import time
 from random import choice
+
+from flask import g
 from sqlalchemy import *
+
 from files.helpers.alerts import *
 from files.helpers.useractions import *
-from flask import g
+
 from .const import *
 
 LOTTERY_WINNER_BADGE_ID = 137

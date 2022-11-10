@@ -1,13 +1,15 @@
+import random
+from urllib.parse import quote
+
+import requests
 from flask import g
+
 from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *
 from files.helpers.const_stateful import *
 from files.helpers.get import *
 from files.helpers.sanitize import *
 from files.helpers.slots import check_slots_command
-import random
-import requests
-from urllib.parse import quote
 
 headers = {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}
 

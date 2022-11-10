@@ -1,15 +1,17 @@
 import functools
+import re
+import signal
+from functools import partial
+from os import path
+from random import choice, random
+
 import bleach
-from bs4 import BeautifulSoup
 from bleach.css_sanitizer import CSSSanitizer
 from bleach.linkifier import LinkifyFilter
-from functools import partial
-from .get import *
-from os import path
-import re
+from bs4 import BeautifulSoup
 from mistletoe import markdown
-from random import random, choice
-import signal
+
+from .get import *
 
 TLDS = ( # Original gTLDs and ccTLDs
 	'ac','ad','ae','aero','af','ag','ai','al','am','an','ao','aq','ar','arpa','as','asia','at',
