@@ -7,7 +7,7 @@ from files.helpers.regex import *
 from files.routes.wrappers import *
 
 from .front import frontlist
-from files.__main__ import app, limiter
+from files.__main__ import app, cache, limiter
 
 
 @app.post("/exile/post/<pid>")

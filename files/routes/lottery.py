@@ -6,6 +6,8 @@ from files.helpers.get import *
 from files.helpers.lottery import *
 from files.routes.wrappers import *
 
+from files.__main__ import app, limiter
+
 @app.post("/lottery/end")
 @admin_level_required(PERMS['LOTTERY_ADMIN'])
 @feature_required('GAMBLING')

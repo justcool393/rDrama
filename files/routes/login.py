@@ -1,16 +1,18 @@
+import secrets
 from urllib.parse import urlencode
 
 import requests
 
+from files.__main__ import app, cache, get_CF, limiter
 from files.helpers.actions import *
 from files.helpers.const import *
 from files.helpers.const_stateful import CONFIG
 from files.helpers.get import *
 from files.helpers.mail import send_mail, send_verification_email
 from files.helpers.regex import *
+from files.helpers.useractions import badge_grant
 from files.routes.routehelpers import check_for_alts
 from files.routes.wrappers import *
-from files.__main__ import app, cache, get_CF, limiter
 
 @app.get("/login")
 @auth_desired
@@ -164,7 +166,7 @@ def sign_up_get(v):
 		return render_template("sign_up_failed_ref.html")
 
 	now = int(time.time())
-	token = token_hex(16)
+	token = secrets.token_hex(16)
 	session["signup_token"] = token
 
 	formkey_hashstr = str(now) + token + g.agent

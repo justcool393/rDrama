@@ -8,7 +8,7 @@ from files.helpers.media import *
 from files.helpers.useractions import *
 from files.routes.static import marsey_list
 from files.routes.wrappers import *
-from files.__main__ import app, limiter
+from files.__main__ import app, cache, limiter
 
 ASSET_TYPES = (Marsey, HatDef)
 CAN_APPROVE_ASSETS = (AEVANN_ID, CARP_ID, SNAKES_ID)
@@ -143,8 +143,6 @@ def approve_marsey(v, name):
 		badge_grant(badge_id=17, user=author)
 	purge_files_in_cache(f"https://{SITE}/e/{marsey.name}/webp")
 	cache.delete_memoized(marsey_list)
-
-
 	move(f"/asset_submissions/marseys/{name}.webp", f"files/assets/images/emojis/{marsey.name}.webp")
 
 	highquality = f"/asset_submissions/marseys/{name}"

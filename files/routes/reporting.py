@@ -1,5 +1,3 @@
-from os import path
-
 from flask import g
 
 from files.helpers.actions import *

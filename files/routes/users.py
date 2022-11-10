@@ -12,12 +12,13 @@ from sqlalchemy.orm import aliased
 from files.classes.leaderboard import Leaderboard
 from files.classes.transactions import *
 from files.classes.views import *
-from files.helpers.actions import *
+from files.helpers.actions import execute_blackjack
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.mail import *
 from files.helpers.sanitize import *
 from files.helpers.sorting_and_time import *
+from files.helpers.useractions import badge_grant
 from files.routes.routehelpers import check_for_alts
 from files.routes.wrappers import *
 
@@ -1100,30 +1101,19 @@ kofi_tiers={
 def settings_kofi(v):
 	if not (v.email and v.is_activated):
 		abort(400, f"You must have a verified email to verify {patron} status and claim your rewards!")
-
 	transaction = g.db.query(Transaction).filter_by(email=v.email).order_by(Transaction.created_utc.desc()).first()
-
 	if not transaction:
 		abort(404, "Email not found")
-
 	if transaction.claimed:
 		abort(400, f"{patron} rewards already claimed")
 
 	tier = kofi_tiers[transaction.amount]
-
 	v.patron = tier
-
 	procoins = procoins_li[tier]
-
 	v.procoins += procoins
 	send_repeatable_notification(v.id, f"You have received {procoins} Marseybux! You can use them to buy awards in the [shop](/shop).")
-
 	g.db.add(v)
-
 	badge_grant(badge_id=20+tier, user=v)
-
 	transaction.claimed = True
-
 	g.db.add(transaction)
-
 	return {"message": f"{patron} rewards claimed!"}

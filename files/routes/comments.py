@@ -20,7 +20,7 @@ from files.helpers.slots import *
 from files.helpers.treasure import *
 from files.routes.front import comment_idlist
 from files.routes.wrappers import *
-from files.__main__ import app, limiter
+from files.__main__ import app, cache, limiter
 
 WORDLE_COLOR_MAPPINGS = {-1: "🟥", 0: "🟨", 1: "🟩"}
 
@@ -455,17 +455,11 @@ def edit_comment(cid, v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def delete_comment(cid, v):
-
 	c = get_comment(cid, v=v)
-
 	if not c.deleted_utc:
-
 		if c.author_id != v.id: abort(403)
-
 		c.deleted_utc = int(time.time())
-
 		g.db.add(c)
-		
 		cache.delete_memoized(comment_idlist)
 
 		g.db.flush()
@@ -475,7 +469,6 @@ def delete_comment(cid, v):
 			Comment.deleted_utc == 0
 		).count()
 		g.db.add(v)
-
 	return {"message": "Comment deleted!"}
 
 @app.post("/undelete/comment/<cid>")
@@ -483,18 +476,12 @@ def delete_comment(cid, v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def undelete_comment(cid, v):
-
 	c = get_comment(cid, v=v)
-
 	if c.deleted_utc:
 		if c.author_id != v.id: abort(403)
-
 		c.deleted_utc = 0
-
 		g.db.add(c)
-
 		cache.delete_memoized(comment_idlist)
-
 		g.db.flush()
 		v.comment_count = g.db.query(Comment).filter(
 			Comment.author_id == v.id,
@@ -502,9 +489,7 @@ def undelete_comment(cid, v):
 			Comment.deleted_utc == 0
 		).count()
 		g.db.add(v)
-
 	return {"message": "Comment undeleted!"}
-
 
 @app.post("/pin_comment/<cid>")
 @auth_required

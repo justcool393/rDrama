@@ -13,10 +13,9 @@ from files.helpers.regex import *
 from files.helpers.sanitize import filter_emojis_only
 from files.helpers.useractions import *
 from files.routes.wrappers import *
-from files.__main__ import app, limiter
+from files.__main__ import app, cache, limiter
 
 from .front import frontlist
-
 
 @app.get("/shop")
 @app.get("/settings/shop")
