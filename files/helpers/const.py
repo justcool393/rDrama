@@ -8,9 +8,7 @@ DEFAULT_CONFIG_VALUE = "blahblahblah"
 SITE = environ.get("SITE", "localhost").strip()
 SITE_NAME = environ.get("SITE_NAME", "rdrama.net").strip()
 SECRET_KEY = environ.get("SECRET_KEY", DEFAULT_CONFIG_VALUE).strip()
-print(SECRET_KEY)
-if SECRET_KEY == DEFAULT_CONFIG_VALUE:
-	print("Warning: secret key is the default config value! Please change it to a secure random number. Thanks <3")
+print(SECRET_KEY) ###### REMOVE BEFORE FLIGHT ######
 PROXY_URL = environ.get("PROXY_URL", "http://localhost:18080").strip()
 GIPHY_KEY = environ.get('GIPHY_KEY', DEFAULT_CONFIG_VALUE).strip()
 DISCORD_BOT_TOKEN = environ.get("DISCORD_BOT_TOKEN", DEFAULT_CONFIG_VALUE).strip()
@@ -1611,3 +1609,7 @@ BOOSTED_SITES = {
 IMAGE_FORMATS = ['png','gif','jpg','jpeg','webp']
 VIDEO_FORMATS = ['mp4','webm','mov','avi','mkv','flv','m4v','3gp']
 AUDIO_FORMATS = ['mp3','wav','ogg','aac','m4a','flac']
+
+if SECRET_KEY == DEFAULT_CONFIG_VALUE:
+	from warnings import warn
+	warn("Secret key is the default value! Please change it to a secure random number. Thanks <3", RuntimeWarning)

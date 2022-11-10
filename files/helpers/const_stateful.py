@@ -28,10 +28,7 @@ def reload_config():
 				'{"Bots": true, "Fart mode": false, "Read-only mode": false, ' + \
 				'"Signups": true, "login_required": false}')
 	with open(CONFIG_PATH, 'r', encoding='utf_8') as f:
-		print("reading from config")
 		CONFIG = load(f)
-		print(CONFIG)
-		print("loaded config")
 
 def _initialize_marseys(db:scoped_session):
 	global marseys_const, marseys_const2, marsey_mappings

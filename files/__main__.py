@@ -118,13 +118,11 @@ def after_request(response):
 		g.db.commit()
 		g.db.close()
 		del g.db
-		print("db deleted")
 	return response
 
 @app.teardown_appcontext
 def teardown_request(error):
 	if getattr(g, 'db', None):
-		print("teardown with db")
 		g.db.rollback()
 		g.db.close()
 		del g.db
