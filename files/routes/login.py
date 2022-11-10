@@ -135,15 +135,11 @@ def me(v):
 @limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def logout(v):
-
 	loggedin = cache.get(f'{SITE}_loggedin') or {}
 	if session.get("lo_user") in loggedin: del loggedin[session["lo_user"]]
 	cache.set(f'{SITE}_loggedin', loggedin)
-
 	session.pop("lo_user", None)
-
 	return {"message": "Logout successful!"}
-
 
 @app.get("/signup")
 @auth_desired
