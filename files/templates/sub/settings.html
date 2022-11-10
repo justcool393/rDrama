@@ -59,7 +59,7 @@
 					<form action="/h/{{sub}}/marsey_image" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="formkey" value="{{v|formkey}}">
 						<label class="btn btn-secondary text-capitalize mr-2 mb-0">
-							Update<input autocomplete="off" type="file" accept="image/*" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} hidden name="marsey" onchange="form.submit()">
+							Update<input autocomplete="off" type="file" accept="image/*" {% if g.is_tor %}disabled{% endif %} hidden name="marsey" onchange="form.submit()">
 						</label>
 					</form>
 
@@ -94,7 +94,7 @@
 					<form action="/h/{{sub}}/sidebar_image" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="formkey" value="{{v|formkey}}">
 						<label class="btn btn-secondary text-capitalize mr-2 mb-0">
-							Update<input autocomplete="off" type="file" accept="image/*" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} hidden name="sidebar" onchange="form.submit()">
+							Update<input autocomplete="off" type="file" accept="image/*" {% if g.is_tor %}disabled{% endif %} hidden name="sidebar" onchange="form.submit()">
 						</label>
 					</form>
 
@@ -130,7 +130,7 @@
 					<form action="/h/{{sub}}/banner" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="formkey" value="{{v|formkey}}">
 						<label class="btn btn-secondary text-capitalize mr-2 mb-0">
-							Update<input autocomplete="off" type="file" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} accept="image/*" hidden name="banner" onchange="form.submit()">
+							Update<input autocomplete="off" type="file" {% if g.is_tor %}disabled{% endif %} accept="image/*" hidden name="banner" onchange="form.submit()">
 						</label>
 					</form>
 

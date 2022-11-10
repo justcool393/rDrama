@@ -1,12 +1,8 @@
 {% extends "default.html" %}
-
 {% block title %}
 <title>{{SITE_NAME}} - Contact</title>
-
 {% endblock %}
-
 {% block content %}
-	
 	{% if msg %}
 		<div class="alert alert-success alert-dismissible fade show my-3" role="alert">
 			<i class="fas fa-check-circle my-auto" aria-hidden="true"></i>
@@ -34,7 +30,7 @@
 			</label>
 			<label class="btn btn-secondary m-0 mt-3" for="file-upload">
 				<div id="filename"><i class="fas fa-file"></i></div>
-				<input autocomplete="off" id="file-upload" accept="image/*, video/*, audio/*" type="file" name="file" multiple="multiple" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} onchange="changename('filename','file-upload')" hidden>
+				<input autocomplete="off" id="file-upload" accept="image/*, video/*, audio/*" type="file" name="file" multiple="multiple" {% if g.is_tor %}disabled{% endif %} onchange="changename('filename','file-upload')" hidden>
 			</label>
 			<input type="submit" onclick="disable(this)" value="Submit" class="btn btn-primary mt-3">
 		</form>

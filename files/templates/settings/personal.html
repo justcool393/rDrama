@@ -119,7 +119,7 @@
 									<form action="/settings/images/profile" method="post" enctype="multipart/form-data">
 										<input type="hidden" name="formkey" value="{{v|formkey}}">
 										<label class="btn btn-secondary text-capitalize mr-2 mb-0">
-											Update<input autocomplete="off" type="file" accept="image/*" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} hidden name="profile" onchange="form.submit()">
+											Update<input autocomplete="off" type="file" accept="image/*" {% if g.is_tor %}disabled{% endif %} hidden name="profile" onchange="form.submit()">
 										</label>
 									</form>
 								</div>
@@ -141,7 +141,7 @@
 										<form action="/settings/images/banner" method="post" enctype="multipart/form-data">
 											<input type="hidden" name="formkey" value="{{v|formkey}}">
 											<label class="btn btn-secondary text-capitalize mr-2 mb-0">
-												Update<input autocomplete="off" type="file" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} accept="image/*" hidden name="banner" onchange="form.submit()">
+												Update<input autocomplete="off" type="file" {% if g.is_tor %}disabled{% endif %} accept="image/*" hidden name="banner" onchange="form.submit()">
 											</label>
 										</form>
 									</div>
@@ -192,7 +192,7 @@
 												Use an MP3 file (Max size is 8MB)
 											{% endif %}
 										</div>
-										<input autocomplete="off" id="file-upload2" type="file" name="file" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} accept="audio/mp3" onchange="this.form.submit()" hidden>
+										<input autocomplete="off" id="file-upload2" type="file" name="file" {% if g.is_tor %}disabled{% endif %} accept="audio/mp3" onchange="this.form.submit()" hidden>
 									</label>
 								</form>
 								<form action="/settings/song_change" method="post">

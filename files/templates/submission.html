@@ -1,6 +1,4 @@
 {% extends "default.html" %}
-
-
 {% set ups=p.upvotes %}
 {% set downs=p.downvotes %}
 {% set score=ups-downs %}
@@ -326,7 +324,7 @@
 
 										<label class="format btn btn-secondary m-0 ml-1 {% if v %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-edit-{{p.id}}">
 											<div id="filename-show-edit-{{p.id}}"><i class="fas fa-file"></i></div>
-											<input autocomplete="off" id="file-upload-edit-{{p.id}}" accept="image/*, video/*, audio/*" type="file" multiple="multiple" name="file" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} onchange="changename('filename-show-edit-{{p.id}}','file-upload-edit-{{p.id}}')" hidden>
+											<input autocomplete="off" id="file-upload-edit-{{p.id}}" accept="image/*, video/*, audio/*" type="file" multiple="multiple" name="file" {% if g.is_tor %}disabled{% endif %} onchange="changename('filename-show-edit-{{p.id}}','file-upload-edit-{{p.id}}')" hidden>
 										</label>
 						
 										<small class="format d-none"><i class="fas fa-link" aria-hidden="true"></i></small> 
@@ -509,7 +507,7 @@
 						&nbsp;
 						<label class="format btn btn-secondary m-0 ml-1 {% if v %}d-inline-block{% else %}d-none{% endif %}" for="file-upload-reply-{{p.fullname}}">
 							<div id="filename-show-reply-{{p.fullname}}"><i class="fas fa-file"></i></div>
-							<input autocomplete="off" id="file-upload-reply-{{p.fullname}}" accept="image/*, video/*, audio/*" type="file" multiple="multiple" name="file" {% if request.headers.get('cf-ipcountry')=="T1" %}disabled{% endif %} onchange="changename('filename-show-reply-{{p.fullname}}','file-upload-reply-{{p.fullname}}')" hidden>
+							<input autocomplete="off" id="file-upload-reply-{{p.fullname}}" accept="image/*, video/*, audio/*" type="file" multiple="multiple" name="file" {% if g.is_tor %}disabled{% endif %} onchange="changename('filename-show-reply-{{p.fullname}}','file-upload-reply-{{p.fullname}}')" hidden>
 						</label>
 					</div>
 					<button type="button" id="save-reply-to-{{p.fullname}}" form="reply-to-{{p.fullname}}" class="btn btn-primary text-whitebtn ml-auto fl-r" onclick="post_comment('{{p.fullname}}');remove_dialog()">Comment</button>
