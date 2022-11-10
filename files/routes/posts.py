@@ -207,7 +207,9 @@ def post_id(pid, anything=None, v=None, sub=None):
 			if pin.top_comment in comments:
 				comments.remove(pin.top_comment) 
 
-	post.replies = pinned + comments
+	top_comments = pinned + comments
+	top_comment_ids = [c.id for c in top_comments]
+	post.replies = get_comment_trees_eager(top_comment_ids, sort, v)
 
 	post.views += 1
 	g.db.add(post)
