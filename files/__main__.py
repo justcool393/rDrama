@@ -91,6 +91,7 @@ def before_request():
 	if not CONFIG['Bots'] and request.headers.get("Authorization"): abort(403)
 
 	g.db = db_session()
+	print(f"has db: {g.db}")
 	g.webview = '; wv) ' in ua
 	g.inferior_browser = 'iphone' in ua or 'ipad' in ua or 'ipod' in ua or 'mac os' in ua or ' firefox/' in ua
 	g.is_tor = request.headers.get("cf-ipcountry") == "T1"
@@ -102,6 +103,7 @@ def before_request():
 	if not session.get("session_id"):
 		session.permanent = True
 		session["session_id"] = secrets.token_hex(49)
+		print(session["session_id"]) ###### REMOVE BEFORE FLIGHT ######
 
 @app.after_request
 def after_request(response):
@@ -112,11 +114,13 @@ def after_request(response):
 		g.db.commit()
 		g.db.close()
 		del g.db
+		print("db deleted")
 	return response
 
 @app.teardown_appcontext
 def teardown_request(error):
 	if getattr(g, 'db', None):
+		print("teardown with db")
 		g.db.rollback()
 		g.db.close()
 		del g.db
