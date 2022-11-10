@@ -42,3 +42,5 @@ from .notifications import *
 from .hats import *
 if FEATURES['ASSET_SUBMISSIONS']:
 	from .asset_submissions import *
+if SITE == 'pcmemes.net':
+	from .streamers import *

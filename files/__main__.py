@@ -30,7 +30,6 @@ app.jinja_env.auto_reload = True
 app.jinja_env.add_extension('jinja2.ext.do')
 faulthandler.enable()
 
-#SITE = environ.get("SITE").strip()
 is_localhost = SITE == "localhost"
 
 app.config['SERVER_NAME'] = SITE
@@ -77,7 +76,6 @@ Compress(app)
 
 @app.before_request
 def before_request():
-	app.config['SESSION_COOKIE_DOMAIN'] = f'.{SITE}' if not is_localhost else SITE
 	app.config["SETTINGS"] = CONFIG
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
