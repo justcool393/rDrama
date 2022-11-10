@@ -26,8 +26,6 @@ app.jinja_env.add_extension('jinja2.ext.do')
 faulthandler.enable()
 
 SITE = environ.get("SITE").strip()
-print(SITE)
-print(environ.get("SECRET_KEY").strip()) #### REMOVE BEFORE FLIGHT #####
 
 app.config['SERVER_NAME'] = SITE
 app.config['SECRET_KEY'] = environ.get('SECRET_KEY').strip()
