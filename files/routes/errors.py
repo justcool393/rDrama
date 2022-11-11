@@ -1,7 +1,9 @@
 import time
 from urllib.parse import quote, urlencode
 
-from files.routes.wrappers import *
+from flask import redirect, render_template, request, session
+
+from files.helpers.const import ERROR_MARSEYS, ERROR_MSGS, ERROR_TITLES, WERKZEUG_ERROR_DESCRIPTIONS, is_site_url
 from files.__main__ import app
 
 # If you're adding an error, go here:
@@ -53,6 +55,6 @@ def error_500(e):
 @app.post("/allow_nsfw")
 def allow_nsfw():
 	session["over_18"] = int(time.time()) + 3600
-	redir = request.values.get("redir")
+	redir = request.values.get("redir", "/")
 	if is_site_url(redir): return redirect(redir)
 	return redirect('/')
