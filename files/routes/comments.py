@@ -186,7 +186,7 @@ def comment(v):
 							abort(400, str(e))
 				body += f"\n\n![]({image})"
 			elif file.content_type.startswith('video/'):
-				body += f"\n\n{SITE_FULL}{process_video(file)}"
+				body += f"\n\n{SITE_FULL}{process_video(file, v)}"
 			elif file.content_type.startswith('audio/'):
 				body += f"\n\n{SITE_FULL}{process_audio(file)}"
 			else:
@@ -411,7 +411,7 @@ def edit_comment(cid, v):
 
 		execute_antispam_comment_check(body, v)
 
-		body += process_files(request.files)
+		body += process_files(request.files, v)
 		body = body.strip()[:COMMENT_BODY_LENGTH_LIMIT] # process_files potentially adds characters to the post
 
 		body_for_sanitize = body

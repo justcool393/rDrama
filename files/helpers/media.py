@@ -8,13 +8,15 @@ import imagehash
 from flask import abort, g
 from PIL import Image
 from PIL.ImageSequence import Iterator
+from sqlalchemy.orm import scoped_session
 
+from files.classes.user import User
 from files.classes.media import *
 from files.helpers.cloudflare import purge_files_in_cache
 
 from .const import *
 
-def process_files(files):
+def process_files(files, v:User):
 	body = ''
 	if g.is_tor or not files.get("file"): return body
 	files = files.getlist('file')[:4]
@@ -25,7 +27,7 @@ def process_files(files):
 			url = process_image(name, patron=g.v.patron)
 			body += f"\n\n![]({url})"
 		elif file.content_type.startswith('video/'):
-			body += f"\n\n{SITE_FULL}{process_video(file)}"
+			body += f"\n\n{SITE_FULL}{process_video(file, v)}"
 		elif file.content_type.startswith('audio/'):
 			body += f"\n\n{SITE_FULL}{process_audio(file)}"
 		else:
@@ -79,7 +81,7 @@ def webm_to_mp4(old, new, vid, db):
 	db.close()
 
 
-def process_video(file):
+def process_video(file, v:User):
 	old = f'/videos/{time.time()}'.replace('.','')
 	file.save(old)
 
@@ -96,7 +98,8 @@ def process_video(file):
 	if extension == 'webm':
 		new = new.replace('.webm', '.mp4')
 		copyfile(old, new)
-		gevent.spawn(webm_to_mp4, old, new, g.v.id, g.db)
+		db = scoped_session()
+		gevent.spawn(webm_to_mp4, old, new, v.id, db)
 	else:
 		subprocess.run(["ffmpeg", "-y", "-loglevel", "warning", "-nostats", "-i", old, "-map_metadata", "-1", "-c:v", "copy", "-c:a", "copy", new], check=True)
 		os.remove(old)

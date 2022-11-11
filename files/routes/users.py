@@ -510,7 +510,7 @@ def messagereply(v):
 			abort(403, "You're blocked by this user.")
 
 	if parent.sentto == 2:
-		body += process_files(request.files)
+		body += process_files(request.files, v)
 
 	body = body.strip()
 

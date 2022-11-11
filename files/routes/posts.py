@@ -345,7 +345,7 @@ def edit_post(pid, v):
 		p.title = title
 		p.title_html = title_html
 
-	body += process_files(request.files)
+	body += process_files(request.files, v)
 	body = body.strip()[:POST_BODY_LENGTH_LIMIT] # process_files() may be adding stuff to the body
 
 	if body != p.body:
@@ -754,7 +754,7 @@ def submit_post(v, sub=None):
 		choices.append(i.group(1))
 		body = body.replace(i.group(0), "")
 
-	body += process_files(request.files)
+	body += process_files(request.files, v)
 	body = body.strip()[:POST_BODY_LENGTH_LIMIT] # process_files() adds content to the body, so we need to re-strip
 
 	torture = (v.agendaposter and not v.marseyawarded and sub != 'chudrama')
@@ -849,7 +849,7 @@ def submit_post(v, sub=None):
 			copyfile(name, name2)
 			post.thumburl = process_image(name2, resize=100)
 		elif file.content_type.startswith('video/'):
-			post.url = process_video(file)
+			post.url = process_video(file, v)
 		elif file.content_type.startswith('audio/'):
 			post.url = process_audio(file)
 		else:
