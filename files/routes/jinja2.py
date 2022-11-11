@@ -6,7 +6,7 @@ from jinja2 import pass_context
 
 from files.helpers.assetcache import assetcache_path
 from files.helpers.const import *
-from files.helpers.const_stateful import CONFIG
+from files.helpers.settings import SETTINGS
 from files.helpers.sorting_and_time import make_age_string
 from files.routes.routehelpers import get_formkey
 from files.routes.wrappers import calc_users
@@ -55,7 +55,7 @@ def inject_constants():
 			"BADGE_THREAD":BADGE_THREAD, "SNAPPY_THREAD":SNAPPY_THREAD,
 			"KOFI_TOKEN":KOFI_TOKEN, "KOFI_LINK":KOFI_LINK,
 			"approved_embed_hosts":approved_embed_hosts,
-			"site_settings":CONFIG, "EMAIL":EMAIL, "calc_users":calc_users, 
+			"site_settings":SETTINGS, "EMAIL":EMAIL, "calc_users":calc_users, 
 			"TELEGRAM_LINK":TELEGRAM_LINK, "EMAIL_REGEX_PATTERN":EMAIL_REGEX_PATTERN,
 			"CONTENT_SECURITY_POLICY_DEFAULT":CONTENT_SECURITY_POLICY_DEFAULT,
 			"CONTENT_SECURITY_POLICY_HOME":CONTENT_SECURITY_POLICY_HOME,

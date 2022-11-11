@@ -17,6 +17,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from files.helpers.const import *
 from files.helpers.const_stateful import const_initialize
+from files.helpers.settings import reload_settings, start_watching_settings
 
 app = Flask(__name__, template_folder='templates')
 app.url_map.strict_slashes = False
@@ -44,8 +45,6 @@ app.config['SQLALCHEMY_DATABASE_URL'] = environ.get("DATABASE_URL").strip()
 app.config["CACHE_TYPE"] = "RedisCache"
 app.config["CACHE_REDIS_URL"] = environ.get("REDIS_URL").strip()
 
-app.config['SETTINGS'] = {}
-
 r=redis.Redis(host=environ.get("REDIS_URL").strip(), decode_responses=True, ssl_cert_reqs=None)
 
 def get_CF():
@@ -65,6 +64,9 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URL'])
 db_session = scoped_session(sessionmaker(bind=engine, autoflush=False))
 
 const_initialize(db_session)
+
+reload_settings()
+start_watching_settings()
 
 cache = Cache(app)
 Compress(app)

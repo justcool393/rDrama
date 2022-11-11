@@ -1,6 +1,6 @@
 import secrets
 from files.helpers.const import *
-from files.helpers.const_stateful import CONFIG, reload_config
+from files.helpers.settings import SETTINGS
 from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
 from files.routes.wrappers import *
 from files.__main__ import app
@@ -22,7 +22,7 @@ def before_request():
 
 	if request.headers.get("CF-Worker"): return {"error": "Cloudflare workers are not allowed to access this website."}, 403
 
-	if not CONFIG['Bots'] and request.headers.get("Authorization"): abort(403)
+	if not SETTINGS['Bots'] and request.headers.get("Authorization"): abort(403)
 
 	g.db = db_session()
 	g.webview = '; wv) ' in ua

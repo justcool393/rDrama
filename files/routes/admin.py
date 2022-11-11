@@ -1,7 +1,5 @@
 import time
 
-from files.routes.routehelpers import check_for_alts
-
 from files.routes.wrappers import *
 from files.helpers.alerts import *
 from files.helpers.sanitize import *
@@ -9,13 +7,14 @@ from files.helpers.security import *
 from files.helpers.get import *
 from files.helpers.media import *
 from files.helpers.const import *
-from files.helpers.const_stateful import CONFIG, reload_config
+from files.helpers.settings import SETTINGS, save_settings
 from files.helpers.actions import *
 from files.helpers.useractions import *
 import files.helpers.cloudflare as cloudflare
 from files.classes import *
 from flask import *
 from .front import frontlist
+from .login import check_for_alts
 from urllib.parse import quote, urlencode
 from files.__main__ import app, cache, limiter
 
@@ -455,22 +454,16 @@ def admin_git_head():
 @app.post("/admin/site_settings/<setting>")
 @admin_level_required(PERMS['SITE_SETTINGS'])
 def change_settings(v, setting):
-	site_settings = CONFIG
-	site_settings[setting] = not site_settings[setting] 
-	with open("/site_settings.json", "w", encoding='utf_8') as f:
-		json.dump(site_settings, f)
-	reload_config() # removing this will break the configs
+	SETTINGS[setting] = not SETTINGS[setting]
+	save_settings()
 
-	if site_settings[setting]: word = 'enable'
+	if SETTINGS[setting]: word = 'enable'
 	else: word = 'disable'
-
 	ma = ModAction(
 		kind=f"{word}_{setting}",
 		user_id=v.id,
 	)
 	g.db.add(ma)
-
-
 	return {'message': f"{setting} {word}d successfully!"}
 
 @app.post("/admin/clear_cloudflare_cache")

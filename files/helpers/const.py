@@ -51,6 +51,8 @@ CONTENT_SECURITY_POLICY_HOME = f"script-src 'self' 'unsafe-inline' 'unsafe-eval'
 
 CLOUDFLARE_COOKIE_VALUE = "yes." # remember to change this in CloudFlare too
 
+SETTINGS_FILENAME = '/site_settings.json'
+
 if SITE == "localhost": SITE_FULL = 'http://' + SITE
 else: SITE_FULL = 'https://' + SITE
 
