@@ -4,12 +4,14 @@ from urllib.parse import urlencode
 import requests
 
 from files.__main__ import app, cache, get_CF, limiter
+from files.classes.follows import Follow
 from files.helpers.actions import *
 from files.helpers.const import *
 from files.helpers.const_stateful import CONFIG
 from files.helpers.get import *
 from files.helpers.mail import send_mail, send_verification_email
 from files.helpers.regex import *
+from files.helpers.security import *
 from files.helpers.useractions import badge_grant
 from files.routes.routehelpers import check_for_alts
 from files.routes.wrappers import *

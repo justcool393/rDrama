@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import os
 from shutil import copyfile
 
+import pyotp
 import requests
 import youtube_dl
 
@@ -11,6 +12,7 @@ from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.get import *
 from files.helpers.mail import *
+from files.helpers.media import process_files, process_image
 from files.helpers.regex import *
 from files.helpers.sanitize import *
 from files.helpers.sanitize import filter_emojis_only

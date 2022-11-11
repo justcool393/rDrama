@@ -1,3 +1,4 @@
+from files.classes.casino_game import CASINO_GAME_KINDS
 from files.helpers.alerts import *
 from files.helpers.casino import *
 from files.helpers.const import *
