@@ -98,7 +98,6 @@ def auth_desired(f):
 def auth_desired_with_logingate(f):
 	def wrapper(*args, **kwargs):
 		v = get_logged_in_user()
-		print(f"{v} with {get_setting('login_required')}")
 		if get_setting('login_required') and not v: abort(401)
 
 		if request.path.startswith('/logged_out'):
