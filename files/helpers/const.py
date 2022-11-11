@@ -1,4 +1,3 @@
-import re
 from copy import deepcopy
 from os import environ, path
 

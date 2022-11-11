@@ -1,4 +1,3 @@
-from json import load
 from os import path
 
 from sqlalchemy.orm import scoped_session
