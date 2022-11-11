@@ -233,7 +233,7 @@ def admin_app_id_posts(v, aid):
 	oauth = g.db.get(OauthApp, aid)
 	if not oauth: abort(404)
 
-	pids=oauth.idlist(page=int(request.values.get("page",1)))
+	pids=oauth.idlist(g.db, page=int(request.values.get("page",1)))
 
 	next_exists=len(pids)==101
 	pids=pids[:100]
@@ -256,8 +256,7 @@ def admin_app_id_comments(v, aid):
 	oauth = g.db.get(OauthApp, aid)
 	if not oauth: abort(404)
 
-	cids=oauth.comments_idlist(page=int(request.values.get("page",1)),
-		)
+	cids=oauth.comments_idlist(g.db, page=int(request.values.get("page",1)))
 
 	next_exists=len(cids)==101
 	cids=cids[:100]

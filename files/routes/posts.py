@@ -299,7 +299,7 @@ def morecomments(v, cid):
 		comments = output
 	else:
 		c = get_comment(cid)
-		comments = c.replies(sort=request.values.get('sort'), v=v)
+		comments = c.replies(sort=request.values.get('sort'), v=v, db=g.db)
 
 	if comments: p = comments[0].post
 	else: p = None

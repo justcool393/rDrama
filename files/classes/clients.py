@@ -1,8 +1,7 @@
 import time
 
-from flask import g
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, scoped_session
 from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
@@ -39,15 +38,15 @@ class OauthApp(Base):
 		return f"{SITE_FULL}/admin/app/{self.id}/posts"
 
 	@lazy
-	def idlist(self, page=1):
-		posts = g.db.query(Submission.id).filter_by(app_id=self.id)
+	def idlist(self, db:scoped_session, page=1):
+		posts = db.query(Submission.id).filter_by(app_id=self.id)
 		posts=posts.order_by(Submission.created_utc.desc())
 		posts=posts.offset(100*(page-1)).limit(101)
 		return [x[0] for x in posts.all()]
 
 	@lazy
-	def comments_idlist(self, page=1):
-		posts = g.db.query(Comment.id).filter_by(app_id=self.id)
+	def comments_idlist(self, db:scoped_session, page=1):
+		posts = db.query(Comment.id).filter_by(app_id=self.id)
 		posts=posts.order_by(Comment.id.desc())
 		posts=posts.offset(100*(page-1)).limit(101)
 		return [x[0] for x in posts.all()]

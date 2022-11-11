@@ -1,8 +1,7 @@
 import time
 
-from flask import g
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, scoped_session
 from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
@@ -30,10 +29,9 @@ class HatDef(Base):
 	def __repr__(self):
 		return f"<HatDef(id={self.id})>"
 
-	@property
 	@lazy
-	def number_sold(self):
-		return g.db.query(Hat).filter_by(hat_id=self.id).count()
+	def number_sold(self, db:scoped_session):
+		return db.query(Hat).filter_by(hat_id=self.id).count()
 
 	@lazy
 	def censored_description(self, v):

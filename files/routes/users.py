@@ -546,9 +546,9 @@ def messagereply(v):
 
 			gevent.spawn(pusher_thread, interests, title, notifbody, url)
 
+	top_comment = c.top_comment(g.db)
 
-
-	if c.top_comment.sentto == 2:
+	if top_comment.sentto == 2:
 		admins = g.db.query(User.id).filter(User.admin_level >= PERMS['NOTIFICATIONS_MODMAIL'], User.id != v.id)
 		if SITE == 'watchpeopledie.tv':
 			admins = admins.filter(User.id != AEVANN_ID)
@@ -562,7 +562,7 @@ def messagereply(v):
 			notif = Notification(comment_id=c.id, user_id=admin)
 			g.db.add(notif)
 
-		ids = [c.top_comment.id] + [x.id for x in c.top_comment.replies(sort="old", v=v)]
+		ids = [top_comment.id] + [x.id for x in top_comment.replies(sort="old", v=v)]
 		notifications = g.db.query(Notification).filter(Notification.comment_id.in_(ids), Notification.user_id.in_(admins))
 		for n in notifications:
 			g.db.delete(n)

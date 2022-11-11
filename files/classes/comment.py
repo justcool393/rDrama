@@ -3,10 +3,9 @@ from math import floor
 from random import randint
 from urllib.parse import parse_qs, urlencode, urlparse
 
-from flask import g
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import TSVECTOR
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, scoped_session
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.sql.sqltypes import *
 
@@ -95,10 +94,9 @@ class Comment(Base):
 			if v.id == self.post.author_id: return True
 		return False
 
-	@property
 	@lazy
-	def top_comment(self):
-		return g.db.get(Comment, self.top_comment_id)
+	def top_comment(self, db:scoped_session):
+		return db.get(Comment, self.top_comment_id)
 
 	@property
 	@lazy
@@ -136,15 +134,11 @@ class Comment(Base):
 	def fullname(self):
 		return f"c_{self.id}"
 
-	@property
 	@lazy
-	def parent(self):
-
+	def parent(self, db:scoped_session):
 		if not self.parent_submission: return None
-
 		if self.level == 1: return self.post
-
-		else: return g.db.get(Comment, self.parent_comment_id)
+		else: return db.get(Comment, self.parent_comment_id)
 
 	@property
 	@lazy
@@ -153,14 +147,12 @@ class Comment(Base):
 		elif self.parent_submission: return f"p_{self.parent_submission}"
 
 	@lazy
-	def replies(self, sort, v):
+	def replies(self, sort, v, db:scoped_session):
 		if self.replies2 != None:
 			return self.replies2
 
-		replies = g.db.query(Comment).filter_by(parent_comment_id=self.id).order_by(Comment.stickied)
-		
+		replies = db.query(Comment).filter_by(parent_comment_id=self.id).order_by(Comment.stickied)
 		if not self.parent_submission: sort='old'
-
 		return sort_objects(sort, replies, Comment,
 			include_shadowbanned=(v and v.can_see_shadowbanned)).all()
 
@@ -204,8 +196,7 @@ class Comment(Base):
 		if v and v.poor and kind.islower(): return 0
 		return len([x for x in self.awards if x.kind == kind])
 
-	@property
-	def json(self):
+	def json(self, db:scoped_session):
 		if self.is_banned:
 			data = {'is_banned': True,
 					'ban_reason': self.ban_reason,
@@ -247,7 +238,7 @@ class Comment(Base):
 				'is_bot': self.is_bot,
 				'flags': flags,
 				'author': '👻' if self.ghost else self.author.json,
-				'replies': [x.json for x in self.replies(sort="old", v=None)]
+				'replies': [x.json for x in self.replies(sort="old", v=None, db=db)]
 				}
 
 		if self.level >= 2: data['parent_comment_id'] = self.parent_comment_id
@@ -255,7 +246,7 @@ class Comment(Base):
 		return data
 
 	@lazy
-	def realbody(self, v):
+	def realbody(self, v, db:scoped_session):
 		if self.post and self.post.club and not (v and (v.paid_dues or v.id in [self.author_id, self.post.author_id] or (self.parent_comment and v.id == self.parent_comment.author_id))):
 			return f"<p>{CC} ONLY</p>"
 		if self.deleted_utc != 0 and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.author.id)): return "[Deleted by user]"
@@ -293,7 +284,7 @@ class Comment(Base):
 					amount = randint(0, 3)
 					if amount == 1:
 						self.upvotes += amount
-						g.db.add(self)
+						db.add(self)
 
 		if self.options:
 			curr = [x for x in self.options if x.exclusive and x.voted(v)]
