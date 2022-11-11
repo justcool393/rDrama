@@ -674,7 +674,7 @@ def userpagelisting(user:User, site=None, v=None, page:int=1, sort="new", t="all
 		posts = apply_time_filter(t, posts, Submission)
 		posts = sort_objects(sort, posts, Submission, include_shadowbanned=v and v.can_see_shadowbanned)
 		posts = posts.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE+1).all()
-		return [x[0] for x in posts]
+	return [x[0] for x in posts]
 
 @app.get("/@<username>")
 @app.get("/@<username>.json")
