@@ -7,7 +7,6 @@ from files.__main__ import app
 
 @app.before_request
 def before_request():
-	print(app.config)
 	if SITE == 'marsey.world' and request.path != '/kofi':
 		abort(404)
 

@@ -15,7 +15,6 @@ from flask_limiter import Limiter
 from sqlalchemy import *
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
 from files.helpers.const import *
 from files.helpers.const_stateful import const_initialize
 

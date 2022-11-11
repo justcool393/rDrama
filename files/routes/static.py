@@ -1,5 +1,5 @@
 import os
-from shutil import copyfile, move
+from shutil import copyfile
 
 from sqlalchemy import func, nullslast
 from files.helpers.media import process_files
