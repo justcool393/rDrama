@@ -34,7 +34,7 @@ def _settings_watcher(filename):
 		inotify.add_watch(fd, filename, inotify.IN_CLOSE_WRITE)
 		while True:
 			for event in inotify.get_events(fd, 0):
-				print("Reloading site settings: " + event.name, flush=True)
+				print("Reloading site settings", flush=True)
 				reload_settings()
 				break
 			gevent.sleep(0.5)
