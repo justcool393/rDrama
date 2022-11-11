@@ -1,22 +1,25 @@
 import time
+from urllib.parse import quote, urlencode
 
-from files.routes.wrappers import *
+from flask import *
+
+import files.helpers.cloudflare as cloudflare
+from files.__main__ import app, cache, limiter
+from files.classes import *
+from files.helpers.actions import *
 from files.helpers.alerts import *
-from files.helpers.sanitize import *
-from files.helpers.security import *
+from files.helpers.const import *
 from files.helpers.get import *
 from files.helpers.media import *
-from files.helpers.const import *
+from files.helpers.sanitize import *
+from files.helpers.security import *
 from files.helpers.settings import toggle_setting
-from files.helpers.actions import *
 from files.helpers.useractions import *
-import files.helpers.cloudflare as cloudflare
-from files.classes import *
-from flask import *
+from files.routes.routehelpers import check_for_alts
+from files.routes.wrappers import *
+
 from .front import frontlist
-from .login import check_for_alts
-from urllib.parse import quote, urlencode
-from files.__main__ import app, cache, limiter
+
 
 @app.post('/kippy')
 @admin_level_required(PERMS['PRINT_MARSEYBUX_FOR_KIPPY_ON_PCMEMES'])
