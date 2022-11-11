@@ -13,12 +13,12 @@ import files.routes.static as route_static
 import files.routes.streamers as route_streamers
 from files.__main__ import cache
 from files.classes import *
-from files.cli import app, db_session, g
 from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *
 from files.helpers.get import *
 from files.helpers.roulette import spin_roulette_wheel
 from files.helpers.useractions import *
+from files.cli import app, db_session, g
 
 @app.cli.command('cron', help='Run scheduled tasks.')
 @click.option('--every-5m', is_flag=True, help='Call every 5 minutes.')
