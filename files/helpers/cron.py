@@ -9,6 +9,8 @@ import files.helpers.awards as awards
 import files.helpers.lottery as lottery
 import files.helpers.offsitementions as offsitementions
 import files.helpers.stats as stats
+import files.routes.static as route_static
+import files.routes.streamers as route_streamers
 from files.__main__ import cache
 from files.classes import *
 from files.cli import app, db_session, g
@@ -32,7 +34,6 @@ def cron(every_5m, every_1h, every_1d, every_1mo):
 			spin_roulette_wheel()
 		offsitementions.offsite_mentions_task()
 		if FEATURES['STREAMERS']:
-			import files.routes.streamers as route_streamers
 			route_streamers.live_cached()
 
 	if every_1h:
