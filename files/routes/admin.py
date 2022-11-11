@@ -454,6 +454,7 @@ def admin_git_head():
 @app.post("/admin/site_settings/<setting>")
 @admin_level_required(PERMS['SITE_SETTINGS'])
 def change_settings(v, setting):
+	global SETTINGS
 	SETTINGS[setting] = not SETTINGS[setting]
 	save_settings()
 
