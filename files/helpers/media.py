@@ -10,8 +10,7 @@ from PIL import Image
 from PIL.ImageSequence import Iterator
 from sqlalchemy.orm import scoped_session
 
-from files.classes.user import User
-from files.classes.media import *
+from files.classes import User, Media
 from files.helpers.cloudflare import purge_files_in_cache
 
 from .const import *

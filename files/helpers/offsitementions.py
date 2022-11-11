@@ -5,10 +5,7 @@ from flask import g
 from sqlalchemy import or_
 
 import files.helpers.const as const
-from files.classes.badges import Badge
-from files.classes.comment import Comment
-from files.classes.notifications import Notification
-from files.classes.user import User
+from files.classes import Badge, Comment, Notification, User
 from files.helpers.sanitize import sanitize
 
 # Note: while https://api.pushshift.io/meta provides the key

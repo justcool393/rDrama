@@ -8,8 +8,6 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
-from files.classes.casino_game import Casino_Game
-from files.classes.sub import Sub
 from files.helpers.const import *
 from files.helpers.media import *
 from files.helpers.security import *
@@ -19,6 +17,7 @@ from .alts import Alt
 from .award import AwardRelationship
 from .badges import *
 from .clients import *
+from .casino_game import *
 from .exiles import *
 from .follows import *
 from .hats import *
@@ -26,6 +25,7 @@ from .mod import *
 from .mod_logs import *
 from .notifications import Notification
 from .saves import *
+from .sub import *
 from .sub_block import *
 from .sub_join import *
 from .sub_logs import *

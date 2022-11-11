@@ -5,10 +5,7 @@ from sqlalchemy import func, nullslast
 from files.helpers.media import process_files
 
 import files.helpers.stats as statshelper
-from files.classes.award import AWARDS
-from files.classes.badges import Badge, BadgeDef
-from files.classes.mod_logs import ModAction, ACTIONTYPES, ACTIONTYPES2
-from files.classes.userblock import UserBlock
+from files.classes import AWARDS, Badge, BadgeDef, ModAction, ACTIONTYPES, ACTIONTYPES2, UserBlock
 from files.helpers.actions import *
 from files.helpers.alerts import *
 from files.helpers.const import *

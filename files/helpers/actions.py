@@ -5,9 +5,7 @@ from urllib.parse import quote
 import gevent
 import requests
 from flask import g
-from files.classes.flags import Flag
-from files.classes.mod_logs import ModAction
-from files.classes.notifications import Notification
+from files.classes import Flag, ModAction, Notification
 
 from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *
