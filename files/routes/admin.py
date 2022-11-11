@@ -7,7 +7,7 @@ from files.helpers.security import *
 from files.helpers.get import *
 from files.helpers.media import *
 from files.helpers.const import *
-from files.helpers.settings import SETTINGS, save_settings
+from files.helpers.settings import toggle_setting
 from files.helpers.actions import *
 from files.helpers.useractions import *
 import files.helpers.cloudflare as cloudflare
@@ -454,11 +454,8 @@ def admin_git_head():
 @app.post("/admin/site_settings/<setting>")
 @admin_level_required(PERMS['SITE_SETTINGS'])
 def change_settings(v, setting):
-	global SETTINGS
-	SETTINGS[setting] = not SETTINGS[setting]
-	save_settings()
-
-	if SETTINGS[setting]: word = 'enable'
+	setting = toggle_setting(setting)
+	if setting: word = 'enable'
 	else: word = 'disable'
 	ma = ModAction(
 		kind=f"{word}_{setting}",

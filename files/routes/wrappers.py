@@ -5,7 +5,7 @@ from flask import g, request, session
 
 from files.helpers.alerts import *
 from files.helpers.const import *
-from files.helpers.settings import SETTINGS
+from files.helpers.settings import get_setting
 from files.routes.routehelpers import validate_formkey
 from files.__main__ import app, db_session
 
@@ -65,7 +65,7 @@ def get_logged_in_user():
 				v.client = None
 	g.is_api_or_xhr = bool((v and v.client) or request.headers.get("xhr"))
 
-	if request.method.lower() != "get" and SETTINGS['Read-only mode'] and not (v and v.admin_level >= PERMS['SITE_BYPASS_READ_ONLY_MODE']):
+	if request.method.lower() != "get" and get_setting('Read-only mode') and not (v and v.admin_level >= PERMS['SITE_BYPASS_READ_ONLY_MODE']):
 		abort(403)
 
 	g.v = v
@@ -98,8 +98,8 @@ def auth_desired(f):
 def auth_desired_with_logingate(f):
 	def wrapper(*args, **kwargs):
 		v = get_logged_in_user()
-		print(f"{v} with {SETTINGS['login_required']}")
-		if SETTINGS['login_required'] and not v: abort(401)
+		print(f"{v} with {get_setting('login_required')}")
+		if get_setting('login_required') and not v: abort(401)
 
 		if request.path.startswith('/logged_out'):
 			redir = request.full_path.replace('/logged_out','')

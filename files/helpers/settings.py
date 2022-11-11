@@ -6,7 +6,7 @@ import gevent_inotifyx as inotify
 
 from files.helpers.const import SETTINGS_FILENAME
 
-SETTINGS = {
+_SETTINGS = {
 	"Bots": True,
 	"Fart mode": False,
 	"Read-only mode": False,
@@ -14,16 +14,29 @@ SETTINGS = {
 	"login_required": False,
 }
 
-def reload_settings():
-	global SETTINGS
-	if not os.path.isfile(SETTINGS_FILENAME):
-		save_settings()
-	with open(SETTINGS_FILENAME, 'r', encoding='utf_8') as f:
-		SETTINGS = json.load(f)
+def get_setting(setting:str):
+	if not setting or not isinstance(setting, str): raise TypeError()
+	return _SETTINGS[setting]
 
-def save_settings():
+def get_settings() -> dict[str, bool]:
+	return _SETTINGS
+
+def toggle_setting(setting:str):
+	val = not _SETTINGS[setting]
+	_SETTINGS[setting] = val
+	_save_settings()
+	return val
+
+def reload_settings():
+	global _SETTINGS
+	if not os.path.isfile(SETTINGS_FILENAME):
+		_save_settings()
+	with open(SETTINGS_FILENAME, 'r', encoding='utf_8') as f:
+		_SETTINGS = json.load(f)
+
+def _save_settings():
 	with open(SETTINGS_FILENAME, "w", encoding='utf_8') as f:
-		json.dump(SETTINGS, f)
+		json.dump(_SETTINGS, f)
 
 def start_watching_settings():
 	gevent.spawn(_settings_watcher, SETTINGS_FILENAME)

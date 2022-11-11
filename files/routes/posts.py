@@ -20,6 +20,7 @@ from files.helpers.discord import *
 from files.helpers.get import *
 from files.helpers.regex import *
 from files.helpers.sanitize import *
+from files.helpers.settings import get_setting
 from files.helpers.slots import *
 from files.helpers.sorting_and_time import *
 from files.routes.routehelpers import execute_shadowban_viewers_and_voters
@@ -227,7 +228,7 @@ def post_id(pid, anything=None, v=None, sub=None):
 
 	return render_template(template, v=v, p=post, ids=list(ids),
 		sort=sort, render_replies=True, offset=offset, sub=post.subr,
-		fart=SETTINGS['Fart mode'])
+		fart=get_setting('Fart mode'))
 
 @app.get("/viewmore/<pid>/<sort>/<offset>")
 @limiter.limit("1/second;30/minute;200/hour;1000/day")
