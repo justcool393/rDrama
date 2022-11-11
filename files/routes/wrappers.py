@@ -3,14 +3,15 @@ import time
 import user_agents
 from flask import g, request, session
 
+from files.classes.clients import ClientAuth
 from files.helpers.alerts import *
 from files.helpers.const import *
+from files.helpers.get import get_account
 from files.helpers.settings import get_setting
 from files.routes.routehelpers import validate_formkey
-from files.__main__ import app, db_session
+from files.__main__ import cache, db_session
 
 def calc_users(v):
-	from files.__main__ import cache
 	loggedin = cache.get(f'{SITE}_loggedin') or {}
 	loggedout = cache.get(f'{SITE}_loggedout') or {}
 	timestamp = int(time.time())
@@ -32,8 +33,6 @@ def calc_users(v):
 	return ''
 
 def get_logged_in_user():
-	from files.helpers.get import get_account
-	from files.classes.clients import ClientAuth
 	if hasattr(g, 'v'): return g.v
 	if not getattr(g, 'db', None): g.db = db_session()
 	g.desires_auth = True
