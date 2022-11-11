@@ -294,7 +294,7 @@
 										<audio controls preload="none" src="{{p.realurl(v)}}"></audio>
 									</div>
 							{% endif %}
-							{{p.realbody(v) | safe}}
+							{{p.realbody(v, g.db) | safe}}
 
 							{% if p.is_banned and p.ban_reason %}
 								<div class="text-removed mb-0">removed by @{{p.ban_reason}} (Admin)</div>

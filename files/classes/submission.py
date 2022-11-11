@@ -276,7 +276,7 @@ class Submission(Base):
 		return False
 
 	@lazy
-	def realbody(self, v, listing=False, db:scoped_session):
+	def realbody(self, v, db:scoped_session, listing=False):
 		if self.club and not (v and (v.paid_dues or v.id == self.author_id)): return f"<p>{CC} ONLY</p>"
 		if self.deleted_utc != 0 and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.author.id)): return "[Deleted by user]"
 		if self.is_banned and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']) and not (v and v.id == self.author.id): return ""
@@ -284,7 +284,6 @@ class Submission(Base):
 		body = self.body_html or ""
 
 		body = censor_slurs(body, v)
-
 		body = normalize_urls_runtime(body, v)
 
 		if v and v.shadowbanned and v.id == self.author_id and 86400 > time.time() - self.created_utc > 20:
@@ -296,7 +295,7 @@ class Submission(Base):
 				if amount == 1:
 					self.views += amount*random.randint(3, 5)
 					self.upvotes += amount
-					g.db.add(self)
+					db.add(self)
 
 
 		if self.options:
