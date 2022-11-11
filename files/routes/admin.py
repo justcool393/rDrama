@@ -454,8 +454,8 @@ def admin_git_head():
 @app.post("/admin/site_settings/<setting>")
 @admin_level_required(PERMS['SITE_SETTINGS'])
 def change_settings(v, setting):
-	setting = toggle_setting(setting)
-	if setting: word = 'enable'
+	val = toggle_setting(setting)
+	if val: word = 'enable'
 	else: word = 'disable'
 	ma = ModAction(
 		kind=f"{word}_{setting}",
