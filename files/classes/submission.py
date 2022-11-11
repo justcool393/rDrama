@@ -286,18 +286,6 @@ class Submission(Base):
 		body = censor_slurs(body, v)
 		body = normalize_urls_runtime(body, v)
 
-		if v and v.shadowbanned and v.id == self.author_id and 86400 > time.time() - self.created_utc > 20:
-			ti = max(int((time.time() - self.created_utc)/60), 1)
-			maxupvotes = min(ti, 11)
-			rand = random.randint(0, maxupvotes)
-			if self.upvotes < rand:
-				amount = random.randint(0, 3)
-				if amount == 1:
-					self.views += amount*random.randint(3, 5)
-					self.upvotes += amount
-					db.add(self)
-
-
 		if self.options:
 			curr = [x for x in self.options if x.exclusive and x.voted(v)]
 			if curr: curr = " value=post-" + str(curr[0].id)
@@ -351,11 +339,9 @@ class Submission(Base):
 		if self.club and not (v and (v.paid_dues or v.id == self.author_id)): return f"<p>{CC} ONLY</p>"
 
 		body = self.body
-
 		if not body: return ""
 
 		body = censor_slurs(body, v).replace('<img loading="lazy" data-bs-toggle="tooltip" alt=":marseytrain:" title=":marseytrain:" src="/e/marseytrain.webp">', ':marseytrain:')
-
 		body = normalize_urls_runtime(body, v)
 		return body
 

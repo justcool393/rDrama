@@ -246,7 +246,7 @@ class Comment(Base):
 		return data
 
 	@lazy
-	def realbody(self, v, db:scoped_session):
+	def realbody(self, v):
 		if self.post and self.post.club and not (v and (v.paid_dues or v.id in [self.author_id, self.post.author_id] or (self.parent_comment and v.id == self.parent_comment.author_id))):
 			return f"<p>{CC} ONLY</p>"
 		if self.deleted_utc != 0 and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.author.id)): return "[Deleted by user]"
@@ -256,10 +256,7 @@ class Comment(Base):
 
 		if body:
 			body = censor_slurs(body, v)
-
 			body = normalize_urls_runtime(body, v)
-
-
 			if not v or v.controversial:
 				captured = []
 				for i in controversial_regex.finditer(body):
@@ -275,16 +272,6 @@ class Comment(Base):
 					url_noquery = url.split('?')[0]
 					body = body.replace(f'"{url}"', f'"{url_noquery}?{urlencode(p, True)}"')
 					body = body.replace(f'>{url}<', f'>{url_noquery}?{urlencode(p, True)}<')
-
-			if v and v.shadowbanned and v.id == self.author_id and 86400 > time.time() - self.created_utc > 60:
-				ti = max(int((time.time() - self.created_utc)/60), 1)
-				maxupvotes = min(ti, 13)
-				rand = randint(0, maxupvotes)
-				if self.upvotes < rand:
-					amount = randint(0, 3)
-					if amount == 1:
-						self.upvotes += amount
-						db.add(self)
 
 		if self.options:
 			curr = [x for x in self.options if x.exclusive and x.voted(v)]

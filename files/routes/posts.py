@@ -22,6 +22,7 @@ from files.helpers.regex import *
 from files.helpers.sanitize import *
 from files.helpers.slots import *
 from files.helpers.sorting_and_time import *
+from files.routes.routehelpers import execute_shadowban_viewers_and_voters
 from files.routes.wrappers import *
 
 from .front import frontlist
@@ -150,6 +151,7 @@ def post_id(pid, anything=None, v=None, sub=None):
 	if post.club and not (v and (v.paid_dues or v.id == post.author_id)): abort(403)
 
 	if v:
+		execute_shadowban_viewers_and_voters(v, post)
 		# shadowban check is done in sort_objects
 		# output is needed: see comments.py
 		comments, output = get_comments_v_properties(v, True, None, Comment.parent_submission == post.id, Comment.level < 10)

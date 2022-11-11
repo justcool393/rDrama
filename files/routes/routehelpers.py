@@ -1,8 +1,11 @@
-from typing import Optional
+import time
+
+from random import randint
+from typing import Optional, Union
 
 from flask import g, session
 
-from files.classes import User, Alt
+from files.classes import Alt, Comment, User, Submission
 from files.helpers.const import *
 from files.helpers.security import generate_hash, validate_hash
 
@@ -67,3 +70,21 @@ def check_for_alts(current:User, include_current_session=True):
 			u.shadowbanned = current.shadowbanned
 			if not u.is_banned: u.ban_reason = current.ban_reason
 			g.db.add(u)
+
+def execute_shadowban_viewers_and_voters(v:Optional[User], target:Union[Submission, Comment]):
+	if not v or not v.shadowbanned: return
+	if not target: return
+	if v.id != target.author_id: return
+	if not (86400 > time.time() - target.created_utc > 60): return
+	ti = max(int((time.time() - target.created_utc)/60), 1)
+	max_upvotes = min(ti, 13)
+	rand = randint(0, max_upvotes)
+	if target.upvotes >= rand: return
+	
+	amount = randint(0, 3)
+	if amount != 1: return
+
+	target.upvotes += amount
+	if isinstance(target, Submission):
+		target.views += amount*randint(3, 5)
+	g.db.add(target)

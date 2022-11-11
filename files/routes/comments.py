@@ -19,6 +19,7 @@ from files.helpers.sanitize import filter_emojis_only
 from files.helpers.slots import *
 from files.helpers.treasure import *
 from files.routes.front import comment_idlist
+from files.routes.routehelpers import execute_shadowban_viewers_and_voters
 from files.routes.wrappers import *
 from files.__main__ import app, cache, limiter
 
@@ -73,6 +74,9 @@ def post_pid_comment_cid(cid, pid=None, anything=None, v=None, sub=None):
 		# props won't save properly unless you put them in a list
 		output = get_comments_v_properties(v, False, None, Comment.top_comment_id == c.top_comment_id)[1]
 	post.replies=[top_comment]
+
+	execute_shadowban_viewers_and_voters(v, post)
+	execute_shadowban_viewers_and_voters(v, comment)
 			
 	if v and v.client: return top_comment.json
 	else: 

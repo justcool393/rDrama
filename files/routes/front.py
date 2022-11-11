@@ -98,7 +98,6 @@ def front_all(v, sub=None, subdomain=None):
 	return render_template("home.html", v=v, listing=posts, next_exists=next_exists, sort=sort, t=t, page=page, sub=sub, home=True, pins=pins, holes=holes)
 
 
-
 @cache.memoize(timeout=86400)
 def frontlist(v=None, sort="hot", page=1, t="all", ids_only=True, filter_words='', gt=0, lt=0, sub=None, site=None, pins=True, holes=True):
 
