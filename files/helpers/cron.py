@@ -9,7 +9,6 @@ import files.helpers.awards as awards
 import files.helpers.lottery as lottery
 import files.helpers.offsitementions as offsitementions
 import files.helpers.stats as stats
-import files.routes.static as route_static
 from files.__main__ import cache
 from files.classes import *
 from files.cli import app, db_session, g
@@ -32,8 +31,9 @@ def cron(every_5m, every_1h, every_1d, every_1mo):
 			lottery.check_if_end_lottery_task()
 			spin_roulette_wheel()
 		offsitementions.offsite_mentions_task()
-		if SITE == 'pcmemes.net':
-			route_static.live_cached()
+		if FEATURES['STREAMERS']:
+			import files.routes.streamers as route_streamers
+			route_streamers.live_cached()
 
 	if every_1h:
 		awards.award_timers_bots_task()
