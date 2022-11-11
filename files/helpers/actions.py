@@ -18,20 +18,20 @@ from files.helpers.slots import check_slots_command
 
 headers = {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}
 
-def archiveorg(url):
+def _archiveorg(url):
 	try: requests.get(f'https://web.archive.org/save/{url}', headers=headers, timeout=10, proxies=proxies)
 	except: pass
 	requests.post('https://ghostarchive.org/archive2', data={"archive": url}, headers=headers, timeout=10, proxies=proxies)
 
 
 def archive_url(url):	
-	gevent.spawn(archiveorg, url)
+	gevent.spawn(_archiveorg, url)
 	if url.startswith('https://twitter.com/'):
 		url = url.replace('https://twitter.com/', 'https://nitter.lacontrevoie.fr/')
-		gevent.spawn(archiveorg, url)
+		gevent.spawn(_archiveorg, url)
 	if url.startswith('https://instagram.com/'):
 		url = url.replace('https://instagram.com/', 'https://imginn.com/')
-		gevent.spawn(archiveorg, url)
+		gevent.spawn(_archiveorg, url)
 
 
 def execute_snappy(post, v):
