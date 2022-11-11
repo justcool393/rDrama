@@ -9,6 +9,7 @@ import gevent
 import qrcode
 from sqlalchemy.orm import aliased
 
+from files.classes import *
 from files.classes.leaderboard import Leaderboard
 from files.classes.transactions import *
 from files.classes.views import *

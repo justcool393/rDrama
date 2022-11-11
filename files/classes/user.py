@@ -1,8 +1,9 @@
 import random
+from operator import *
 
 import pyotp
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, deferred
 from sqlalchemy.sql import func
 from sqlalchemy.sql.sqltypes import *
 

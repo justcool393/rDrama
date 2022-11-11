@@ -2,7 +2,7 @@ import re
 
 import requests
 
-from files.classes.streamers import *
+from files.classes.streamers import Streamer
 from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *
 from files.routes.wrappers import *

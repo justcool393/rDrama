@@ -2,7 +2,6 @@ import time
 
 from flask import g
 
-from files.classes.badges import Badge
 from files.classes.user import User
 from files.helpers.alerts import send_repeatable_notification
 from files.helpers.const import *

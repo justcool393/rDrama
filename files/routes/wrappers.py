@@ -33,6 +33,7 @@ def calc_users(v):
 
 def get_logged_in_user():
 	from files.helpers.get import get_account
+	from files.classes.clients import ClientAuth
 	if hasattr(g, 'v'): return g.v
 	if not getattr(g, 'db', None): g.db = db_session()
 	g.desires_auth = True

@@ -1,3 +1,5 @@
+from sqlalchemy import func
+
 from files.classes.hats import *
 from files.helpers.alerts import *
 from files.helpers.const import *
