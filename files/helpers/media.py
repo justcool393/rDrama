@@ -2,7 +2,7 @@ import os
 import subprocess
 import time
 from shutil import copyfile
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 
 import gevent
 import imagehash
