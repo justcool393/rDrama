@@ -412,7 +412,7 @@ def edit_post(pid, v):
 	return redirect(p.permalink)
 
 
-def thumbnail_thread(pid, db):
+def thumbnail_thread(pid:int, db, vid:int):
 	def expand_url(post_url, fragment_url):
 		if fragment_url.startswith("https://"):
 			return fragment_url
@@ -450,8 +450,6 @@ def thumbnail_thread(pid, db):
 	if x.status_code != 200:
 		db.close()
 		return
-	
-
 
 	if x.headers.get("Content-Type","").startswith("text/html"):
 		soup=BeautifulSoup(x.content, 'lxml')
@@ -491,7 +489,6 @@ def thumbnail_thread(pid, db):
 
 
 		for url in thumb_candidate_urls:
-
 			try:
 				image_req=requests.get(url, headers=headers, timeout=5, proxies=proxies)
 			except:
@@ -509,14 +506,10 @@ def thumbnail_thread(pid, db):
 			with Image.open(BytesIO(image_req.content)) as i:
 				if i.width < 30 or i.height < 30:
 					continue
-
 			break
-
 		else:
 			db.close()
 			return
-
-
 
 	elif x.headers.get("Content-Type","").startswith("image/"):
 		image_req=x
@@ -536,9 +529,12 @@ def thumbnail_thread(pid, db):
 		for chunk in image_req.iter_content(1024):
 			file.write(chunk)
 
-	post.thumburl = process_image(name, resize=100, uploader=post.author_id, db=db)
-	db.add(post)
-	db.commit()
+	v = get_account(vid)
+	url = process_image(name, v, resize=100, uploader_id=post.author_id, db=db)
+	if url:
+		post.thumburl = url
+		db.add(post)
+		db.commit()
 	db.close()
 	stdout.flush()
 	return
@@ -843,20 +839,20 @@ def submit_post(v, sub=None):
 		if file.content_type.startswith('image/'):
 			name = f'/images/{time.time()}'.replace('.','') + '.webp'
 			file.save(name)
-			post.url = process_image(name, patron=v.patron)
+			post.url = process_image(name, v)
 
 			name2 = name.replace('.webp', 'r.webp')
 			copyfile(name, name2)
-			post.thumburl = process_image(name2, resize=100)
+			post.thumburl = process_image(name2, v, resize=100)
 		elif file.content_type.startswith('video/'):
 			post.url = process_video(file, v)
 		elif file.content_type.startswith('audio/'):
-			post.url = process_audio(file)
+			post.url = process_audio(file, v)
 		else:
 			abort(415)
 		
 	if not post.thumburl and post.url:
-		gevent.spawn(thumbnail_thread, post.id, g.db)
+		gevent.spawn(thumbnail_thread, post.id, g.db, v.id)
 
 	if not post.private and not post.ghost:
 		notify_users = NOTIFY_USERS(f'{title} {body}', v)

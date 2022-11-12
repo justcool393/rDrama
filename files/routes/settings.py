@@ -490,13 +490,13 @@ def settings_images_profile(v):
 
 	name = f'/images/{time.time()}'.replace('.','') + '.webp'
 	file.save(name)
-	highres = process_image(name, patron=v.patron)
+	highres = process_image(name, v)
 
 	if not highres: abort(400)
 
 	name2 = name.replace('.webp', 'r.webp')
 	copyfile(name, name2)
-	imageurl = process_image(name2, resize=100)
+	imageurl = process_image(name2, v, resize=100)
 
 	if not imageurl: abort(400)
 
@@ -526,7 +526,7 @@ def settings_images_banner(v):
 
 	name = f'/images/{time.time()}'.replace('.','') + '.webp'
 	file.save(name)
-	bannerurl = process_image(name, patron=v.patron)
+	bannerurl = process_image(name, v)
 
 	if bannerurl:
 		if v.bannerurl and '/images/' in v.bannerurl:

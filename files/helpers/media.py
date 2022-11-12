@@ -2,10 +2,11 @@ import os
 import subprocess
 import time
 from shutil import copyfile
+from typing import Optional
 
 import gevent
 import imagehash
-from flask import abort, g
+from flask import abort, g, has_request_context
 from PIL import Image
 from PIL.ImageSequence import Iterator
 from sqlalchemy.orm import scoped_session
@@ -24,25 +25,25 @@ def process_files(files, v:User):
 		if file.content_type.startswith('image/'):
 			name = f'/images/{time.time()}'.replace('.','') + '.webp'
 			file.save(name)
-			url = process_image(name, patron=g.v.patron)
+			url = process_image(name, v)
 			body += f"\n\n![]({url})"
 		elif file.content_type.startswith('video/'):
 			body += f"\n\n{SITE_FULL}{process_video(file, v)}"
 		elif file.content_type.startswith('audio/'):
-			body += f"\n\n{SITE_FULL}{process_audio(file)}"
+			body += f"\n\n{SITE_FULL}{process_audio(file, v)}"
 		else:
 			abort(415)
 	return body
 
 
-def process_audio(file):
+def process_audio(file, v:User):
 	name = f'/audio/{time.time()}'.replace('.','')
 	extension = file.filename.split('.')[-1].lower()
 	name = name + '.' + extension
 	file.save(name)
 
 	size = os.stat(name).st_size
-	if size > MAX_IMAGE_AUDIO_SIZE_MB_PATRON * 1024 * 1024 or not g.v.patron and size > MAX_IMAGE_AUDIO_SIZE_MB * 1024 * 1024:
+	if size > MAX_IMAGE_AUDIO_SIZE_MB_PATRON * 1024 * 1024 or not v.patron and size > MAX_IMAGE_AUDIO_SIZE_MB * 1024 * 1024:
 		os.remove(name)
 		abort(413, f"Max image/audio size is {MAX_IMAGE_AUDIO_SIZE_MB} MB ({MAX_IMAGE_AUDIO_SIZE_MB_PATRON} MB for {patron.lower()}s)")
 
@@ -52,7 +53,7 @@ def process_audio(file):
 	media = Media(
 		kind='audio',
 		filename=name,
-		user_id=g.v.id,
+		user_id=v.id,
 		size=size
 	)
 	g.db.add(media)
@@ -88,7 +89,7 @@ def process_video(file, v:User):
 	size = os.stat(old).st_size
 	if (SITE_NAME != 'WPD' and
 			(size > MAX_VIDEO_SIZE_MB_PATRON * 1024 * 1024
-				or not g.v.patron and size > MAX_VIDEO_SIZE_MB * 1024 * 1024)):
+				or not v.patron and size > MAX_VIDEO_SIZE_MB * 1024 * 1024)):
 		os.remove(old)
 		abort(413, f"Max video size is {MAX_VIDEO_SIZE_MB} MB ({MAX_VIDEO_SIZE_MB_PATRON} MB for paypigs)")
 
@@ -110,7 +111,7 @@ def process_video(file, v:User):
 		media = Media(
 			kind='video',
 			filename=new,
-			user_id=g.v.id,
+			user_id=v.id,
 			size=os.stat(new).st_size
 		)
 		g.db.add(media)
@@ -119,12 +120,19 @@ def process_video(file, v:User):
 
 
 
-def process_image(filename=None, resize=0, trim=False, uploader=None, patron=False, db=None):
+def process_image(filename:str, v:User, resize=0, trim=False, uploader_id:Optional[int]=None, db=None):
+	# thumbnails are processed in a thread and not in the request context
+	# if an image is too large or webp conversion fails, it'll crash
+	# to avoid this, we'll simply return None instead
+	has_request = has_request_context()
 	size = os.stat(filename).st_size
+	patron = bool(v.patron)
 
 	if size > MAX_IMAGE_AUDIO_SIZE_MB_PATRON * 1024 * 1024 or not patron and size > MAX_IMAGE_AUDIO_SIZE_MB * 1024 * 1024:
 		os.remove(filename)
-		abort(413, f"Max image/audio size is {MAX_IMAGE_AUDIO_SIZE_MB} MB ({MAX_IMAGE_AUDIO_SIZE_MB_PATRON} MB for paypigs)")
+		if has_request:
+			abort(413, f"Max image/audio size is {MAX_IMAGE_AUDIO_SIZE_MB} MB ({MAX_IMAGE_AUDIO_SIZE_MB_PATRON} MB for paypigs)")
+		return None
 
 	with Image.open(filename) as i:
 		params = ["convert", "-coalesce", filename, "-quality", "88", "-define", "webp:method=5", "-strip", "-auto-orient"]
@@ -137,13 +145,17 @@ def process_image(filename=None, resize=0, trim=False, uploader=None, patron=Fal
 	try:
 		subprocess.run(params, timeout=MAX_IMAGE_CONVERSION_TIMEOUT)
 	except subprocess.TimeoutExpired:
-		abort(413, ("An uploaded image took too long to convert to WEBP. "
-					"Consider uploading elsewhere."))
+		if has_request:
+			abort(413, ("An uploaded image took too long to convert to WEBP. "
+						"Consider uploading elsewhere."))
+		return None
 
 	if resize:
 		if os.stat(filename).st_size > MAX_IMAGE_SIZE_BANNER_RESIZED_KB * 1024:
 			os.remove(filename)
-			abort(413, f"Max size for site assets is {MAX_IMAGE_SIZE_BANNER_RESIZED_KB} KB")
+			if has_request:
+				abort(413, f"Max size for site assets is {MAX_IMAGE_SIZE_BANNER_RESIZED_KB} KB")
+			return None
 
 		if filename.startswith('files/assets/images/'):
 			path = filename.rsplit('/', 1)[0]
@@ -170,7 +182,9 @@ def process_image(filename=None, resize=0, trim=False, uploader=None, patron=Fal
 
 				if i_hash in hashes.keys():
 					os.remove(filename)
-					abort(409, "Image already exists!")
+					if has_request:
+						abort(409, "Image already exists!")
+					return None
 
 	db = db or g.db
 
@@ -180,7 +194,7 @@ def process_image(filename=None, resize=0, trim=False, uploader=None, patron=Fal
 	media = Media(
 		kind='image',
 		filename=filename,
-		user_id=uploader or g.v.id,
+		user_id=uploader_id or v.id,
 		size=os.stat(filename).st_size
 	)
 	db.add(media)

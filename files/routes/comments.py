@@ -151,7 +151,7 @@ def comment(v):
 			if file.content_type.startswith('image/'):
 				oldname = f'/images/{time.time()}'.replace('.','') + '.webp'
 				file.save(oldname)
-				image = process_image(oldname, patron=v.patron)
+				image = process_image(oldname, v)
 				if image == "": abort(400, "Image upload failed")
 				if v.admin_level >= PERMS['SITE_SETTINGS_SIDEBARS_BANNERS_BADGES'] and level == 1:
 					def process_sidebar_or_banner(type, resize=0):
@@ -160,7 +160,7 @@ def comment(v):
 						num = int(li.split('.webp')[0]) + 1
 						filename = f'files/assets/images/{SITE_NAME}/{type}/{num}.webp'
 						copyfile(oldname, filename)
-						process_image(filename, resize=resize)
+						process_image(filename, v, resize=resize)
 
 					if parent_post.id == SIDEBAR_THREAD:
 						process_sidebar_or_banner('sidebar', 400)
@@ -180,7 +180,7 @@ def comment(v):
 							g.db.flush()
 							filename = f'files/assets/images/badges/{badge.id}.webp'
 							copyfile(oldname, filename)
-							process_image(filename, resize=300)
+							process_image(filename, v, resize=300)
 							purge_files_in_cache(f"https://{SITE}/assets/images/badges/{badge.id}.webp")
 						except Exception as e:
 							abort(400, str(e))
