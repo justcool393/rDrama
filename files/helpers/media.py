@@ -2,7 +2,7 @@ import os
 import subprocess
 import time
 from shutil import copyfile
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import gevent
 import imagehash
@@ -11,7 +11,8 @@ from PIL import Image
 from PIL.ImageSequence import Iterator
 from sqlalchemy.orm import scoped_session
 
-from files.classes.user import User
+if TYPE_CHECKING:
+	from files.classes.user import User
 from files.classes.media import *
 from files.helpers.cloudflare import purge_files_in_cache
 
