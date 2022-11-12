@@ -200,19 +200,20 @@ def post_id(pid, anything=None, v=None, sub=None):
 		else: offset = 1
 		comments = comments2
 
+	pinned2 = set()
 	for pin in pinned:
 		if pin.stickied_utc and int(time.time()) > pin.stickied_utc:
 			pin.stickied = None
 			pin.stickied_utc = None
 			g.db.add(pin)
-			pinned.remove(pin)
 		elif pin.level > 1:
-			pinned.remove(pin)
-			if pin.top_comment not in pinned:
-				pinned.append(pin.top_comment)
+			pinned2.add(pin.top_comment)
 			if pin.top_comment in comments:
-				comments.remove(pin.top_comment) 
+				comments.remove(pin.top_comment)
+		else:
+			pinned2.add(pin)
 
+	pinned = list(pinned2)
 	post.replies = pinned + comments
 
 	post.views += 1
@@ -349,24 +350,39 @@ def edit_post(pid, v):
 	body = body.strip()[:POST_BODY_LENGTH_LIMIT] # process_files() may be adding stuff to the body
 
 	if body != p.body:
+		if v and v.admin_level >= PERMS['POST_BETS']:
+			for i in bet_regex.finditer(body):
+				body = body.replace(i.group(0), "")
+				body_html = filter_emojis_only(i.group(1))
+				if len(body_html) > 500: abort(400, "Bet option too long!")
+				bet = SubmissionOption(
+					submission_id=p.id,
+					body_html=body_html,
+					exclusive = 2
+				)
+				g.db.add(bet)
+
 		for i in poll_regex.finditer(body):
 			body = body.replace(i.group(0), "")
+			body_html = filter_emojis_only(i.group(1))
+			if len(body_html) > 500: abort(400, "Poll option too long!")
 			option = SubmissionOption(
 				submission_id=p.id,
-				body_html=filter_emojis_only(i.group(1)),
+				body_html=body_html,
 				exclusive = 0
 			)
 			g.db.add(option)
 
 		for i in choice_regex.finditer(body):
 			body = body.replace(i.group(0), "")
-			option = SubmissionOption(
+			body_html = filter_emojis_only(i.group(1))
+			if len(body_html) > 500: abort(400, "Poll option too long!")
+			choice = SubmissionOption(
 				submission_id=p.id,
-				body_html=filter_emojis_only(i.group(1)),
+				body_html=body_html,
 				exclusive = 1
 			)
-			g.db.add(option)
-
+			g.db.add(choice)
 
 		torture = (v.agendaposter and not v.marseyawarded and p.sub != 'chudrama' and v.id == p.author_id)
 
@@ -803,30 +819,36 @@ def submit_post(v, sub=None):
 	for text in [post.body, post.title, post.url]:
 		if not execute_blackjack(v, post, text, 'submission'): break
 
+	if v and v.admin_level >= PERMS['POST_BETS']:
+		for bet in bets:
+			body_html = filter_emojis_only(bet)
+			if len(body_html) > 500: abort(400, "Bet option too long!")
+			bet = SubmissionOption(
+				submission_id=post.id,
+				body_html=body_html,
+				exclusive=2
+			)
+			g.db.add(bet)
+
 	for option in options:
+		body_html = filter_emojis_only(option)
+		if len(body_html) > 500: abort(400, "Poll option too long!")
 		option = SubmissionOption(
 			submission_id=post.id,
-			body_html=filter_emojis_only(option),
+			body_html=body_html,
 			exclusive=0
 		)
 		g.db.add(option)
 
 	for choice in choices:
+		body_html = filter_emojis_only(choice)
+		if len(body_html) > 500: abort(400, "Poll option too long!")
 		choice = SubmissionOption(
 			submission_id=post.id,
-			body_html=filter_emojis_only(choice),
+			body_html=body_html,
 			exclusive=1
 		)
 		g.db.add(choice)
-
-	if v and v.admin_level >= PERMS['POST_BETS']:
-		for bet in bets:
-			bet = SubmissionOption(
-				submission_id=post.id,
-				body_html=filter_emojis_only(bet),
-				exclusive=2
-			)
-			g.db.add(bet)
 
 	vote = Vote(user_id=v.id,
 				vote_type=1,

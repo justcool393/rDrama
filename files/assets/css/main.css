@@ -1788,16 +1788,16 @@ button.close {
 	margin: 0.25rem;
 }
 	.modal-dialog-scrollable {
-		max-height: calc(100% - 3.5rem);
+		max-height: calc(100% - 8rem);
 }
 	.modal-dialog-scrollable .modal-content {
-		max-height: calc(100vh - 3.5rem);
+		max-height: calc(100vh - 8rem);
 }
 	.modal-dialog-centered {
-		min-height: calc(100% - 3.5rem);
+		min-height: calc(100% - 8rem);
 }
 	.modal-dialog-centered::before {
-		height: calc(100vh - 3.5rem);
+		height: calc(100vh - 8rem);
 }
 @media (min-width: 992px) {
 	.modal-xl {
@@ -4524,10 +4524,6 @@ span.green {
 .text-admin {
 	color: var(--primary);
 }
-.object-cover {
-	object-fit: cover;
-}
-
 .spoiler, spoiler {
 	color: var(--white);
 	background-color: var(--white);
@@ -5286,10 +5282,6 @@ li > .sidebar {
 
 .shop-table-actions button {
 	width: 100%;
-}
-
-.userbanner {
-	object-fit: cover !important;
 }
 
 @media (max-width: 500px) {
@@ -6304,6 +6296,17 @@ div.markdown {
 	background: transparent;
 }
 
+.popover-badges-div {
+	max-height: 10vh !important;
+	overflow: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.popover-badges-div::-webkit-scrollbar {
+	background: transparent;
+}
+
 @media (max-width: 768px) {
 	.d-mob-none {
 		display: none !important;
@@ -6340,7 +6343,9 @@ div.markdown {
 .fas.fa-ellipsis-h {
 	margin: 0 0.15rem 0 0 !important;
 }
-.pop-badges {
-    max-height: 20vh!important;
-    overflow: auto;
+.pop-badge {
+	width: 32px;
+	height: 35px;
+	object-fit: contain;
+	-o-object-fit: contain;
 }

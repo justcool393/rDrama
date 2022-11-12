@@ -108,6 +108,7 @@ if SITE_NAME == 'rDrama':
 		"retarded": "r-slurred",
 		"retard": "r-slur",
 		"pedophile": "libertarian",
+		"kill youself": "keep yourself safe",
 		"kill yourself": "keep yourself safe",
 		"kill yourselves": "keep yourselves safe",
 		"steve akins": "Dr. Penelope Verity Oaken",
@@ -1526,7 +1527,7 @@ tiers={
 
 has_sidebar = path.exists(f'files/templates/sidebar_{SITE_NAME}.html')
 has_logo = path.exists(f'files/assets/images/{SITE_NAME}/logo.webp')
-has_app = path.exists(f'files/assets/app_{SITE_NAME}_v2.5.apk')
+has_app = path.exists(f'files/assets/app_{SITE_NAME}_v2.7.apk')
 
 ONLINE_STR = f'{SITE}_online'
 

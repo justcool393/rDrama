@@ -130,10 +130,15 @@ def buy(v, award):
 @is_not_permabanned
 @feature_required('AWARDS')
 def award_thing(v, thing_type, id):
-	if thing_type == 'post': thing = get_post(id)
-	else: thing = get_comment(id)
+	if thing_type == 'post': 
+		thing = get_post(id)
+	else: 
+		thing = get_comment(id)
+		if not thing.parent_submission: abort(404) # don't let users award messages
 
 	if v.shadowbanned: abort(500)
+	author = thing.author
+	if author.shadowbanned: abort(404)
 	
 	kind = request.values.get("kind", "").strip()
 	
@@ -160,17 +165,18 @@ def award_thing(v, thing_type, id):
 
 	note = request.values.get("note", "").strip()
 
-	author = thing.author
-	if author.shadowbanned: abort(404)
 
 	if SITE == 'rdrama.net' and author.id in (PIZZASHILL_ID, CARP_ID):
-		abort(403, "This user is immune to awards.")
+		abort(403, f"@{author.username} is immune to awards.")
 
 	if kind == "benefactor" and author.id == v.id:
-		abort(400, "You can't use this award on yourself.")
+		abort(403, "You can't use this award on yourself.")
 
 	if kind == 'marsify' and author.marsify == 1:
-		abort(403, "User is already permanently marsified!")
+		abort(409, f"@{author.username} is already permanently marsified!")
+
+	if kind == 'spider' and author.spider == 1:
+		abort(409, f"@{author.username} already permanently has a spider friend!")
 
 	if thing.ghost and not AWARDS[kind]['ghost']:
 		abort(403, "This kind of award can't be used on ghost posts.")
@@ -262,10 +268,10 @@ def award_thing(v, thing_type, id):
 		g.db.add(thing)
 	elif kind == "agendaposter":
 		if author.marseyawarded:
-			abort(409, "This user is under the effect of a conflicting award: Marsey award.")
+			abort(409, f"@{author.username} is under the effect of a conflicting award: Marsey award.")
 
 		if author.agendaposter == 1:
-			abort(409, "This user is perma-chudded.")
+			abort(409, f"@{author.username} is perma-chudded.")
 
 		if author.agendaposter and time.time() < author.agendaposter: author.agendaposter += 86400
 		else: author.agendaposter = int(time.time()) + 86400
@@ -293,13 +299,13 @@ def award_thing(v, thing_type, id):
 		badge_grant(user=author, badge_id=98)
 	elif kind == "pizzashill":
 		if author.bird:
-			abort(409, "This user is under the effect of a conflicting award: Bird Site award.")
+			abort(409, f"@{author.username} is under the effect of a conflicting award: Bird Site award.")
 		if author.longpost: author.longpost += 86400
 		else: author.longpost = int(time.time()) + 86400
 		badge_grant(user=author, badge_id=97)
 	elif kind == "bird":
 		if author.longpost:
-			abort(409, "This user is under the effect of a conflicting award: Pizzashill award.")
+			abort(409, f"@{author.username} is under the effect of a conflicting award: Pizzashill award.")
 		if author.bird: author.bird += 86400
 		else: author.bird = int(time.time()) + 86400
 		badge_grant(user=author, badge_id=95)
@@ -317,11 +323,14 @@ def award_thing(v, thing_type, id):
 	elif kind == "progressivestack":
 		if not FEATURES['PINS']:
 			abort(403)
+
+		if author.id in BOOSTED_USERS: abort(409, f"@{author.username} is already permanently progressive-stacked!")
+
 		if author.progressivestack: author.progressivestack += 21600
 		else: author.progressivestack = int(time.time()) + 21600
 		badge_grant(user=author, badge_id=94)
 	elif kind == "benefactor":
-		if author.patron: abort(409, f"This user is already a {patron.lower()}!")
+		if author.patron: abort(409, f"@{author.username} is already a {patron.lower()}!")
 		author.patron = 1
 		if author.patron_utc: author.patron_utc += 2629746
 		else: author.patron_utc = int(time.time()) + 2629746

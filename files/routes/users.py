@@ -422,10 +422,10 @@ def message2(v, username):
 	user = get_user(username, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
-		abort(403, "You're blocking this user.")
+		abort(403, f"You're blocking @{user.username}")
 
 	if v.admin_level <= PERMS['MESSAGE_BLOCKED_USERS'] and hasattr(user, 'is_blocked') and user.is_blocked:
-		abort(403, "This user is blocking you.")
+		abort(403, f"@{user.username} is blocking you.")
 
 	message = sanitize_raw_body(request.values.get("message"), False)
 	if not message: abort(400, "Message is empty!")
@@ -504,10 +504,10 @@ def messagereply(v):
 	if user_id:
 		user = get_account(user_id, v=v, include_blocks=True)
 		if hasattr(user, 'is_blocking') and user.is_blocking:
-			abort(403, "You're blocking this user.")
+			abort(403, f"You're blocking @{user.username}")
 		elif (v.admin_level <= PERMS['MESSAGE_BLOCKED_USERS']
 				and hasattr(user, 'is_blocked') and user.is_blocked):
-			abort(403, "You're blocked by this user.")
+			abort(403, f"You're blocked by @{user.username}")
 
 	if parent.sentto == 2:
 		body += process_files(request.files, v)
@@ -698,7 +698,7 @@ def u_username(username, v=None):
 		
 	if not u.is_visible_to(v):
 		if g.is_api_or_xhr or request.path.endswith(".json"):
-			abort(403, "This userpage is private")
+			abort(403, f"@{u.username}'s userpage is private")
 		return render_template("userpage/private.html", u=u, v=v, is_following=is_following), 403
 
 	
@@ -767,7 +767,7 @@ def u_username_comments(username, v=None):
 
 	if not u.is_visible_to(v):
 		if g.is_api_or_xhr or request.path.endswith(".json"):
-			abort(403, "This userpage is private")
+			abort(403, f"@{u.username}'s userpage is private")
 		return render_template("userpage/private.html", u=u, v=v, is_following=is_following), 403
 
 	if v and hasattr(u, 'is_blocking') and u.is_blocking:
@@ -823,9 +823,9 @@ def u_username_info(username, v=None):
 	user=get_user(username, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
-		abort(401, "You're blocking this user.")
+		abort(401, f"You're blocking @{user.username}")
 	elif hasattr(user, 'is_blocked') and user.is_blocked:
-		abort(403, "This user is blocking you.")
+		abort(403, f"@{user.username} is blocking you.")
 
 	return user.json
 
@@ -836,9 +836,9 @@ def u_user_id_info(id, v=None):
 	user=get_account(id, v=v, include_blocks=True, include_shadowbanned=False)
 
 	if hasattr(user, 'is_blocking') and user.is_blocking:
-		abort(403, "You're blocking this user.")
+		abort(403, f"You're blocking @{user.username}")
 	elif hasattr(user, 'is_blocked') and user.is_blocked:
-		abort(403, "This user is blocking you.")
+		abort(403, f"@{user.username} is blocking you.")
 
 	return user.json
 
@@ -880,7 +880,7 @@ def unfollow_user(username, v):
 	if target.fish:
 		if not v.shadowbanned:
 			send_notification(target.id, f"@{v.username} has tried to unfollow you and failed because of your fish award!")
-		abort(400, "You can't unfollow this user!")
+		abort(400, f"You can't unfollow @{target.username}")
 
 	follow = g.db.query(Follow).filter_by(user_id=v.id, target_id=target.id).one_or_none()
 
@@ -1106,12 +1106,18 @@ def settings_kofi(v):
 		abort(400, f"{patron} rewards already claimed")
 
 	tier = kofi_tiers[transaction.amount]
-	v.patron = tier
+
 	procoins = procoins_li[tier]
 	v.procoins += procoins
 	send_repeatable_notification(v.id, f"You have received {procoins} Marseybux! You can use them to buy awards in the [shop](/shop).")
 	g.db.add(v)
-	badge_grant(badge_id=20+tier, user=v)
+
+	if tier > v.patron:
+		v.patron = tier
+		for badge in g.db.query(Badge).filter(Badge.user_id == v.id, Badge.badge_id > 20, Badge.badge_id < 28).all():
+			g.db.delete(badge)
+		badge_grant(badge_id=20+tier, user=v)
+
 	transaction.claimed = True
 	g.db.add(transaction)
 	return {"message": f"{patron} rewards claimed!"}
