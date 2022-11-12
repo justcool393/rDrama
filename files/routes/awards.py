@@ -163,7 +163,7 @@ def award_thing(v, thing_type, id):
 	author = thing.author
 	if author.shadowbanned: abort(404)
 
-	if SITE.startswith('rdrama.') and author.id in (PIZZASHILL_ID, CARP_ID):
+	if SITE == 'rdrama.net' and author.id in (PIZZASHILL_ID, CARP_ID):
 		abort(403, "This user is immune to awards.")
 
 	if kind == "benefactor" and author.id == v.id:
@@ -171,6 +171,9 @@ def award_thing(v, thing_type, id):
 
 	if kind == 'marsify' and author.marsify == 1:
 		abort(403, "User is already permanently marsified!")
+
+	if thing.ghost and not AWARDS[kind]['ghost']:
+		abort(403, "This kind of award can't be used on ghost posts.")
 
 	if v.id != author.id:
 		safe_username = "👻" if thing.ghost else f"@{author.username}"
@@ -269,7 +272,6 @@ def award_thing(v, thing_type, id):
 		
 		badge_grant(user=author, badge_id=28)
 	elif kind == "flairlock":
-		if thing.ghost: abort(403)
 		new_name = note[:100].replace("𒐪","")
 		if not new_name and author.flairchanged:
 			author.flairchanged += 86400
@@ -349,8 +351,8 @@ def award_thing(v, thing_type, id):
 			thing.body_html = sanitize(body, limit_pings=5)
 			g.db.add(thing)
 	elif "Vampire" in kind and kind == v.house:
-		if author.bite: author.bite += 86400
-		else: author.bite = int(time.time()) + 86400
+		if author.bite: author.bite += 172800
+		else: author.bite = int(time.time()) + 172800
 		
 		if not author.old_house:
 			author.old_house = author.house

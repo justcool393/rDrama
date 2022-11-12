@@ -7,6 +7,7 @@ from typing import Optional
 import gevent
 import imagehash
 from flask import abort, g, has_request_context
+from werkzeug.utils import secure_filename
 from PIL import Image
 from PIL.ImageSequence import Iterator
 from sqlalchemy.orm import scoped_session
@@ -37,7 +38,9 @@ def process_files(files, v):
 
 def process_audio(file, v):
 	name = f'/audio/{time.time()}'.replace('.','')
-	extension = file.filename.split('.')[-1].lower()
+
+	name_original = secure_filename(file.filename)
+	extension = name_original.split('.')[-1].lower()
 	name = name + '.' + extension
 	file.save(name)
 
@@ -92,7 +95,8 @@ def process_video(file, v):
 		os.remove(old)
 		abort(413, f"Max video size is {MAX_VIDEO_SIZE_MB} MB ({MAX_VIDEO_SIZE_MB_PATRON} MB for paypigs)")
 
-	extension = file.filename.split('.')[-1].lower()
+	name_original = secure_filename(file.filename)
+	extension = name_original.split('.')[-1].lower()
 	new = old + '.' + extension
 
 	if extension == 'webm':

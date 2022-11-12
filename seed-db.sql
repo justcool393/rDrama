@@ -453,6 +453,7 @@ INSERT INTO public.hat_defs VALUES (1012, 'Marsey Slain', 'You monster... what h
 INSERT INTO public.hat_defs VALUES (1016, 'Antlers', 'Be careful. I''ll shoot ya!', 2, 500, NULL, 1667531769);
 INSERT INTO public.hat_defs VALUES (712, 'Thursday The 20th', '20% off on every Thursday. 30% off on the 20th of every month. 50% off on Thurday the 20th!', 2, 500, NULL, 1663434472);
 
+
 INSERT INTO public.hat_defs VALUES (22, 'Southern Gentleman', 'Slaveowner? Fried chicken chain founder? You decide!', 2, 500, NULL, 1662167687);
 INSERT INTO public.hat_defs VALUES (23, 'Cowboy I', 'Make him wish he could quit you', 2, 500, NULL, 1662167687);
 INSERT INTO public.hat_defs VALUES (24, 'Cowboy II', 'You''re my favorite deputy!', 2, 500, NULL, 1662167687);
@@ -1105,7 +1106,7 @@ INSERT INTO public.hat_defs VALUES (911, 'Racecar Hat', 'I sleep in a hat with m
 -- Name: hat_defs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.hat_defs_id_seq', 1017, true);
+SELECT pg_catalog.setval('public.hat_defs_id_seq', 1018, true);
 
 
 --
@@ -1424,6 +1425,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseycarp2',2,'harm cutting selfharm cutter reaction carpathianflorist self animated',NULL),
 ('marseycarp3',2,'reaction fish carpathianflorist catfish',NULL),
 ('marseycarp4',2,'sicksadworld banhammer pin awards janny mod admin',1664034021),
+('marseycarp41',2,'carp suicide train rope',1668039193),
 ('marseycarpabusivewife',2,'carpathianflorist boobs sweater yesdear demeaning jannie fish',1665700295),
 ('marseycarpasian',2,'carpathianflorist fish azn racist hat paddy gook nip ching chong chink',NULL),
 ('marseycarpautism',2,'carpathianflorist special assburgers aspergers retarded janitor jannie',NULL),
@@ -1432,6 +1434,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseycarpbuff',2,'muscles tough strong carpathianflorist admin mod jannie',NULL),
 ('marseycarpcrying',2,'tear reaction carpathianflorist fish sob tears sad',NULL),
 ('marseycarpdead',2,'fish janny kill',NULL),
+('marseycarpdead2',2,'carp rope suicide',1668038384),
 ('marseycarpdetermined',2,'marsey carpathianflorist admin jannie fish',1664900717),
 ('marseycarpdevil',2,'carp devil demon horns anticarp hell',NULL),
 ('marseycarpdino',2,'dinosaur costume furry fursuit carpathianflorist extinct reptile lizard rawr prehistoric jurassic',NULL),
@@ -2613,6 +2616,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseyshark',2,'jaws halloween fursona furry fish costume holiday fursuit',NULL),
 ('marseysheep',2,'follower wool lamb fursona bah furry fursuit',NULL),
 ('marseysheepdog',2,'shaggy scruffy woof',NULL),
+('marseysheogorath',2,'elder scrolls oblivion morrowind daggerfall skyrim daedra demon madness crazy mania dementia',1668034870),
 ('marseysherpa',2,'mountain climbing travel nepal himalaya asia everest',NULL),
 ('marseyshiftyeyes',2,'suspicious sussy paranoid weird reaction sketchy',NULL),
 ('marseyshisha',2,'weed smoker smoking hookah',NULL),
@@ -2880,6 +2884,7 @@ INSERT INTO public.marseys (name, author_id, tags, created_utc) VALUES
 ('marseyvargfinnselfdefense',2,'bardfinn steve akens aikens penny verity oaken tranny train troon transgender transvestite black metal trve kvlt euronymous varg vikernes mayhem burzum child abuse kid beating stabbing bloody',NULL),
 ('marseyvargselfdefense',2,'vikernes euronymous mayhem burzum black metal norway norwegian stab knife kill murder',NULL),
 ('marseyvatnik',2,'russian alcoholic alcoholism',NULL),
+('marseyvault',2,'fallout vault boy mascot bethesda videogame',1668087230),
 ('marseyvaxmaxx',2,'mask coronavirus covid gigavax corona vaccine vaccination hazmat',NULL),
 ('marseyvaxxtroll',2,'halloween alive healthy glow zombie vaccine vaccinated vaccination',1666460515),
 ('marseyvelociraptor',2,'dinosaur velocimarsey extinct predator claws',NULL),

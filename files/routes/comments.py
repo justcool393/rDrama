@@ -343,8 +343,6 @@ def comment(v):
 
 	c.voted = 1
 	
-	execute_pizza_autovote(v, c)
-
 	if v.marseyawarded and parent_post.id not in ADMIGGER_THREADS and marseyaward_body_regex.search(body_html):
 		abort(403, "You can only type marseys!")
 

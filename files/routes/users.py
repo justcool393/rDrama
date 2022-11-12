@@ -46,7 +46,7 @@ def upvoters_downvoters(v, username, uid, cls, vote_cls, vote_dir, template, sta
 	listing = listing[:PAGE_SIZE]
 
 	if cls == Submission:
-		listing = get_posts(listing, v=v)
+		listing = get_posts(listing, v=v, eager=True)
 	elif cls == Comment:
 		listing = get_comments(listing, v=v)
 	else:
@@ -97,7 +97,7 @@ def upvoting_downvoting(v, username, uid, cls, vote_cls, vote_dir, template, sta
 	listing = listing[:PAGE_SIZE]
 	
 	if cls == Submission:
-		listing = get_posts(listing, v=v)
+		listing = get_posts(listing, v=v, eager=True)
 	elif cls == Comment:
 		listing = get_comments(listing, v=v)
 	else:
@@ -149,7 +149,7 @@ def user_voted(v, username, cls, vote_cls, vote_dir, template, standalone):
 	next_exists = len(listing) > PAGE_SIZE
 	listing = listing[:PAGE_SIZE]
 	if cls == Submission:
-		listing = get_posts(listing, v=v)
+		listing = get_posts(listing, v=v, eager=True)
 	elif cls == Comment:
 		listing = get_comments(listing, v=v)
 	else:
@@ -430,12 +430,12 @@ def message2(v, username):
 	message = sanitize_raw_body(request.values.get("message"), False)
 	if not message: abort(400, "Message is empty!")
 	if 'linkedin.com' in message: abort(403, "This domain 'linkedin.com' is banned.")
-	if v.id != AEVANN_ID and ('discord.gg' in message or 'discord.com' in message or 'discordapp.com' in message):
+	if v.id != AEVANN_ID and ('discord.gg' in message or 'discord.com/invite/' in message or 'discordapp.com/invite/' in message):
 		abort(403, "Stop grooming!")
 
 	body_html = sanitize(message)
 
-	if not (SITE.startswith('rdrama.') and user.id == BLACKJACKBTZ_ID):
+	if not (SITE == 'rdrama.net' and user.id == BLACKJACKBTZ_ID):
 		existing = g.db.query(Comment.id).filter(Comment.author_id == v.id,
 																Comment.sentto == user.id,
 																Comment.body_html == body_html,
@@ -486,7 +486,7 @@ def messagereply(v):
 
 	if 'linkedin.com' in body: abort(403, "This domain 'linkedin.com' is banned")
 
-	if v.id != AEVANN_ID and ('discord.gg' in body or 'discord.com' in body or 'discordapp.com' in body):
+	if v.id != AEVANN_ID and ('discord.gg' in body or 'discord.com/invite/' in body or 'discordapp.com/invite/' in body):
 		abort(403, "Stop grooming!")
 
 	id = request.values.get("parent_id")
@@ -668,7 +668,7 @@ def visitors(v):
 @cache.memoize(timeout=86400)
 def userpagelisting(user:User, site=None, v=None, page:int=1, sort="new", t="all"):
 	if user.shadowbanned and not (v and v.can_see_shadowbanned): return []
-	posts = g.db.query(Submission.id).filter_by(author_id=user.id, is_pinned=False, is_banned=False)
+	posts = g.db.query(Submission.id).filter_by(author_id=user.id, is_pinned=False)
 	if not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == user.id)):
 		posts = posts.filter_by(is_banned=False, private=False, ghost=False, deleted_utc=0)
 		posts = apply_time_filter(t, posts, Submission)
@@ -725,7 +725,7 @@ def u_username(username, v=None):
 			for p in sticky:
 				ids = [p.id] + ids
 
-	listing = get_posts(ids, v=v)
+	listing = get_posts(ids, v=v, eager=True)
 
 	if u.unban_utc:
 		if (v and v.client) or request.path.endswith(".json"):
@@ -853,9 +853,6 @@ def follow_user(username, v):
 	if target.id==v.id:
 		abort(400, "You can't follow yourself!")
 
-	if target.is_nofollow:
-		abort(403, "This user has disallowed other users from following them!")
-
 	if g.db.query(Follow).filter_by(user_id=v.id, target_id=target.id).one_or_none():
 		return {"message": f"@{target.username} has been followed!"}
 
@@ -959,7 +956,7 @@ def get_saves_and_subscribes(v, template, relationship_cls, page:int, standalone
 	next_exists = len(ids) > PAGE_SIZE
 	ids = ids[:PAGE_SIZE]
 	if cls is Submission:
-		listing = get_posts(ids, v=v)
+		listing = get_posts(ids, v=v, eager=True)
 	elif cls is Comment:
 		listing = get_comments(ids, v=v)
 	else:

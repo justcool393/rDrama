@@ -128,7 +128,6 @@ def settings_personal_post(v):
 	updated = updated or update_flag("sigs_disabled", "sigs_disabled")
 	updated = updated or update_flag("over_18", "over_18")
 	updated = updated or update_flag("is_private", "private")
-	updated = updated or update_flag("is_nofollow", "nofollow")
 
 	if not updated and request.values.get("spider", v.spider) != v.spider and v.spider <= 1:
 		updated = True
@@ -436,7 +435,7 @@ def settings_security_post(v):
 									v=v)
 				)
 
-		return render_template("settings_security.html", v=v, msg="Check your email and click the verification link to complete the email change.")
+		return render_template("settings/security.html", v=v, msg="Check your email and click the verification link to complete the email change.")
 
 	if request.values.get("2fa_token"):
 		if not v.verifyPass(request.values.get('password')):

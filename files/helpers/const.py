@@ -8,10 +8,10 @@ SITE = environ.get("SITE", "localhost").strip()
 SITE_NAME = environ.get("SITE_NAME", "rdrama.net").strip()
 SECRET_KEY = environ.get("SECRET_KEY", DEFAULT_CONFIG_VALUE).strip()
 PROXY_URL = environ.get("PROXY_URL", "http://localhost:18080").strip()
-GIPHY_KEY = environ.get('GIPHY_KEY', DEFAULT_CONFIG_VALUE).strip()
+GIPHY_KEY = environ.get("GIPHY_KEY", DEFAULT_CONFIG_VALUE).strip()
 DISCORD_BOT_TOKEN = environ.get("DISCORD_BOT_TOKEN", DEFAULT_CONFIG_VALUE).strip()
-HCAPTCHA_SITEKEY = environ.get("HCAPTCHA_SITEKEY", DEFAULT_CONFIG_VALUE).strip()
-HCAPTCHA_SECRET = environ.get("HCAPTCHA_SECRET", DEFAULT_CONFIG_VALUE).strip()
+TURNSTILE_SITEKEY = environ.get("TURNSTILE_SITEKEY", DEFAULT_CONFIG_VALUE).strip()
+TURNSTILE_SECRET = environ.get("TURNSTILE_SECRET", DEFAULT_CONFIG_VALUE).strip()
 YOUTUBE_KEY = environ.get("YOUTUBE_KEY", DEFAULT_CONFIG_VALUE).strip()
 PUSHER_ID = environ.get("PUSHER_ID", DEFAULT_CONFIG_VALUE).strip()
 PUSHER_KEY = environ.get("PUSHER_KEY", DEFAULT_CONFIG_VALUE).strip()
@@ -36,7 +36,6 @@ DESCRIPTION = environ.get("DESCRIPTION", "rdrama.net caters to drama in all form
 CF_KEY = environ.get("CF_KEY", DEFAULT_CONFIG_VALUE).strip()
 CF_ZONE = environ.get("CF_ZONE", DEFAULT_CONFIG_VALUE).strip()
 TELEGRAM_LINK = environ.get("TELEGRAM_LINK", DEFAULT_CONFIG_VALUE).strip()
-
 GLOBAL = environ.get("GLOBAL", "").strip()
 blackjack = environ.get("BLACKJACK", "").strip()
 FP = environ.get("FP", "").strip()
@@ -46,7 +45,7 @@ KOFI_LINK = environ.get("KOFI_LINK", "").strip()
 PUSHER_ID_CSP = ""
 if PUSHER_ID != DEFAULT_CONFIG_VALUE:
 	PUSHER_ID_CSP = f" {PUSHER_ID}.pushnotifications.pusher.com"
-CONTENT_SECURITY_POLICY_DEFAULT = "script-src 'self' 'unsafe-inline' ajax.cloudflare.com; connect-src 'self'; object-src 'none';"
+CONTENT_SECURITY_POLICY_DEFAULT = "script-src 'self' 'unsafe-inline' challenges.cloudflare.com; connect-src 'self'; object-src 'none';"
 CONTENT_SECURITY_POLICY_HOME = f"script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' tls-use1.fpapi.io api.fpjs.io{PUSHER_ID_CSP}; object-src 'none';"
 
 CLOUDFLARE_COOKIE_VALUE = "yes." # remember to change this in CloudFlare too
@@ -157,7 +156,8 @@ PROFANITIES = {
 	' cum ': ' c*m ',
 	'orgasm': 'sexual climax',
 	'dick': 'peepee',
-	'cock': 'peepee',
+	'cock ': 'peepee ',
+	'cocks': 'peepees',
 	'penis': 'peepee',
 	'pussy': 'girl peepee',
 	'vagina': 'girl peepee',
@@ -398,8 +398,8 @@ KIPPY_ID = 0
 MCCOX_ID = 0
 CHIOBU_ID = 0
 PIZZASHILL_ID = 0
+IMPASSIONATA_ID = 0
 GUMROAD_MESSY = ()
-PIZZA_VOTERS = ()
 IDIO_ID = 0
 CARP_ID = 0
 JOAN_ID = 0
@@ -458,7 +458,7 @@ TIERS_ID_TO_NAME = {
 		6: "Rich Bich"
 }
 
-if SITE.startswith('rdrama.'):
+if SITE == 'rdrama.net':
 	FEATURES['PRONOUNS'] = True
 	FEATURES['HOUSES'] = True
 	FEATURES['USERS_PERMANENT_WORD_FILTERS'] = True
@@ -485,8 +485,8 @@ if SITE.startswith('rdrama.'):
 	MCCOX_ID = 8239
 	CHIOBU_ID = 5214
 	PIZZASHILL_ID = 2424
+	IMPASSIONATA_ID = 5800
 	GUMROAD_MESSY = (1230,1379)
-	PIZZA_VOTERS = (747,1963,9712)
 	IDIO_ID = 30
 	CARP_ID = 995
 	JOAN_ID = 28
@@ -950,6 +950,16 @@ AWARDS = {
 		"deflectable": True,
 		"cosmetic": False
 	},
+	"agendaposter": {
+		"kind": "agendaposter",
+		"title": "Chud",
+		"description": "Chuds the recipient for 24 hours.",
+		"icon": "fas fa-snooze",
+		"color": "text-purple",
+		"price": 1000,
+		"deflectable": True,
+		"cosmetic": False
+	},
 	"offsitementions": {
 		"kind": "offsitementions",
 		"title": "Y'all Seein' Eye",
@@ -1047,16 +1057,6 @@ AWARDS = {
 		"icon": "fas fa-spider",
 		"color": "text-brown",
 		"price": 2000,
-		"deflectable": True,
-		"cosmetic": False
-	},
-	"agendaposter": {
-		"kind": "agendaposter",
-		"title": "Chud",
-		"description": "Chuds the recipient for 24 hours.",
-		"icon": "fas fa-snooze",
-		"color": "text-purple",
-		"price": 2500,
 		"deflectable": True,
 		"cosmetic": False
 	},
@@ -1252,6 +1252,12 @@ if SITE_NAME == 'PCM':
 	}
 	AWARDS.update(PCM_AWARDS)
 
+# Permit only cosmetics and pin/unpin on ghosted things.
+for award in AWARDS:
+	AWARDS[award]['ghost'] = AWARDS[award]['cosmetic']
+AWARDS['pin']['ghost'] = True
+AWARDS['unpin']['ghost'] = True
+
 # Disable unused awards, and site-specific award inclusion/exclusion.
 AWARDS_DISABLED = [
 	'ghost', 'nword', 'lootbox', # Generic
@@ -1286,7 +1292,7 @@ HOUSE_AWARDS = {
 	"Vampire": {
 		"kind": "Vampire",
 		"title": "Bite",
-		"description": "Turns the recipient into a vampire for 24 hours.",
+		"description": "Turns the recipient into a vampire for 2 days.",
 		"icon": "fas fa-bat",
 		"color": "text-gray",
 		"price": 400,
@@ -1325,7 +1331,6 @@ if not FEATURES['PROCOINS']:
 	AWARDS_DISABLED.append('benefactor')
 
 AWARDS2 = {x: AWARDS[x] for x in AWARDS if x not in AWARDS_DISABLED}
-AWARDS3 = {x: AWARDS2[x] for x in AWARDS2 if AWARDS2[x]['price'] <= 500}
 
 DOUBLE_XP_ENABLED = -1 # set to unixtime for when DXP begins, -1 to disable
 
@@ -1345,21 +1350,26 @@ NOTIFIED_USERS = {
 	'carp': CARP_ID,
 	'idio3': IDIO_ID,
 	'idio ': IDIO_ID,
+	'telegram ': IDIO_ID,
 	'the_homocracy': HOMO_ID,
 	'schizocel': SCHIZO_ID,
 	'scitzocel': SCHIZO_ID,
 	'snakes': SNAKES_ID,
 	'sneks': SNAKES_ID,
+	'snekky': SNAKES_ID,
 	'jc': JUSTCOOL_ID,
 	'justcool': JUSTCOOL_ID,
 	'geese': GEESE_ID,
 	'clit': CARP_ID,
 	'kippy': KIPPY_ID,
 	'mccox': MCCOX_ID,
+	'lawlz': LAWLZ_ID,
 
 	'chiobu': CHIOBU_ID,
 	'donger': DONGER_ID,
 	'soren': SOREN_ID,
+	'pizzashill': PIZZASHILL_ID,
+	'impassionata': IMPASSIONATA_ID,
 }
 
 FORTUNE_REPLIES = ('<b style="color:#6023f8">Your fortune: Allah Wills It</b>','<b style="color:#d302a7">Your fortune: Inshallah, Only Good Things Shall Come To Pass</b>','<b style="color:#e7890c">Your fortune: Allah Smiles At You This Day</b>','<b style="color:#7fec11">Your fortune: Your Bussy Is In For A Blasting</b>','<b style="color:#43fd3b">Your fortune: You Will Be Propositioned By A High-Tier Twink</b>','<b style="color:#9d05da">Your fortune: Repent, You Have Displeased Allah And His Vengeance Is Nigh</b>','<b style="color:#f51c6a">Your fortune: Reply Hazy, Try Again</b>','<b style="color:#00cbb0">Your fortune: lmao you just lost 100 coins</b>','<b style="color:#2a56fb">Your fortune: Yikes 😬</b>','<b style="color:#0893e1">Your fortune: You Will Be Blessed With Many Black Bulls</b>','<b style="color:#16f174">Your fortune: NEETmax, The Day Is Lost If You Venture Outside</b>','<b style="color:#fd4d32">Your fortune: A Taste Of Jannah Awaits You Today</b>','<b style="color:#bac200">Your fortune: Watch Your Back</b>','<b style="color:#6023f8">Your fortune: Outlook good</b>','<b style="color:#d302a7">Your fortune: Godly Luck</b>','<b style="color:#e7890c">Your fortune: Good Luck</b>','<b style="color:#7fec11">Your fortune: Bad Luck</b>','<b style="color:#43fd3b">Your fortune: Good news will come to you by mail</b>','<b style="color:#9d05da">Your fortune: Very Bad Luck</b>','<b style="color:#00cbb0">Your fortune: ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!</b>','<b style="color:#2a56fb">Your fortune: Better not tell you now</b>','<b style="color:#0893e1">Your fortune: You will meet a dark handsome stranger</b>','<b style="color:#16f174">Your fortune: （　´_ゝ`）ﾌｰﾝ</b>','<b style="color:#fd4d32">Your fortune: Excellent Luck</b>','<b style="color:#bac200">Your fortune: Average Luck</b>')
@@ -1377,7 +1387,7 @@ if len(SITE_NAME) > 5:
 if SITE != 'localhost':
 	REDDIT_NOTIFS_SITE.add(SITE)
 
-if SITE.startswith('rdrama.'):
+if SITE == 'rdrama.net':
 	REDDIT_NOTIFS_SITE.add('marsey')
 	REDDIT_NOTIFS_SITE.add('"r/Drama"')
 	REDDIT_NOTIFS_SITE.add('justice4darrell')
@@ -1537,78 +1547,99 @@ forced_hats = {
 
 EMAIL_REGEX_PATTERN = '[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{2,63}\.[A-Za-z]{2,63}'
 
-BOOSTED_SITES = {
-	'rdrama.net',
-	BAN_EVASION_DOMAIN,
-	'pcmemes.net',
-	'watchpeopledie.tv',
-	'themotte.org',
-	'quora.com',
-	'cumtown.org',
-	'notabug.io',
-	'talk.lol',
-	'discussions.app',
-	'gab.com',
-	'kiwifarms.net',
-	'gettr.com',
-	'scored.co',
-	'parler.com',
-	'bitchute.com',
-	'4chan.org',
-	'givesendgo.com',
-	'thepinkpill.com',
-	'ovarit.com',
-	'rdrama.cc',
-	'lolcow.farm',
-	'truthsocial.com',
-	'rumble.com',
-	'saidit.net',
-	'kiwifarms.cc',
-	'8kun.top',
-	'goyimtv.tv',
-	'poal.co',
-	'stormfront.org',
-	'arete.network',
-	'poa.st',
-	'lbry.com',
-	'crystal.cafe',
-	'tribel.com',
-	'mstdn.social',
-	'mastodon.online',
-	'steemit.com',
-	'hexbear.net',
-	'raddle.me',
-	'lemmy.ml',
-	'bluelight.org',
-	'incels.is',
-	'groups.google.com',
-	't.me',
-	'web.telegram.org',
-	'news.ycombinator.com',
-	'tigerdroppings.com',
-	'instagram.com',
-	'facebook.com',
-	'twitch.tv',
-	'tiktok.com',
-	'vm.tiktok.com',
-	'github.com',
-	'boards.4channel.org',
-	'boards.4chan.org',
-	'archive.4plebs.org',
-	'lipstickalley.com',
-	'resetera.com',
-	'steamcommunity.com',
-	'nairaland.com',
-	'marsey.club',
-	'odysee.com',
-	'trp.red',
-	'forums.red',
-	'shitposter.club',
-	'sneed.social',
-	'seal.cafe',
-	'lobste.rs',
-	'stacker.news',
-}
+if SITE_NAME == 'rDrama':
+	BOOSTED_SITES = {
+		'rdrama.net',
+		BAN_EVASION_DOMAIN,
+		'pcmemes.net',
+		'watchpeopledie.tv',
+		'themotte.org',
+		'quora.com',
+		'cumtown.org',
+		'notabug.io',
+		'talk.lol',
+		'discussions.app',
+		'gab.com',
+		'kiwifarms.net',
+		'gettr.com',
+		'scored.co',
+		'parler.com',
+		'bitchute.com',
+		'4chan.org',
+		'givesendgo.com',
+		'thepinkpill.com',
+		'ovarit.com',
+		'rdrama.cc',
+		'lolcow.farm',
+		'truthsocial.com',
+		'rumble.com',
+		'saidit.net',
+		'kiwifarms.cc',
+		'8kun.top',
+		'goyimtv.tv',
+		'poal.co',
+		'stormfront.org',
+		'arete.network',
+		'poa.st',
+		'lbry.com',
+		'crystal.cafe',
+		'tribel.com',
+		'mstdn.social',
+		'mastodon.online',
+		'steemit.com',
+		'hexbear.net',
+		'raddle.me',
+		'lemmy.ml',
+		'bluelight.org',
+		'incels.is',
+		'groups.google.com',
+		't.me',
+		'web.telegram.org',
+		'news.ycombinator.com',
+		'tigerdroppings.com',
+		'instagram.com',
+		'facebook.com',
+		'twitch.tv',
+		'tiktok.com',
+		'vm.tiktok.com',
+		'github.com',
+		'boards.4channel.org',
+		'boards.4chan.org',
+		'archive.4plebs.org',
+		'lipstickalley.com',
+		'resetera.com',
+		'steamcommunity.com',
+		'nairaland.com',
+		'marsey.club',
+		'odysee.com',
+		'trp.red',
+		'forums.red',
+		'shitposter.club',
+		'sneed.social',
+		'seal.cafe',
+		'lobste.rs',
+		'stacker.news',
+		'breitbart.com',
+		'tattle.life',
+	}
+
+	BOOSTED_HOLES = {
+		'furry',
+		'femboy',
+		'anime',
+		'gaybros',
+		'againsthateholes',
+		'masterbaiters',
+		'changelog',
+	}
+
+	BOOSTED_USERS = {
+		IMPASSIONATA_ID,
+		PIZZASHILL_ID,
+		SNAKES_ID,
+		JUSTCOOL_ID,
+		2008, #TransGirlTradWife
+	}
 
 IMAGE_FORMATS = ['png','gif','jpg','jpeg','webp']
 VIDEO_FORMATS = ['mp4','webm','mov','avi','mkv','flv','m4v','3gp']

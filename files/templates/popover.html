@@ -7,13 +7,19 @@
 				<img class="pop-hat profile-pic-75-hat hat" loading="lazy">
 			</div>
 			<div class="px-3 text-truncate">
-			<h5 class="pop-username text-truncate text-black"></h5>
+			<h5 class="pop-username text-truncate text-black mb-1"></h5>
+			<span class="text-black">Joined <span class="pop-created-date"></span></span>
 			</div>
 		</div>
 
 		{% if FEATURES['USERS_PROFILE_BODYTEXT'] -%}
 		<div class="px-3 popover-bio-div y-scroll">
 			<span class="pop-bio popover-bio text-black"></span>
+		</div>
+		{%- endif %}
+
+		{% if FEATURES['BADGES'] -%}
+		<div class="pop-badges ml-3 mr-3 my-2">
 		</div>
 		{%- endif %}
 

@@ -120,7 +120,6 @@ class User(Base):
 	defaultsortingcomments = Column(String, default="hot")
 	defaultsorting = Column(String, default="hot")
 	defaulttime = Column(String, default=DEFAULT_TIME_FILTER)
-	is_nofollow = Column(Boolean, default=False)
 	custom_filter_list = Column(String)
 	discord_id = Column(String)
 	original_username = Column(String)
@@ -151,6 +150,9 @@ class User(Base):
 	referrals = relationship("User")
 	designed_hats = relationship("HatDef", primaryjoin="User.id==HatDef.author_id", back_populates="author")
 	owned_hats = relationship("Hat", back_populates="owners")
+	hats_equipped = relationship("Hat", lazy="raise", viewonly=True)
+	sub_mods = relationship("Mod", primaryjoin="User.id == Mod.user_id", lazy="raise")
+	sub_exiles = relationship("Exile", primaryjoin="User.id == Exile.user_id", lazy="raise")
 
 	def __init__(self, **kwargs):
 
@@ -219,9 +221,11 @@ class User(Base):
 		return len(self.designed_hats)
 
 	@property
-	@lazy
 	def equipped_hats(self):
-		return g.db.query(Hat).filter_by(user_id=self.id, equipped=True).all()
+		try:
+			return self.hats_equipped
+		except:
+			return g.db.query(Hat).filter_by(user_id=self.id, equipped=True).all()
 
 	@property
 	@lazy
@@ -297,11 +301,17 @@ class User(Base):
 	@lazy
 	def mods(self, sub):
 		if self.is_suspended_permanently or self.shadowbanned: return False
-		return bool(g.db.query(Mod.user_id).filter_by(user_id=self.id, sub=sub).one_or_none())
+		try:
+			return any(map(lambda x: x.sub == sub, self.sub_mods))
+		except:
+			return bool(g.db.query(Mod.user_id).filter_by(user_id=self.id, sub=sub).one_or_none())
 
 	@lazy
 	def exiled_from(self, sub):
-		return bool(g.db.query(Exile.user_id).filter_by(user_id=self.id, sub=sub).one_or_none())
+		try:
+			return any(map(lambda x: x.sub == sub, self.sub_exiles))
+		except:
+			return bool(g.db.query(Exile.user_id).filter_by(user_id=self.id, sub=sub).one_or_none())
 
 	@property
 	@lazy
@@ -770,6 +780,8 @@ class User(Base):
 				'coins': self.coins,
 				'post_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.post_count,
 				'comment_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.comment_count,
+				'badges': [x.path for x in self.badges],
+				'created_date': self.created_date,
 				}
 
 		return data

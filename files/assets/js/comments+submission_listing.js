@@ -36,6 +36,17 @@ function popclick(e) {
 		let popover = document.getElementsByClassName("popover")
 		popover = popover[popover.length-1]
 
+		if (popover.getElementsByClassName('pop-badges').length > 0) {
+			const badgesDOM = popover.getElementsByClassName('pop-badges')[0];
+			badgesDOM.innerHTML = "";
+			for (const badge of author["badges"]) {
+				const badgeDOM = popClickBadgeTemplateDOM.cloneNode();
+				badgeDOM.src = badge + "?b=4";
+
+				badgesDOM.append(badgeDOM);
+			}
+		}
+
 		popover.getElementsByClassName('pop-banner')[0].src = author["bannerurl"]
 		popover.getElementsByClassName('pop-picture')[0].src = author["profile_url"]
 		if (author["hat"]) popover.getElementsByClassName('pop-hat')[0].src = author['hat'] + "?h=7"
@@ -47,6 +58,7 @@ function popclick(e) {
 		popover.getElementsByClassName('pop-commentcount')[0].innerHTML = author["comment_count"]
 		popover.getElementsByClassName('pop-coins')[0].innerHTML = author["coins"]
 		popover.getElementsByClassName('pop-viewmore')[0].href = author["url"]
+		popover.getElementsByClassName('pop-created-date')[0].innerHTML = author["created_date"]
 	}, 5);
 }
 
@@ -65,6 +77,9 @@ function post(url) {
 };
 
 function poll_vote_0(oid, parentid, kind) {
+	for(let el of document.getElementsByClassName('presult-'+parentid)) {
+		el.classList.remove('d-none');
+	}
 	const full_oid = kind + '-' + oid
 	const type = document.getElementById(full_oid).checked;
 	const scoretext = document.getElementById('score-' + full_oid);
@@ -75,6 +90,9 @@ function poll_vote_0(oid, parentid, kind) {
 }
 
 function poll_vote_1(oid, parentid, kind) {
+	for(let el of document.getElementsByClassName('presult-'+parentid)) {
+		el.classList.remove('d-none');
+	}
 	const full_oid = kind + '-' + oid
 	let curr = document.getElementById(`current-${kind}-${parentid}`)
 	if (curr && curr.value)

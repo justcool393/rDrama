@@ -2,8 +2,9 @@ from typing import Callable, Iterable, List, Optional, Union
 
 from flask import *
 from sqlalchemy import and_, any_, or_
+from sqlalchemy.orm import joinedload, selectinload
 
-from files.classes import Comment, CommentVote, Sub, Submission, User, UserBlock, Vote
+from files.classes import Comment, CommentVote, Hat, Sub, Submission, User, UserBlock, Vote
 from files.helpers.const import AUTOJANNY_ID
 
 def sanitize_username(username:str) -> str:
@@ -144,7 +145,7 @@ def get_post(i:Union[str, int], v:Optional[User]=None, graceful=False) -> Option
 	return x
 
 
-def get_posts(pids:Iterable[int], v:Optional[User]=None) -> List[Submission]:
+def get_posts(pids:Iterable[int], v:Optional[User]=None, eager:bool=False) -> List[Submission]:
 	if not pids: return []
 
 	if v:
@@ -173,15 +174,34 @@ def get_posts(pids:Iterable[int], v:Optional[User]=None) -> List[Submission]:
 			blocked, 
 			blocked.c.user_id == Submission.author_id, 
 			isouter=True
-		).all()
-
-		output = [p[0] for p in query]
-		for i in range(len(output)):
-			output[i].voted = query[i][1] or 0
-			output[i].is_blocking = query[i][2] or 0
-			output[i].is_blocked = query[i][3] or 0
+		)
 	else:
-		output = g.db.query(Submission,).filter(Submission.id.in_(pids)).all()
+		query = g.db.query(Submission).filter(Submission.id.in_(pids))
+
+	if eager:
+		query = query.options(
+			selectinload(Submission.author).options(
+				selectinload(User.hats_equipped.and_(Hat.equipped == True)) \
+					.joinedload(Hat.hat_def, innerjoin=True),
+				selectinload(User.badges),
+				selectinload(User.sub_mods),
+				selectinload(User.sub_exiles),
+			),
+			selectinload(Submission.flags),
+			selectinload(Submission.awards),
+			selectinload(Submission.options),
+		)
+
+	results = query.all()
+
+	if v:
+		output = [p[0] for p in results]
+		for i in range(len(output)):
+			output[i].voted = results[i][1] or 0
+			output[i].is_blocking = results[i][2] or 0
+			output[i].is_blocked = results[i][3] or 0
+	else:
+		output = results
 
 	return sorted(output, key=lambda x: pids.index(x.id))
 

@@ -2,10 +2,12 @@ document.getElementById('post-title').value = localStorage.getItem("post-title")
 document.getElementById('post-text').value = localStorage.getItem("post-text")
 document.getElementById('post-url').value = localStorage.getItem("post-url")
 
+document.getElementById('post-notify').checked = localStorage.getItem("post-notify") == 'true'
 document.getElementById('post-new').checked = localStorage.getItem("post-new") == 'true'
 document.getElementById('post-nsfw').checked = localStorage.getItem("post-nsfw") == 'true'
 document.getElementById('post-private').checked = localStorage.getItem("post-private") == 'true'
 document.getElementById('post-club').checked = localStorage.getItem("post-club") == 'true'
+document.getElementById('post-ghost').checked = localStorage.getItem("post-ghost") == 'true'
 
 markdown(document.getElementById("post-text"));
 
@@ -115,10 +117,12 @@ function savetext() {
 	let sub = document.getElementById('sub')
 	if (sub) localStorage.setItem("sub", sub.value)
 
+	localStorage.setItem("post-notify", document.getElementById('post-notify').checked)
 	localStorage.setItem("post-new", document.getElementById('post-new').checked)
 	localStorage.setItem("post-nsfw", document.getElementById('post-nsfw').checked)
 	localStorage.setItem("post-private", document.getElementById('post-private').checked)
 	localStorage.setItem("post-club", document.getElementById('post-club').checked)
+	localStorage.setItem("post-ghost", document.getElementById('post-ghost').checked)
 }
 
 
@@ -143,14 +147,15 @@ function autoSuggestTitle()	{
 			}
 		}
 		x.open('get','/submit/title?url=' + urlField.value);
+		x.setRequestHeader('xhr', 'xhr');
 		x.send(null);
 
 	};
 
 };
 
-function draft(t) {
-	const followers = document.getElementById("followers")
+function ghost_toggle(t) {
+	const followers = document.getElementById("post-notify")
 	if (t.checked == true) {
 		followers.checked = false;
 		followers.disabled = true;
@@ -177,9 +182,9 @@ function checkRepost() {
 			catch(e) {console.log(e)}
 
 			if (data && data["permalink"]) {
-				const permalink = data["permalink"]
+				const permalink = encodeURIComponent(data["permalink"])
 				if (permalink) {
-					system.innerHTML = `<span class='text-danger'>This is a repost of <a href=${permalink}>${permalink}</a></span>`;
+					system.innerHTML = `<span class="text-danger">This is a repost of <a href="${permalink}">${permalink}</a></span>`;
 				}
 			}
 		}

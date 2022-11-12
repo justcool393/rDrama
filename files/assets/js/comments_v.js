@@ -69,12 +69,17 @@ function ToggleReplyBox(id) {
 		let text = getSelection().toString().trim()
 		if (text)
 		{
-			textarea.value = '> ' + text
-			textarea.value = textarea.value.replace(/\n/g,"\n> ").replace(/\*/g,"\\*")
-			if (!textarea.value.endsWith('\n')) textarea.value += '\n'
+			text = '> ' + text
+			text = text.replace(/\n/g,"\n> ").replace(/\*/g,"\\*")
+			text = text.replace(/\n> \n/g,"\n \n")
+			if (!text.endsWith('\n')) text += '\n'
+			text = text.split('\n> Reply')[0]
+			textarea.value = text
 		}
 		textarea.focus()
 	}
+
+	autoExpand(textarea);
 }
 
 function toggleEdit(id){

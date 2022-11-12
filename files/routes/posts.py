@@ -762,28 +762,29 @@ def submit_post(v, sub=None):
 
 	if len(body_html) > POST_BODY_HTML_LENGTH_LIMIT: return error(f"Submission body_html too long! (max {POST_BODY_HTML_LENGTH_LIMIT} characters)")
 
-	club = False
-	if FEATURES['COUNTRY_CLUB']:
-		club = bool(request.values.get("club",""))
-	
+	flag_notify = (request.values.get("notify", "on") == "on")
+	flag_new = request.values.get("new", False, bool)
+	flag_over_18 = request.values.get("over_18", False, bool)
+	flag_private = request.values.get("private", False, bool)
+	flag_club = (request.values.get("club", False, bool) and FEATURES['COUNTRY_CLUB'])
+	flag_ghost = request.values.get("ghost", False, bool)
+
 	if embed and len(embed) > 1500: embed = None
-
-	ghost = request.values.get("ghost") and v.charge_account('coins', 100)
-
 	if embed: embed = embed.strip()
 
 	if url and url.startswith(SITE_FULL):
 		url = url.split(SITE_FULL)[1]
 
-	if v.agendaposter == 1: sub = 'chudrama'
+	if SITE == 'rdrama.net' and v.agendaposter == 1:
+		sub = 'chudrama'
 
 	post = Submission(
-		private=bool(request.values.get("private","")),
-		notify=bool(request.values.get("notify","")),
-		club=club,
+		private=flag_private,
+		notify=flag_notify,
+		club=flag_club,
 		author_id=v.id,
-		over_18=bool(request.values.get("over_18","")),
-		new=bool(request.values.get("new","")),
+		over_18=flag_over_18,
+		new=flag_new,
 		app_id=v.client.application.id if v.client else None,
 		is_bot=(v.client is not None),
 		url=url,
@@ -793,7 +794,7 @@ def submit_post(v, sub=None):
 		title=title,
 		title_html=title_html,
 		sub=sub,
-		ghost=ghost
+		ghost=flag_ghost
 	)
 
 	g.db.add(post)
@@ -903,7 +904,6 @@ def submit_post(v, sub=None):
 	v.post_count = g.db.query(Submission).filter_by(author_id=v.id, deleted_utc=0).count()
 	g.db.add(v)
 
-	execute_pizza_autovote(v, post)
 	execute_lawlz_actions(v, post)
 
 	cache.delete_memoized(frontlist)
@@ -1059,9 +1059,10 @@ extensions = IMAGE_FORMATS + VIDEO_FORMATS + AUDIO_FORMATS
 @limiter.limit("3/minute", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def get_post_title(v):
-
 	url = request.values.get("url")
 	if not url or '\\' in url: abort(400)
+	url = url.strip()
+	if not url.startswith('http'): abort(400)
 
 	checking_url = url.lower().split('?')[0].split('%3F')[0]
 	if any((checking_url.endswith(f'.{x}') for x in extensions)):
@@ -1073,9 +1074,10 @@ def get_post_title(v):
 	content_type = x.headers.get("Content-Type")
 	if not content_type or "text/html" not in content_type: abort(400)
 
-	soup = BeautifulSoup(x.content, 'lxml')
+	# no you can't just parse html with reeeeeeeegex
+	match = html_title_regex.search(x.text)
+	if match and match.lastindex >= 1:
+		title = match.group(1)
+	else: abort(400)
 
-	title = soup.find('title')
-	if not title: abort(400)
-
-	return {"url": url, "title": title.string}
+	return {"url": url, "title": title}

@@ -56,7 +56,7 @@ def speak(data, v):
 
 	global messages, total
 
-	if SITE.startswith('rdrama.'): text = data['message'][:200].strip()
+	if SITE == 'rdrama.net': text = data['message'][:200].strip()
 	else: text = data['message'][:1000].strip()
 
 	if not text: return '', 403
@@ -91,7 +91,7 @@ def speak(data, v):
 	else:
 		emit('speak', data, broadcast=True)
 		messages.append(data)
-		messages = messages[-100:]
+		messages = messages[-500:]
 
 	total += 1
 
