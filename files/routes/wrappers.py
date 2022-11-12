@@ -3,7 +3,7 @@ import time
 import user_agents
 from flask import g, request, session
 
-from files.classes import ClientAuth
+from files.classes.clients import ClientAuth
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.get import get_account

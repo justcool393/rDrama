@@ -1,6 +1,6 @@
 from flask import g
 
-from files.classes import Badge
+from files.classes.badges import Badge
 from files.helpers.alerts import send_repeatable_notification
 
 def badge_grant(user, badge_id, description=None, url=None, notify=True):

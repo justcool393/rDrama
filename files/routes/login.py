@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 import requests
 
 from files.__main__ import app, cache, get_CF, limiter
-from files.classes import Follow
+from files.classes.follows import Follow
 from files.helpers.actions import *
 from files.helpers.const import *
 from files.helpers.settings import get_setting

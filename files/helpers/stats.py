@@ -4,7 +4,12 @@ import calendar
 import matplotlib.pyplot as plt
 from sqlalchemy import *
 
-from files.classes import AwardRelationship, Comment, CommentVote, Marsey, Submission, User, Vote
+from files.classes.user import User
+from files.classes.submission import Submission
+from files.classes.comment import Comment
+from files.classes.votes import Vote, CommentVote
+from files.classes.marsey import Marsey
+from files.classes.award import AwardRelationship
 from files.helpers.const import *
 
 def generate_charts_task(site):

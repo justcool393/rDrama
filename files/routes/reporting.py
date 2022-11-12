@@ -1,6 +1,8 @@
 from flask import g
 
-from files.classes import CommentFlag, Flag, ModAction, SubAction
+from files.classes.flags import Flag, CommentFlag
+from files.classes.mod_logs import ModAction
+from files.classes.sub_logs import SubAction
 from files.helpers.actions import *
 from files.helpers.alerts import *
 from files.helpers.get import *

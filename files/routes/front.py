@@ -1,7 +1,8 @@
 
 from sqlalchemy import or_, not_
 
-from files.classes import Submission, Vote
+from files.classes.submission import Submission
+from files.classes.votes import Vote
 from files.helpers.awards import award_timers
 from files.helpers.const import *
 from files.helpers.get import *

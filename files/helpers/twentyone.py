@@ -5,7 +5,7 @@ from math import floor
 
 from flask import g
 
-from files.classes import Casino_Game
+from files.classes.casino_game import Casino_Game
 from files.helpers.casino import distribute_wager_badges
 
 class BlackjackStatus(str, Enum):

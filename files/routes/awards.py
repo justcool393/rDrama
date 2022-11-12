@@ -3,7 +3,8 @@ from copy import deepcopy
 from flask import g, request
 from sqlalchemy import func
 
-from files.classes import AwardRelationship, UserBlock
+from files.classes.award import AwardRelationship
+from files.classes.userblock import UserBlock
 from files.helpers.actions import *
 from files.helpers.alerts import *
 from files.helpers.const import *

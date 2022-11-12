@@ -4,7 +4,9 @@ from json.encoder import INFINITY
 
 from flask import abort, g
 
-from files.classes import Casino_Game, Comment, User
+from files.classes.casino_game import Casino_Game
+from files.classes.comment import Comment
+from files.classes.user import User
 from files.helpers.casino import distribute_wager_badges
 
 from .const import *

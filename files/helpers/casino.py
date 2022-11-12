@@ -1,5 +1,5 @@
 import time
-from files.classes import Casino_Game
+from files.classes.casino_game import Casino_Game
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.helpers.useractions import badge_grant
