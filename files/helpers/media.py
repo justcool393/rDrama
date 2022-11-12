@@ -11,14 +11,12 @@ from PIL import Image
 from PIL.ImageSequence import Iterator
 from sqlalchemy.orm import scoped_session
 
-if TYPE_CHECKING:
-	from files.classes.user import User
 from files.classes.media import *
 from files.helpers.cloudflare import purge_files_in_cache
 
 from .const import *
 
-def process_files(files, v:User):
+def process_files(files, v):
 	body = ''
 	if g.is_tor or not files.get("file"): return body
 	files = files.getlist('file')[:4]
@@ -37,7 +35,7 @@ def process_files(files, v:User):
 	return body
 
 
-def process_audio(file, v:User):
+def process_audio(file, v):
 	name = f'/audio/{time.time()}'.replace('.','')
 	extension = file.filename.split('.')[-1].lower()
 	name = name + '.' + extension
@@ -83,7 +81,7 @@ def webm_to_mp4(old, new, vid, db):
 	db.close()
 
 
-def process_video(file, v:User):
+def process_video(file, v):
 	old = f'/videos/{time.time()}'.replace('.','')
 	file.save(old)
 
@@ -121,7 +119,7 @@ def process_video(file, v:User):
 
 
 
-def process_image(filename:str, v:User, resize=0, trim=False, uploader_id:Optional[int]=None, db=None):
+def process_image(filename:str, v, resize=0, trim=False, uploader_id:Optional[int]=None, db=None):
 	# thumbnails are processed in a thread and not in the request context
 	# if an image is too large or webp conversion fails, it'll crash
 	# to avoid this, we'll simply return None instead
