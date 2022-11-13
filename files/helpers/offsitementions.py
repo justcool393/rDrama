@@ -1,4 +1,6 @@
 import time
+from typing import Iterable
+from flask_caching import Cache
 from flask import g
 import itertools
 import requests
@@ -16,7 +18,7 @@ from files.helpers.sanitize import sanitize
 # with current keyword quantities. If this ever changes, consider reading the 
 # value from /meta (or just guessing) and doing a random selection of keywords.
 
-def offsite_mentions_task(cache):
+def offsite_mentions_task(cache:Cache):
 	if const.REDDIT_NOTIFS_SITE:
 		row_send_to = g.db.query(Badge.user_id).filter_by(badge_id=140).all()
 		row_send_to += g.db.query(User.id).filter(or_(User.admin_level >= const.PERMS['NOTIFICATIONS_REDDIT'])).all()
@@ -32,19 +34,20 @@ def offsite_mentions_task(cache):
 			user_mentions = get_mentions(cache, [query], reddit_notifs_users=True)
 			notify_mentions([send_user], user_mentions, mention_str='mention of you')
 
-def get_mentions(cache, queries, reddit_notifs_users=False):
+def get_mentions(cache:Cache, queries:Iterable[str], reddit_notifs_users=False):
+	CACHE_KEY = 'reddit_notifications'
 	kinds = ['submission', 'comment']
 	mentions = []
 	exclude_subreddits = ['PokemonGoRaids', 'SubSimulatorGPT2']
 	try:
-		after = int(cache.get('reddit_notifs') or time.time())
+		after = int(cache.get(CACHE_KEY) or time.time())
 	except:
 		print("Failed to retrieve last mention time from cache")
 		after = time.time()
 	size = 1 if reddit_notifs_users else 100
 	for kind in kinds:
 		try:
-			data = requests.get(f'https://api.pushshift.io/reddit/{kind}/search?html_decode=true&q={",".join(queries)}&subreddit=!{",!".join(exclude_subreddits)}&after={after}&size={size}', timeout=15).json()['data']
+			data = requests.get(f'https://api.pushshift.io/reddit/{kind}/search?html_decode=true&q={"%7C".join(queries)}&subreddit=!{",!".join(exclude_subreddits)}&after={after}&size={size}', timeout=15).json()['data']
 		except:
 			continue
 
@@ -73,7 +76,7 @@ def get_mentions(cache, queries, reddit_notifs_users=False):
 			})
 	try:
 		if not reddit_notifs_users: 
-			cache.set('reddit_notifs', after + 1)
+			cache.set(CACHE_KEY, after + 1)
 	except:
 		print("Failed to set cache value; there may be duplication of reddit notifications")
 	return mentions
