@@ -192,7 +192,7 @@ def remove_admin(v, username):
 	return {"message": f"@{user.username} has been removed as admin!"}
 
 @app.post("/distribute/<option_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['POST_BETS_DISTRIBUTE'])
 def distribute(v, option_id):
 	autojanny = get_account(AUTOJANNY_ID)
@@ -248,7 +248,7 @@ def distribute(v, option_id):
 	return {"message": f"Each winner has received {coinsperperson} coins!"}
 
 @app.post("/@<username>/revert_actions")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['ADMIN_ACTIONS_REVERT'])
 def revert_actions(v, username):
 	user = get_user(username)
@@ -298,7 +298,7 @@ def revert_actions(v, username):
 	return {"message": f"@{user.username}'s admin actions have been reverted!"}
 
 @app.post("/@<username>/club_allow")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_CLUB_ALLOW_BAN'])
 def club_allow(v, username):
 	u = get_user(username, v=v)
@@ -324,7 +324,7 @@ def club_allow(v, username):
 	return {"message": f"@{u.username} has been allowed into the {CC_TITLE}!"}
 
 @app.post("/@<username>/club_ban")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_CLUB_ALLOW_BAN'])
 def club_ban(v, username):
 	u = get_user(username, v=v)
@@ -520,7 +520,7 @@ def badge_grant_get(v):
 	return render_template("admin/badge_admin.html", v=v, badge_types=badges, grant=grant)
 
 @app.post("/admin/badge_grant")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_BADGES'])
 @feature_required('BADGES')
 def badge_grant_post(v):
@@ -569,7 +569,7 @@ def badge_grant_post(v):
 	return render_template("admin/badge_admin.html", v=v, badge_types=badges, grant=True, msg=f"{new_badge.name} Badge granted to @{user.username} successfully!")
 
 @app.post("/admin/badge_remove")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_BADGES'])
 @feature_required('BADGES')
 def badge_remove_post(v):
@@ -732,7 +732,7 @@ def alt_votes_get(v):
 
 
 @app.post("/admin/link_accounts")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
 def admin_link_accounts(v):
 	u1 = get_account(request.values.get("u1")).id
@@ -829,7 +829,7 @@ def unagendaposter(user_id, v):
 
 
 @app.post("/shadowban/<user_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_SHADOWBAN'])
 def shadowban(user_id, v):
 	user = get_account(user_id)
@@ -860,7 +860,7 @@ def shadowban(user_id, v):
 	return {"message": f"@{user.username} has been shadowbanned!"}
 
 @app.post("/unshadowban/<user_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_SHADOWBAN'])
 def unshadowban(user_id, v):
 	user = get_account(user_id)
@@ -885,7 +885,7 @@ def unshadowban(user_id, v):
 
 
 @app.post("/admin/title_change/<user_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_TITLE_CHANGE'])
 def admin_title_change(user_id, v):
 
@@ -921,7 +921,7 @@ def admin_title_change(user_id, v):
 	return {"message": f"@{user.username}'s flair has been changed!"}
 
 @app.post("/ban_user/<user_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_BAN'])
 def ban_user(user_id, v):
 	user = get_account(user_id)
@@ -1056,7 +1056,7 @@ def agendaposter(user_id, v):
 
 
 @app.post("/unban_user/<user_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_BAN'])
 def unban_user(user_id, v):
 	user = get_account(user_id)
@@ -1089,7 +1089,7 @@ def unban_user(user_id, v):
 	return {"message": f"@{user.username} has been unbanned!"}
 
 @app.post("/mute_user/<int:user_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_BAN'])
 def mute_user(v, user_id):
 	user = get_account(user_id)
@@ -1108,7 +1108,7 @@ def mute_user(v, user_id):
 
 
 @app.post("/unmute_user/<int:user_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_BAN'])
 def unmute_user(v, user_id):
 	user = get_account(user_id)
@@ -1127,7 +1127,7 @@ def unmute_user(v, user_id):
 
 
 @app.post("/remove_post/<post_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])
 def remove_post(post_id, v):
 	post = get_post(post_id)
@@ -1155,7 +1155,7 @@ def remove_post(post_id, v):
 
 
 @app.post("/approve_post/<post_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])
 def approve_post(post_id, v):
 	post = get_post(post_id)
@@ -1327,7 +1327,7 @@ def unsticky_comment(cid, v):
 
 
 @app.post("/remove_comment/<c_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])
 def remove_comment(c_id, v):
 	comment = get_comment(c_id)
@@ -1347,7 +1347,7 @@ def remove_comment(c_id, v):
 
 
 @app.post("/approve_comment/<c_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])
 def approve_comment(c_id, v):
 
@@ -1409,7 +1409,7 @@ def admin_banned_domains(v):
 	return render_template("admin/banned_domains.html", v=v, banned_domains=banned_domains)
 
 @app.post("/admin/ban_domain")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['DOMAINS_BAN'])
 def ban_domain(v):
 
@@ -1434,7 +1434,7 @@ def ban_domain(v):
 
 
 @app.post("/admin/unban_domain/<domain>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['DOMAINS_BAN'])
 def unban_domain(v, domain):
 	existing = g.db.get(BannedDomain, domain)
@@ -1453,7 +1453,7 @@ def unban_domain(v, domain):
 
 
 @app.post("/admin/nuke_user")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])
 def admin_nuke_user(v):
 
@@ -1486,7 +1486,7 @@ def admin_nuke_user(v):
 
 
 @app.post("/admin/unnuke_user")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])
 def admin_nunuke_user(v):
 

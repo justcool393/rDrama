@@ -9,9 +9,9 @@ from files.routes.wrappers import *
 from files.__main__ import app, limiter
 
 @app.post("/verify_email")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def verify_email(v):
 	send_verification_email(v)
 	return {"message": "Email has been sent (ETA ~5 minutes)"}

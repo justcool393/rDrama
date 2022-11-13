@@ -461,9 +461,9 @@ def edit_comment(cid, v):
 
 
 @app.post("/delete/comment/<cid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def delete_comment(cid, v):
 	c = get_comment(cid, v=v)
 	if not c.deleted_utc:
@@ -482,9 +482,9 @@ def delete_comment(cid, v):
 	return {"message": "Comment deleted!"}
 
 @app.post("/undelete/comment/<cid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def undelete_comment(cid, v):
 	c = get_comment(cid, v=v)
 	if c.deleted_utc:
@@ -546,9 +546,9 @@ def unpin_comment(cid, v):
 
 
 @app.post("/save_comment/<cid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def save_comment(cid, v):
 
 	comment=get_comment(cid)
@@ -563,9 +563,9 @@ def save_comment(cid, v):
 	return {"message": "Comment saved!"}
 
 @app.post("/unsave_comment/<cid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def unsave_comment(cid, v):
 
 	comment=get_comment(cid)
@@ -599,9 +599,9 @@ def diff_words(answer, guess):
 
 
 @app.post("/wordle/<cid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def handle_wordle_action(cid, v):
 	comment = get_comment(cid)
 

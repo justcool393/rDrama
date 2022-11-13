@@ -314,16 +314,16 @@ def transfer_currency(v:User, username:str, currency_name:Literal['coins', 'proc
 	return {"message": f"{amount - tax} {friendly_currency_name} have been transferred to @{receiver.username}"}
 	
 @app.post("/@<username>/transfer_coins")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @is_not_permabanned
+@ratelimit_user()
 def transfer_coins(v, username):
 	return transfer_currency(v, username, 'coins', True)
 
 @app.post("/@<username>/transfer_bux")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @is_not_permabanned
+@ratelimit_user()
 @feature_required('PROCOINS')
 def transfer_bux(v, username):
 	return transfer_currency(v, username, 'procoins', False)
@@ -394,9 +394,9 @@ def song(song):
 	return resp
 
 @app.post("/subscribe/<post_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def subscribe(v, post_id):
 	existing = g.db.query(Subscription).filter_by(user_id=v.id, submission_id=post_id).one_or_none()
 	if not existing:
@@ -405,9 +405,9 @@ def subscribe(v, post_id):
 	return {"message": "Subscribed to post successfully!"}
 	
 @app.post("/unsubscribe/<post_id>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def unsubscribe(v, post_id):
 	existing = g.db.query(Subscription).filter_by(user_id=v.id, submission_id=post_id).one_or_none()
 	if existing:
@@ -843,9 +843,9 @@ def u_user_id_info(id, v=None):
 	return user.json
 
 @app.post("/follow/<username>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def follow_user(username, v):
 
 	target = get_user(username, v=v, include_shadowbanned=False)
@@ -870,9 +870,9 @@ def follow_user(username, v):
 	return {"message": f"@{target.username} has been followed!"}
 
 @app.post("/unfollow/<username>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def unfollow_user(username, v):
 
 	target = get_user(username)
@@ -898,9 +898,9 @@ def unfollow_user(username, v):
 	return {"message": f"@{target.username} has been unfollowed!"}
 
 @app.post("/remove_follow/<username>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def remove_follow(username, v):
 	target = get_user(username)
 
@@ -1094,7 +1094,7 @@ kofi_tiers={
 	}
 
 @app.post("/settings/kofi")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
 def settings_kofi(v):
 	if not (v.email and v.is_activated):

@@ -83,9 +83,9 @@ def unclub_post(pid, v):
 
 
 @app.post("/publish/<pid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def publish(pid, v):
 	post = get_post(pid)
 	if not post.private: return {"message": "Post published!"}
@@ -232,7 +232,7 @@ def post_id(pid, anything=None, v=None, sub=None):
 		fart=get_setting('Fart mode'))
 
 @app.get("/viewmore/<pid>/<sort>/<offset>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_desired_with_logingate
 def viewmore(v, pid, sort, offset):
 	post = get_post(pid, v=v)
@@ -288,7 +288,7 @@ def viewmore(v, pid, sort, offset):
 
 
 @app.get("/morecomments/<cid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_desired_with_logingate
 def morecomments(v, cid):
 	try: cid = int(cid)
@@ -947,9 +947,9 @@ def submit_post(v, sub=None):
 
 
 @app.post("/delete_post/<pid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def delete_post_pid(pid, v):
 	post = get_post(pid)
 	if post.author_id != v.id: abort(403)
@@ -974,9 +974,9 @@ def delete_post_pid(pid, v):
 	return {"message": "Post deleted!"}
 
 @app.post("/undelete_post/<pid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def undelete_post_pid(pid, v):
 	post = get_post(pid)
 	if post.author_id != v.id: abort(403)
@@ -1030,9 +1030,9 @@ def toggle_post_nsfw(pid, v):
 	else: return {"message": "Post has been unmarked as +18!"}
 
 @app.post("/save_post/<pid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def save_post(pid, v):
 
 	post=get_post(pid)
@@ -1046,9 +1046,9 @@ def save_post(pid, v):
 	return {"message": "Post saved!"}
 
 @app.post("/unsave_post/<pid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def unsave_post(pid, v):
 
 	post=get_post(pid)

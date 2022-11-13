@@ -32,7 +32,7 @@ def cron(every_5m, every_1h, every_1d, every_1mo):
 		if FEATURES['GAMBLING']:
 			check_if_end_lottery_task()
 			spin_roulette_wheel()
-		offsitementions.offsite_mentions_task()
+		offsitementions.offsite_mentions_task(cache)
 		if FEATURES['STREAMERS']:
 			route_streamers.live_cached()
 

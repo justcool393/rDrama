@@ -73,6 +73,13 @@ Compress(app)
 
 from files.routes.allroutes import *
 
+@limiter.request_filter
+def no_step_on_jc():
+	if request:
+		key = environ.get("NO_STEP_ON_JC", "")
+		if key and key == request.headers.get("X-No-Step", ""): return True
+	return False
+
 if "load_chat" in argv:
 	from files.routes.chat import *
 else:

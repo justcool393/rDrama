@@ -133,9 +133,9 @@ def me(v):
 
 
 @app.post("/logout")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def logout(v):
 	loggedin = cache.get(f'{SITE}_loggedin') or {}
 	if session.get("lo_user") in loggedin: del loggedin[session["lo_user"]]
@@ -342,7 +342,7 @@ def get_forgot():
 
 
 @app.post("/forgot")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 def post_forgot():
 
 	username = request.values.get("username")
@@ -414,7 +414,7 @@ def get_reset():
 
 
 @app.post("/reset")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_desired
 def post_reset(v):
 	if v: return redirect('/')

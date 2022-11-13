@@ -9,6 +9,7 @@ from files.__main__ import app
 
 @app.post("/clear")
 @auth_required
+@ratelimit_user()
 def clear(v):
 	notifs = g.db.query(Notification).join(Notification.comment).filter(Notification.read == False, Notification.user_id == v.id).all()
 	for n in notifs:
@@ -22,6 +23,7 @@ def clear(v):
 
 @app.get("/unread")
 @auth_required
+@ratelimit_user()
 def unread(v):
 	listing = g.db.query(Notification, Comment).join(Notification.comment).filter(
 		Notification.read == False,

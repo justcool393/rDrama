@@ -146,7 +146,11 @@ def log(v):
 	else:
 		actions = g.db.query(ModAction)
 		if not (v and v.admin_level >= PERMS['USER_SHADOWBAN']): 
-			actions = actions.filter(ModAction.kind.notin_(["shadowban","unshadowban"]))
+			actions = actions.filter(ModAction.kind.notin_([
+				"shadowban","unshadowban",
+				"mod_mute_user","mod_unmute_user",
+				"link_accounts",
+				]))
 
 		if admin_id:
 			actions = actions.filter_by(user_id=admin_id)
@@ -203,8 +207,8 @@ def contact(v):
 	return render_template("contact.html", v=v)
 
 @app.post("/send_admin")
-@limiter.limit("1/second;2/minute;6/hour;10/day")
-@limiter.limit("1/second;2/minute;6/hour;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit("1/second;1/2 minutes;10/day")
+@limiter.limit("1/second;1/2 minutes;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
 def submit_contact(v):
 	body = request.values.get("message")
@@ -217,6 +221,13 @@ def submit_contact(v):
 	body += process_files(request.files, v)
 	body = body.strip()
 	body_html = sanitize(body)
+
+	existing = g.db.query(Comment.id).filter(Comment.author_id == v.id,
+											 Comment.parent_submission == None,
+											 Comment.level == 1,
+											 Comment.sentto == 2,
+											 Comment.body_html == body_html).first()
+	if existing: abort(409, f"You already sent that message")
 
 	new_comment = Comment(author_id=v.id,
 						parent_submission=None,

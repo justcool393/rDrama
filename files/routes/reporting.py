@@ -11,9 +11,9 @@ from files.routes.wrappers import *
 from files.__main__ import app, limiter
 
 @app.post("/report/post/<pid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def flag_post(pid, v):
 	post = get_post(pid)
 	reason = request.values.get("reason", "").strip()
@@ -64,9 +64,9 @@ def flag_post(pid, v):
 
 
 @app.post("/report/comment/<cid>")
-@limiter.limit("1/second;30/minute;200/hour;1000/day")
-@limiter.limit("1/second;30/minute;200/hour;1000/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
+@ratelimit_user()
 def flag_comment(cid, v):
 
 	comment = get_comment(cid)
