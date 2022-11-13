@@ -9,7 +9,7 @@ from files.helpers.const import *
 from files.helpers.get import get_account
 from files.helpers.settings import get_setting
 from files.routes.routehelpers import validate_formkey
-from files.__main__ import app, cache, db_session
+from files.__main__ import app, cache, db_session, limiter
 
 def calc_users(v):
 	loggedin = cache.get(f'{SITE}_loggedin') or {}
