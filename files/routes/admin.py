@@ -738,36 +738,6 @@ def alt_votes_get(v):
 						data=data
 						)
 
-
-@app.post("/admin/link_accounts")
-@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
-@admin_level_required(PERMS['USER_LINK'])
-def admin_link_accounts(v):
-	u1 = get_account(request.values.get("u1")).id
-	u2 = get_account(request.values.get("u2")).id
-
-	new_alt = Alt(
-		user1=u1, 
-		user2=u2,
-		is_manual=True
-		)
-
-	g.db.add(new_alt)
-	g.db.flush()
-
-	check_for_alts(g.db.get(User, u1), include_current_session=False)
-	check_for_alts(g.db.get(User, u2), include_current_session=False)
-
-	ma = ModAction(
-		kind="link_accounts",
-		user_id=v.id,
-		target_user_id=u1,
-		_note=f'with {u2}'
-	)
-	g.db.add(ma)
-
-	return redirect(f"/admin/alt_votes?u1={get_account(u1).username}&u2={get_account(u2).username}")
-
 @app.get("/admin/alts/", defaults={"username":None})
 @app.get("/@<username>/alts/")
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
@@ -775,6 +745,66 @@ def admin_link_accounts(v):
 def admin_view_alts(v, username):
 	u = get_user(username or request.values.get('username'))
 	return render_template('admin/alts.html', v=v, u=u, alts=u.alts_unique)
+
+@app.post("/admin/link_accounts")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
+@admin_level_required(PERMS['USER_LINK'])
+def admin_link_accounts(v):
+	u1 = get_account(request.values.get("u1"))
+	u2 = get_account(request.values.get("u2"))
+
+	new_alt = Alt(
+		user1=u1.id, 
+		user2=u2.id,
+		is_manual=True
+		)
+
+	g.db.add(new_alt)
+	g.db.flush()
+
+	check_for_alts(u1, include_current_session=False)
+	check_for_alts(u2, include_current_session=False)
+
+	ma = ModAction(
+		kind="link_accounts",
+		user_id=v.id,
+		target_user_id=u1.id,
+		_note=f'with {u2}'
+	)
+	g.db.add(ma)
+
+	return redirect(f"/admin/alt_votes?u1={u1.username}&u2={u2.username}")
+
+@app.post('/@<username>/alts/')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
+@admin_level_required(PERMS['USER_LINK'])
+def admin_add_alt(v, username):
+	user1 = get_user(username)
+	user2 = get_user(request.values.get('other_username'))
+	deleted = request.values.get('deleted', False, bool) or False
+	ids = [user1.id, user2.id]
+	a = g.db.query(Alt).filter(Alt.user1.in_(ids), Alt.user2.in_(ids)).one_or_none()
+	if a: abort(409, f"@{user1.username} and @{user2.username} are already known alts")
+	a = Alt(
+		user1=user1.id,
+		user2=user2.id,
+		deleted=deleted
+	)
+	g.db.add(a)
+	g.db.flush()
+	check_for_alts(user1, include_current_session=False)
+	check_for_alts(user2, include_current_session=False)
+	word = 'Delinked' if deleted else 'Linked'
+	ma_word = 'delink' if deleted else 'link'
+	note = f'from {user2.id}' if deleted else f'with {user2.id}'
+	ma = ModAction(
+		kind=f"{ma_word}_accounts",
+		user_id=v.id,
+		target_user_id=user1.id,
+		_note=note
+	)
+	g.db.add(ma)
+	return {"message": f"{word} @{user1.username} and @{user2.username} successfully!"}
 
 @app.route('/@<username>/alts/<int:other>/deleted', methods=["PUT", "DELETE"])
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
@@ -793,12 +823,13 @@ def admin_delete_alt(v, username, other):
 	check_for_alts(user2, include_current_session=False)
 	word = 'Delinked' if is_deleting_link else 'Relinked'
 	ma_word = 'delink' if is_deleting_link else 'link'
+	note = f'from {user2.id}' if is_deleting_link else f'with {user2.id} (relinked)'
 
 	ma = ModAction(
 		kind=f"{ma_word}_accounts",
 		user_id=v.id,
 		target_user_id=user1.id,
-		_note=f'with {user2.id} ({word.lower()})'
+		_note=note
 	)
 	g.db.add(ma)
 
