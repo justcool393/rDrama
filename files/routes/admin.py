@@ -737,7 +737,7 @@ def alt_votes_get(v):
 						data=data
 						)
 
-@app.get("/admin/alts/")
+@app.get("/admin/alts/<username>")
 @app.get("/@<username>/alts/")
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])

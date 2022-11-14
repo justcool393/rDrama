@@ -739,7 +739,6 @@ class User(Base):
 	@property
 	@lazy
 	def alts(self):
-
 		subq = g.db.query(Alt).filter(
 			or_(
 				Alt.user1 == self.id,
