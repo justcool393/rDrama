@@ -636,7 +636,6 @@ def users_list(v):
 @app.get("/admin/alt_votes")
 @admin_level_required(PERMS['VIEW_ALT_VOTES'])
 def alt_votes_get(v):
-
 	u1 = request.values.get("u1")
 	u2 = request.values.get("u2")
 
@@ -738,42 +737,13 @@ def alt_votes_get(v):
 						data=data
 						)
 
-@app.get("/admin/alts/", defaults={"username":None})
+@app.get("/admin/alts/")
 @app.get("/@<username>/alts/")
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
-def admin_view_alts(v, username):
+def admin_view_alts(v, username=None):
 	u = get_user(username or request.values.get('username'))
 	return render_template('admin/alts.html', v=v, u=u, alts=u.alts_unique)
-
-@app.post("/admin/link_accounts")
-@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
-@admin_level_required(PERMS['USER_LINK'])
-def admin_link_accounts(v):
-	u1 = get_account(request.values.get("u1"))
-	u2 = get_account(request.values.get("u2"))
-
-	new_alt = Alt(
-		user1=u1.id, 
-		user2=u2.id,
-		is_manual=True
-		)
-
-	g.db.add(new_alt)
-	g.db.flush()
-
-	check_for_alts(u1, include_current_session=False)
-	check_for_alts(u2, include_current_session=False)
-
-	ma = ModAction(
-		kind="link_accounts",
-		user_id=v.id,
-		target_user_id=u1.id,
-		_note=f'with {u2}'
-	)
-	g.db.add(ma)
-
-	return redirect(f"/admin/alt_votes?u1={u1.username}&u2={u2.username}")
 
 @app.post('/@<username>/alts/')
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
@@ -788,6 +758,7 @@ def admin_add_alt(v, username):
 	a = Alt(
 		user1=user1.id,
 		user2=user2.id,
+		manual=True,
 		deleted=deleted
 	)
 	g.db.add(a)
