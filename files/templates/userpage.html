@@ -97,7 +97,7 @@
 
 				<div class="font-weight-bolder">
 					<span id="profile-coins-amount">{{u.coins}}</span>
-					<img alt="coins" class="ml-1 mb-1 mr-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="coins" height="20" src="{{'coins.webp' | asset_siteimg}}">
+					<img alt="coins" class="ml-1 mb-1 mr-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Coins" height="20" src="{{'coins.webp' | asset_siteimg}}">
 
 					{% if FEATURES['PROCOINS'] %}
 						<span id="profile-bux-amount">{{u.procoins}}</span>
@@ -230,9 +230,13 @@
 							<p id="profile--info--private">User has private mode enabled</p>
 						{% endif %}
 						{% if v and (v.admin_level >= PERMS['VIEW_ALTS'] or v.alt) %}
-							<span id="profile--alts">Alts:</span>
+							{% if v.admin_level >= PERMS['USER_LINK'] %}
+								<span id="profile--alts"><a href="/@{{u.username}}/alts">Alts</a>:</span>
+							{% else %}
+								<span id="profile--alts">Alts:</span>
+							{% endif %}
 							<ul id="profile--alts-list">
-								{% for account in u.alts_unique %}
+								{% for account in u.alts_unique if not account._alt_deleted and (v.can_see_shadowbanned or not account.shadowbanned) %}
 									<li><a href="{{account.url}}">@{{account.username}}</a>{% if account._is_manual %} [m]{% endif %}</li>
 								{% endfor %}
 							</ul>
@@ -327,7 +331,7 @@
 
 				<div class="font-weight-normal">
 					<span id="profile-coins-amount-mobile" class="font-weight-bold">{{u.coins}}</span>
-					<img alt="coins" class="ml-1 mb-1 mr-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="coins" height="15" src="{{'coins.webp' | asset_siteimg}}">
+					<img alt="coins" class="ml-1 mb-1 mr-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Coins" height="15" src="{{'coins.webp' | asset_siteimg}}">
 
 					{% if FEATURES['PROCOINS'] %}
 						<span id="profile-bux-amount-mobile" class="font-weight-bold">{{u.procoins}}</span>
@@ -469,11 +473,15 @@
 						<p id="profile-mobile--info--private">User has private mode enabled</p>
 					{% endif %}
 					{% if v and (v.admin_level >= PERMS['VIEW_ALTS'] or v.alt) %}
-						<span id="profile-mobile--alts">Alts:</span>
+						{% if v.admin_level >= PERMS['USER_LINK'] %}
+							<span id="profile-mobile--alts"><a href="/@{{u.username}}/alts">Alts</a>:</span>
+						{% else %}
+							<span id="profile-mobile--alts">Alts:</span>
+						{% endif %}:
 						<ul id="profile-mobile--alts-list">
-							{% for account in u.alts_unique %}
-								<li><a href="{{account.url}}">@{{account.username}}</a>{% if account._is_manual %} [m]{% endif %}</li>
-							{% endfor %}
+						{% for account in u.alts_unique if not account._alt_deleted and (v.can_see_shadowbanned or not account.shadowbanned) %}
+							<li><a href="{{account.url}}">@{{account.username}}</a>{% if account._is_manual %} [m]{% endif %}</li>
+						{% endfor %}
 						</ul>
 					{% endif %}
 				</div>

@@ -149,7 +149,7 @@ def log(v):
 			actions = actions.filter(ModAction.kind.notin_([
 				"shadowban","unshadowban",
 				"mod_mute_user","mod_unmute_user",
-				"link_accounts",
+				"link_accounts","delink_accounts",
 				]))
 
 		if admin_id:
@@ -222,12 +222,7 @@ def submit_contact(v):
 	body = body.strip()
 	body_html = sanitize(body)
 
-	existing = g.db.query(Comment.id).filter(Comment.author_id == v.id,
-											 Comment.parent_submission == None,
-											 Comment.level == 1,
-											 Comment.sentto == 2,
-											 Comment.body_html == body_html).first()
-	if existing: abort(409, f"You already sent that message")
+	execute_antispam_duplicate_comment_check(v, body_html)
 
 	new_comment = Comment(author_id=v.id,
 						parent_submission=None,
@@ -237,6 +232,7 @@ def submit_contact(v):
 						)
 	g.db.add(new_comment)
 	g.db.flush()
+	execute_blackjack(v, new_comment, new_comment.body_html, 'modmail')
 	new_comment.top_comment_id = new_comment.id
 	
 	admins = g.db.query(User).filter(User.admin_level >= PERMS['NOTIFICATIONS_MODMAIL'])
@@ -332,8 +328,8 @@ def badge_list(site):
 	return badges, counts
 
 @app.get("/badges")
-@auth_required
 @feature_required('BADGES')
+@auth_required
 def badges(v):
 	badges, counts = badge_list(SITE)
 	return render_template("badges.html", v=v, badges=badges, counts=counts)

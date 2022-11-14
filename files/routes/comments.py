@@ -106,6 +106,7 @@ def comment(v):
 		parent_post = get_post(parent.parent_submission, v=v)
 		parent_comment_id = parent.id
 		if parent.author_id == v.id: rts = True
+		if not v.can_post_in_ghost_threads: abort(403, f"You need {TRUESCORE_GHOST_LIMIT} truescore to post in ghost threads")
 	else: abort(400)
 
 	level = 1 if isinstance(parent, Submission) else parent.level + 1
@@ -221,6 +222,7 @@ def comment(v):
 		or (SITE == 'pcmemes.net' and v.id == SNAPPY_ID))
 
 	execute_antispam_comment_check(body, v)
+	execute_antispam_duplicate_comment_check(v, body_html)
 
 	if len(body_html) > COMMENT_BODY_HTML_LENGTH_LIMIT: abort(400)
 
@@ -372,7 +374,7 @@ def comment(v):
 @app.post("/edit_comment/<cid>")
 @limiter.limit("1/second;10/minute;100/hour;200/day")
 @limiter.limit("1/second;10/minute;100/hour;200/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
-@auth_required
+@is_not_permabanned
 def edit_comment(cid, v):
 	c = get_comment(cid, v=v)
 
@@ -502,8 +504,8 @@ def undelete_comment(cid, v):
 	return {"message": "Comment undeleted!"}
 
 @app.post("/pin_comment/<cid>")
-@auth_required
 @feature_required('PINS')
+@auth_required
 def pin_comment(cid, v):
 	
 	comment = get_comment(cid, v=v)

@@ -354,7 +354,11 @@ def execute_antispam_submission_check(title, v, url):
 		return False
 	return True
 
+def execute_blackjack_custom(v, target, body, type):
+	return True
+
 def execute_blackjack(v, target, body, type):
+	if not execute_blackjack_custom(v, target, body, type): return False
 	if not blackjack or not body: return True
 	if any(i in body.lower() for i in blackjack.split()):
 		v.shadowbanned = 'AutoJanny'
@@ -371,13 +375,33 @@ def execute_blackjack(v, target, body, type):
 			extra_info = "chat message"
 		elif type == 'flag':
 			extra_info = f"reports on {target.permalink}"
+		elif type == 'modmail':
+			extra_info = "modmail"
 
 		if notif:
 			g.db.add(notif)
 			g.db.flush()
-		elif extra_info: send_repeatable_notification(CARP_ID, f"Blackjack for {v.name}: {extra_info}")
+		elif extra_info: send_repeatable_notification(CARP_ID, f"Blackjack for {v.username}: {extra_info}")
 		return False
 	return True
+
+def execute_antispam_duplicate_comment_check(v:User, body_html:str):
+	'''
+	Sanity check for newfriends
+	'''
+	if v.id in ANTISPAM_BYPASS_IDS or v.admin_level: return
+	if v.age >= NOTIFICATION_SPAM_AGE_THRESHOLD: return
+	if len(body_html) < 16: return
+	if body_html == '!wordle': return # wordle
+	compare_time = int(time.time()) - 60 * 60 * 24
+	comment = g.db.query(Comment.id).filter(Comment.body_html == body_html,
+											Comment.created_utc >= compare_time).first()
+	if not comment: return
+	v.ban(reason="Spamming.", days=0.0)
+	send_repeatable_notification(v.id, "Your account has been banned **permanently** for the following reason:\n\n> Too much spam!")
+	g.db.add(v)
+	g.db.commit()
+	abort(403, "Too much spam!")
 
 def execute_antispam_comment_check(body:str, v:User):
 	if v.id in ANTISPAM_BYPASS_IDS: return

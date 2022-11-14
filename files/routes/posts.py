@@ -34,8 +34,8 @@ from files.__main__ import app, limiter
 titleheaders = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36"}
 
 @app.post("/club_post/<pid>")
-@auth_required
 @feature_required('COUNTRY_CLUB')
+@auth_required
 def club_post(pid, v):
 	post = get_post(pid)
 	if post.author_id != v.id and v.admin_level < PERMS['POST_COMMENT_MODERATION']: abort(403)
@@ -52,14 +52,14 @@ def club_post(pid, v):
 			)
 			g.db.add(ma)
 
-			message = f"@{v.username} (Admin) has moved [{post.title}]({post.shortlink}) to the {CC_TITLE}!"
+			message = f"@{v.username} (Admin) has marked [{post.title}]({post.shortlink}) as {CC_TITLE}!"
 			send_repeatable_notification(post.author_id, message)
 
-	return {"message": f"Post has been moved to the {CC_TITLE}!"}
+	return {"message": f"Post has been marked as {CC_TITLE}!"}
 
 @app.post("/unclub_post/<pid>")
-@auth_required
 @feature_required('COUNTRY_CLUB')
+@auth_required
 def unclub_post(pid, v):
 	post = get_post(pid)
 	if post.author_id != v.id and v.admin_level < PERMS['POST_COMMENT_MODERATION']: abort(403)
@@ -76,10 +76,10 @@ def unclub_post(pid, v):
 			)
 			g.db.add(ma)
 
-			message = f"@{v.username} (Admin) has removed [{post.title}]({post.shortlink}) from the {CC_TITLE}!"
+			message = f"@{v.username} (Admin) has unmarked [{post.title}]({post.shortlink}) as {CC_TITLE}!"
 			send_repeatable_notification(post.author_id, message)
 
-	return {"message": f"Post has been removed from the {CC_TITLE}!"}
+	return {"message": f"Post has been unmarked as {CC_TITLE}!"}
 
 
 @app.post("/publish/<pid>")
@@ -313,7 +313,7 @@ def morecomments(v, cid):
 @app.post("/edit_post/<pid>")
 @limiter.limit("1/second;10/minute;100/hour;200/day")
 @limiter.limit("1/second;10/minute;100/hour;200/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
-@auth_required
+@is_not_permabanned
 def edit_post(pid, v):
 	p = get_post(pid)
 	if v.id != p.author_id and v.admin_level < PERMS['POST_EDITING']:
@@ -783,7 +783,7 @@ def submit_post(v, sub=None):
 	flag_over_18 = request.values.get("over_18", False, bool)
 	flag_private = request.values.get("private", False, bool)
 	flag_club = (request.values.get("club", False, bool) and FEATURES['COUNTRY_CLUB'])
-	flag_ghost = request.values.get("ghost", False, bool)
+	flag_ghost = request.values.get("ghost", False, bool) and v.can_post_in_ghost_threads
 
 	if embed and len(embed) > 1500: embed = None
 	if embed: embed = embed.strip()

@@ -514,10 +514,10 @@ def settings_images_profile(v):
 
 
 @app.post("/settings/images/banner")
+@feature_required('USERS_PROFILE_BANNER')
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
 @ratelimit_user()
-@feature_required('USERS_PROFILE_BANNER')
 def settings_images_banner(v):
 	if g.is_tor: abort(403, "Image uploads are not allowed through TOR.")
 
@@ -667,10 +667,10 @@ def settings_name_change(v):
 	return redirect("/settings/personal")
 
 @app.post("/settings/song_change_mp3")
+@feature_required('USERS_PROFILE_SONG')
 @limiter.limit("3/second;10/day")
 @limiter.limit("3/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
-@feature_required('USERS_PROFILE_SONG')
 def settings_song_change_mp3(v):
 	file = request.files['file']
 	if file.content_type != 'audio/mpeg':
@@ -695,10 +695,10 @@ def settings_song_change_mp3(v):
 	return redirect("/settings/personal")
 
 @app.post("/settings/song_change")
+@feature_required('USERS_PROFILE_SONG')
 @limiter.limit("3/second;10/day")
 @limiter.limit("3/second;10/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
-@feature_required('USERS_PROFILE_SONG')
 def settings_song_change(v):
 	song=request.values.get("song").strip()
 
@@ -795,10 +795,10 @@ def settings_title_change(v):
 
 
 @app.post("/settings/pronouns_change")
+@feature_required('PRONOUNS')
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @auth_required
 @ratelimit_user()
-@feature_required('PRONOUNS')
 def settings_pronouns_change(v):
 	pronouns = sanitize_settings_text(request.values.get("pronouns"))
 

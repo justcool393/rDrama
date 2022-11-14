@@ -230,6 +230,7 @@ PERMS = { # Minimum admin_level to perform action.
 	'USER_MERGE': 3, # note: extra check for Aevann
 	'USER_TITLE_CHANGE': 2,
 	'USER_MODERATION_TOOLS_VISIBLE': 2, # note: does not affect API at all
+	'POST_IN_GHOST_THREADS': 1,
 	'POST_TO_CHANGELOG': 1, # note: code contributors can also post to changelog
 	'POST_TO_POLL_THREAD': 2,
 	'POST_BETS': 3,
@@ -380,7 +381,8 @@ TRANSFER_MESSAGE_LENGTH_LIMIT = 200 # do not make larger than 10000 characters (
 MIN_REPOST_CHECK_URL_LENGTH = 9 # also change the constant in checkRepost() of submit.js
 TRUESCORE_DONATE_LIMIT = 100
 COSMETIC_AWARD_COIN_AWARD_PCT = 0.10
-
+TRUESCORE_CHAT_LIMIT = 0
+TRUESCORE_GHOST_LIMIT = 0
 
 LOGGEDIN_ACTIVE_TIME = 15 * 60
 PFP_DEFAULT_MARSEY = True
@@ -478,6 +480,9 @@ if SITE == 'rdrama.net':
 	SNAPPY_THREAD = 37749
 	NOTIFICATION_THREAD = 6489
 
+	TRUESCORE_CHAT_LIMIT = 10
+	TRUESCORE_GHOST_LIMIT = 10
+
 	HOLE_COST = 50000
 	HOLE_INACTIVITY_DELETION = True
 
@@ -562,14 +567,26 @@ elif SITE == 'watchpeopledie.tv':
 	ERROR_TITLES[404] = "Not Found"
 	ERROR_TITLES[405] = "Method Not Allowed"
 	ERROR_TITLES[406] = "Too Many Pings"
-	ERROR_TITLES[409] = "Conflict"
+	ERROR_TITLES[409] = "Mortal Conflict"
+	ERROR_TITLES[413] = "Payload Too Large"
 	ERROR_TITLES[415] = "Unsupported Media Type"
 	ERROR_TITLES[500] = "Internal Server Error"
+	ERROR_MSGS[400] = "That request is invalid"
+	ERROR_MSGS[401] = "You need to login or sign up to do that"
+	ERROR_MSGS[403] = "You're not allowed to do that"
+	ERROR_MSGS[404] = "That wasn't found"
+	ERROR_MSGS[405] = "You can't use this method here... if you keep getting this error tell us it's prolly something borked"
+	ERROR_MSGS[409] = "There's a conflict between what you're trying to do and what you or someone else has done and because of that you can't do what you're trying to do."
+	ERROR_MSGS[413] = "You need to upload a smaller file please"
+	ERROR_MSGS[429] = "Please wait a bit before doing that"
 
 	POLL_THREAD = 13225
 
 	SIDEBAR_THREAD = 5403
 	BANNER_THREAD = 9869
+
+	TRUESCORE_CHAT_LIMIT = 10
+	TRUESCORE_GHOST_LIMIT = 10
 
 	HOLE_NAME = 'flair'
 	HOLE_STYLE_FLAIR = True
@@ -1359,8 +1376,7 @@ NOTIFIED_USERS = {
 	'idio ': IDIO_ID,
 	'telegram ': IDIO_ID,
 	'the_homocracy': HOMO_ID,
-	'schizocel': SCHIZO_ID,
-	'scitzocel': SCHIZO_ID,
+	'schizo': SCHIZO_ID,
 	'snakes': SNAKES_ID,
 	'sneks': SNAKES_ID,
 	'snekky': SNAKES_ID,
@@ -1370,8 +1386,8 @@ NOTIFIED_USERS = {
 	'clit': CARP_ID,
 	'kippy': KIPPY_ID,
 	'mccox': MCCOX_ID,
-	'lawlz': LAWLZ_ID,
 
+	'lawlz': LAWLZ_ID,
 	'chiobu': CHIOBU_ID,
 	'donger': DONGER_ID,
 	'soren': SOREN_ID,

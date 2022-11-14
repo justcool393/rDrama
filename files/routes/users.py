@@ -253,10 +253,10 @@ def downvoting(v, username):
 	return all_upvoters_downvoters(v, username, -1, True)
 
 @app.post("/@<username>/suicide")
+@feature_required('USERS_SUICIDE')
 @limiter.limit("1/second;5/day")
 @limiter.limit("1/second;5/day", key_func=lambda:f'{SITE}-{session.get("lo_user")}')
 @auth_required
-@feature_required('USERS_SUICIDE')
 def suicide(v, username):
 	
 
@@ -321,10 +321,10 @@ def transfer_coins(v, username):
 	return transfer_currency(v, username, 'coins', True)
 
 @app.post("/@<username>/transfer_bux")
+@feature_required('PROCOINS')
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @is_not_permabanned
 @ratelimit_user()
-@feature_required('PROCOINS')
 def transfer_bux(v, username):
 	return transfer_currency(v, username, 'procoins', False)
 
@@ -925,12 +925,7 @@ def remove_follow(username, v):
 @cache.memoize(timeout=86400)
 @limiter.exempt
 def user_profile_uid(id):
-	try: id = int(id)
-	except:
-		try: id = int(id, 36)
-		except: abort(404)
-
-	x=get_account(id)
+	x = get_account(id)
 	return redirect(x.profile_url)
 
 @app.get("/@<username>/pic")

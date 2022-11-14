@@ -21,8 +21,8 @@ from .front import frontlist
 
 @app.get("/shop")
 @app.get("/settings/shop")
-@auth_required
 @feature_required('AWARDS')
+@auth_required
 def shop(v):
 	AWARDS = deepcopy(AWARDS2)
 
@@ -45,9 +45,9 @@ def shop(v):
 
 
 @app.post("/buy/<award>")
+@feature_required('AWARDS')
 @limiter.limit("100/minute;200/hour;1000/day")
 @auth_required
-@feature_required('AWARDS')
 def buy(v, award):
 	if award == 'benefactor' and not request.values.get("mb"):
 		abort(403, "You can only buy the Benefactor award with marseybux.")
@@ -125,10 +125,10 @@ def buy(v, award):
 	return {"message": f"{award_title} award bought!"}
 
 @app.post("/award/<thing_type>/<id>")
+@feature_required('AWARDS')
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @is_not_permabanned
 @ratelimit_user()
-@feature_required('AWARDS')
 def award_thing(v, thing_type, id):
 	if thing_type == 'post': 
 		thing = get_post(id)

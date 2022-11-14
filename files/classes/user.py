@@ -712,7 +712,6 @@ class User(Base):
 	@property
 	@lazy
 	def alts(self):
-
 		subq = g.db.query(Alt).filter(
 			or_(
 				Alt.user1 == self.id,
@@ -737,6 +736,8 @@ class User(Base):
 		for x in data:
 			user = x[0]
 			user._is_manual = x[1].is_manual
+			user._alt_deleted = x[1].deleted
+			user._alt_created_utc = x[1].created_utc
 			output.append(user)
 
 		return output
@@ -803,6 +804,7 @@ class User(Base):
 					'url': self.url,
 					'is_banned': True,
 					'is_permanent_ban': not bool(self.unban_utc),
+					'created_utc': self.created_utc,
 					'ban_reason': self.ban_reason,
 					'id': self.id
 					}
@@ -945,6 +947,16 @@ class User(Base):
 		if self.client: return True
 		if self.truescore >= 5000: return True
 		if self.agendaposter: return True
+		if self.patron: return True
+		return False
+	
+	@property
+	@lazy
+	def can_post_in_ghost_threads(self):
+		if not TRUESCORE_GHOST_LIMIT: return True
+		if self.admin_level >= PERMS['POST_IN_GHOST_THREADS']: return True
+		if self.club_allowed: return True
+		if self.truescore >= TRUESCORE_GHOST_LIMIT: return True
 		if self.patron: return True
 		return False
 

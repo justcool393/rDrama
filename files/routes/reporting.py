@@ -7,8 +7,9 @@ from files.helpers.actions import *
 from files.helpers.alerts import *
 from files.helpers.get import *
 from files.helpers.sanitize import filter_emojis_only
+from files.routes.front import frontlist
 from files.routes.wrappers import *
-from files.__main__ import app, limiter
+from files.__main__ import app, limiter, cache
 
 @app.post("/report/post/<pid>")
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
@@ -183,4 +184,7 @@ def move_post(post:Submission, v:User, reason:str) -> Union[bool, str]:
 		else: position = f'/h/{sub_from} Mod'
 		message = f"@{v.username} ({position}) has moved [{post.title}]({post.shortlink}) to /h/{post.sub}"
 		send_repeatable_notification(post.author_id, message)
+
+	cache.delete_memoized(frontlist)
+
 	return f"Post moved to /h/{post.sub}"
