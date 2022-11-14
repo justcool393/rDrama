@@ -37,7 +37,7 @@
             <td>
                 <form method="post">
                     {% if not alt._alt_deleted %}
-                        <button type="button" id="remove-alt-{{u.id}}-{{user.id}}" class="btn btn-danger" onclick="postToastReload(this,'/@{{u.username}}/alts/{{u.id}}/deleted', 'PUT')">Delink</button>
+                        <button type="button" id="remove-alt-{{u.id}}-{{alt.id}}" class="btn btn-danger" onclick="postToastReload(this,'/@{{u.username}}/alts/{{alt.id}}/deleted', 'PUT')">Delink</button>
                     {% else %}
                         <span class="text-muted">Alt already delinked</span>
                     {% endif %}
