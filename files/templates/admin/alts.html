@@ -6,17 +6,18 @@
 {% else %}
 	<h5 class="mt-3">Alts</h5>
 {% endif %}
-
-<form action="/admin/alts" method="get" class="mb-6">
-	<label for="link-input">Username</label>
-	<input autocomplete="off" id="link-input" type="text" class="form-control mb-2" name="username" value="{{u.username if u else ''}}" placeholder="Username">
-	<input type="submit" onclick="disable(this)" value="Submit" class="btn btn-primary">
-</form>
-{% if u %}
-<section class="userinfo-section">
-<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {% trans count=alts|length %}{{count}} known alt{% pluralize %}{{count}} known alts{% endtrans %}.<br>
-They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banned{% if v.admin_level >= PERMS['USER_SHADOWBAN'] %} and they are {% if not v.shadowbanned %}not {% endif %}shadowbanned{% endif %}.</p>
+<section class="username-input-section mb-3">
+	<form action="/admin/alts" method="get">
+		<label for="link-input">Username</label>
+		<input autocomplete="off" id="link-input" type="text" class="form-control mb-2" name="username" value="{{u.username if u else ''}}" placeholder="Username">
+		<input type="submit" onclick="disable(this)" value="Submit" class="btn btn-primary">
+	</form>
 </section>
+{% if u %}
+	<section class="userinfo-section">
+	<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {% trans count=alts|length %}{{count}} known alt{% pluralize %}{{count}} known alts{% endtrans %}.<br>
+	They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banned{% if v.admin_level >= PERMS['USER_SHADOWBAN'] %} and they are {% if not v.shadowbanned %}not {% endif %}shadowbanned{% endif %}.</p>
+	</section>
 <div class="overflow-x-auto">
 	<table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
