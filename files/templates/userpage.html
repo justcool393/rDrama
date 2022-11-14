@@ -231,7 +231,7 @@
 						{% endif %}
 						{% if v and (v.admin_level >= PERMS['VIEW_ALTS'] or v.alt) %}
 							{% if v.admin_level >= PERMS['USER_LINK'] %}
-								<span id="profile--alts"><a href="/@{{account.username}}/alts">Alts</a></span>
+								<span id="profile--alts"><a href="/@{{u.username}}/alts">Alts</a></span>
 							{% else %}
 								<span id="profile--alts">Alts</span>
 							{% endif %}:
@@ -474,7 +474,7 @@
 					{% endif %}
 					{% if v and (v.admin_level >= PERMS['VIEW_ALTS'] or v.alt) %}
 						{% if v.admin_level >= PERMS['USER_LINK'] %}
-							<span id="profile-mobile--alts"><a href="/@{{account.username}}/alts">Alts</a></span>
+							<span id="profile-mobile--alts"><a href="/@{{u.username}}/alts">Alts</a></span>
 						{% else %}
 							<span id="profile-mobile--alts">Alts</span>
 						{% endif %}:
