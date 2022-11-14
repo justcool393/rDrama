@@ -783,7 +783,7 @@ def admin_delete_alt(v, username, other):
 	is_deleting_link = request.method == 'PUT' # we're adding the 'deleted' state if a PUT request
 	user1 = get_user(username)
 	user2 = get_account(other)
-	a = g.db.query(Alt).filter_by(user1 == user1.id, user2 == user2.id)
+	a = g.db.query(Alt).filter(Alt.user1 == user1.id, Alt.user2 == user2.id)
 	a.deleted = is_deleting_link
 	g.db.add(a)
 	word = 'Delinked' if is_deleting_link else 'Relinked'
