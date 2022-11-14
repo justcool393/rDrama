@@ -1,9 +1,9 @@
 import functools
+import random
 import re
 import signal
 from functools import partial
 from os import path
-from random import choice, random
 from urllib.parse import parse_qs, urlparse
 
 import bleach
@@ -164,12 +164,12 @@ def render_emoji(html, regexp, golden, marseys_used, b=False):
 		attrs = ''
 		if b: attrs += ' b'
 		if golden and len(emojis) <= 20 and ('marsey' in emoji or emoji in marseys_const2):
-			if random() < 0.0025: attrs += ' g'
-			elif random() < 0.00125: attrs += ' glow'
+			if random.random() < 0.0025: attrs += ' g'
+			elif random.random() < 0.00125: attrs += ' glow'
 
 		old = emoji
 		emoji = emoji.replace('!','').replace('#','')
-		if emoji == 'marseyrandom': emoji = choice(marseys_const2)
+		if emoji == 'marseyrandom': emoji = random.choice(marseys_const2)
 
 		emoji_partial_pat = '<img loading="lazy" alt=":{0}:" src="{1}"{2}>'
 		emoji_partial = '<img loading="lazy" data-bs-toggle="tooltip" alt=":{0}:" title=":{0}:" src="{1}"{2}>'
@@ -245,7 +245,7 @@ def sanitize(sanitized, golden=True, limit_pings=0, showmore=True, count_marseys
 
 	if torture:
 		sanitized = torture_ap(sanitized, g.v.username)
-		emoji = choice(['trumpjaktalking', 'reposthorse'])
+		emoji = random.choice(['trumpjaktalking', 'reposthorse'])
 		sanitized += f'\n:#{emoji}:'
 
 	sanitized = normalize_url(sanitized)
