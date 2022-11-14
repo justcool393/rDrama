@@ -14,15 +14,16 @@
 	<input type="submit" onclick="disable(this)" value="Submit" class="btn btn-primary">
 </form>
 
-<section id="add-alt" class="rounded rounded-section">
+<section id="add-alt" class="rounded rounded-section p-3">
 	<h5>Add Alt</h5>
-	<p>This tool allows you to add an alt either linked or delinked. Adding linked will link the two alts together manually, while adding delinked will attempt to delink alts whereever possible.<br>
+	<p>This tool allows you to add an alt either linked or delinked.<br>
+		Adding linked will link the two alts together manually, while adding delinked will attempt to delink alts whereever possible.<br>
 		You're on your own for reversing any propagation though.
 	</p>
-	<form>
+	<form onsubmit="return false;">
 		<label for="link-input-other">Other Username</label>
 		<input autocomplete="off" id="link-input-other" type="text" class="form-control mb-2" name="other_username" placeholder="Other Username">
-		<button id="add-alt-form-link" class="btn btn-danger" data-click="submitAddAlt(this))" onclick="areyousure(this)">Add Alt Linked</button>
+		<button id="add-alt-form-link" class="btn btn-danger mr-3" data-click="submitAddAlt(this)" onclick="areyousure(this)">Add Alt Linked</button>
 		<button id="add-alt-form-delink" class="btn btn-danger" data-click="'submitAddAlt(this)" onclick="areyousure(this)">Add Alt Delinked</button>
 	</form>
 </section>
@@ -73,7 +74,7 @@
 		const form = new FormData();
 		if (!isLinking) form.append('deleted', 'true');
 		form.append('other_username', document.getElementById('link-input-other').value);
-		const xhr = createXhrWithFormKey('/@{{username}}/alts/', 'POST', form);
+		const xhr = createXhrWithFormKey('/@{{u.username}}/alts/', 'POST', form);
 		xhr[0].onload = function() {
 			let data;
 			try {
@@ -87,6 +88,10 @@
 				window.location.reload();
 			} else {
 				showToast(false, getMessageFromJsonData(false, data));
+				element.disabled = false;
+				otherElement.disabled = false;
+				element.classList.remove('disabled');
+				otherElement.classList.remove('disabled');
 			}
 		}
 		xhr[0].send(xhr[1]);
