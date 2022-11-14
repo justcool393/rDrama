@@ -50,9 +50,11 @@ def check_for_alts(current:User, include_current_session=True):
 		for a in other_alts:
 			if a.deleted:
 				if include_current_session:
-					session["history"].remove(a.user1)
-					session["history"].remove(a.user2)
-				continue # don't propoagate deleted alt links
+					try: session["history"].remove(a.user1)
+					except: pass
+					try: session["history"].remove(a.user2)
+					except: pass
+				continue # don't propagate deleted alt links
 			if a.user1 != past_id: add_alt(a.user1, past_id)
 			if a.user1 != current_id: add_alt(a.user1, current_id)
 			if a.user2 != past_id: add_alt(a.user2, past_id)
