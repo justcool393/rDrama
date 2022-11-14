@@ -769,11 +769,11 @@ def admin_link_accounts(v):
 	return redirect(f"/admin/alt_votes?u1={get_account(u1).username}&u2={get_account(u2).username}")
 
 @app.get("/admin/alts/")
-@app.get("/admin/alts/<user:int>")
+@app.get("/@<username>/alts/")
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
-def admin_view_alts(v, user):
-	u = get_account(user or request.values.get('user', 0))
+def admin_view_alts(v, username):
+	u = get_user(username or request.values.get('username'))
 	return render_template('admin/alts.html', v=v, u=u, alts=u.alts_unique)
 
 @app.put('/@<username>/alts/<int:other>/deleted')
