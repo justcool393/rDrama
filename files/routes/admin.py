@@ -768,6 +768,29 @@ def admin_link_accounts(v):
 
 	return redirect(f"/admin/alt_votes?u1={get_account(u1).username}&u2={get_account(u2).username}")
 
+@app.get("/admin/alts/")
+@app.get("/admin/alts/<user:int>")
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
+@admin_level_required(PERMS['USER_LINK'])
+def admin_view_alts(v, user):
+	u = get_account(user or request.values.get('user', 0))
+	return render_template('admin/alts.html', v=v, u=u, alts=u.alts_unique)
+
+@app.put('/@<username>/alts/<other:int>/deleted')
+@limiter.limit(DEFAULT_RATELIMIT_SLOWER)
+@admin_level_required(PERMS['USER_LINK'])
+def admin_delete_alt(v, user, other):
+	user1 = get_user(user)
+	user2 = get_account(other)
+	a = Alt(
+		user1 = user1.id,
+		user2 = user2.id,
+		is_manual = True,
+		deleted = True,
+	)
+	g.db.add(a)
+	return {"message": f"Delinked @{user1.username} and @{user2.username} successfully!"}
+
 
 @app.get("/admin/removed/posts")
 @admin_level_required(PERMS['POST_COMMENT_MODERATION'])

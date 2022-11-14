@@ -764,6 +764,7 @@ class User(Base):
 		for x in data:
 			user = x[0]
 			user._is_manual = x[1].is_manual
+			user._alt_deleted = x[1].deleted
 			output.append(user)
 
 		return output
