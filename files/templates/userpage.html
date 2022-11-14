@@ -231,10 +231,10 @@
 						{% endif %}
 						{% if v and (v.admin_level >= PERMS['VIEW_ALTS'] or v.alt) %}
 							{% if v.admin_level >= PERMS['USER_LINK'] %}
-								<span id="profile--alts"><a href="/@{{u.username}}/alts">Alts</a></span>
+								<span id="profile--alts"><a href="/@{{u.username}}/alts">Alts</a>:</span>
 							{% else %}
-								<span id="profile--alts">Alts</span>
-							{% endif %}:
+								<span id="profile--alts">Alts:</span>
+							{% endif %}
 							<ul id="profile--alts-list">
 								{% for account in u.alts_unique if not account._alt_deleted %}
 									<li><a href="{{account.url}}">@{{account.username}}</a>{% if account._is_manual %} [m]{% endif %}</li>
@@ -474,9 +474,9 @@
 					{% endif %}
 					{% if v and (v.admin_level >= PERMS['VIEW_ALTS'] or v.alt) %}
 						{% if v.admin_level >= PERMS['USER_LINK'] %}
-							<span id="profile-mobile--alts"><a href="/@{{u.username}}/alts">Alts</a></span>
+							<span id="profile-mobile--alts"><a href="/@{{u.username}}/alts">Alts</a>:</span>
 						{% else %}
-							<span id="profile-mobile--alts">Alts</span>
+							<span id="profile-mobile--alts">Alts:</span>
 						{% endif %}:
 						<ul id="profile-mobile--alts-list">
 						{% for account in u.alts_unique if not account._alt_deleted %}
