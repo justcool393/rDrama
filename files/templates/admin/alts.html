@@ -38,10 +38,6 @@
 			<td>{{user._alt_deleted}}</td>
 			<td>
 				<form method="post">
-					{% set method = 'DELETE' if user._alt_deleted else 'PUT' %}
-					{% set txt = 'Relink' if user._alt_deleted else 'Delink' %}
-					{% set bid = 'relink-alt' if uset._alt_deleted else 'delink-alt' %}
-					{% set css_class = 'btn-danger' if user._alt_deleted else 'btn-success' %}
 					<button type="button" id="delink-alt-{{u.id}}-{{user.id}}" class="btn btn-success {% if user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'relink-alt-{{u.id}}-{{user.id}}', null, 'PUT')">Delink</button>
 					<button type="button" id="relink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if not user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'delink-alt-{{u.id}}-{{user.id}}', null, 'DELETE')">Relink</button>
 				</form>
