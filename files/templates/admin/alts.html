@@ -3,9 +3,9 @@
 {% block content %}
 
 {% if u %}
-    <h5 class="mt-3">Alts for <a href="/@{{u.username}}">@{{u.username}}</a></h5>
+	<h5 class="mt-3">Alts for <a href="/@{{u.username}}">@{{u.username}}</a></h5>
 {% else %}
-    <h5 class="mt-3">Alts</h5>
+	<h5 class="mt-3">Alts</h5>
 {% endif %}
 
 <form action="/admin/alts" method="get" class="mb-6">
@@ -16,35 +16,38 @@
 
 {% if u %}
 <div class="overflow-x-auto">
-    <table class="table table-striped mb-5">
-    <thead class="bg-primary text-white">
-	    <tr>
-		    <th>#</th>
-		    <th>Name</th>
-            <th>Account Created</th>
-            <th>Alt Link Created</th>
-            <th>Manual</th>
-            <th>Delinked</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    {% for user in alts %}
-	    <tr>
-		    <td>{{loop.index}}</td>
-		    <td>{% include "user_in_table.html" %}</td>
-            <td>{{user.created_utc|timestamp}}</td>
-            <td>{{user._alt_created_utc|timestamp}}</td>
-            <td>{{user._is_manual}}</td>
-            <td>{{user._alt_deleted}}</td>
-            <td>
-                <form method="post">
-                    {% set method = 'DELETE' if user._alt_deleted else 'PUT' %}
-                    {% set txt = 'Relink' if user._alt_deleted else 'Delink' %}
-                    <button type="button" id="remove-alt-{{u.id}}-{{user.id}}" class="btn btn-danger" onclick="postToastReload(this,'/@{{u.username}}/alts/{{user.id}}/deleted', '{{method}}')">{{txt}}</button>
-                </form>
-            </td>
-	    </tr>
-    {% endfor %}
-    </table>
+	<table class="table table-striped mb-5">
+	<thead class="bg-primary text-white">
+		<tr>
+			<th>#</th>
+			<th>Name</th>
+			<th>Account Created</th>
+			<th>Alt Link Created</th>
+			<th>Manual</th>
+			<th>Delinked</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	{% for user in alts %}
+		<tr>
+			<td>{{loop.index}}</td>
+			<td>{% include "user_in_table.html" %}</td>
+			<td>{{user.created_utc|timestamp}}</td>
+			<td>{{user._alt_created_utc|timestamp}}</td>
+			<td>{{user._is_manual}}</td>
+			<td>{{user._alt_deleted}}</td>
+			<td>
+				<form method="post">
+					{% set method = 'DELETE' if user._alt_deleted else 'PUT' %}
+					{% set txt = 'Relink' if user._alt_deleted else 'Delink' %}
+					{% set bid = 'relink-alt' if uset._alt_deleted else 'delink-alt' %}
+					{% set css_class = 'btn-danger' if user._alt_deleted else 'btn-success' %}
+					<button type="button" id="delink-alt-{{u.id}}-{{user.id}}" class="btn btn-success {% if user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'relink-alt-{{u.id}}-{{user.id}}', null, 'PUT')">Delink</button>
+					<button type="button" id="relink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if not user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'delink-alt-{{u.id}}-{{user.id}}', null, 'DELETE')">Relink</button>
+				</form>
+			</td>
+		</tr>
+	{% endfor %}
+	</table>
 {% endif %}
 {% endblock %}
