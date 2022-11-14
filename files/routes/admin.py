@@ -776,7 +776,7 @@ def admin_view_alts(v, user):
 	u = get_account(user or request.values.get('user', 0))
 	return render_template('admin/alts.html', v=v, u=u, alts=u.alts_unique)
 
-@app.put('/@<username>/alts/<other:int>/deleted')
+@app.put('/@<username>/alts/<int:other>/deleted')
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
 def admin_delete_alt(v, user, other):
