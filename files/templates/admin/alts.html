@@ -45,7 +45,7 @@
 	{% for user in alts %}
 		<tr>
 			<td>{{loop.index}}</td>
-			<td>{% include "user_in_table.html" %}</td>
+			<td>{% if v and v.admin_level >= PERMS['USER_SHADOWBAN'] and user.shadowbanned %}<i class="fas fa-user-times text-admin" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Shadowbanned by @{user.shadowbanned}} for "{{user.ban_reason}}"'></i>{% endif %}{% include "user_in_table.html" %}</td>
 			<td>{{user.created_utc|timestamp}}</td>
 			<td>{{user._alt_created_utc|timestamp}}</td>
 			<td>{{user._is_manual}}</td>
