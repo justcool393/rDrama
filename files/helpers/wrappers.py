@@ -31,6 +31,7 @@ def calc_users(v):
 	return ''
 
 def get_logged_in_user():
+	print(session["history"] if session else "no session")
 	if hasattr(g, 'v'): return g.v
 	if not (hasattr(g, 'db') and g.db): g.db = db_session()
 	g.desires_auth = True
