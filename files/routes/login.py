@@ -48,9 +48,10 @@ def check_for_alts(current:User, include_current_session=True):
 		add_alt(past_id, current_id)
 		other_alts = g.db.query(Alt).filter(Alt.user1.in_(li), Alt.user2.in_(li)).all()
 		for a in other_alts:
-			if a.deleted: 
-				session["history"].remove(a.user1)
-				session["history"].remove(a.user2)
+			if a.deleted:
+				if include_current_session:
+					session["history"].remove(a.user1)
+					session["history"].remove(a.user2)
 				continue # don't propoagate deleted alt links
 			if a.user1 != past_id: add_alt(a.user1, past_id)
 			if a.user1 != current_id: add_alt(a.user1, current_id)
