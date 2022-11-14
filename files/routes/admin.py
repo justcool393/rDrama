@@ -751,10 +751,12 @@ def admin_view_alts(v, username=None):
 def admin_add_alt(v, username):
 	user1 = get_user(username)
 	user2 = get_user(request.values.get('other_username'))
+	if user1.id == user2.id: abort(400, "Can't add the same account as alts of each other")
+
 	deleted = request.values.get('deleted', False, bool) or False
 	ids = [user1.id, user2.id]
 	a = g.db.query(Alt).filter(Alt.user1.in_(ids), Alt.user2.in_(ids)).one_or_none()
-	if a: abort(409, f"@{user1.username} and @{user2.username} are already known alts")
+	if a: abort(409, f"@{user1.username} and @{user2.username} are already known {'linked' if not a.deleted else 'delinked'} alts")
 	a = Alt(
 		user1=user1.id,
 		user2=user2.id,
@@ -763,8 +765,10 @@ def admin_add_alt(v, username):
 	)
 	g.db.add(a)
 	g.db.flush()
+
 	check_for_alts(user1, include_current_session=False)
 	check_for_alts(user2, include_current_session=False)
+
 	word = 'Delinked' if deleted else 'Linked'
 	ma_word = 'delink' if deleted else 'link'
 	note = f'from {user2.id}' if deleted else f'with {user2.id}'
@@ -780,7 +784,7 @@ def admin_add_alt(v, username):
 @app.route('/@<username>/alts/<int:other>/deleted', methods=["PUT", "DELETE"])
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
-def admin_delete_alt(v, username, other):
+def admin_delink_relink_alt(v, username, other):
 	is_delinking = request.method == 'PUT' # we're adding the 'deleted' state if a PUT request
 	user1 = get_user(username)
 	user2 = get_account(other)
