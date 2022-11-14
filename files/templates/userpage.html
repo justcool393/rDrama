@@ -236,7 +236,7 @@
 								<span id="profile--alts">Alts:</span>
 							{% endif %}
 							<ul id="profile--alts-list">
-								{% for account in u.alts_unique if not account._alt_deleted %}
+								{% for account in u.alts_unique if not account._alt_deleted and (v.admin_level >= PERMS['USER_SHADOWBAN'] or not account.shadowbanned) %}
 									<li><a href="{{account.url}}">@{{account.username}}</a>{% if account._is_manual %} [m]{% endif %}</li>
 								{% endfor %}
 							</ul>
@@ -479,7 +479,7 @@
 							<span id="profile-mobile--alts">Alts:</span>
 						{% endif %}:
 						<ul id="profile-mobile--alts-list">
-						{% for account in u.alts_unique if not account._alt_deleted %}
+						{% for account in u.alts_unique if not account._alt_deleted and (v.admin_level >= PERMS['USER_SHADOWBAN'] or not account.shadowbanned) %}
 							<li><a href="{{account.url}}">@{{account.username}}</a>{% if account._is_manual %} [m]{% endif %}</li>
 						{% endfor %}
 						</ul>
