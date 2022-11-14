@@ -13,22 +13,11 @@
 	<input autocomplete="off" id="link-input" type="text" class="form-control mb-2" name="username" value="{{u.username if u else ''}}" placeholder="Username">
 	<input type="submit" onclick="disable(this)" value="Submit" class="btn btn-primary">
 </form>
-
-<section id="add-alt" class="rounded rounded-section p-3">
-	<h5>Add Alt</h5>
-	<p>This tool allows you to add an alt either linked or delinked.<br>
-		Adding linked will link the two alts together manually, while adding delinked will attempt to delink alts whereever possible.<br>
-		You're on your own for reversing any propagation though.
-	</p>
-	<form onsubmit="return false;">
-		<label for="link-input-other">Other Username</label>
-		<input autocomplete="off" id="link-input-other" type="text" class="form-control mb-2" name="other_username" placeholder="Other Username">
-		<button id="add-alt-form-link" class="btn btn-danger mr-3" data-click="submitAddAlt(this)" onclick="areyousure(this)">Add Alt Linked</button>
-		<button id="add-alt-form-delink" class="btn btn-danger" data-click="submitAddAlt(this)" onclick="areyousure(this)">Add Alt Delinked</button>
-	</form>
-</section>
-
 {% if u %}
+<section class="userinfo-section">
+<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|length}} and has {{alts|length}} known alts.<br>
+They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banned{% if v.admin_level >= PERMS['USER_SHADOWBAN'] %} and they are {% if not v.shadowbanned %}not {% endif %}shadowbanned{% endif %}.</p>
+</section>
 <div class="overflow-x-auto">
 	<table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
@@ -59,6 +48,20 @@
 		</tr>
 	{% endfor %}
 	</table>
+</div>
+<section id="add-alt" class="rounded rounded-section p-3">
+	<h5>Add Alt</h5>
+	<p>This tool allows you to add an alt either linked or delinked.<br>
+		Adding linked will link the two alts together manually, while adding delinked will attempt to delink alts whereever possible.<br>
+		You're on your own for reversing any propagation though.
+	</p>
+	<form onsubmit="return false;">
+		<label for="link-input-other">Other Username</label>
+		<input autocomplete="off" id="link-input-other" type="text" class="form-control mb-2" name="other_username" placeholder="Other Username">
+		<button id="add-alt-form-link" class="btn btn-danger mr-3" data-click="submitAddAlt(this)" onclick="areyousure(this)">Add Alt Linked</button>
+		<button id="add-alt-form-delink" class="btn btn-danger" data-click="submitAddAlt(this)" onclick="areyousure(this)">Add Alt Delinked</button>
+	</form>
+</section>
 {% endif %}
 
 <script type="application/javascript">
