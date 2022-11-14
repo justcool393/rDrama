@@ -10,7 +10,7 @@
 
 <form action="/admin/alts" method="get" class="mb-6">
 	<label for="link-input">Username</label>
-	<input autocomplete="off" id="link-input" type="text" class="form-control mb-2" name="username" value="{{u.username if user else ''}}" placeholder="Username">
+	<input autocomplete="off" id="link-input" type="text" class="form-control mb-2" name="username" value="{{u.username if u else ''}}" placeholder="Username">
 	<input type="submit" onclick="disable(this)" value="Submit" class="btn btn-primary">
 </form>
 
@@ -27,7 +27,7 @@
             <th>Actions</th>
         </tr>
     </thead>
-    {% for user in users %}
+    {% for user in alts %}
 	    <tr>
 		    <td>{{loop.index}}</td>
 		    <td>{% include "user_in_table.html" %}</td>
