@@ -781,20 +781,20 @@ def admin_add_alt(v, username):
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
 def admin_delete_alt(v, username, other):
-	is_deleting_link = request.method == 'PUT' # we're adding the 'deleted' state if a PUT request
+	is_delinking = request.method == 'PUT' # we're adding the 'deleted' state if a PUT request
 	user1 = get_user(username)
 	user2 = get_account(other)
 	ids = [user1.id, user2.id]
 	a = g.db.query(Alt).filter(Alt.user1.in_(ids), Alt.user2.in_(ids)).one_or_none()
 	if not a: abort(404)
-	a.deleted = is_deleting_link
+	a.deleted = is_delinking
 	g.db.add(a)
 	g.db.flush()
 	check_for_alts(user1, include_current_session=False)
 	check_for_alts(user2, include_current_session=False)
-	word = 'Delinked' if is_deleting_link else 'Relinked'
-	ma_word = 'delink' if is_deleting_link else 'link'
-	note = f'from {user2.id}' if is_deleting_link else f'with {user2.id} (relinked)'
+	word = 'Delinked' if is_delinking else 'Relinked'
+	ma_word = 'delink' if is_delinking else 'link'
+	note = f'from {user2.id}' if is_delinking else f'with {user2.id} (relinked)'
 
 	ma = ModAction(
 		kind=f"{ma_word}_accounts",
