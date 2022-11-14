@@ -15,7 +15,7 @@
 </form>
 {% if u %}
 <section class="userinfo-section">
-<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|length}} and has {{alts|length}} known alts.<br>
+<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {{alts|length}} known alts.<br>
 They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banned{% if v.admin_level >= PERMS['USER_SHADOWBAN'] %} and they are {% if not v.shadowbanned %}not {% endif %}shadowbanned{% endif %}.</p>
 </section>
 <div class="overflow-x-auto">
@@ -40,10 +40,11 @@ They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banne
 			<td>{{user._is_manual}}</td>
 			<td>{{user._alt_deleted}}</td>
 			<td>
-				<form method="post">
-					<button type="button" id="delink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'relink-alt-{{u.id}}-{{user.id}}', 'd-none', null, 'PUT')">Delink</button>
-					<button type="button" id="relink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if not user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'delink-alt-{{u.id}}-{{user.id}}', 'd-none', null, 'DELETE')">Relink</button>
-				</form>
+				<button type="button" id="delink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'relink-alt-{{u.id}}-{{user.id}}', 'd-none', null, 'PUT')">Delink</button>
+				<button type="button" id="relink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if not user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'delink-alt-{{u.id}}-{{user.id}}', 'd-none', null, 'DELETE')">Relink</button>
+				{% if v.admin_level >= PERMS['VIEW_ALT_VOTES'] %}
+					<a class="btn btn-secondary" href="/admin/alt_votes/?u1={{u.username}}&u2={{user.username}}">Alt Votes</a>
+				{% endif %}
 			</td>
 		</tr>
 	{% endfor %}
