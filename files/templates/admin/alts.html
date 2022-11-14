@@ -1,7 +1,6 @@
 {% extends "settings2.html" %}
 
 {% block content %}
-
 {% if u %}
 	<h5 class="mt-3">Alts for <a href="/@{{u.username}}">@{{u.username}}</a></h5>
 {% else %}
@@ -15,7 +14,7 @@
 </form>
 {% if u %}
 <section class="userinfo-section">
-<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {{alts|length}} known alts.<br>
+<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {% trans count=alts|length %}{{count}} known alt{% pluralize %}{{count}} known alts{% endtrans %}.<br>
 They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banned{% if v.admin_level >= PERMS['USER_SHADOWBAN'] %} and they are {% if not v.shadowbanned %}not {% endif %}shadowbanned{% endif %}.</p>
 </section>
 <div class="overflow-x-auto">
@@ -42,6 +41,7 @@ They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banne
 			<td>
 				<button type="button" id="delink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'relink-alt-{{u.id}}-{{user.id}}', 'd-none', null, 'PUT')">Delink</button>
 				<button type="button" id="relink-alt-{{u.id}}-{{user.id}}" class="btn btn-danger {% if not user._alt_deleted %}d-none{% endif %}" onclick="postToastSwitch(this,'/@{{u.username}}/alts/{{user.id}}/deleted', this.id, 'delink-alt-{{u.id}}-{{user.id}}', 'd-none', null, 'DELETE')">Relink</button>
+				<a class="btn btn-secondary" href="/@{{u.username}}/alts">Alts</a>
 				{% if v.admin_level >= PERMS['VIEW_ALT_VOTES'] %}
 					<a class="btn btn-secondary" href="/admin/alt_votes/?u1={{u.username}}&u2={{user.username}}">Alt Votes</a>
 				{% endif %}
