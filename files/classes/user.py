@@ -5,6 +5,7 @@ import pyotp
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.orm import aliased, deferred
 from sqlalchemy.sql import func
+from sqlalchemy.sql.expression import not_, and_, or_
 from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
