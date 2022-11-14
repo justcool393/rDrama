@@ -83,7 +83,7 @@
 			catch(e) {
 				console.log(e);
 			}
-			if (xhr[0].statusCode >= 200 && xhr[0].statusCode < 300) {
+			if (xhr[0].status >= 200 && xhr[0].status < 300) {
 				showToast(true, getMessageFromJsonData(true, data));
 				window.location.reload();
 			} else {
