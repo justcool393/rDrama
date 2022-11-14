@@ -14,10 +14,10 @@
 	</form>
 </section>
 {% if u %}
-	<section class="userinfo-section">
+<section class="userinfo-section">
 	<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {% trans count=alts|length %}{{count}} known alt{% pluralize %}{{count}} known alts{% endtrans %}.<br>
 	They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banned{% if v.admin_level >= PERMS['USER_SHADOWBAN'] %} and they are {% if not v.shadowbanned %}not {% endif %}shadowbanned{% endif %}.</p>
-	</section>
+</section>
 <div class="overflow-x-auto">
 	<table class="table table-striped mb-5">
 	<thead class="bg-primary text-white">
