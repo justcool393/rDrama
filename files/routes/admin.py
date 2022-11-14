@@ -779,8 +779,8 @@ def admin_view_alts(v, username):
 @app.put('/@<username>/alts/<int:other>/deleted')
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
-def admin_delete_alt(v, user, other):
-	user1 = get_user(user)
+def admin_delete_alt(v, username, other):
+	user1 = get_user(username)
 	user2 = get_account(other)
 	a = Alt(
 		user1 = user1.id,
