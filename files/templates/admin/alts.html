@@ -5,7 +5,7 @@
 {% else %}
 	<h5 class="mt-3">Alts</h5>
 {% endif %}
-{% import 'util/helpers.html' as help %}
+{%- import 'util/helpers.html' as help with context -%}
 <section class="username-input-section mb-3">
 	<form action="/admin/alts" method="get">
 		<label for="link-input">Username</label>
