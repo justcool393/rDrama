@@ -1,11 +1,11 @@
 {% extends "settings2.html" %}
-
 {% block content %}
 {% if u %}
 	<h5 class="mt-3">Alts for <a href="/@{{u.username}}">@{{u.username}}</a></h5>
 {% else %}
 	<h5 class="mt-3">Alts</h5>
 {% endif %}
+{% import 'util/helpers.html' as 'help' %}
 <section class="username-input-section mb-3">
 	<form action="/admin/alts" method="get">
 		<label for="link-input">Username</label>
@@ -14,8 +14,9 @@
 	</form>
 </section>
 {% if u %}
+{% set count=alts|length %}
 <section class="userinfo-section">
-	<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {% trans count=alts|length %}{{count}} known alt{% pluralize %}{{count}} known alts{% endtrans %}.<br>
+	<p><a href="/@{{u.username}}">@{{u.username}}</a> created their account {{u.created_utc|timestamp}} and has {{count}} known alt{{help.pluralize(count)}}.<br>
 	They are {% if not u.is_suspended_permanently %}not {% endif %}permanently banned{% if v.admin_level >= PERMS['USER_SHADOWBAN'] %} and they are {% if not v.shadowbanned %}not {% endif %}shadowbanned{% endif %}.</p>
 </section>
 <div class="overflow-x-auto">
