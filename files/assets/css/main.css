@@ -4084,6 +4084,13 @@ ul.comment-section {
 .rounded {
 	border-radius: 0.35rem;
 }
+
+.rounded-section {
+	margin-bottom: 3rem;
+	border: .1px solid var(--gray-400);
+	border-radius: .35rem;
+	overflow: hidden;
+}
 .rounded-circle {
 	border-radius: 50%;
 }
