@@ -768,7 +768,7 @@ def admin_link_accounts(v):
 
 	return redirect(f"/admin/alt_votes?u1={get_account(u1).username}&u2={get_account(u2).username}")
 
-@app.get("/admin/alts/")
+@app.get("/admin/alts/", defaults={"username":None})
 @app.get("/@<username>/alts/")
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
