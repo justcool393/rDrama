@@ -776,20 +776,18 @@ def admin_view_alts(v, username):
 	u = get_user(username or request.values.get('username'))
 	return render_template('admin/alts.html', v=v, u=u, alts=u.alts_unique)
 
-@app.put('/@<username>/alts/<int:other>/deleted')
+@app.route('/@<username>/alts/<int:other>/deleted', methods=["PUT", "DELETE"])
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
 @admin_level_required(PERMS['USER_LINK'])
 def admin_delete_alt(v, username, other):
+	is_deleting_link = request.method == 'PUT' # we're adding the 'deleted' state if a PUT request
 	user1 = get_user(username)
 	user2 = get_account(other)
-	a = Alt(
-		user1 = user1.id,
-		user2 = user2.id,
-		is_manual = True,
-		deleted = True,
-	)
+	a = g.db.query(Alt).filter_by(user1 == user1.id, user2 == user2.id)
+	a.deleted = is_deleting_link
 	g.db.add(a)
-	return {"message": f"Delinked @{user1.username} and @{user2.username} successfully!"}
+	word = 'Delinked' if is_deleting_link else 'Relinked'
+	return {"message": f"{word} @{user1.username} and @{user2.username} successfully!"}
 
 
 @app.get("/admin/removed/posts")

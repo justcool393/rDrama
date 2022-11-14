@@ -21,7 +21,8 @@
 	    <tr>
 		    <th>#</th>
 		    <th>Name</th>
-            <th>Created</th>
+            <th>Account Created</th>
+            <th>Alt Link Created</th>
             <th>Manual</th>
             <th>Delinked</th>
             <th>Actions</th>
@@ -32,15 +33,14 @@
 		    <td>{{loop.index}}</td>
 		    <td>{% include "user_in_table.html" %}</td>
             <td>{{user.created_utc|timestamp}}</td>
+            <td>{{user._alt_created_utc|timestamp}}</td>
             <td>{{user._is_manual}}</td>
             <td>{{user._alt_deleted}}</td>
             <td>
                 <form method="post">
-                    {% if not user._alt_deleted %}
-                        <button type="button" id="remove-alt-{{u.id}}-{{user.id}}" class="btn btn-danger" onclick="postToastReload(this,'/@{{u.username}}/alts/{{user.id}}/deleted', 'PUT')">Delink</button>
-                    {% else %}
-                        <span class="text-muted">Alt already delinked</span>
-                    {% endif %}
+                    {% set method = 'DELETE' if user._alt_deleted else 'PUT' %}
+                    {% set txt = 'Relink' if user._alt_deleted else 'Delink' %}
+                    <button type="button" id="remove-alt-{{u.id}}-{{user.id}}" class="btn btn-danger" onclick="postToastReload(this,'/@{{u.username}}/alts/{{user.id}}/deleted', '{{method}}')">{{txt}}</button>
                 </form>
             </td>
 	    </tr>
