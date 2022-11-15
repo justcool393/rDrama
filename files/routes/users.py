@@ -729,7 +729,7 @@ def u_username(username, v=None):
 
 	if u.unban_utc:
 		if (v and v.client) or request.path.endswith(".json"):
-			return {"data": [x.json for x in listing]}
+			return {"data": [x.json(g.db) for x in listing]}
 		
 		return render_template("userpage.html",
 												unban=u.unban_string,
@@ -743,7 +743,7 @@ def u_username(username, v=None):
 												is_following=is_following)
 
 	if (v and v.client) or request.path.endswith(".json"):
-		return {"data": [x.json for x in listing]}
+		return {"data": [x.json(g.db) for x in listing]}
 	
 	return render_template("userpage.html",
 									u=u,
