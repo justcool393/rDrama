@@ -366,7 +366,7 @@ def comment(v):
 
 	g.db.flush()
 
-	if v.client: return c.json
+	if v.client: return c.json(g.db)
 	return {"comment": render_template("comments.html", v=v, comments=[c])}
 
 
