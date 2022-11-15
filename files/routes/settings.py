@@ -344,6 +344,7 @@ def themecolor(v):
 @auth_required
 @ratelimit_user()
 def gumroad(v):
+	if GUMROAD_TOKEN == DEFAULT_CONFIG_VALUE: abort(404)
 	if not (v.email and v.is_activated):
 		abort(400, f"You must have a verified email to verify {patron} status and claim your rewards!")
 
