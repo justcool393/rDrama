@@ -388,7 +388,7 @@ def titlecolor(v):
 @ratelimit_user()
 def verifiedcolor(v):
 	if not v.verified: abort(403, "You don't have a checkmark")
-	return set_color(v, "verifiedcolor", "verifiedcolor")
+	return set_color(v, "verifiedcolor", request.values.get("verifiedcolor"))
 
 @app.post("/settings/security")
 @limiter.limit(DEFAULT_RATELIMIT_SLOWER)
