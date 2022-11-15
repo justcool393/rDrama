@@ -1058,7 +1058,7 @@ def kofi():
 	verification_token = data['verification_token']
 	if verification_token != KOFI_TOKEN: abort(400)
 
-	id = data['kofi_transaction_weirid']
+	id = data['kofi_transaction_id']
 	created_utc = int(time.mktime(time.strptime(data['timestamp'].split('.')[0], "%Y-%m-%dT%H:%M:%SZ")))
 	type = data['type']
 	amount = 0
