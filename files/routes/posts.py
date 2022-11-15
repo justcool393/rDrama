@@ -545,7 +545,7 @@ def thumbnail_thread(pid:int, db, vid:int):
 		for chunk in image_req.iter_content(1024):
 			file.write(chunk)
 
-	v = get_account(vid)
+	v = db.get(User, vid)
 	url = process_image(name, v, resize=100, uploader_id=post.author_id, db=db)
 	if url:
 		post.thumburl = url
