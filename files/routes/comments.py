@@ -189,7 +189,7 @@ def comment(v):
 			elif file.content_type.startswith('video/'):
 				body += f"\n\n{SITE_FULL}{process_video(file, v)}"
 			elif file.content_type.startswith('audio/'):
-				body += f"\n\n{SITE_FULL}{process_audio(file)}"
+				body += f"\n\n{SITE_FULL}{process_audio(file, v)}"
 			else:
 				abort(415)
 
