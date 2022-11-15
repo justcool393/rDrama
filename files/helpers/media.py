@@ -9,6 +9,7 @@ import imagehash
 from flask import abort, g, has_request_context
 from werkzeug.utils import secure_filename
 from PIL import Image
+from PIL import UnidentifiedImageError
 from PIL.ImageSequence import Iterator
 from sqlalchemy.orm import scoped_session
 
@@ -137,12 +138,21 @@ def process_image(filename:str, v, resize=0, trim=False, uploader_id:Optional[in
 			abort(413, f"Max image/audio size is {MAX_IMAGE_AUDIO_SIZE_MB} MB ({MAX_IMAGE_AUDIO_SIZE_MB_PATRON} MB for paypigs)")
 		return None
 
-	with Image.open(filename) as i:
-		params = ["convert", "-coalesce", filename, "-quality", "88", "-define", "webp:method=5", "-strip", "-auto-orient"]
-		if trim and len(list(Iterator(i))) == 1:
-			params.append("-trim")
-		if resize and i.width > resize:
-			params.extend(["-resize", f"{resize}>"])
+	try:
+		with Image.open(filename) as i:
+			params = ["convert", "-coalesce", filename, "-quality", "88", "-define", "webp:method=5", "-strip", "-auto-orient"]
+			if trim and len(list(Iterator(i))) == 1:
+				params.append("-trim")
+			if resize and i.width > resize:
+				params.extend(["-resize", f"{resize}>"])
+	except UnidentifiedImageError as e:
+		print(f"Couldn't identify an image for {filename}; deleting... (user {v.id if v else '-no user-'})")
+		try:
+			os.remove(filename)
+		except: pass
+		if has_request:
+			abort(415)
+		return None
 
 	params.append(filename)
 	try:
