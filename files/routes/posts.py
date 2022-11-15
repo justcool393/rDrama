@@ -220,7 +220,7 @@ def post_id(pid, anything=None, v=None, sub=None):
 	g.db.add(post)
 
 	if v and v.client:
-		return post.json
+		return post.json(g.db)
 
 	template = "submission.html"
 	if (post.is_banned or post.author.shadowbanned) \
@@ -938,7 +938,7 @@ def submit_post(v, sub=None):
 		send_wpd_message(post.permalink)
 
 	g.db.commit()
-	if v.client: return post.json
+	if v.client: return post.json(g.db)
 	else:
 		post.voted = 1
 		if post.new or 'megathread' in post.title.lower(): sort = 'new'

@@ -94,7 +94,7 @@ def front_all(v, sub=None, subdomain=None):
 		if v.hidevotedon: posts = [x for x in posts if not hasattr(x, 'voted') or not x.voted]
 		award_timers(v)
 
-	if v and v.client: return {"data": [x.json for x in posts], "next_exists": next_exists}
+	if v and v.client: return {"data": [x.json(g.db) for x in posts], "next_exists": next_exists}
 	return render_template("home.html", v=v, listing=posts, next_exists=next_exists, sort=sort, t=t, page=page, sub=sub, home=True, pins=pins, holes=holes)
 
 
@@ -231,7 +231,7 @@ def all_comments(v):
 	next_exists = len(idlist) > PAGE_SIZE
 	idlist = idlist[:PAGE_SIZE]
 
-	if v.client: return {"data": [x.json for x in comments]}
+	if v.client: return {"data": [x.json(g.db) for x in comments]}
 	return render_template("home_comments.html", v=v, sort=sort, t=t, page=page, comments=comments, standalone=True, next_exists=next_exists)
 
 

@@ -173,10 +173,8 @@ class Submission(Base):
 			return f"{SITE_FULL}/assets/images/{SITE_NAME}/site_preview.webp?v=3009"
 		else: return f"{SITE_FULL}/assets/images/default_thumb_link.webp?v=1"
 
-	@property
 	@lazy
-	def json(self):
-
+	def json(self, db:scoped_session):
 		if self.is_banned:
 			return {'is_banned': True,
 					'deleted_utc': self.deleted_utc,
@@ -193,7 +191,6 @@ class Submission(Base):
 					'title': self.title,
 					'permalink': self.permalink,
 					}
-
 
 		flags = {}
 		for f in self.flags: flags[f.user.username] = f.reason
@@ -230,7 +227,7 @@ class Submission(Base):
 				}
 
 		if "replies" in self.__dict__:
-			data["replies"]=[x.json for x in self.replies]
+			data["replies"]=[x.json(db) for x in self.replies]
 
 		return data
 
