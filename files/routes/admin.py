@@ -752,7 +752,7 @@ def admin_add_alt(v, username):
 	a = Alt(
 		user1=user1.id,
 		user2=user2.id,
-		manual=True,
+		is_manual=True,
 		deleted=deleted
 	)
 	g.db.add(a)
