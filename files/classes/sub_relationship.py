@@ -35,5 +35,5 @@ class SubJoin(SubRelationship):
 class SubBlock(SubRelationship):
 	__tablename__ = "sub_blocks"
 
-class SubSubcription(SubRelationship):
+class SubSubscription(SubRelationship):
 	__tablename__ = "sub_subscriptions"
