@@ -308,7 +308,7 @@ def transfer_currency(v:User, username:str, currency_name:Literal['coins', 'proc
 		else:
 			raise ValueError(f"Invalid currency '{currency_name}' got when transferring {amount} from {v.id} to {receiver.id}")
 		g.db.add(receiver)
-		send_repeatable_notification(GIFT_NOTIF_ID, log_message)
+		if GIFT_NOTIF_ID: send_repeatable_notification(GIFT_NOTIF_ID, log_message)
 		send_repeatable_notification(receiver.id, notif_text)
 	g.db.add(v)
 	return {"message": f"{amount - tax} {friendly_currency_name} have been transferred to @{receiver.username}"}
