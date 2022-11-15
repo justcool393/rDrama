@@ -7,6 +7,7 @@ from files.classes import Base
 
 class SubRelationship(Base):
 	__tablename__ = NotImplemented
+	__abstract__ = True
 	user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
 	sub = Column(String(20), ForeignKey("subs.name"), primary_key=True)
 	created_utc = Column(Integer)
