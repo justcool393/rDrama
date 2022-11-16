@@ -12,8 +12,6 @@ from sqlalchemy.sql.sqltypes import *
 from files.classes import Base
 from files.classes.casino_game import Casino_Game
 from files.classes.sub import Sub
-# from files.classes.submission import Submission
-# from files.classes.comment import Comment
 from files.helpers.const import *
 from files.helpers.media import *
 from files.helpers.security import *

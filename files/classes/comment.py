@@ -10,7 +10,6 @@ from sqlalchemy.schema import FetchedValue
 from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
-from files.classes.user import User
 from files.helpers.const import *
 from files.helpers.lazy import lazy
 from files.helpers.regex import *
@@ -85,6 +84,7 @@ class Comment(Base):
 
 	@lazy
 	def can_see(self, v):
+		from files.classes.user import User
 		return User.can_see(v, self)
 		if SITE != 'rdrama.net': return True
 		if not self.parent_submission: return True
