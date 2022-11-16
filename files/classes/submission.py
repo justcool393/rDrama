@@ -80,12 +80,6 @@ class Submission(Base):
 	def can_see(self, v):
 		from files.classes.user import User
 		return User.can_see(v, self)
-		if SITE != 'rdrama.net': return True
-		if self.sub != 'chudrama': return True
-		if v:
-			if v.can_see_chudrama: return True
-			if v.id == self.author_id: return True
-		return False
 
 	@property
 	@lazy

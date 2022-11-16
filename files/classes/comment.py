@@ -86,14 +86,6 @@ class Comment(Base):
 	def can_see(self, v):
 		from files.classes.user import User
 		return User.can_see(v, self)
-		if SITE != 'rdrama.net': return True
-		if not self.parent_submission: return True
-		if self.post.sub != 'chudrama': return True
-		if v:
-			if v.can_see_chudrama: return True
-			if v.id == self.author_id: return True
-			if v.id == self.post.author_id: return True
-		return False
 
 	@lazy
 	def top_comment(self, db:scoped_session):
