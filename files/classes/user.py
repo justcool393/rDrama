@@ -948,7 +948,6 @@ class User(Base):
 		return ''
 	
 	@classmethod
-	@lazy
 	def can_see_content(cls, user:Optional["User"], other) -> bool: #other:Union[Submission, Comment, Sub]) -> bool:
 		'''
 		Whether a user can see this item (be it a submission or comment)'s content.
@@ -971,7 +970,6 @@ class User(Base):
 		return True
 
 	@classmethod
-	@lazy
 	def can_see(cls, user:Optional["User"], other) -> bool: # other:Union[Submission, Comment, Sub, "User"]) -> bool:
 		'''
 		Whether a user can strictly see this item. can_see_content is used where
