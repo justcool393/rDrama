@@ -989,7 +989,7 @@ class User(Base):
 		elif isinstance(other, Sub):
 			return bool(other.name != 'chudrama') or (user and user.can_see_chudrama)
 		elif isinstance(other, User):
-			return bool(user.id == other.id or (user and user.can_see_shadowbanned) or not other.shadowbanned)
+			return bool((user and user.id == other.id) or (user and user.can_see_shadowbanned) or not other.shadowbanned)
 		return True
 
 		
