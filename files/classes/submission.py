@@ -6,7 +6,8 @@ from sqlalchemy import Column, FetchedValue, ForeignKey
 from sqlalchemy.orm import deferred, relationship, scoped_session
 from sqlalchemy.sql.sqltypes import *
 
-from files.classes import Base, User
+from files.classes import Base
+from files.classes.user import User
 from files.helpers.const import *
 from files.helpers.lazy import lazy
 from files.helpers.regex import *
