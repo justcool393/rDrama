@@ -79,7 +79,7 @@ class Submission(Base):
 
 	@lazy
 	def can_see(self, v):
-		return User.can_see(v, self)
+		# return User.can_see(v, self)
 		if SITE != 'rdrama.net': return True
 		if self.sub != 'chudrama': return True
 		if v:
