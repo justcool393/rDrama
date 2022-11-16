@@ -958,7 +958,7 @@ class User(Base):
 		if isinstance(other, Submission) or isinstance(other, Comment):
 				if user and user.id == other.author_id: return True
 				if other.is_banned: return False
-				if other.deleted: return False
+				if other.deleted_utc: return False
 				if other.author.shadowbanned and not (user and user.can_see_shadowbanned): return False
 				if isinstance(other, Submission):
 					if other.club and not (user and user.paid_dues): return False
