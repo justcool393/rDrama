@@ -11,7 +11,6 @@ from sqlalchemy.sql.sqltypes import *
 
 from files.classes import Base
 from files.classes.casino_game import Casino_Game
-from files.classes.sub import Sub
 from files.helpers.const import *
 from files.helpers.media import *
 from files.helpers.security import *
@@ -28,6 +27,7 @@ from .mod import *
 from .mod_logs import *
 from .notifications import Notification
 from .saves import *
+from .sub import Sub
 from .sub_relationship import *
 from .sub_logs import *
 from .subscriptions import *
