@@ -9,9 +9,6 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import not_, and_, or_
 from sqlalchemy.sql.sqltypes import *
 
-import comment
-import submission
-
 from files.classes import Base
 from files.classes.casino_game import Casino_Game
 from files.classes.sub import Sub
@@ -957,14 +954,16 @@ class User(Base):
 		Whether a user can see this item (be it a submission or comment)'s content.
 		If False, they won't be able to view its content.
 		'''
+		from files.classes.submission import Submission
+		from files.classes.comment import Comment
 		if not cls.can_see(user, other): return False
 		if user and user.admin_level >= PERMS["POST_COMMENT_MODERATION"]: return True
-		if isinstance(other, submission.Submission) or isinstance(other, comment.Comment):
+		if isinstance(other, Submission) or isinstance(other, Comment):
 				if user and user.id == other.author_id: return True
 				if other.is_banned: return False
 				if other.deleted: return False
 				if other.author.shadowbanned and not (user and user.can_see_shadowbanned): return False
-				if isinstance(other, submission.Submission):
+				if isinstance(other, Submission):
 					if other.club and not (user and user.paid_dues): return False
 					if other.sub == 'chudrama' and not (user and user.can_see_chudrama): return False
 				else:
@@ -978,10 +977,12 @@ class User(Base):
 		Whether a user can strictly see this item. can_see_content is used where
 		content of a thing can be hidden from view
 		'''
-		if isinstance(other, submission.Submission) or isinstance(other, comment.Comment):
+		from files.classes.submission import Submission
+		from files.classes.comment import Comment
+		if isinstance(other, Submission) or isinstance(other, Comment):
 			if not cls.can_see(user, other.author): return False
 			if user and user.id == other.author_id: return True
-			if isinstance(other, submission.Submission):
+			if isinstance(other, Submission):
 				if other.sub and not cls.can_see(user, other.subr): return False
 			#else:
 				#if other.parent_submission and not self.can_see(other.post): return False
