@@ -105,8 +105,7 @@ class Submission(Base):
 	@property
 	@lazy
 	def fullname(self):
-		return f"p_{self.id}"	
-
+		return f"p_{self.id}"
 
 	@property
 	@lazy
