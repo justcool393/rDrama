@@ -84,6 +84,7 @@ class Comment(Base):
 
 	@lazy
 	def can_see(self, v):
+		return v.can_see(self)
 		if SITE != 'rdrama.net': return True
 		if not self.parent_submission: return True
 		if self.post.sub != 'chudrama': return True
