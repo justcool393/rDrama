@@ -76,17 +76,11 @@ class Submission(Base):
 	def __repr__(self):
 		return f"<Submission(id={self.id})>"
 
-	@lazy
-	def can_see(self, v):
-		from files.classes.user import User
-		return User.can_see(v, self)
-
 	@property
 	@lazy
 	def controversial(self):
 		if self.downvotes > 5 and 0.25 < self.upvotes / self.downvotes < 4: return True
 		return False
-
 
 	@property
 	@lazy

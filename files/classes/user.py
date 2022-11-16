@@ -980,12 +980,16 @@ class User(Base):
 			if user and user.id == other.author_id: return True
 			if isinstance(other, Submission):
 				if other.sub and not cls.can_see(user, other.subr): return False
-			#else:
-				#if other.parent_submission and not self.can_see(other.post): return False
+			else:
+				if not other.parent_submission:
+					if not user: return False
+					if other.sentto == 2: return user.admin_level >= PERMS['VIEW_MODMAIL']  # type: ignore
+					if other.sentto != user.id: return user.admin_level >= PERMS['POST_COMMENT_MODERATION']  # type: ignore
+				# if other.parent_submission and not self.can_see(other.post): return False
 		elif isinstance(other, Sub):
-			return bool(other.name != 'chudrama') or (user and user.can_see_chudrama)
+			return other.name != 'chudrama' or (user and user.can_see_chudrama)
 		elif isinstance(other, User):
-			return bool((user and user.id == other.id) or (user and user.can_see_shadowbanned) or not other.shadowbanned)
+			return (user and user.id == other.id) or (user and user.can_see_shadowbanned) or not other.shadowbanned
 		return True
 
 		

@@ -83,11 +83,6 @@ class Comment(Base):
 		return f"<Comment(id={self.id})>"
 
 	@lazy
-	def can_see(self, v):
-		from files.classes.user import User
-		return User.can_see(v, self)
-
-	@lazy
 	def top_comment(self, db:scoped_session):
 		return db.get(Comment, self.top_comment_id)
 

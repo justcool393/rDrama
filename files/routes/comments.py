@@ -33,15 +33,13 @@ WORDLE_COLOR_MAPPINGS = {-1: "🟥", 0: "🟨", 1: "🟩"}
 def post_pid_comment_cid(cid, pid=None, anything=None, v=None, sub=None):
 	comment = get_comment(cid, v=v)
 	if not User.can_see(v, comment): abort(404)
+	if comment.post and comment.post.club and not User.can_see_content(v, comment): abort(403)
 
 	if v and request.values.get("read"):
 		notif = g.db.query(Notification).filter_by(comment_id=cid, user_id=v.id, read=False).one_or_none()
 		if notif:
 			notif.read = True
 			g.db.add(notif)
-
-	if comment.post and comment.post.club and not (v and (v.paid_dues or v.id in [comment.author_id, comment.post.author_id])): abort(403)
-	if not comment.parent_submission and not (v and (comment.author.id == v.id or comment.sentto == v.id)) and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']) : abort(403)
 	
 	if not pid:
 		if comment.parent_submission: pid = comment.parent_submission
