@@ -955,7 +955,7 @@ class User(Base):
 		from files.classes.comment import Comment
 		if not cls.can_see(user, other): return False
 		if user and user.admin_level >= PERMS["POST_COMMENT_MODERATION"]: return True
-		if isinstance(other, Submission) or isinstance(other, Comment):
+		if isinstance(other, (Submission, Comment)):
 				if user and user.id == other.author_id: return True
 				if other.is_banned: return False
 				if other.deleted_utc: return False
@@ -975,7 +975,7 @@ class User(Base):
 		'''
 		from files.classes.submission import Submission
 		from files.classes.comment import Comment
-		if isinstance(other, Submission) or isinstance(other, Comment):
+		if isinstance(other, (Submission, Comment)):
 			if not cls.can_see(user, other.author): return False
 			if user and user.id == other.author_id: return True
 			if isinstance(other, Submission):
