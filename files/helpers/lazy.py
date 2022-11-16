@@ -11,4 +11,4 @@ def lazy(f):
 			o.__dict__["_lazy"][name] = f(*args, **kwargs)
 		return o.__dict__["_lazy"][name]
 	wrapper.__name__ = f.__name__
-	return
+	return wrapper
