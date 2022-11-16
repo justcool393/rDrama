@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship, scoped_session
 from sqlalchemy.schema import FetchedValue
 from sqlalchemy.sql.sqltypes import *
 
-from files.classes import Base
+from files.classes import Base, User
 from files.helpers.const import *
 from files.helpers.lazy import lazy
 from files.helpers.regex import *
@@ -84,7 +84,7 @@ class Comment(Base):
 
 	@lazy
 	def can_see(self, v):
-		return v.can_see(self)
+		return User.can_see(v, self)
 		if SITE != 'rdrama.net': return True
 		if not self.parent_submission: return True
 		if self.post.sub != 'chudrama': return True

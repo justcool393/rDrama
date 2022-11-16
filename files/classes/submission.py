@@ -6,7 +6,7 @@ from sqlalchemy import Column, FetchedValue, ForeignKey
 from sqlalchemy.orm import deferred, relationship, scoped_session
 from sqlalchemy.sql.sqltypes import *
 
-from files.classes import Base
+from files.classes import Base, User
 from files.helpers.const import *
 from files.helpers.lazy import lazy
 from files.helpers.regex import *
@@ -78,7 +78,7 @@ class Submission(Base):
 
 	@lazy
 	def can_see(self, v):
-		return v.can_see(self)
+		return User.can_see(v, self)
 		if SITE != 'rdrama.net': return True
 		if self.sub != 'chudrama': return True
 		if v:

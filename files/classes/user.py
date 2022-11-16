@@ -946,42 +946,44 @@ class User(Base):
 		return ''
 	
 	@lazy
-	def can_see_content(self, other:Union[Submission, Comment, Sub]) -> bool:
+	@classmethod
+	def can_see_content(cls, user:Optional["User"], other:Union[Submission, Comment, Sub]) -> bool:
 		'''
 		Whether a user can see this item (be it a submission or comment)'s content.
 		If False, they won't be able to view its content.
 		'''
-		if not self.can_see(other): return False
-		if self.admin_level >= PERMS["POST_COMMENT_MODERATION"]: return True
+		if not cls.can_see(user, other): return False
+		if user and user.admin_level >= PERMS["POST_COMMENT_MODERATION"]: return True
 		if isinstance(other, Submission) or isinstance(other, Comment):
-				if self.id == other.author_id: return True
+				if user and user.id == other.author_id: return True
 				if other.is_banned: return False
 				if other.deleted: return False
-				if other.author.shadowbanned and not self.can_see_shadowbanned: return False
+				if other.author.shadowbanned and not (user and user.can_see_shadowbanned): return False
 				if isinstance(other, Submission):
-					if other.club and not self.paid_dues: return False
-					if other.sub == 'chudrama' and not self.can_see_chudrama: return False
+					if other.club and not (user and user.paid_dues): return False
+					if other.sub == 'chudrama' and not (user and user.can_see_chudrama): return False
 				else:
-					if other.parent_submission and not self.can_see_content(other.post): return False
+					if other.parent_submission and not cls.can_see_content(user, other.post): return False
 		return True
 
 	@lazy
-	def can_see(self, other:Union[Submission, Comment, Sub, "User"]) -> bool:
+	@classmethod
+	def can_see(cls, user:Optional["User"], other:Union[Submission, Comment, Sub, "User"]) -> bool:
 		'''
 		Whether a user can strictly see this item. can_see_content is used where
 		content of a thing can be hidden from view
 		'''
 		if isinstance(other, Submission) or isinstance(other, Comment):
-			if not self.can_see(other.author): return False
-			if self.id == other.author_id: return True
+			if not cls.can_see(user, other.author): return False
+			if user and user.id == other.author_id: return True
 			if isinstance(other, Submission):
-				if other.sub and not self.can_see(other.subr): return False
+				if other.sub and not cls.can_see(user, other.subr): return False
 			#else:
 				#if other.parent_submission and not self.can_see(other.post): return False
 		elif isinstance(other, Sub):
-			return bool(other.name != 'chudrama') or self.can_see_chudrama
+			return bool(other.name != 'chudrama') or (user and user.can_see_chudrama)
 		elif isinstance(other, User):
-			return bool(self.id == other.id or self.can_see_shadowbanned or not other.shadowbanned)
+			return bool(user.id == other.id or (user and user.can_see_shadowbanned) or not other.shadowbanned)
 		return True
 
 		
