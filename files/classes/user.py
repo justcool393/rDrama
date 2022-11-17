@@ -985,7 +985,7 @@ class User(Base):
 					if not user: return False
 					if other.sentto == 2: return user.admin_level >= PERMS['VIEW_MODMAIL']  # type: ignore
 					if other.sentto != user.id: return user.admin_level >= PERMS['POST_COMMENT_MODERATION']  # type: ignore
-				if other.parent_submission and not cls.can_see(user, other.post.subr): return False
+				if other.parent_submission and other.post.sub and not cls.can_see(user, other.post.subr): return False
 				# if other.parent_submission and not cls.can_see(user, other.post): return False
 		elif isinstance(other, Sub):
 			return other.name != 'chudrama' or (user and user.can_see_chudrama)
