@@ -146,10 +146,10 @@ class LoggedOutUser():
 		return False
 	
 	def pay_account(self, currency, amount) -> NoReturn:
-		raise NotImplementedError()
+		raise TypeError("Can't pay a logged out user!")
 	
-	def charge_account(self, currency, amount, **kwargs) -> NoReturn:
-		raise NotImplementedError()
+	def charge_account(self, currency, amount, **kwargs) -> bool:
+		return False
 	
 	@property
 	@lazy
