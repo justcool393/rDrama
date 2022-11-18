@@ -4,7 +4,6 @@ from os import environ, listdir, path
 
 from jinja2 import pass_context
 
-from files.classes.user import LoggedOutUser
 from files.helpers.assetcache import assetcache_path
 from files.helpers.const import *
 from files.helpers.settings import get_settings
