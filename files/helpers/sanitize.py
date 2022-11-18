@@ -274,7 +274,7 @@ def sanitize(sanitized, golden=True, limit_pings=0, showmore=True, count_marseys
 	sanitized = reddit_regex.sub(r'\1<a href="https://old.reddit.com/\2" rel="nofollow noopener" target="_blank">/\2</a>', sanitized)
 	sanitized = sub_regex.sub(r'\1<a href="/\2">/\2</a>', sanitized)
 
-	v = getattr(g, 'v', None)
+	v = g.v
 
 	names = set(m.group(2) for m in mention_regex.finditer(sanitized))
 	if limit_pings and len(names) > limit_pings and not v.admin_level >= PERMS['POST_COMMENT_INFINITE_PINGS']: abort(406)

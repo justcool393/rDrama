@@ -1,4 +1,5 @@
 import secrets
+from files.classes.user import LoggedOutUser
 from files.helpers.const import *
 from files.helpers.settings import get_setting
 from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
@@ -28,6 +29,7 @@ def before_request():
 	g.webview = '; wv) ' in ua
 	g.inferior_browser = 'iphone' in ua or 'ipad' in ua or 'ipod' in ua or 'mac os' in ua or ' firefox/' in ua
 	g.is_tor = request.headers.get("cf-ipcountry") == "T1"
+	g.v = LoggedOutUser()
 
 	request.path = request.path.rstrip('/')
 	if not request.path: request.path = '/'
@@ -41,7 +43,7 @@ def before_request():
 def after_request(response):
 	if response.status_code < 400:
 		if CLOUDFLARE_AVAILABLE and CLOUDFLARE_COOKIE_VALUE and getattr(g, 'desires_auth', False):
-			logged_in = bool(getattr(g, 'v', None))
+			logged_in = bool(g.v)
 			response.set_cookie("lo", CLOUDFLARE_COOKIE_VALUE if logged_in else '', max_age=60*60*24*365 if logged_in else 1)
 		if getattr(g, 'db', None):
 			g.db.commit()

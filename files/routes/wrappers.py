@@ -33,7 +33,7 @@ def calc_users(v):
 	return ''
 
 def get_logged_in_user():
-	if hasattr(g, 'v'): return g.v
+	if g.v: return g.v
 	if not getattr(g, 'db', None): g.db = db_session()
 	g.desires_auth = True
 	v = None
@@ -67,9 +67,8 @@ def get_logged_in_user():
 	if request.method.lower() != "get" and get_setting('Read-only mode') and not (v and v.admin_level >= PERMS['SITE_BYPASS_READ_ONLY_MODE']):
 		abort(403)
 
-	g.v = v
-
 	if v:
+		g.v = v
 		v.poor = session.get('poor')
 		# Check against last_active + ACTIVE_TIME to reduce frequency of
 		# UPDATEs in exchange for a ±ACTIVE_TIME margin of error.
@@ -149,7 +148,7 @@ def feature_required(x):
 def ratelimit_user(limit:Union[str, Callable[[], str]]=DEFAULT_RATELIMIT_USER):
 	'''
 	Ratelimits based on a user. This requires at least auth_required (or stronger) to be present, 
-	otherwise logged out users will receive 500s
+	otherwise logged out users may receive errenous 429s
 	'''
 	def inner(func):
 		@functools.wraps(func)

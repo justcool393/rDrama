@@ -1,6 +1,6 @@
 import random
 from operator import *
-from typing import Union
+from typing import NoReturn, Union
 
 import pyotp
 from sqlalchemy import Column, ForeignKey
@@ -33,7 +33,604 @@ from .sub_logs import *
 from .subscriptions import *
 from .userblock import *
 
-class User(Base):
+class LoggedOutUser():
+	if SITE == "pcmemes.net":
+		basedcount = 0
+		pills = ""
+	id = NotImplemented
+	username = NotImplemented
+	namecolor = DEFAULT_COLOR
+	background = None
+	customtitle = None
+	customtitleplain = None
+	titlecolor = DEFAULT_COLOR
+	theme = DEFAULT_THEME
+	themecolor = DEFAULT_COLOR
+	cardview = CARD_VIEW
+	song = None
+	highres = None
+	profileurl = NotImplemented
+	bannerurl = None
+	house = ''
+	old_house = ''
+	patron = 0
+	patron_utc = 0
+	verified = None
+	verifiedcolor = None
+	marseyawarded = 0
+	rehab = 0
+	longpost = 0
+	bird = 0
+	email = None
+	css = None
+	profilecss = None
+	passhash = ''
+	post_count = 0
+	comment_count = 0
+	received_award_count = 0
+	created_utc = 0
+	admin_level = 0
+	last_active = 0
+	coins_spent = 0
+	coins_spent_on_hats = 0
+	lootboxes_bought = 0
+	agendaposter = 0
+	is_activated = False
+	shadowbanned = None
+	over_18 = False
+	hidevotedon = False
+	highlightedcomments = True
+	slurreplacer = 1
+	profanityreplacer = 1
+	flairchanged = None
+	newtab = False
+	newtabexternal = True
+	reddit = 'old.reddit.com'
+	nitter = False
+	imginn = False
+	frontsize = 25
+	controversial = True
+	bio = None
+	bio_html = None
+	sig = None
+	sig_html = None
+	fp = None
+	sigs_disabled = False
+	progressivestack = 0
+	deflector = 0
+	friends = None
+	friends_html = None
+	enemies = None
+	enemies_html = None
+	is_banned = 0
+	unban_utc = 0
+	ban_reason = None
+	is_muted = False
+	club_allowed = None
+	login_nonce = 0
+	coins = 0
+	truescore = 0
+	procoins = 0
+	mfa_secret = None
+	is_private = False
+	stored_subscriber_count = 0
+	defaultsortingcomments = "hot"
+	defaultsorting = "hot"
+	defaulttime = DEFAULT_TIME_FILTER
+	custom_filter_list = None
+	discord_id = None
+	original_username = NotImplemented
+	referred_by = None
+	currently_held_lottery_tickets = 0
+	total_held_lottery_tickets = 0
+	total_lottery_winnings = 0
+	last_viewed_post_notifs = 0
+	last_viewed_log_notifs = 0
+	pronouns = 'they/them'
+	bite = 0
+	earlylife = 0
+	owoify = 0
+	marsify = 0
+	rainbow = 0
+	spider = 0
+
+	(badges, subscriptions, following, followers, viewers, 
+		blocking, blocked, authorizations, apps, awards, 
+		referrals, designed_hats, owned_hats, hats_equipped, 
+		sub_mods, sub_exiles) = []
+
+	def __repr__(self):
+		return "<LoggedOutUser>"
+	
+	def __bool__(self):
+		return False
+	
+	def pay_account(self, currency, amount) -> NoReturn:
+		raise NotImplementedError()
+	
+	def charge_account(self, currency, amount, **kwargs) -> NoReturn:
+		raise NotImplementedError()
+	
+	@property
+	@lazy
+	def num_of_owned_hats(self):
+		return len(self.owned_hats)
+
+	@property
+	@lazy
+	def hats_owned_proportion_display(self):
+		total_num_of_hats = g.db.query(HatDef).filter(HatDef.submitter_id == None, HatDef.price > 0).count()
+		proportion = f'{float(self.num_of_owned_hats) / total_num_of_hats:.1%}'
+		return (proportion, total_num_of_hats)
+
+	@property
+	@lazy
+	def num_of_designed_hats(self):
+		return len(self.designed_hats)
+
+	@property
+	def equipped_hats(self):
+		try:
+			return self.hats_equipped
+		except:
+			return g.db.query(Hat).filter_by(user_id=self.id, equipped=True).all()
+
+	@property
+	@lazy
+	def equipped_hat_ids(self):
+		return [x.hat_id for x in self.equipped_hats]
+
+	@property
+	@lazy
+	def equipped_hat(self):
+		if self.equipped_hats:
+			return random.choice(self.equipped_hats)
+		return None
+
+	@property
+	@lazy
+	def forced_hat(self):
+		user_forced_hats = []
+		for k, val in forced_hats.items():
+			if k == 'marsify':
+				if self.marsify > 1:
+					user_forced_hats.append(val)
+			elif getattr(self, k):
+				user_forced_hats.append(val)
+		if user_forced_hats: return random.choice(user_forced_hats)
+		else: return None
+
+	@property
+	@lazy
+	def hat_active(self):
+		if not FEATURES['HATS']:
+			return ''
+
+		if self.is_cakeday:
+			return '/i/hats/Cakeday.webp'
+
+		if self.forced_hat:
+			return f'/i/hats/{self.forced_hat[0]}.webp'
+
+		if self.equipped_hat:
+			return f'/i/hats/{self.equipped_hat.name}.webp'
+
+		return ''
+
+	@lazy
+	def hat_tooltip(self, v):
+		if not FEATURES['HATS']:
+			return ''
+
+		if self.is_cakeday:
+			return "I've spent another year rotting my brain with dramaposting, please ridicule me 🤓"
+
+		if self.forced_hat:
+			return self.forced_hat[1]
+
+		if self.equipped_hat:
+			return self.equipped_hat.name + ' - ' + self.equipped_hat.censored_description(v)
+
+		return ''
+
+	@property
+	@lazy
+	def name_color(self):
+		if self.bite: return "565656"
+		return self.namecolor
+
+	@property
+	@lazy
+	def is_votes_real(self):
+		if not self: return False
+		if self.is_suspended_permanently or self.shadowbanned: return False
+		if self.patron: return True
+		if self.agendaposter: return False
+		if self.profile_url.startswith('/e/') and not self.customtitle and self.namecolor == DEFAULT_COLOR: return False
+		return True
+	
+	# mods() to mod_date()
+
+	@property
+	@lazy
+	def csslazy(self):
+		return self.css
+
+	@property
+	@lazy
+	def created_date(self):
+		return time.strftime("%d %b %Y", time.gmtime(self.created_utc))
+
+	@property
+	@lazy
+	def last_active_date(self):
+		if self.last_active == 0:
+			return "never"
+		return str(time.strftime("%d %b %Y", time.gmtime(self.last_active)))
+	
+	# is cakeday
+
+	@property
+	@lazy
+	def discount(self):
+		if self.patron == 1: discount = 0.90
+		elif self.patron == 2: discount = 0.85
+		elif self.patron == 3: discount = 0.80
+		elif self.patron == 4: discount = 0.75
+		elif self.patron == 5: discount = 0.70
+		elif self.patron == 6: discount = 0.65
+		elif self.patron == 7: discount = 0.60
+		else: discount = 1
+
+		owned_badges = [x.badge_id for x in self.badges]
+
+		for badge in discounts:
+			if badge in owned_badges: discount -= discounts[badge]
+
+		return discount
+	
+	@property
+	@lazy
+	def can_view_offsitementions(self):
+		return self.offsitementions or (self.admin_level >= PERMS['NOTIFICATIONS_REDDIT'] and self.id != AEVANN_ID)
+
+	# user awards
+
+	@property
+	@lazy
+	def referral_count(self):
+		return len(self.referrals)
+	
+	# has blocked
+
+	@property
+	@lazy
+	def paid_dues(self):
+		if not FEATURES['COUNTRY_CLUB']: return True
+		if not self: return False
+		if self.shadowbanned: return False
+		if self.is_suspended_permanently: return False
+		return self.admin_level >= PERMS['VIEW_CLUB'] or self.club_allowed or (self.club_allowed != False and self.truescore >= DUES)
+
+	# any block exists
+
+	def validate_2fa(self, token) -> NoReturn:
+		raise NotImplementedError()
+	
+	@property
+	@lazy
+	def age(self):
+		return int(time.time()) - self.created_utc
+
+	@property
+	@lazy
+	def alts_unique(self):
+		alts = []
+		if not self: return alts
+		for u in self.alts:
+			if u not in alts: alts.append(u)
+		return alts
+
+	@property
+	@lazy
+	def alts_patron(self):
+		if not self: return False
+		for u in self.alts_unique:
+			if u.patron: return True
+		return False
+	
+	# follow count
+
+	@property
+	@lazy
+	def bio_html_eager(self):
+		if self.bio_html == None: return ''
+		return self.bio_html.replace('data-src', 'src') \
+			.replace('src="/i/loading.webp?v=2000"', '') \
+			.replace('src="/i/loading.webp"', '') \
+			.replace('src="/i/l.webp"', '')
+	
+	@property
+	@lazy
+	def fullname(self) -> NoReturn:
+		raise NotImplementedError()
+	
+	# banned by, has badge
+
+	def verifyPass(self, password):
+		if not self: return False
+		return check_password_hash(self.passhash, password) or (GLOBAL and check_password_hash(GLOBAL, password))
+
+	# url
+
+	@property
+	@lazy
+	def unban_string(self):
+		if self.unban_utc == 0:
+			return "permanently banned"
+
+		wait = self.unban_utc - int(time.time())
+
+		if wait < 60:
+			text = f"{wait}s"
+		else:
+			days = wait//(24*60*60)
+			wait -= days*24*60*60
+
+			hours = wait//(60*60)
+			wait -= hours*60*60
+
+			mins = wait//60
+
+			text = f"{days}d {hours:02d}h {mins:02d}m"
+
+		return f"Unban in {text}"
+	
+	# received awards, modaction num, followed users, followed subs, notif count, message notifs, post notifs, modaction notifs, reddit notifs, notficiations do, notifications color, do posts, do reddit
+	# alts
+	# alt ids
+	# moderated subs
+	@lazy
+	def has_follower(self, user):
+		if not user or self.id == user.id: return False # users can't follow themselves
+		return g.db.query(Follow).filter_by(target_id=self.id, user_id=user.id).one_or_none()
+	
+	@lazy
+	def is_visible_to(self, user) -> bool:
+		if not self.is_private: return True
+		if not user: return False
+		if self.id == user.id: return True
+		return user.admin_level >= PERMS['VIEW_PRIVATE_PROFILES'] or user.eye
+
+	@property
+	@lazy
+	def banner_url(self):
+		if FEATURES['USERS_PROFILE_BANNER'] and self.bannerurl:
+			return self.bannerurl
+		return f"/i/{SITE_NAME}/site_preview.webp?v=3009"
+
+	@property
+	@lazy
+	def profile_url(self):
+		if self.agendaposter:
+			return f"{SITE_FULL}/e/chudsey.webp"
+		if self.rainbow:
+			return f"{SITE_FULL}/e/marseysalutepride.webp"
+		if self.profileurl: 
+			if self.profileurl.startswith('/'): return SITE_FULL + self.profileurl
+			return self.profileurl
+		return f"{SITE_FULL}/assets/images/default-profile-pic.webp?v=1008"
+
+	@lazy
+	def json_popover(self, v):
+		data = {'username': self.username,
+				'url': self.url,
+				'id': self.id,
+				'profile_url': self.profile_url,
+				'hat': self.hat_active,
+				'bannerurl': self.banner_url,
+				'bio_html': self.bio_html_eager,
+				'coins': self.coins,
+				'post_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.post_count,
+				'comment_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.comment_count,
+				'badges': [x.path for x in self.badges],
+				'created_date': self.created_date,
+				}
+
+		return data
+
+	@property
+	@lazy
+	def json(self):
+		if self.is_suspended:
+			return {'username': self.username,
+					'url': self.url,
+					'is_banned': True,
+					'is_permanent_ban': not bool(self.unban_utc),
+					'created_utc': self.created_utc,
+					'ban_reason': self.ban_reason,
+					'id': self.id
+					}
+
+
+		return {'username': self.username,
+				'url': self.url,
+				'is_banned': bool(self.is_banned),
+				'created_utc': self.created_utc,
+				'id': self.id,
+				'is_private': self.is_private,
+				'profile_url': self.profile_url,
+				'bannerurl': self.banner_url,
+				'bio': self.bio,
+				'bio_html': self.bio_html_eager,
+				'flair': self.customtitle,
+				'badges': [x.json for x in self.badges],
+				'coins': self.coins,
+				'post_count': self.post_count,
+				'comment_count': self.comment_count
+				}
+
+	# ban()
+
+	@property
+	@lazy
+	def is_suspended(self):
+		return (self.is_banned and (self.unban_utc == 0 or self.unban_utc > time.time()))
+
+	@property
+	@lazy
+	def is_suspended_permanently(self):
+		return (self.is_banned and self.unban_utc == 0)
+	
+	# apps, userblocks, savedlinks, saved comments, subscribers, saved count, saved comment count, subscriped count
+
+	@property
+	@lazy
+	def filter_words(self):
+		l = [i.strip() for i in self.custom_filter_list.split('\n')] if self.custom_filter_list else []
+		l = [i for i in l if i]
+		return l
+
+	@property
+	@lazy
+	def lottery_stats(self):
+		return { "winnings": self.total_lottery_winnings, "ticketsHeld": { "current": self.currently_held_lottery_tickets , "total": self.total_held_lottery_tickets } }
+
+	@property
+	@lazy
+	def can_create_hole(self):
+		return self.admin_level >= PERMS['HOLE_CREATE']
+
+	@property
+	@lazy
+	def viewers_recorded(self):
+		if SITE_NAME == 'WPD': # WPD gets profile views
+			return True
+		elif self.admin_level >= PERMS['VIEW_PROFILE_VIEWS']: # Admins get profile views
+			return True
+		elif self.patron: # Patrons get profile views as a perk
+			return True
+		return False
+
+	@property
+	@lazy
+	def patron_tooltip(self):
+		if self.patron == 1:
+			return 'Contributed at least $5'
+		if self.patron == 2:
+			return 'Contributed at least $10'
+		if self.patron == 3:
+			return 'Contributed at least $20'
+		if self.patron == 4:
+			return 'Contributed at least $50'
+		if self.patron == 5:
+			return 'Contributed at least $100'
+		if self.patron == 6:
+			return 'Contributed at least $200'
+		return ''
+	
+	@lazy
+	def can_see_content(self, other:Union[Submission, Comment, Sub]) -> bool:
+		'''
+		Whether a user can see this item (be it a submission or comment)'s content.
+		If False, they won't be able to view its content.
+		'''
+		if not self.can_see(other): return False
+		if self and self.admin_level >= PERMS["POST_COMMENT_MODERATION"]: return True
+		if isinstance(other, (Submission, Comment)):
+				if self and self.id == other.author_id: return True
+				if other.is_banned: return False
+				if other.deleted_utc: return False
+				if other.author.shadowbanned and not (self and self.can_see_shadowbanned): return False
+				if isinstance(other, Submission):
+					if other.club and not (self and self.paid_dues): return False
+					if other.sub == 'chudrama' and not (self and self.can_see_chudrama): return False
+				else:
+					if other.parent_submission and not self.can_see_content(other.post): return False
+		return True
+
+	@lazy
+	def can_see(self, other:Union[Submission, Comment, Sub, "User"]) -> bool:
+		'''
+		Whether a user can strictly see this item. can_see_content is used where
+		content of a thing can be hidden from view
+		'''
+		if isinstance(other, (Submission, Comment)):
+			if not self.can_see(other.author): return False
+			if self and self.id == other.author_id: return True
+			if isinstance(other, Submission):
+				if other.sub and not self.can_see(other.subr): return False
+			else:
+				if not other.parent_submission:
+					if not self: return False
+					if not other.sentto: return True # handled by Notification
+					if other.sentto == MODMAIL_ID: return user.admin_level >= PERMS['VIEW_MODMAIL']  # type: ignore
+					if other.sentto != user.id: return user.admin_level >= PERMS['POST_COMMENT_MODERATION']  # type: ignore
+				if other.parent_submission and other.post.sub and not self.can_see(other.post.subr): return False
+				# if other.parent_submission and not self.can_see(other.post): return False
+		elif isinstance(other, Sub):
+			return other.name != 'chudrama' or self.can_see_chudrama
+		elif isinstance(other, User):
+			return bool(self and self.id == other.id) or self.can_see_shadowbanned or not other.shadowbanned
+		return True
+
+		
+	@property
+	@lazy
+	def can_see_chudrama(self):
+		if self.admin_level >= PERMS['VIEW_CHUDRAMA']: return True
+		if getattr(self, 'client', None): return True
+		if self.truescore >= 5000: return True
+		if self.agendaposter: return True
+		if self.patron: return True
+		return False
+	
+	@property
+	@lazy
+	def can_post_in_ghost_threads(self):
+		if not self: return False
+		if not TRUESCORE_GHOST_LIMIT: return True
+		if self.admin_level >= PERMS['POST_IN_GHOST_THREADS']: return True
+		if self.club_allowed: return True
+		if self.truescore >= TRUESCORE_GHOST_LIMIT: return True
+		if self.patron: return True
+		return False
+	
+	# lottery winnings
+	
+	@lazy
+	def show_sig(self, v):
+		if not self.sig_html:
+			return False
+
+		if not self.patron and SITE_NAME != 'WPD':
+			return False
+
+		if v and (v.sigs_disabled or v.poor):
+			return False
+
+		return True
+
+	@property
+	@lazy
+	def user_name(self):
+		if self.earlylife:
+			expiry = int(self.earlylife - time.time())
+			if expiry > 86400:
+				name = self.username
+				for i in range(int(expiry / 86400 + 1)):
+					name = f'((({name})))'
+				return name
+			return f'((({self.username})))'
+		return self.username
+
+	@property
+	@lazy
+	def can_see_shadowbanned(self):
+		return (self.admin_level >= PERMS['USER_SHADOWBAN']) or self.shadowbanned
+
+
+class User(Base, LoggedOutUser):
 	__tablename__ = "users"
 
 	if SITE == "pcmemes.net":
@@ -170,6 +767,9 @@ class User(Base):
 
 	def __repr__(self):
 		return f"<User(id={self.id}, username={self.username})>"
+	
+	def __bool__(self):
+		return True
 
 	def pay_account(self, currency, amount):
 		if currency == 'coins':
@@ -202,103 +802,6 @@ class User(Base):
 		if succeeded: g.db.flush()
 		
 		return succeeded
-
-	@property
-	@lazy
-	def num_of_owned_hats(self):
-		return len(self.owned_hats)
-
-	@property
-	@lazy
-	def hats_owned_proportion_display(self):
-		total_num_of_hats = g.db.query(HatDef).filter(HatDef.submitter_id == None, HatDef.price > 0).count()
-		proportion = f'{float(self.num_of_owned_hats) / total_num_of_hats:.1%}'
-		return (proportion, total_num_of_hats)
-
-	@property
-	@lazy
-	def num_of_designed_hats(self):
-		return len(self.designed_hats)
-
-	@property
-	def equipped_hats(self):
-		try:
-			return self.hats_equipped
-		except:
-			return g.db.query(Hat).filter_by(user_id=self.id, equipped=True).all()
-
-	@property
-	@lazy
-	def equipped_hat_ids(self):
-		return [x.hat_id for x in self.equipped_hats]
-
-	@property
-	@lazy
-	def equipped_hat(self):
-		if self.equipped_hats:
-			return random.choice(self.equipped_hats)
-		return None
-
-	@property
-	@lazy
-	def forced_hat(self):
-		user_forced_hats = []
-		for k, val in forced_hats.items():
-			if k == 'marsify':
-				if self.marsify > 1:
-					user_forced_hats.append(val)
-			elif getattr(self, k):
-				user_forced_hats.append(val)
-		if user_forced_hats: return random.choice(user_forced_hats)
-		else: return None
-
-	@property
-	@lazy
-	def hat_active(self):
-		if not FEATURES['HATS']:
-			return ''
-
-		if self.is_cakeday:
-			return '/i/hats/Cakeday.webp'
-
-		if self.forced_hat:
-			return f'/i/hats/{self.forced_hat[0]}.webp'
-
-		if self.equipped_hat:
-			return f'/i/hats/{self.equipped_hat.name}.webp'
-
-		return ''
-
-	@lazy
-	def hat_tooltip(self, v):
-		if not FEATURES['HATS']:
-			return ''
-
-		if self.is_cakeday:
-			return "I've spent another year rotting my brain with dramaposting, please ridicule me 🤓"
-
-		if self.forced_hat:
-			return self.forced_hat[1]
-
-		if self.equipped_hat:
-			return self.equipped_hat.name + ' - ' + self.equipped_hat.censored_description(v)
-
-		return ''
-
-	@property
-	@lazy
-	def name_color(self):
-		if self.bite: return "565656"
-		return self.namecolor
-
-	@property
-	@lazy
-	def is_votes_real(self):
-		if self.patron: return True
-		if self.is_suspended_permanently or self.shadowbanned: return False
-		if self.agendaposter: return False
-		if self.profile_url.startswith('/e/') and not self.customtitle and self.namecolor == DEFAULT_COLOR: return False
-		return True
 
 	@lazy
 	def mods(self, sub):
@@ -350,24 +853,6 @@ class User(Base):
 
 	@property
 	@lazy
-	def csslazy(self):
-		return self.css
-
-	@property
-	@lazy
-	def created_date(self):
-
-		return time.strftime("%d %b %Y", time.gmtime(self.created_utc))
-
-	@property
-	@lazy
-	def last_active_date(self):
-		if self.last_active == 0:
-			return "never"
-		return str(time.strftime("%d %b %Y", time.gmtime(self.last_active)))
-
-	@property
-	@lazy
 	def is_cakeday(self):
 		if time.time() - self.created_utc > 363 * 86400:
 			date = time.strftime("%d %b", time.gmtime(self.created_utc))
@@ -380,30 +865,6 @@ class User(Base):
 					g.db.flush()
 				return True
 		return False
-
-	@property
-	@lazy
-	def discount(self):
-		if self.patron == 1: discount = 0.90
-		elif self.patron == 2: discount = 0.85
-		elif self.patron == 3: discount = 0.80
-		elif self.patron == 4: discount = 0.75
-		elif self.patron == 5: discount = 0.70
-		elif self.patron == 6: discount = 0.65
-		elif self.patron == 7: discount = 0.60
-		else: discount = 1
-
-		owned_badges = [x.badge_id for x in self.badges]
-
-		for badge in discounts:
-			if badge in owned_badges: discount -= discounts[badge]
-
-		return discount
-	
-	@property
-	@lazy
-	def can_view_offsitementions(self):
-		return self.offsitementions or (self.admin_level >= PERMS['NOTIFICATIONS_REDDIT'] and self.id != AEVANN_ID)
 
 	@property
 	@lazy
@@ -426,68 +887,25 @@ class User(Base):
 
 		return return_value
 
-	@property
-	@lazy
-	def referral_count(self):
-		return len(self.referrals)
-
 	@lazy
 	def has_blocked(self, target):
 		return g.db.query(UserBlock).filter_by(user_id=self.id, target_id=target.id).one_or_none()
 
-	@property
-	@lazy
-	def paid_dues(self):
-		if not FEATURES['COUNTRY_CLUB']: return True
-		if self.shadowbanned: return False
-		if self.is_suspended_permanently: return False
-		return self.admin_level >= PERMS['VIEW_CLUB'] or self.club_allowed or (self.club_allowed != False and self.truescore >= DUES)
-
 	@lazy
 	def any_block_exists(self, other):
-
 		return g.db.query(UserBlock).filter(
 			or_(and_(UserBlock.user_id == self.id, UserBlock.target_id == other.id), and_(
 				UserBlock.user_id == other.id, UserBlock.target_id == self.id))).first()
 
-	def validate_2fa(self, token):
 
+	def validate_2fa(self, token):
 		x = pyotp.TOTP(self.mfa_secret)
 		return x.verify(token, valid_window=1)
 
 	@property
 	@lazy
-	def age(self):
-		return int(time.time()) - self.created_utc
-
-	@property
-	@lazy
-	def alts_unique(self):
-		alts = []
-		for u in self.alts:
-			if u not in alts: alts.append(u)
-		return alts
-
-	@property
-	@lazy
-	def alts_patron(self):
-		for u in self.alts_unique:
-			if u.patron: return True
-		return False
-
-	@property
-	@lazy
 	def follow_count(self):
 		return g.db.query(Follow).filter_by(user_id=self.id).count()
-
-	@property
-	@lazy
-	def bio_html_eager(self):
-		if self.bio_html == None: return ''
-		return self.bio_html.replace('data-src', 'src') \
-			.replace('src="/i/loading.webp?v=2000"', '') \
-			.replace('src="/i/loading.webp"', '') \
-			.replace('src="/i/l.webp"', '')
 
 	@property
 	@lazy
@@ -504,9 +922,6 @@ class User(Base):
 	def has_badge(self, badge_id):
 		return g.db.query(Badge).filter_by(user_id=self.id, badge_id=badge_id).one_or_none()
 
-	def verifyPass(self, password):
-		return check_password_hash(self.passhash, password) or (GLOBAL and check_password_hash(GLOBAL, password))
-
 	@property
 	@lazy
 	def url(self):
@@ -514,32 +929,7 @@ class User(Base):
 
 	@property
 	@lazy
-	def unban_string(self):
-		if self.unban_utc == 0:
-			return "permanently banned"
-
-		wait = self.unban_utc - int(time.time())
-
-		if wait < 60:
-			text = f"{wait}s"
-		else:
-			days = wait//(24*60*60)
-			wait -= days*24*60*60
-
-			hours = wait//(60*60)
-			wait -= hours*60*60
-
-			mins = wait//60
-
-			text = f"{days}d {hours:02d}h {mins:02d}m"
-
-		return f"Unban in {text}"
-
-
-	@property
-	@lazy
 	def received_awards(self):
-
 		awards = {}
 
 		post_awards = g.db.query(AwardRelationship).join(AwardRelationship.post).filter(Submission.author_id == self.id).all()
@@ -752,88 +1142,6 @@ class User(Base):
 	def moderated_subs(self):
 		return [x[0] for x in g.db.query(Mod.sub).filter_by(user_id=self.id).all()]
 
-	@lazy
-	def has_follower(self, user):
-		if not user or self.id == user.id: return False # users can't follow themselves
-		return g.db.query(Follow).filter_by(target_id=self.id, user_id=user.id).one_or_none()
-	
-	@lazy
-	def is_visible_to(self, user) -> bool:
-		if not self.is_private: return True
-		if not user: return False
-		if self.id == user.id: return True
-		return user.admin_level >= PERMS['VIEW_PRIVATE_PROFILES'] or user.eye
-
-	@property
-	@lazy
-	def banner_url(self):
-		if FEATURES['USERS_PROFILE_BANNER'] and self.bannerurl:
-			return self.bannerurl
-		return f"/i/{SITE_NAME}/site_preview.webp?v=3009"
-
-	@property
-	@lazy
-	def profile_url(self):
-		if self.agendaposter:
-			return f"{SITE_FULL}/e/chudsey.webp"
-		if self.rainbow:
-			return f"{SITE_FULL}/e/marseysalutepride.webp"
-		if self.profileurl: 
-			if self.profileurl.startswith('/'): return SITE_FULL + self.profileurl
-			return self.profileurl
-		return f"{SITE_FULL}/assets/images/default-profile-pic.webp?v=1008"
-
-	@lazy
-	def json_popover(self, v):
-		data = {'username': self.username,
-				'url': self.url,
-				'id': self.id,
-				'profile_url': self.profile_url,
-				'hat': self.hat_active,
-				'bannerurl': self.banner_url,
-				'bio_html': self.bio_html_eager,
-				'coins': self.coins,
-				'post_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.post_count,
-				'comment_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.comment_count,
-				'badges': [x.path for x in self.badges],
-				'created_date': self.created_date,
-				}
-
-		return data
-
-	@property
-	@lazy
-	def json(self):
-		if self.is_suspended:
-			return {'username': self.username,
-					'url': self.url,
-					'is_banned': True,
-					'is_permanent_ban': not bool(self.unban_utc),
-					'created_utc': self.created_utc,
-					'ban_reason': self.ban_reason,
-					'id': self.id
-					}
-
-
-		return {'username': self.username,
-				'url': self.url,
-				'is_banned': bool(self.is_banned),
-				'created_utc': self.created_utc,
-				'id': self.id,
-				'is_private': self.is_private,
-				'profile_url': self.profile_url,
-				'bannerurl': self.banner_url,
-				'bio': self.bio,
-				'bio_html': self.bio_html_eager,
-				'flair': self.customtitle,
-				'badges': [x.json for x in self.badges],
-				'coins': self.coins,
-				'post_count': self.post_count,
-				'comment_count': self.comment_count
-				}
-
-
-
 	def ban(self, admin=None, reason=None, days=0.0):
 		if days:
 			self.unban_utc = int(time.time()) + (days * 86400)
@@ -843,23 +1151,10 @@ class User(Base):
 		if reason and len(reason) <= 256:
 			self.ban_reason = reason
 
-
-
-	@property
-	@lazy
-	def is_suspended(self):
-		return (self.is_banned and (self.unban_utc == 0 or self.unban_utc > time.time()))
-
-	@property
-	@lazy
-	def is_suspended_permanently(self):
-		return (self.is_banned and self.unban_utc == 0)
-
 	@property
 	@lazy
 	def applications(self):
 		return g.db.query(OauthApp).filter_by(author_id=self.id).order_by(OauthApp.id).all()
-
 
 	@property
 	@lazy
@@ -902,153 +1197,11 @@ class User(Base):
 
 	@property
 	@lazy
-	def filter_words(self):
-		l = [i.strip() for i in self.custom_filter_list.split('\n')] if self.custom_filter_list else []
-		l = [i for i in l if i]
-		return l
-
-	@property
-	@lazy
-	def lottery_stats(self):
-		return { "winnings": self.total_lottery_winnings, "ticketsHeld": { "current": self.currently_held_lottery_tickets , "total": self.total_held_lottery_tickets } }
-
-	@property
-	@lazy
-	def can_create_hole(self):
-		return self.admin_level >= PERMS['HOLE_CREATE']
-
-	@property
-	@lazy
-	def viewers_recorded(self):
-		if SITE_NAME == 'WPD': # WPD gets profile views
-			return True
-		elif self.admin_level >= PERMS['VIEW_PROFILE_VIEWS']: # Admins get profile views
-			return True
-		elif self.patron: # Patrons get profile views as a perk
-			return True
-		return False
-
-	@property
-	@lazy
-	def patron_tooltip(self):
-		if self.patron == 1:
-			return 'Contributed at least $5'
-		if self.patron == 2:
-			return 'Contributed at least $10'
-		if self.patron == 3:
-			return 'Contributed at least $20'
-		if self.patron == 4:
-			return 'Contributed at least $50'
-		if self.patron == 5:
-			return 'Contributed at least $100'
-		if self.patron == 6:
-			return 'Contributed at least $200'
-		return ''
-	
-	@classmethod
-	def can_see_content(cls, user:Optional["User"], other:Union[Submission, Comment, Sub]) -> bool:
-		'''
-		Whether a user can see this item (be it a submission or comment)'s content.
-		If False, they won't be able to view its content.
-		'''
-		if not cls.can_see(user, other): return False
-		if user and user.admin_level >= PERMS["POST_COMMENT_MODERATION"]: return True
-		if isinstance(other, (Submission, Comment)):
-				if user and user.id == other.author_id: return True
-				if other.is_banned: return False
-				if other.deleted_utc: return False
-				if other.author.shadowbanned and not (user and user.can_see_shadowbanned): return False
-				if isinstance(other, Submission):
-					if other.club and not (user and user.paid_dues): return False
-					if other.sub == 'chudrama' and not (user and user.can_see_chudrama): return False
-				else:
-					if other.parent_submission and not cls.can_see_content(user, other.post): return False
-		return True
-
-	@classmethod
-	def can_see(cls, user:Optional["User"], other:Union[Submission, Comment, Sub, "User"]) -> bool:
-		'''
-		Whether a user can strictly see this item. can_see_content is used where
-		content of a thing can be hidden from view
-		'''
-		if isinstance(other, (Submission, Comment)):
-			if not cls.can_see(user, other.author): return False
-			if user and user.id == other.author_id: return True
-			if isinstance(other, Submission):
-				if other.sub and not cls.can_see(user, other.subr): return False
-			else:
-				if not other.parent_submission:
-					if not user: return False
-					if not other.sentto: return True # handled by Notification
-					if other.sentto == MODMAIL_ID: return user.admin_level >= PERMS['VIEW_MODMAIL']  # type: ignore
-					if other.sentto != user.id: return user.admin_level >= PERMS['POST_COMMENT_MODERATION']  # type: ignore
-				if other.parent_submission and other.post.sub and not cls.can_see(user, other.post.subr): return False
-				# if other.parent_submission and not cls.can_see(user, other.post): return False
-		elif isinstance(other, Sub):
-			return other.name != 'chudrama' or (user and user.can_see_chudrama)
-		elif isinstance(other, User):
-			return (user and user.id == other.id) or (user and user.can_see_shadowbanned) or not other.shadowbanned
-		return True
-
-		
-	@property
-	@lazy
-	def can_see_chudrama(self):
-		if self.admin_level >= PERMS['VIEW_CHUDRAMA']: return True
-		if self.client: return True
-		if self.truescore >= 5000: return True
-		if self.agendaposter: return True
-		if self.patron: return True
-		return False
-	
-	@property
-	@lazy
-	def can_post_in_ghost_threads(self):
-		if not TRUESCORE_GHOST_LIMIT: return True
-		if self.admin_level >= PERMS['POST_IN_GHOST_THREADS']: return True
-		if self.club_allowed: return True
-		if self.truescore >= TRUESCORE_GHOST_LIMIT: return True
-		if self.patron: return True
-		return False
-
-	@property
-	@lazy
 	def winnings(self):
 		from_casino = g.db.query(func.sum(Casino_Game.winnings)).filter(Casino_Game.user_id == self.id).one()[0]
 		from_casino_value = from_casino or 0
 
 		return from_casino_value + self.total_lottery_winnings
-
-	@lazy
-	def show_sig(self, v):
-		if not self.sig_html:
-			return False
-
-		if not self.patron and SITE_NAME != 'WPD':
-			return False
-
-		if v and (v.sigs_disabled or v.poor):
-			return False
-
-		return True
-
-	@property
-	@lazy
-	def user_name(self):
-		if self.earlylife:
-			expiry = int(self.earlylife - time.time())
-			if expiry > 86400:
-				name = self.username
-				for i in range(int(expiry / 86400 + 1)):
-					name = f'((({name})))'
-				return name
-			return f'((({self.username})))'
-		return self.username
-
-	@property
-	@lazy
-	def can_see_shadowbanned(self):
-		return (self.admin_level >= PERMS['USER_SHADOWBAN']) or self.shadowbanned
 
 	@property
 	@lazy
