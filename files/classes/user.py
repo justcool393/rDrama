@@ -272,11 +272,6 @@ class LoggedOutUser():
 			if badge in owned_badges: discount -= discounts[badge]
 
 		return discount
-	
-	@property
-	@lazy
-	def can_view_offsitementions(self):
-		return self.offsitementions or (self.admin_level >= PERMS['NOTIFICATIONS_REDDIT'] and self.id != AEVANN_ID)
 
 	# user awards
 
@@ -484,10 +479,6 @@ class LoggedOutUser():
 	def lottery_stats(self):
 		return { "winnings": self.total_lottery_winnings, "ticketsHeld": { "current": self.currently_held_lottery_tickets , "total": self.total_held_lottery_tickets } }
 
-	@property
-	@lazy
-	def can_create_hole(self):
-		return self.admin_level >= PERMS['HOLE_CREATE']
 
 	@property
 	@lazy
@@ -585,6 +576,16 @@ class LoggedOutUser():
 		elif isinstance(other, User):
 			return bool(self and self.id == other.id) or self.can_see_shadowbanned or not other.shadowbanned
 		return True
+	
+	@property
+	@lazy
+	def can_create_hole(self) -> bool:
+		return bool(self) and self.admin_level >= PERMS['HOLE_CREATE']
+
+	@property
+	@lazy
+	def can_view_offsitementions(self) -> bool:
+		return bool(self) and (self.offsitementions or (self.admin_level >= PERMS['NOTIFICATIONS_REDDIT'] and self.id != AEVANN_ID))
 
 	@property
 	@lazy
@@ -621,7 +622,7 @@ class LoggedOutUser():
 	@property
 	@lazy
 	def can_see_shadowbanned(self):
-		return (self.admin_level >= PERMS['USER_SHADOWBAN']) or self.shadowbanned
+		return self.admin_level >= PERMS['USER_SHADOWBAN'] or self.shadowbanned
 	
 	@property
 	@lazy
