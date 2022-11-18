@@ -137,7 +137,7 @@ class LoggedOutUser():
 	(badges, subscriptions, following, followers, viewers, 
 		blocking, blocked, authorizations, apps, awards, 
 		referrals, designed_hats, owned_hats, hats_equipped, 
-		sub_mods, sub_exiles) = []
+		sub_mods, sub_exiles) = ([] for i in range(16))
 
 	def __repr__(self):
 		return "<LoggedOutUser>"
