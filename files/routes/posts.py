@@ -135,10 +135,10 @@ def submit_get(v, sub=None):
 @app.get("/h/<sub>/post/<pid>")
 @app.get("/h/<sub>/post/<pid>/<anything>")
 @auth_desired_with_logingate
-def post_id(pid, anything=None, v=None, sub=None):
+def post_id(pid, anything=None, v=LoggedOutUser(), sub=None):
 	post = get_post(pid, v=v)
-	if not User.can_see(v, post): abort(403)
-	if not User.can_see_content(v, post) and post.club: abort(403)
+	if not v.can_see(post): abort(403)
+	if not v.can_see_content(post) and post.club: abort(403)
 
 	if post.over_18 and not (v and v.over_18) and session.get('over_18', 0) < int(time.time()):
 		if g.is_api_or_xhr: return {"error":"Must be 18+ to view"}, 451

@@ -203,34 +203,18 @@ class LoggedOutUser():
 	@property
 	@lazy
 	def hat_active(self):
-		if not FEATURES['HATS']:
-			return ''
-
-		if self.is_cakeday:
-			return '/i/hats/Cakeday.webp'
-
-		if self.forced_hat:
-			return f'/i/hats/{self.forced_hat[0]}.webp'
-
-		if self.equipped_hat:
-			return f'/i/hats/{self.equipped_hat.name}.webp'
-
+		if not FEATURES['HATS']: return ''
+		if self.is_cakeday: return '/i/hats/Cakeday.webp'
+		if self.forced_hat: return f'/i/hats/{self.forced_hat[0]}.webp'
+		if self.equipped_hat: return f'/i/hats/{self.equipped_hat.name}.webp'
 		return ''
 
 	@lazy
 	def hat_tooltip(self, v):
-		if not FEATURES['HATS']:
-			return ''
-
-		if self.is_cakeday:
-			return "I've spent another year rotting my brain with dramaposting, please ridicule me 🤓"
-
-		if self.forced_hat:
-			return self.forced_hat[1]
-
-		if self.equipped_hat:
-			return self.equipped_hat.name + ' - ' + self.equipped_hat.censored_description(v)
-
+		if not FEATURES['HATS']: return ''
+		if self.is_cakeday: return "I've spent another year rotting my brain with dramaposting, please ridicule me 🤓"
+		if self.forced_hat: return self.forced_hat[1]
+		if self.equipped_hat: return self.equipped_hat.name + ' - ' + self.equipped_hat.censored_description(v)
 		return ''
 
 	@property
@@ -355,7 +339,11 @@ class LoggedOutUser():
 	def fullname(self) -> NoReturn:
 		raise NotImplementedError()
 	
-	# banned by, has badge
+	# banned by
+
+	@lazy
+	def has_badge(self, badge_id:int):
+		return False
 
 	def verifyPass(self, password):
 		if not self: return False
@@ -529,6 +517,36 @@ class LoggedOutUser():
 			return 'Contributed at least $200'
 		return ''
 	
+	# lottery winnings
+	
+	@lazy
+	def show_sig(self, v):
+		if not self.sig_html:
+			return False
+
+		if not self.patron and SITE_NAME != 'WPD':
+			return False
+
+		if v and (v.sigs_disabled or v.poor):
+			return False
+
+		return True
+
+	@property
+	@lazy
+	def user_name(self):
+		if self.earlylife:
+			expiry = int(self.earlylife - time.time())
+			if expiry > 86400:
+				name = self.username
+				for i in range(int(expiry / 86400 + 1)):
+					name = f'((({name})))'
+				return name
+			return f'((({self.username})))'
+		return self.username
+	
+	# capabilities
+
 	@lazy
 	def can_see_content(self, other:Union[Submission, Comment, Sub]) -> bool:
 		'''
@@ -574,7 +592,6 @@ class LoggedOutUser():
 			return bool(self and self.id == other.id) or self.can_see_shadowbanned or not other.shadowbanned
 		return True
 
-		
 	@property
 	@lazy
 	def can_see_chudrama(self):
@@ -595,39 +612,46 @@ class LoggedOutUser():
 		if self.truescore >= TRUESCORE_GHOST_LIMIT: return True
 		if self.patron: return True
 		return False
-	
-	# lottery winnings
-	
-	@lazy
-	def show_sig(self, v):
-		if not self.sig_html:
-			return False
-
-		if not self.patron and SITE_NAME != 'WPD':
-			return False
-
-		if v and (v.sigs_disabled or v.poor):
-			return False
-
-		return True
-
-	@property
-	@lazy
-	def user_name(self):
-		if self.earlylife:
-			expiry = int(self.earlylife - time.time())
-			if expiry > 86400:
-				name = self.username
-				for i in range(int(expiry / 86400 + 1)):
-					name = f'((({name})))'
-				return name
-			return f'((({self.username})))'
-		return self.username
 
 	@property
 	@lazy
 	def can_see_shadowbanned(self):
 		return (self.admin_level >= PERMS['USER_SHADOWBAN']) or self.shadowbanned
+	
+	@property
+	@lazy
+	def unmutable(self):
+		return self.has_badge(67)
+
+	@property
+	@lazy
+	def mute(self):
+		return self.has_badge(68)
+
+	@property
+	@lazy
+	def eye(self):
+		return self.has_badge(83)
+
+	@property
+	@lazy
+	def alt(self):
+		return self.has_badge(84)
+
+	@property
+	@lazy
+	def unblockable(self):
+		return self.has_badge(87)
+
+	@property
+	@lazy
+	def fish(self):
+		return self.has_badge(90)
+
+	@property
+	@lazy
+	def offsitementions(self):
+		return self.has_badge(140)
 
 
 class User(Base, LoggedOutUser):
@@ -752,7 +776,6 @@ class User(Base, LoggedOutUser):
 	sub_exiles = relationship("Exile", primaryjoin="User.id == Exile.user_id", lazy="raise")
 
 	def __init__(self, **kwargs):
-
 		if "password" in kwargs:
 			kwargs["passhash"] = hash_password(kwargs["password"])
 			kwargs.pop("password")
@@ -1202,38 +1225,3 @@ class User(Base, LoggedOutUser):
 		from_casino_value = from_casino or 0
 
 		return from_casino_value + self.total_lottery_winnings
-
-	@property
-	@lazy
-	def unmutable(self):
-		return self.has_badge(67)
-
-	@property
-	@lazy
-	def mute(self):
-		return self.has_badge(68)
-
-	@property
-	@lazy
-	def eye(self):
-		return self.has_badge(83)
-
-	@property
-	@lazy
-	def alt(self):
-		return self.has_badge(84)
-
-	@property
-	@lazy
-	def unblockable(self):
-		return self.has_badge(87)
-
-	@property
-	@lazy
-	def fish(self):
-		return self.has_badge(90)
-
-	@property
-	@lazy
-	def offsitementions(self):
-		return self.has_badge(140)
