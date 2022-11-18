@@ -244,7 +244,7 @@ class Submission(Base):
 		if url.startswith("https://old.reddit.com/r/") and '/comments/' in url and "sort=" not in url:
 			if "?" in url: url += "&context=9" 
 			else: url += "?context=8"
-			if not v or v.controversial: url += "&sort=controversial"
+			if v.controversial: url += "&sort=controversial"
 		elif url.startswith("https://watchpeopledie.tv/videos/"):
 			# Semi-temporary fix for self-hosted unproxied video serving
 			url = url.replace("https://watchpeopledie.tv/videos/",

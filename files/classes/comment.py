@@ -17,7 +17,6 @@ from files.helpers.sorting_and_time import *
 
 
 def normalize_urls_runtime(body, v):
-	if not v: return body
 	if v.reddit != 'old.reddit.com':
 		body = reddit_to_vreddit_regex.sub(rf'\1https://{v.reddit}/\2/', body)
 	if v.nitter:
@@ -252,7 +251,7 @@ class Comment(Base):
 		if body:
 			body = censor_slurs(body, v)
 			body = normalize_urls_runtime(body, v)
-			if not v or v.controversial:
+			if v.controversial:
 				captured = []
 				for i in controversial_regex.finditer(body):
 					if i.group(1) in captured: continue

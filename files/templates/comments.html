@@ -806,19 +806,17 @@
 	{% if v %}
 		<script defer src="{{'js/marked.js' | asset}}"></script>
 		<script defer src="{{'js/comments_v.js' | asset}}"></script>
+		{% if v.admin_level >= PERMS['POST_COMMENT_MODERATION_TOOLS_VISIBLE'] %}
+			<script defer src="{{'js/comments_admin.js' | asset}}"></script>
+		{% endif %}
 	{% endif %}
 
 	<script defer src="{{'js/clipboard.js' | asset}}"></script>
-
-	{% if v and v.admin_level >= PERMS['POST_COMMENT_MODERATION_TOOLS_VISIBLE'] %}
-		<script defer src="{{'js/comments_admin.js' | asset}}"></script>
-	{% endif %}
-
 	<script defer src="{{'js/comments+submission_listing.js' | asset}}"></script>
 	<script defer src="{{'js/comments.js' | asset}}"></script>
 
 	<script>
-		{% if p and (not v or v.highlightcomments) %}
+		{% if p and v.highlightcomments %}
 			comments = JSON.parse(localStorage.getItem("comment-counts")) || {}
 			lastCount = comments['{{p.id}}']
 			if (lastCount)
@@ -903,5 +901,4 @@
 		}
 	</script>
 {% endif %}
-
 </body>
