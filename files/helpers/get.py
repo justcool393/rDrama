@@ -4,7 +4,7 @@ from flask import *
 from sqlalchemy import and_, any_, or_
 from sqlalchemy.orm import joinedload, selectinload
 
-from files.classes import Comment, CommentVote, Hat, Sub, Submission, User, UserBlock, Vote
+from files.classes import Comment, CommentVote, Hat, Sub, Submission, LoggedOutUser, User, UserBlock, Vote
 from files.helpers.const import AUTOJANNY_ID
 
 def sanitize_username(username:str) -> str:
@@ -31,7 +31,7 @@ def get_id(username:str, graceful=False) -> Optional[int]:
 
 	return user[0]
 
-def get_user(username:Optional[str], v:Optional[User]=None, graceful=False, include_blocks=False, include_shadowbanned=True) -> Optional[User]:
+def get_user(username:Optional[str], v:Optional[LoggedOutUser]=None, graceful=False, include_blocks=False, include_shadowbanned=True) -> Optional[User]:
 	if not username:
 		if graceful: return None
 		abort(404)
@@ -77,7 +77,7 @@ def get_users(usernames:Iterable[str], graceful=False) -> List[User]:
 
 	return users
 
-def get_account(id:Union[str, int], v:Optional[User]=None, graceful=False, include_blocks=False, include_shadowbanned=True) -> Optional[User]:
+def get_account(id:Union[str, int], v:Optional[LoggedOutUser]=None, graceful=False, include_blocks=False, include_shadowbanned=True) -> Optional[User]:
 	try: 
 		id = int(id)
 	except:
@@ -95,7 +95,7 @@ def get_account(id:Union[str, int], v:Optional[User]=None, graceful=False, inclu
 	return user
 
 
-def get_post(i:Union[str, int], v:Optional[User]=None, graceful=False) -> Optional[Submission]:
+def get_post(i:Union[str, int], v:Optional[LoggedOutUser]=None, graceful=False) -> Optional[Submission]:
 	try: i = int(i)
 	except:
 		if graceful: return None
@@ -145,7 +145,7 @@ def get_post(i:Union[str, int], v:Optional[User]=None, graceful=False) -> Option
 	return x
 
 
-def get_posts(pids:Iterable[int], v:Optional[User]=None, eager:bool=False) -> List[Submission]:
+def get_posts(pids:Iterable[int], v:Optional[LoggedOutUser]=None, eager:bool=False) -> List[Submission]:
 	if not pids: return []
 
 	if v:
@@ -205,7 +205,7 @@ def get_posts(pids:Iterable[int], v:Optional[User]=None, eager:bool=False) -> Li
 
 	return sorted(output, key=lambda x: pids.index(x.id))
 
-def get_comment(i:Union[str, int], v:Optional[User]=None, graceful=False) -> Optional[Comment]:
+def get_comment(i:Union[str, int], v:Optional[LoggedOutUser]=None, graceful=False) -> Optional[Comment]:
 	try: i = int(i)
 	except:
 		if graceful: return None
@@ -222,7 +222,7 @@ def get_comment(i:Union[str, int], v:Optional[User]=None, graceful=False) -> Opt
 
 	return add_vote_and_block_props(comment, v, CommentVote)
 
-def add_block_props(target:Union[Submission, Comment, User], v:Optional[User]):
+def add_block_props(target:Union[Submission, Comment, User], v:Optional[LoggedOutUser]):
 	if not v: return target
 	id = None
 
@@ -257,8 +257,11 @@ def add_block_props(target:Union[Submission, Comment, User], v:Optional[User]):
 	target.is_blocked = block and block.target_id == v.id
 	return target
 
-def add_vote_props(target:Union[Submission, Comment], v:Optional[User], vote_cls):
+def add_vote_props(target:Union[Submission, Comment], v:Optional[LoggedOutUser], vote_cls):
 	if hasattr(target, 'voted'): return target
+	if not v:
+		target.voted = 0
+		return target
 
 	vt = g.db.query(vote_cls.vote_type).filter_by(user_id=v.id)
 	if vote_cls == Vote:
@@ -271,14 +274,14 @@ def add_vote_props(target:Union[Submission, Comment], v:Optional[User], vote_cls
 	target.voted = vt.vote_type if vt else 0
 	return target
 
-def add_vote_and_block_props(target:Union[Submission, Comment], v:Optional[User], vote_cls):
+def add_vote_and_block_props(target:Union[Submission, Comment], v:Optional[LoggedOutUser], vote_cls):
 	if not v: return target
 	target = add_block_props(target, v)
 	return add_vote_props(target, v, vote_cls)
 
-def get_comments(cids:Iterable[int], v:Optional[User]=None) -> List[Comment]:
+def get_comments(cids:Iterable[int], v:Optional[LoggedOutUser]=None) -> List[Comment]:
 	if not cids: return []
-	if v:
+	if isinstance(v, User):
 		output = get_comments_v_properties(v, True, None, Comment.id.in_(cids))[1]
 	else:
 		output = g.db.query(Comment).join(Comment.author).filter(User.shadowbanned == None, Comment.id.in_(cids)).all()
@@ -326,7 +329,7 @@ def get_comments_v_properties(v:User, include_shadowbanned=True, should_keep_fun
 		else: dump.append(comment)
 	return (comments, output)
 
-def get_sub_by_name(sub:str, v:Optional[User]=None, graceful=False) -> Optional[Sub]:
+def get_sub_by_name(sub:str, v:Optional[LoggedOutUser]=None, graceful=False) -> Optional[Sub]:
 	if not sub:
 		if graceful: return None
 		else: abort(404)
