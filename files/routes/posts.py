@@ -157,7 +157,7 @@ def post_id(v, pid, anything=None, sub=None):
 		pinned = [c[0] for c in comments.filter(Comment.stickied != None).all()]
 		comments = comments.filter(Comment.level == 1, Comment.stickied == None)
 		comments = sort_objects(sort, comments, Comment,
-			include_shadowbanned=(v and v.can_see_shadowbanned))
+			include_shadowbanned=v.can_see_shadowbanned)
 		comments = [c[0] for c in comments.all()]
 	else:
 		pinned = g.db.query(Comment).filter(Comment.parent_submission == post.id, Comment.stickied != None).all()
@@ -247,7 +247,7 @@ def viewmore(v, pid, sort, offset):
 		comments, output = get_comments_v_properties(v, True, None, Comment.parent_submission == pid, Comment.stickied == None, Comment.id.notin_(ids), Comment.level < 10)
 		comments = comments.filter(Comment.level == 1)
 		comments = sort_objects(sort, comments, Comment,
-			include_shadowbanned=(v and v.can_see_shadowbanned))
+			include_shadowbanned=v.can_see_shadowbanned)
 
 		comments = [c[0] for c in comments.all()]
 	else:

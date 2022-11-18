@@ -141,7 +141,7 @@ class Comment(Base):
 		replies = db.query(Comment).filter_by(parent_comment_id=self.id).order_by(Comment.stickied)
 		if not self.parent_submission: sort='old'
 		return sort_objects(sort, replies, Comment,
-			include_shadowbanned=(v and v.can_see_shadowbanned)).all()
+			include_shadowbanned=v.can_see_shadowbanned).all()
 
 
 	@property
@@ -243,8 +243,8 @@ class Comment(Base):
 	def realbody(self, v):
 		if self.post and self.post.club and not (v and (v.paid_dues or v.id in [self.author_id, self.post.author_id] or (self.parent_comment and v.id == self.parent_comment.author_id))):
 			return f"<p>{CC} ONLY</p>"
-		if self.deleted_utc != 0 and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.author.id)): return "[Deleted by user]"
-		if self.is_banned and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']) and not (v and v.id == self.author.id): return ""
+		if self.deleted_utc != 0 and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or (v and v.id == self.author.id): return "[Deleted by user]"
+		if self.is_banned and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] and not (v and v.id == self.author.id): return ""
 
 		body = self.body_html or ""
 
@@ -298,8 +298,8 @@ class Comment(Base):
 	def plainbody(self, v):
 		if self.post and self.post.club and not (v and (v.paid_dues or v.id in [self.author_id, self.post.author_id] or (self.parent_comment and v.id == self.parent_comment.author_id))):
 			return f"{CC} ONLY"
-		if self.deleted_utc != 0 and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or v.id == self.author.id)): return "[Deleted by user]"
-		if self.is_banned and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']) and not (v and v.id == self.author.id): return ""
+		if self.deleted_utc != 0 and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or (v and v.id == self.author.id): return "[Deleted by user]"
+		if self.is_banned and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] and not (v and v.id == self.author.id): return ""
 
 		body = self.body
 
@@ -312,21 +312,13 @@ class Comment(Base):
 	@lazy
 	def collapse_for_user(self, v, path):
 		if v and self.author_id == v.id: return False
-
 		if path == '/admin/removed/comments': return False
-
+		if self.author.shadowbanned and not v.shadowbanned: return True 
 		if '?context' in path or f'/{self.id}' in path: return False
-
-		if self.over_18 and not (v and v.over_18) and not (self.post and self.post.over_18): return True
-
+		if self.over_18 and not v.over_18 and not (self.post and self.post.over_18): return True
 		if self.is_banned: return True
-
-		if self.author.shadowbanned and not (v and v.shadowbanned): return True
-
 		if (self.wordle_result) and (not self.body or len(self.body_html) <= 100) and 9 > self.level > 1: return True
-			
-		if v and v.filter_words and self.body and any(x in self.body for x in v.filter_words): return True
-		
+		if v.filter_words and self.body and any(x in self.body for x in v.filter_words): return True
 		return False
 
 	@property
@@ -335,7 +327,7 @@ class Comment(Base):
 	
 	@lazy
 	def filtered_flags(self, v):
-		return [f for f in self.flags if (v and v.shadowbanned) or not f.user.shadowbanned]
+		return [f for f in self.flags if v.shadowbanned or not f.user.shadowbanned]
 
 	@lazy
 	def active_flags(self, v):

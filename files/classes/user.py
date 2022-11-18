@@ -419,8 +419,8 @@ class LoggedOutUser():
 				'bannerurl': self.banner_url,
 				'bio_html': self.bio_html_eager,
 				'coins': self.coins,
-				'post_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.post_count,
-				'comment_count': 0 if self.shadowbanned and not (v and v.can_see_shadowbanned) else self.comment_count,
+				'post_count': 0 if self.shadowbanned and not v.can_see_shadowbanned else self.post_count,
+				'comment_count': 0 if self.shadowbanned and not v.can_see_shadowbanned else self.comment_count,
 				'badges': [x.path for x in self.badges],
 				'created_date': self.created_date,
 				}
@@ -521,15 +521,9 @@ class LoggedOutUser():
 	
 	@lazy
 	def show_sig(self, v):
-		if not self.sig_html:
-			return False
-
-		if not self.patron and SITE_NAME != 'WPD':
-			return False
-
-		if v and (v.sigs_disabled or v.poor):
-			return False
-
+		if not self.sig_html: return False
+		if not self.patron and SITE_NAME != 'WPD': return False
+		if v and (v.sigs_disabled or v.poor): return False
 		return True
 
 	@property
@@ -587,7 +581,7 @@ class LoggedOutUser():
 				if other.parent_submission and other.post.sub and not self.can_see(other.post.subr): return False
 				# if other.parent_submission and not self.can_see(other.post): return False
 		elif isinstance(other, Sub):
-			return other.name != 'chudrama' or self.can_see_chudrama
+			return other.name != 'chudrama' or self.can_see_chudrama  # type: ignore
 		elif isinstance(other, User):
 			return bool(self and self.id == other.id) or self.can_see_shadowbanned or not other.shadowbanned
 		return True
@@ -610,6 +604,17 @@ class LoggedOutUser():
 		if self.admin_level >= PERMS['POST_IN_GHOST_THREADS']: return True
 		if self.club_allowed: return True
 		if self.truescore >= TRUESCORE_GHOST_LIMIT: return True
+		if self.patron: return True
+		return False
+	
+	@property
+	@lazy
+	def can_see_chat(self):
+		if not self: return False
+		if self.is_suspended_permanently: return False
+		if not TRUESCORE_CHAT_LIMIT: return True
+		if self.club_allowed: return True
+		if self.truescore >= TRUESCORE_CHAT_LIMIT: return True
 		if self.patron: return True
 		return False
 

@@ -101,7 +101,7 @@ def front_all(v, sub=None, subdomain=None):
 def frontlist(v=None, sort="hot", page=1, t="all", ids_only=True, filter_words='', gt=0, lt=0, sub=None, site=None, pins=True, holes=True):
 	posts = g.db.query(Submission)
 	
-	if v and v.hidevotedon:
+	if v.hidevotedon:
 		posts = posts.outerjoin(Vote,
 					and_(Vote.submission_id == Submission.id, Vote.user_id == v.id)
 				).filter(Vote.submission_id == None)
@@ -137,7 +137,7 @@ def frontlist(v=None, sort="hot", page=1, t="all", ids_only=True, filter_words='
 			posts=posts.filter(not_(Submission.title.ilike(f'%{word}%')))
 
 	posts = sort_objects(sort, posts, Submission,
-		include_shadowbanned=(v and v.can_see_shadowbanned))
+		include_shadowbanned=v.can_see_shadowbanned)
 
 	if v: size = v.frontsize or 0
 	else: size = PAGE_SIZE
@@ -255,7 +255,7 @@ def comment_idlist(v=None, page=1, sort="new", t="all", gt=0, lt=0, site=None):
 		comments = apply_time_filter(t, comments, Comment)
 
 	comments = sort_objects(sort, comments, Comment,
-		include_shadowbanned=(v and v.can_see_shadowbanned))
+		include_shadowbanned=v.can_see_shadowbanned)
 
 	comments = comments.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE + 1).all()
 	return [x[0] for x in comments]

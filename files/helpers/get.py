@@ -51,7 +51,7 @@ def get_user(username:Optional[str], v:Optional[LoggedOutUser]=None, graceful=Fa
 
 	user = user.one_or_none()
 
-	if not user or (user.shadowbanned and not (include_shadowbanned or (v and v.can_see_shadowbanned))):
+	if not user or (user.shadowbanned and not (include_shadowbanned or v.can_see_shadowbanned)):
 		if graceful: return None
 		abort(404)
 
@@ -86,7 +86,7 @@ def get_account(id:Union[str, int], v:Optional[LoggedOutUser]=None, graceful=Fal
 
 	user = g.db.get(User, id)
 
-	if not user or (user.shadowbanned and not (include_shadowbanned or (v and v.can_see_shadowbanned))):
+	if not user or (user.shadowbanned and not (include_shadowbanned or v.can_see_shadowbanned)):
 		if not graceful: abort(404)
 		else: return None
 
