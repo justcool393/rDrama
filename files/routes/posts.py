@@ -135,7 +135,7 @@ def submit_get(v, sub=None):
 @app.get("/h/<sub>/post/<pid>")
 @app.get("/h/<sub>/post/<pid>/<anything>")
 @auth_desired_with_logingate
-def post_id(pid, anything=None, v=LoggedOutUser(), sub=None):
+def post_id(v, pid, anything=None, sub=None):
 	post = get_post(pid, v=v)
 	if not v.can_see(post): abort(403)
 	if not v.can_see_content(post) and post.club: abort(403)

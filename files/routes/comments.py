@@ -30,7 +30,7 @@ WORDLE_COLOR_MAPPINGS = {-1: "🟥", 0: "🟨", 1: "🟩"}
 @app.get("/h/<sub>/comment/<cid>")
 @app.get("/h/<sub>/post/<pid>/<anything>/<cid>")
 @auth_desired_with_logingate
-def post_pid_comment_cid(cid, pid=None, anything=None, v=LoggedOutUser(), sub=None):
+def post_pid_comment_cid(v, cid, pid=None, anything=None, sub=None):
 	comment = get_comment(cid, v=v)
 	if not v.can_see(comment): abort(404)
 	if comment.post and comment.post.club and not v.can_see_content(comment): abort(403)

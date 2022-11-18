@@ -57,7 +57,7 @@ def inject_constants():
 			"KOFI_TOKEN":KOFI_TOKEN, "KOFI_LINK":KOFI_LINK,
 			"approved_embed_hosts":approved_embed_hosts,
 			"site_settings":get_settings(), "EMAIL":EMAIL, "calc_users":calc_users, 
-			"max": max, "min": min, "user_can_see":LoggedOutUser.can_see,
+			"max": max, "min": min,
 			"TELEGRAM_LINK":TELEGRAM_LINK, "EMAIL_REGEX_PATTERN":EMAIL_REGEX_PATTERN,
 			"CONTENT_SECURITY_POLICY_DEFAULT":CONTENT_SECURITY_POLICY_DEFAULT,
 			"CONTENT_SECURITY_POLICY_HOME":CONTENT_SECURITY_POLICY_HOME,

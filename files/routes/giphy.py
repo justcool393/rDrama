@@ -8,7 +8,7 @@ from files.__main__ import app
 @app.get("/giphy")
 @app.get("/giphy<path>")
 @auth_required
-def giphy(v=None, path=None):
+def giphy(v, path=None):
 
 	searchTerm = request.values.get("searchTerm", "").strip()
 	limit = 48
