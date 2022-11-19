@@ -74,10 +74,8 @@ def post_pid_comment_cid(v, cid, pid=None, anything=None, sub=None):
 	execute_shadowban_viewers_and_voters(v, comment)
 			
 	if v and v.client: return top_comment.json
-	else: 
-		if post.is_banned and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or post.author_id == v.id)): template = "submission_banned.html"
-		else: template = "submission.html"
-		return render_template(template, v=v, p=post, sort=sort, comment_info=comment_info, render_replies=True, sub=post.subr)
+	else:
+		return render_template("submission.html", v=v, p=post, sort=sort, comment_info=comment_info, render_replies=True, sub=post.subr)
 
 @app.post("/comment")
 @limiter.limit("1/second;20/minute;200/hour;1000/day")

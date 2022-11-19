@@ -220,12 +220,7 @@ def post_id(v, pid, anything=None, sub=None):
 	if v and v.client:
 		return post.json(g.db)
 
-	template = "submission.html"
-	if (post.is_banned or post.author.shadowbanned) \
-			and not (v and (v.admin_level >= PERMS['POST_COMMENT_MODERATION'] or post.author_id == v.id)):
-		template = "submission_banned.html"
-
-	return render_template(template, v=v, p=post, ids=list(ids),
+	return render_template("submission.html", v=v, p=post, ids=list(ids),
 		sort=sort, render_replies=True, offset=offset, sub=post.subr,
 		fart=get_setting('Fart mode'))
 
