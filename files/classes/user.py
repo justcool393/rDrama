@@ -559,13 +559,13 @@ class LoggedOutUser():
 		content of a thing can be hidden from view
 		'''
 		if isinstance(other, (Submission, Comment)):
-			if not self.can_see(other.author): return False
 			if self and self.id == other.author_id: return True
 			if isinstance(other, Submission):
 				if other.sub and not self.can_see(other.subr): return False
 			else:
 				if not other.parent_submission:
 					if not self: return False
+					if not self.can_see(other.author): return False
 					if not other.sentto: return True # handled by Notification
 					if other.sentto == MODMAIL_ID: return user.admin_level >= PERMS['VIEW_MODMAIL']  # type: ignore
 					if other.sentto != user.id: return user.admin_level >= PERMS['POST_COMMENT_MODERATION']  # type: ignore
