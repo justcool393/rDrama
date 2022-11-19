@@ -4,8 +4,8 @@
 {% set score=ups-downs %}
 
 {% set voted = p.voted if v else -2 %}
-{% set v_forbid_deleted = (not v and v.id == p.author_id) and 
-							((p.deleted_utc != 0 or p.is_banned) and not v.admin_level >= PERMS['POST_COMMENT_MODERATION']) or 
+{% set v_forbid_deleted = (not v or v.id != p.author_id) and 
+							(((p.deleted_utc != 0 or p.is_banned) and not v.admin_level >= PERMS['POST_COMMENT_MODERATION']) or 
 							(p.author.shadowbanned and not v.admin_level >= PERMS['USER_SHADOWBAN'])) %}
 {% block title %}
 <style>
