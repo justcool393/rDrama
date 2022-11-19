@@ -10,7 +10,7 @@
 {% endif %}
 {% set v_forbid_deleted = (not v and v.id == p.author_id) and 
 							((p.deleted_utc != 0 and not v.admin_level >= PERMS['POST_COMMENT_MODERATION']) or 
-                        	(p.author.shadowbanne) and not v.admin_level >= PERMS['USER_SHADOWBAN'])) %}
+                        	(p.author.shadowbanned) and not v.admin_level >= PERMS['USER_SHADOWBAN'])) %}
 {% block title %}
 <style>
 	body > .container {
