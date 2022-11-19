@@ -369,9 +369,95 @@ class LoggedOutUser():
 
 		return f"Unban in {text}"
 	
-	# received awards, modaction num, followed users, followed subs, notif count, message notifs, post notifs, modaction notifs, reddit notifs, notficiations do, notifications color, do posts, do reddit
-	# alts
-	# alt ids
+	# received awards, modaction num, followed users, followed subs, 
+	
+	@property
+	@lazy
+	def notifications_count(self):
+		return 0
+
+	@property
+	@lazy
+	def normal_notifications_count(self):
+		return self.notifications_count \
+			- self.message_notifications_count \
+			- self.post_notifications_count \
+			- self.modaction_notifications_count \
+			- self.reddit_notifications_count 
+
+	@property
+	@lazy
+	def message_notifications_count(self):
+		return 0
+
+	@property
+	@lazy
+	def post_notifications_count(self):
+		return 0
+
+	@property
+	@lazy
+	def modaction_notifications_count(self):
+		return 0
+
+	@property
+	@lazy
+	def reddit_notifications_count(self):
+		return 0
+
+	@property
+	@lazy
+	def notifications_do(self):
+		# only meaningful when notifications_count > 0; otherwise falsely '' ~ normal
+		if self.normal_notifications_count > 0:
+			return ''
+		elif self.message_notifications_count > 0:
+			return 'messages'
+		elif self.post_notifications_count > 0:
+			return 'posts'
+		elif self.modaction_notifications_count > 0:
+			return 'modactions'
+		elif self.reddit_notifications_count > 0:
+			return 'reddit'
+		return ''
+
+	@property
+	@lazy
+	def notifications_color(self):
+		colors = {
+			'': '#dc3545',
+			'messages': '#d8910d',
+			'posts': '#0000ff',
+			'modactions': '#1ad80d',
+			'reddit': '#805ad5',
+		}
+		return colors[self.notifications_do] if self.notifications_do \
+			else colors['']
+
+	@property
+	@lazy
+	def do_posts(self):
+		return self.post_notifications_count and \
+			self.post_notifications_count == (
+				self.notifications_count
+				- self.modaction_notifications_count
+				- self.reddit_notifications_count)
+
+	@property
+	@lazy
+	def do_reddit(self):
+		return self.notifications_count == self.reddit_notifications_count
+	
+	@property
+	@lazy
+	def alts(self):
+		return []
+
+	@property
+	@lazy
+	def alt_ids(self):
+		return [x.id for x in self.alts if not x._alt_deleted]
+	
 	# moderated subs
 	@lazy
 	def has_follower(self, user):
@@ -466,6 +552,51 @@ class LoggedOutUser():
 		return (self.is_banned and self.unban_utc == 0)
 	
 	# apps, userblocks, savedlinks, saved comments, subscribers, saved count, saved comment count, subscriped count
+
+	@property
+	@lazy
+	def applications(self):
+		return []
+	
+	@property
+	@lazy
+	def userblocks(self):
+		return []
+
+	@property
+	@lazy
+	def saved_idlist(self):
+		return []
+
+	@property
+	@lazy
+	def saved_comment_idlist(self):
+		return []
+
+	@property
+	@lazy
+	def subscribed_idlist(self):
+		return []
+
+	@property
+	@lazy
+	def saved_count(self):
+		return 0
+
+	@property
+	@lazy
+	def saved_comment_count(self):
+		return 0
+
+	@property
+	@lazy
+	def subscribed_count(self):
+		return 0
+
+	@property
+	@lazy
+	def winnings(self):
+		return 0
 
 	@property
 	@lazy
@@ -1013,15 +1144,6 @@ class User(Base, LoggedOutUser):
 
 	@property
 	@lazy
-	def normal_notifications_count(self):
-		return self.notifications_count \
-			- self.message_notifications_count \
-			- self.post_notifications_count \
-			- self.modaction_notifications_count \
-			- self.reddit_notifications_count 
-
-	@property
-	@lazy
 	def message_notifications_count(self):
 		notifs = g.db.query(Notification).join(Comment).filter(
 					Notification.user_id == self.id,
@@ -1087,49 +1209,6 @@ class User(Base, LoggedOutUser):
 
 	@property
 	@lazy
-	def notifications_do(self):
-		# only meaningful when notifications_count > 0; otherwise falsely '' ~ normal
-		if self.normal_notifications_count > 0:
-			return ''
-		elif self.message_notifications_count > 0:
-			return 'messages'
-		elif self.post_notifications_count > 0:
-			return 'posts'
-		elif self.modaction_notifications_count > 0:
-			return 'modactions'
-		elif self.reddit_notifications_count > 0:
-			return 'reddit'
-		return ''
-
-	@property
-	@lazy
-	def notifications_color(self):
-		colors = {
-			'': '#dc3545',
-			'messages': '#d8910d',
-			'posts': '#0000ff',
-			'modactions': '#1ad80d',
-			'reddit': '#805ad5',
-		}
-		return colors[self.notifications_do] if self.notifications_do \
-			else colors['']
-
-	@property
-	@lazy
-	def do_posts(self):
-		return self.post_notifications_count and \
-			self.post_notifications_count == (
-				self.notifications_count
-				- self.modaction_notifications_count
-				- self.reddit_notifications_count)
-
-	@property
-	@lazy
-	def do_reddit(self):
-		return self.notifications_count == self.reddit_notifications_count
-
-	@property
-	@lazy
 	def alts(self):
 		subq = g.db.query(Alt).filter(
 			or_(
@@ -1160,11 +1239,6 @@ class User(Base, LoggedOutUser):
 			output.append(user)
 
 		return output
-
-	@property
-	@lazy
-	def alt_ids(self):
-		return [x.id for x in self.alts if not x._alt_deleted]
 
 	@property
 	@lazy
