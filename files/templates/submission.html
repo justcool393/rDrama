@@ -543,7 +543,7 @@
 </div>
 
 {% if v %}
-	{% include "modals/delete_post.html" if v.id == p.author_id %}
+	{% include "modals/delete_post.html" if v.id == p.author_id else '' %}
 	{% include "modals/report_post.html" %}
 	{% if v.id == p.author_id or v.admin_level >= PERMS['POST_EDITING'] %}
 		<script defer src="{{'js/togglePostEdit.js' | asset}}"></script>
@@ -558,7 +558,7 @@
 {% endif %}
 
 <script defer src="{{'js/clipboard.js' | asset}}"></script>
-{% include "comments.html" if not p.replies %}
+{% include "comments.html" if not p.replies ignore missing %}
 
 {% if v.highlightcomments %}
 <script>

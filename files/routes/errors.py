@@ -35,6 +35,7 @@ def error(e):
 	if request.headers.get("Authorization") or request.headers.get("xhr"):
 		return {"error": title, "code": e.code, "description": msg, "details": details}, e.code
 	img = ERROR_MARSEYS.get(e.code, 'marseyl')
+	# TODO: make sure v isn't required from anything error.html needs
 	return render_template('errors/error.html', err=True, title=title, msg=msg, details=details, img=img), e.code
 
 @app.errorhandler(401)
