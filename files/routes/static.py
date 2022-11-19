@@ -127,7 +127,6 @@ def admins(v):
 @app.get("/modlog")
 @auth_required
 def log(v):
-
 	try: page = max(int(request.values.get("page", 1)), 1)
 	except: page = 1
 
@@ -137,7 +136,7 @@ def log(v):
 
 	kind = request.values.get("kind")
 
-	if v and v.admin_level >= PERMS['USER_SHADOWBAN']: types = ACTIONTYPES
+	if v.admin_level >= PERMS['USER_SHADOWBAN']: types = ACTIONTYPES
 	else: types = ACTIONTYPES2
 
 	if kind and kind not in types:
@@ -145,7 +144,7 @@ def log(v):
 		actions = []
 	else:
 		actions = g.db.query(ModAction)
-		if not (v and v.admin_level >= PERMS['USER_SHADOWBAN']): 
+		if not (v.admin_level >= PERMS['USER_SHADOWBAN']): 
 			actions = actions.filter(ModAction.kind.notin_([
 				"shadowban","unshadowban",
 				"mod_mute_user","mod_unmute_user",
@@ -182,7 +181,7 @@ def log_item(id, v):
 
 	admins = [x[0] for x in g.db.query(User.username).filter(User.admin_level >= PERMS['ADMIN_MOP_VISIBLE']).all()]
 
-	if v and v.admin_level >= PERMS['USER_SHADOWBAN']: types = ACTIONTYPES
+	if v.admin_level >= PERMS['USER_SHADOWBAN']: types = ACTIONTYPES
 	else: types = ACTIONTYPES2
 
 	return render_template("log.html", v=v, actions=[action], next_exists=False, page=1, action=action, admins=admins, types=types, single_user_url='admin')

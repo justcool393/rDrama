@@ -69,7 +69,7 @@ class LoggedOutUser():
 	comment_count = 0
 	received_award_count = 0
 	created_utc = 0
-	admin_level = 0
+	admin_level = -1
 	last_active = 0
 	coins_spent = 0
 	coins_spent_on_hats = 0
@@ -375,7 +375,7 @@ class LoggedOutUser():
 	# moderated subs
 	@lazy
 	def has_follower(self, user):
-		if not user or self.id == user.id: return False # users can't follow themselves
+		if not self or not user or self.id == user.id: return False # users can't follow themselves
 		return g.db.query(Follow).filter_by(target_id=self.id, user_id=user.id).one_or_none()
 	
 	@lazy

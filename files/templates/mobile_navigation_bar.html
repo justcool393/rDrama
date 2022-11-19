@@ -11,7 +11,7 @@
 								</div>
 						</a>
 				</button>
-{% if v and v.defaultsorting == 'new' %}
+{% if v.defaultsorting == 'new' %}
 				<button type="button" class="col px-0 btn btn-dead m-0" style="background: None !important; border: None;">
 						<a href="/?sort=hot&t=all" class="text-decoration-none">
 								<div class="text-center {% if request.full_path=='/?sort=hot&t=all' %}text-primary{% else %}text-muted{% endif %}">

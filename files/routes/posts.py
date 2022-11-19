@@ -140,7 +140,7 @@ def post_id(v, pid, anything=None, sub=None):
 	if not v.can_see(post): abort(403)
 	if not v.can_see_content(post) and post.club: abort(403)
 
-	if post.over_18 and not (v and v.over_18) and session.get('over_18', 0) < int(time.time()):
+	if post.over_18 and not v.over_18 and session.get('over_18', 0) < int(time.time()):
 		if g.is_api_or_xhr: return {"error":"Must be 18+ to view"}, 451
 		return render_template("errors/nsfw.html", v=v)
 
@@ -348,7 +348,7 @@ def edit_post(pid, v):
 	body = body.strip()[:POST_BODY_LENGTH_LIMIT] # process_files() may be adding stuff to the body
 
 	if body != p.body:
-		if v and v.admin_level >= PERMS['POST_BETS']:
+		if v.admin_level >= PERMS['POST_BETS']:
 			for i in bet_regex.finditer(body):
 				body = body.replace(i.group(0), "")
 				body_html = filter_emojis_only(i.group(1))
@@ -750,7 +750,7 @@ def submit_post(v, sub=None):
 		return error("There's a 2048 character limit for URLs.")
 
 	bets = []
-	if v and v.admin_level >= PERMS['POST_BETS']:
+	if v.admin_level >= PERMS['POST_BETS']:
 		for i in bet_regex.finditer(body):
 			bets.append(i.group(1))
 			body = body.replace(i.group(0), "")
@@ -818,7 +818,7 @@ def submit_post(v, sub=None):
 	for text in [post.body, post.title, post.url]:
 		if not execute_blackjack(v, post, text, 'submission'): break
 
-	if v and v.admin_level >= PERMS['POST_BETS']:
+	if v.admin_level >= PERMS['POST_BETS']:
 		for bet in bets:
 			body_html = filter_emojis_only(bet)
 			if len(body_html) > 500: abort(400, "Bet option too long!")

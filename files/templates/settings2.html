@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {{html_head.html_head(true, false, true, none, none)}}
-<body id="settings2" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background){% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>
+<body id="settings2" {% if SITE_NAME == 'rDrama' and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v.background %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background){% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>
 
 {% include "header.html" %}
 
@@ -29,7 +29,7 @@
 										<li class="nav-item">
 											<a class="nav-link{% if request.path == '/banned' %} active{% endif %}" href="/banned"><i class="fas fa-user-slash pr-2"></i>Permabanned Users</a>
 										</li>
-										{% if v and v.admin_level >= PERMS['USER_BLOCKS_VISIBLE'] -%}
+										{% if v.admin_level >= PERMS['USER_BLOCKS_VISIBLE'] -%}
 										<li class="nav-item">
 											<a class="nav-link{% if request.path == '/blocks' %} active{% endif %}" href="/blocks"><i class="fas fa-user-slash pr-2"></i>Blocks</a>
 										</li>

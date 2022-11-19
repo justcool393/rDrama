@@ -124,7 +124,7 @@
 									</form>
 								</div>
 							</div>
-							<div class="text-small text-muted mt-3">All image files are supported. Max file size is {% if v and v.patron %}16{% else %}8{% endif %} MB.</div>
+							<div class="text-small text-muted mt-3">All image files are supported. Max file size is {% if v.patron %}16{% else %}8{% endif %} MB.</div>
 						</div>
 					</div>
 					{% if FEATURES['USERS_PROFILE_BANNER'] -%}
@@ -146,7 +146,7 @@
 										</form>
 									</div>
 								</div>
-								<div class="text-small text-muted mt-3">All image files are supported. Max file size is {% if v and v.patron %}16{% else %}8{% endif %} MB.</div>
+								<div class="text-small text-muted mt-3">All image files are supported. Max file size is {% if v.patron %}16{% else %}8{% endif %} MB.</div>
 							</div>
 						</div>
 					{%- endif %}
