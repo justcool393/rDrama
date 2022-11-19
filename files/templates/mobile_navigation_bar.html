@@ -1,5 +1,4 @@
 <div class="container d-inline-flex d-lg-none">
-
 		<div class="row fixed-bottom bg-white border-top p-2" id="mobile-bottom-navigation-bar"
 		style="z-index: 1000; bottom: 0px; transition: bottom cubic-bezier(0, 0, 0.2, 1) 220ms;">
 
@@ -20,7 +19,7 @@
 								</div>
 						</a>
 				</button>
-{% else %}
+{% elif not err %}
 				<button type="button" class="col px-0 btn btn-dead m-0" style="background: None !important; border: None;">
 						<a href="/?sort=new&t=all" class="text-decoration-none">
 								<div class="text-center {% if request.full_path=='/?sort=new&t=all' %}text-primary{% else %}text-muted{% endif %}">
@@ -67,7 +66,7 @@
 						</a>
 				</button>
 				{%- endif %}
-{% else %}
+{% elif not err %}
 				<button type="button" class="col px-0 mr-3 btn btn-dead m-0" style="background: None !important; border: None;">
 						<a href="/signup" class="text-decoration-none">
 								<div class="text-center text-muted">
@@ -79,5 +78,4 @@
 {% endif %}
 		</div>
 </div>
-
 <script defer src="{{'js/mobile_navigation_bar.js' | asset}}"></script>
