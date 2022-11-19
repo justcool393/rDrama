@@ -184,72 +184,62 @@
 
 					{% if not v_forbid_deleted %}
 					<div id="post-body" class="post-body mt-3">
-						{% if p.realurl(v) %}
-							{% if not p.embed_url and not p.is_image %}
-								<a rel="nofollow noopener" href="{{p.realurl(v)}}" {% if v.newtabexternal %}target="_blank"{% endif %}>
-									<div class="d-flex {% if p.is_video or p.is_audio %}d-md-none{% endif %} justify-content-between align-items-center border rounded p-2 mb-3">
-										<span>{{p.realurl(v)}}</span>
-										<i class="fas fa-external-link-alt text-small"></i>
-									</div>
-								</a>
-							{% endif %}
-						{% endif %}
-
-
-						{% if p.embed_url %}
-							{% if p.domain == "twitter.com" %}
-								{{p.embed_url | safe}}
-								{% if v.theme.split("_")[0] in ["light", "coffee", "4chan"] %}
-									<script defer src="{{'js/twitterlight.js' | asset}}"></script>
-								{% else %}
-									<script defer src="{{'js/twitter.js' | asset}}"></script>
+						{% if not v_forbid_deleted %}
+							{% if p.realurl(v) %}
+								{% if not p.embed_url and not p.is_image %}
+									<a rel="nofollow noopener" href="{{p.realurl(v)}}" {% if v.newtabexternal %}target="_blank"{% endif %}>
+										<div class="d-flex {% if p.is_video or p.is_audio %}d-md-none{% endif %} justify-content-between align-items-center border rounded p-2 mb-3">
+											<span>{{p.realurl(v)}}</span>
+											<i class="fas fa-external-link-alt text-small"></i>
+										</div>
+									</a>
 								{% endif %}
-							{% elif p.domain in ['youtu.be','youtube.com'] and p.embed_url and p.embed_url.startswith('<lite-youtube') %}
-								{{p.embed_url | safe}}
+							{% endif %}
+
+							{% if p.embed_url %}
+								{% if p.domain == "twitter.com" %}
+									{{p.embed_url | safe}}
+									{% if v.theme.split("_")[0] in ["light", "coffee", "4chan"] %}
+										<script defer src="{{'js/twitterlight.js' | asset}}"></script>
+									{% else %}
+										<script defer src="{{'js/twitter.js' | asset}}"></script>
+									{% endif %}
+								{% elif p.domain in ['youtu.be','youtube.com'] and p.embed_url and p.embed_url.startswith('<lite-youtube') %}
+									{{p.embed_url | safe}}
+								{% endif %}
 							{% endif %}
 						{% endif %}
-
 						
 						<div id="post-text" class="{% if p.author.agendaposter and p.sub != 'chudrama' %}agendaposter{% endif %} {% if p.author.rainbow %}rainbow-text{% endif %}">
-							{% if p.is_image %}
-								<div class="row no-gutters mb-4">
-									<div class="col">
-										<a {% if v.newtabexternal %}target="_blank"{% endif %} rel="nofollow noopener" href="{{p.realurl(v)}}">
-											<img onclick="expandDesktopImage()" src="{{p.realurl(v)}}" class="img-fluid" style="max-height:500px" alt="Unable to load image">
-										</a>
+							{% if not v_forbid_deleted %}
+								{% if p.is_image %}
+									<div class="row no-gutters mb-4">
+										<div class="col">
+											<a {% if v.newtabexternal %}target="_blank"{% endif %} rel="nofollow noopener" href="{{p.realurl(v)}}">
+												<img onclick="expandDesktopImage()" src="{{p.realurl(v)}}" class="img-fluid" style="max-height:500px" alt="Unable to load image">
+											</a>
+										</div>
 									</div>
-								</div>
-							{% elif p.is_video %}
-								<div class="row no-gutters mb-4">
-									<div class="col">
-										<video controls preload="none" src="{{p.realurl(v)}}"></video>
+								{% elif p.is_video %}
+									<div class="row no-gutters mb-4">
+										<div class="col">
+											<video controls preload="none" src="{{p.realurl(v)}}"></video>
+										</div>
 									</div>
-								</div>
-							{% elif p.is_audio %}
-								<div class="row no-gutters mb-4">
-									<div class="col">
-										<audio controls preload="none" src="{{p.realurl(v)}}"></audio>
+								{% elif p.is_audio %}
+									<div class="row no-gutters mb-4">
+										<div class="col">
+											<audio controls preload="none" src="{{p.realurl(v)}}"></audio>
+										</div>
 									</div>
-								</div>
+								{% endif %}
 							{% endif %}
-							{{p.realbody(v) | safe}}
-
-							{% if p.is_banned and p.ban_reason %}
-								<div class="text-removed mb-0">removed by @{{p.ban_reason}} (Admin)</div>
-							{% endif %}
-
-						</div>
-					</div>
-					{% else %}
-					<div id="post-body" class="post-body mt-3">
-						<div id="post-text">
 							{{p.realbody(v) | safe}}
 							{% if p.is_banned and p.ban_reason %}
 								<div class="text-removed mb-0">removed by @{{p.ban_reason}} (Admin)</div>
 							{% endif %}
 						</div>
 					</div>
-					{% endif %}
 
 					{% if v and (v.id==p.author_id and not v.is_suspended) or v.admin_level >= PERMS['POST_EDITING'] %}
 						<div id="edit-post-body-{{p.id}}" class="d-none comment-write collapsed child">
