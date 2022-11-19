@@ -35,104 +35,104 @@ from .userblock import *
 
 class LoggedOutUser():
 	if SITE == "pcmemes.net":
-		basedcount = 0
+		basedcount = Column(Integer, default=0)
 		pills = ""
 	id = NotImplemented
-	username = NotImplemented
-	namecolor = DEFAULT_COLOR
-	background = None
-	customtitle = None
-	customtitleplain = None
-	titlecolor = DEFAULT_COLOR
-	theme = DEFAULT_THEME
-	themecolor = DEFAULT_COLOR
-	cardview = CARD_VIEW
-	song = None
-	highres = None
-	profileurl = NotImplemented
-	bannerurl = None
-	house = ''
-	old_house = ''
-	patron = 0
-	patron_utc = 0
-	verified = None
-	verifiedcolor = None
-	marseyawarded = 0
-	rehab = 0
-	longpost = 0
-	bird = 0
+	username = NotImplemented	
+	namecolor = Column(String, default=DEFAULT_COLOR)
+	background = Column(String)
+	customtitle = Column(String)
+	customtitleplain = deferred(Column(String))
+	titlecolor = Column(String, default=DEFAULT_COLOR)
+	theme = Column(String, default=DEFAULT_THEME)
+	themecolor = Column(String, default=DEFAULT_COLOR)
+	cardview = Column(Boolean, default=CARD_VIEW)
+	song = Column(String)
+	highres = Column(String)
+	profileurl = Column(String)
+	bannerurl = Column(String)
+	house = Column(String, default='')
+	old_house = Column(String, default='')
+	patron = Column(Integer, default=0)
+	patron_utc = Column(Integer, default=0)
+	verified = Column(String)
+	verifiedcolor = Column(String)
+	marseyawarded = Column(Integer)
+	rehab = Column(Integer)
+	longpost = Column(Integer)
+	bird = Column(Integer)
 	email = None
-	css = None
+	css = Column(String)
 	profilecss = None
 	passhash = ''
-	post_count = 0
-	comment_count = 0
-	received_award_count = 0
-	created_utc = 0
+	post_count = Column(Integer, default=0)
+	comment_count = Column(Integer, default=0)
+	received_award_count = Column(Integer, default=0)
+	created_utc = Column(Integer)
 	admin_level = -1
-	last_active = 0
-	coins_spent = 0
-	coins_spent_on_hats = 0
-	lootboxes_bought = 0
-	agendaposter = 0
-	is_activated = False
-	shadowbanned = None
-	over_18 = False
-	hidevotedon = False
-	highlightedcomments = True
-	slurreplacer = 1
-	profanityreplacer = 1
-	flairchanged = None
-	newtab = False
-	newtabexternal = True
-	reddit = 'old.reddit.com'
-	nitter = False
-	imginn = False
-	frontsize = 25
-	controversial = True
+	last_active = Column(Integer, default=0, nullable=False)
+	coins_spent = Column(Integer, default=0)
+	coins_spent_on_hats = Column(Integer, default=0)
+	lootboxes_bought = Column(Integer, default=0)
+	agendaposter = Column(Integer, default=0)
+	is_activated = Column(Boolean, default=False)
+	shadowbanned = Column(String)
+	over_18 = Column(Boolean, default=False)
+	hidevotedon = Column(Boolean, default=False)
+	highlightcomments = Column(Boolean, default=True)
+	slurreplacer = Column(Integer, default=1)
+	profanityreplacer = Column(Integer, default=1)
+	flairchanged = Column(Integer)
+	newtab = Column(Boolean, default=False)
+	newtabexternal = Column(Boolean, default=True)
+	reddit = Column(String, default='old.reddit.com')
+	nitter = Column(Boolean)
+	imginn = Column(Boolean)
+	frontsize = Column(Integer, default=25)
+	controversial = Column(Boolean, default=True)
 	bio = None
-	bio_html = None
+	bio_html = Column(String)
 	sig = None
-	sig_html = None
-	fp = None
-	sigs_disabled = False
-	progressivestack = 0
-	deflector = 0
+	sig_html = Column(String)
+	fp = Column(String)
+	sigs_disabled = Column(Boolean)
+	progressivestack = Column(Integer)
+	deflector = Column(Integer)
 	friends = None
 	friends_html = None
 	enemies = None
 	enemies_html = None
-	is_banned = 0
-	unban_utc = 0
+	is_banned = Column(Integer, default=0)
+	unban_utc = Column(Integer, default=0)
 	ban_reason = None
-	is_muted = False
-	club_allowed = None
-	login_nonce = 0
-	coins = 0
-	truescore = 0
-	procoins = 0
+	is_muted = Column(Boolean, default=False, nullable=False)
+	club_allowed = Column(Boolean)
+	login_nonce = Column(Integer, default=0)
+	coins = Column(Integer, default=0)
+	truescore = Column(Integer, default=0)
+	procoins = Column(Integer, default=0)
 	mfa_secret = None
-	is_private = False
-	stored_subscriber_count = 0
-	defaultsortingcomments = "hot"
-	defaultsorting = "hot"
-	defaulttime = DEFAULT_TIME_FILTER
-	custom_filter_list = None
-	discord_id = None
+	is_private = Column(Boolean, default=False)
+	stored_subscriber_count = Column(Integer, default=0)
+	defaultsortingcomments = Column(String, default="hot")
+	defaultsorting = Column(String, default="hot")
+	defaulttime = Column(String, default=DEFAULT_TIME_FILTER)
+	custom_filter_list = Column(String)
+	discord_id = Column(String)
 	original_username = NotImplemented
 	referred_by = None
-	currently_held_lottery_tickets = 0
-	total_held_lottery_tickets = 0
-	total_lottery_winnings = 0
-	last_viewed_post_notifs = 0
-	last_viewed_log_notifs = 0
-	pronouns = 'they/them'
-	bite = 0
-	earlylife = 0
-	owoify = 0
-	marsify = 0
-	rainbow = 0
-	spider = 0
+	currently_held_lottery_tickets = Column(Integer, default=0)
+	total_held_lottery_tickets = Column(Integer, default=0)
+	total_lottery_winnings = Column(Integer, default=0)
+	last_viewed_post_notifs = Column(Integer, default=0)
+	last_viewed_log_notifs = Column(Integer, default=0)
+	pronouns = Column(String, default='they/them')
+	bite = Column(Integer)
+	earlylife = Column(Integer)
+	owoify = Column(Integer)
+	marsify = Column(Integer, default=0)
+	rainbow = Column(Integer)
+	spider = Column(Integer, default=0)
 
 	(badges, subscriptions, following, followers, viewers, 
 		blocking, blocked, authorizations, apps, awards, 
@@ -664,105 +664,24 @@ class User(Base, LoggedOutUser):
 	__tablename__ = "users"
 
 	if SITE == "pcmemes.net":
-		basedcount = Column(Integer, default=0)
 		pills = deferred(Column(String, default=""))
 
 	id = Column(Integer, primary_key=True)
 	username = Column(String)
-	namecolor = Column(String, default=DEFAULT_COLOR)
-	background = Column(String)
-	customtitle = Column(String)
-	customtitleplain = deferred(Column(String))
-	titlecolor = Column(String, default=DEFAULT_COLOR)
-	theme = Column(String, default=DEFAULT_THEME)
-	themecolor = Column(String, default=DEFAULT_COLOR)
-	cardview = Column(Boolean, default=CARD_VIEW)
-	song = Column(String)
-	highres = Column(String)
-	profileurl = Column(String)
-	bannerurl = Column(String)
-	house = Column(String, default='')
-	old_house = Column(String, default='')
-	patron = Column(Integer, default=0)
-	patron_utc = Column(Integer, default=0)
-	verified = Column(String)
-	verifiedcolor = Column(String)
-	marseyawarded = Column(Integer)
-	rehab = Column(Integer)
-	longpost = Column(Integer)
-	bird = Column(Integer)
 	email = deferred(Column(String))
-	css = Column(String)
 	profilecss = deferred(Column(String))
 	passhash = deferred(Column(String))
-	post_count = Column(Integer, default=0)
-	comment_count = Column(Integer, default=0)
-	received_award_count = Column(Integer, default=0)
-	created_utc = Column(Integer)
 	admin_level = Column(Integer, default=0)
-	last_active = Column(Integer, default=0, nullable=False)
-	coins_spent = Column(Integer, default=0)
-	coins_spent_on_hats = Column(Integer, default=0)
-	lootboxes_bought = Column(Integer, default=0)
-	agendaposter = Column(Integer, default=0)
-	is_activated = Column(Boolean, default=False)
-	shadowbanned = Column(String)
-	over_18 = Column(Boolean, default=False)
-	hidevotedon = Column(Boolean, default=False)
-	highlightcomments = Column(Boolean, default=True)
-	slurreplacer = Column(Integer, default=1)
-	profanityreplacer = Column(Integer, default=1)
-	flairchanged = Column(Integer)
-	newtab = Column(Boolean, default=False)
-	newtabexternal = Column(Boolean, default=True)
-	reddit = Column(String, default='old.reddit.com')
-	nitter = Column(Boolean)
-	imginn = Column(Boolean)
-	frontsize = Column(Integer, default=25)
-	controversial = Column(Boolean, default=True)
 	bio = deferred(Column(String))
-	bio_html = Column(String)
 	sig = deferred(Column(String))
-	sig_html = Column(String)
-	fp = Column(String)
-	sigs_disabled = Column(Boolean)
-	progressivestack = Column(Integer)
-	deflector = Column(Integer)
 	friends = deferred(Column(String))
 	friends_html = deferred(Column(String))
 	enemies = deferred(Column(String))
 	enemies_html = deferred(Column(String))
-	is_banned = Column(Integer, default=0)
-	unban_utc = Column(Integer, default=0)
 	ban_reason = deferred(Column(String))
-	is_muted = Column(Boolean, default=False, nullable=False)
-	club_allowed = Column(Boolean)
-	login_nonce = Column(Integer, default=0)
-	coins = Column(Integer, default=0)
-	truescore = Column(Integer, default=0)
-	procoins = Column(Integer, default=0)
 	mfa_secret = deferred(Column(String))
-	is_private = Column(Boolean, default=False)
-	stored_subscriber_count = Column(Integer, default=0)
-	defaultsortingcomments = Column(String, default="hot")
-	defaultsorting = Column(String, default="hot")
-	defaulttime = Column(String, default=DEFAULT_TIME_FILTER)
-	custom_filter_list = Column(String)
-	discord_id = Column(String)
 	original_username = Column(String)
 	referred_by = Column(Integer, ForeignKey("users.id"))
-	currently_held_lottery_tickets = Column(Integer, default=0)
-	total_held_lottery_tickets = Column(Integer, default=0)
-	total_lottery_winnings = Column(Integer, default=0)
-	last_viewed_post_notifs = Column(Integer, default=0)
-	last_viewed_log_notifs = Column(Integer, default=0)
-	pronouns = Column(String, default='they/them')
-	bite = Column(Integer)
-	earlylife = Column(Integer)
-	owoify = Column(Integer)
-	marsify = Column(Integer, default=0)
-	rainbow = Column(Integer)
-	spider = Column(Integer, default=0)
 
 	badges = relationship("Badge", order_by="Badge.created_utc", back_populates="user")
 	subscriptions = relationship("Subscription", back_populates="user")
