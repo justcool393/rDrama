@@ -241,11 +241,11 @@ class Comment(Base):
 
 	@lazy
 	def realbody(self, v):
-		if self.post and self.post.club and not (v and (v.paid_dues or v.id in [self.author_id, self.post.author_id] or (self.parent_comment and v.id == self.parent_comment.author_id))):
-			return f"<p>{CC} ONLY</p>"
-		if self.deleted_utc != 0 and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] and (v and v.id != self.author.id): return "[Deleted by user]"
-		if self.author.shadowbanned and not v.can_see_shadowbanned and not (v and v.id == self.author.id): return "[Deleted by user]"
-		if self.is_banned and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] and (v and v.id != self.author.id): return ""
+		if not v or v.id != self.author_id:
+			if self.deleted_utc != 0 and not v.admin_level >= PERMS['POST_COMMENT_MODERATION']: return "[Deleted by user]"
+			if self.author.shadowbanned and not v.admin_level >= PERMS['USER_SHADOWBAN']: return "[Deleted by user]"
+			if self.is_banned and not v.admin_level >= PERMS['POST_COMMENT_MODERATION']: return "[Removed by admins]"
+			if self.post.club and not v.paid_dues: return f"{CC} ONLY"
 
 		body = self.body_html or ""
 
@@ -297,18 +297,15 @@ class Comment(Base):
 
 	@lazy
 	def plainbody(self, v):
-		if self.post and self.post.club and not (v and (v.paid_dues or v.id in [self.author_id, self.post.author_id] or (self.parent_comment and v.id == self.parent_comment.author_id))):
-			return f"{CC} ONLY"
-		if self.deleted_utc != 0 and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] and (v and v.id != self.author.id): return "[Deleted by user]"
-		if self.author.shadowbanned and not v.can_see_shadowbanned and not (v and v.id == self.author.id): return "[Deleted by user]"
-		if self.is_banned and not v.admin_level >= PERMS['POST_COMMENT_MODERATION'] and (v and v.id != self.author.id): return ""
+		if not v or v.id != self.author_id:
+			if self.deleted_utc != 0 and not v.admin_level >= PERMS['POST_COMMENT_MODERATION']: return "[Deleted by user]"
+			if self.author.shadowbanned and not v.admin_level >= PERMS['USER_SHADOWBAN']: return "[Deleted by user]"
+			if self.is_banned and not v.admin_level >= PERMS['POST_COMMENT_MODERATION']: return "[Removed by admins]"
+			if self.post and self.post.club and not v.id == self.post.author_id and not v.paid_dues: return f"{CC} ONLY"
 
 		body = self.body
-
 		if not body: return ""
-
 		body = censor_slurs(body, v).replace('<img loading="lazy" data-bs-toggle="tooltip" alt=":marseytrain:" title=":marseytrain:" src="/e/marseytrain.webp">', ':marseytrain:')
-
 		return body
 
 	@lazy
