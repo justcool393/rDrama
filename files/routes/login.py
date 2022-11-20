@@ -381,7 +381,7 @@ def post_forgot():
 									v=user)
 				)
 
-	return render_template("forgot_password.html",
+	return render_template("login/forgot_password.html",
 						msg="If the username and email matches an account, you will be sent a password reset email. You have ten minutes to complete the password reset process."), 202
 
 
