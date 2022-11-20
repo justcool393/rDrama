@@ -1,6 +1,12 @@
 {%- extends 'root.html' -%}
 {% block pagetitle %}Login{% endblock %}
 {% block pagetype %}login{% endblock %}
+{% block template_config %}
+	{% set root_scope.js = false %}
+	{% set root_scope.include_user_css = false %}
+	{% set root_scope.include_seo = false %}
+	{% set root_scope.include_cf_2fa_verify = false %}
+{% endblock %}
 {% block body %}
 	<div class="container-fluid position-absolute h-100 p-0">
 				<div class="row no-gutters h-100">
