@@ -1,9 +1,8 @@
-{%- block set_variables -%}
-	{%- set js = true -%}
-	{%- set include_user_css = true -%}
-	{%- set include_seo = true -%}
-	{%- set include_cf_2fa_verify = false -%}
-{%- endblock -%}
+{% set root_scope = namespace(found=false) %}
+{% set root_scope.js = true %}
+{% set root_scope.include_user_css = true %}
+{% set root_scope.include_seo = true %}
+{% set root_scope.include_cf_2fa_verify = false %}
 {%- import 'util/macros.html' as macros with context -%}
 {%- import 'html_head.html' as html_head with context -%}
 {%- if request.path == '/' -%}
@@ -18,10 +17,10 @@
 		{% block title %}<title>{% block pagetitle %}{% endblock %} - {{SITE_NAME}}</title>{% endblock %}
 		{% set page_title = self.pagetitle() %}
 		{{html_head.page_meta(page_title or none)}}
-		{{html_head.javascript() if js}}
-		{{html_head.stylesheets(include_user_css)}}
-		{{html_head.seo() if include_seo}}
-		{{html_head.cf_2fa_verify() if include_2fa_verify}}
+		{{html_head.javascript() if root_scope.js}}
+		{{html_head.stylesheets(root_scope.include_user_css)}}
+		{{html_head.seo() if root_scope.include_seo}}
+		{{html_head.cf_2fa_verify() if root_scope.include_2fa_verify}}
 		{% block head_final %}{% endblock %}
 	{% endblock %}
 	</head>
