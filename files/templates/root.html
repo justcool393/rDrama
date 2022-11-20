@@ -1,3 +1,9 @@
+{%- block set_variables -%}
+	{%- set js = true -%}
+	{%- set include_user_css = true -%}
+	{%- set include_seo = true -%}
+	{%- set include_cf_2fa_verify = false -%}
+{%- endblock -%}
 {%- import 'util/macros.html' as macros with context -%}
 {%- import 'html_head.html' as html_head with context -%}
 {%- if request.path == '/' -%}

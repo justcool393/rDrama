@@ -1,9 +1,3 @@
-{% block setvars %}
-{% set js = true %}
-{% set include_user_css = true %}
-{% set include_seo = true %}
-{% set include_cf_2fa_verify = false %}
-{% endblock %}
 {% macro cf_2fa_verify() %}
 	{% if SITE == 'rdrama.net' %}
 		<meta name="cf-2fa-verify" content="4f40ca1ca249313">
