@@ -1,4 +1,11 @@
 {% extends "default.html" %}
+{% block pagetitle %}
+{% if comment_info %}
+	@{{comment_info.author_name}} comments on '{{p.plaintitle(v)}}'
+{% else %}
+	{{p.plaintitle(v)}}
+{% endif %}
+{% endblock %}
 {% set ups=p.upvotes %}
 {% set downs=p.downvotes %}
 {% set score=ups-downs %}

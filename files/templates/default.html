@@ -1,17 +1,11 @@
 {%- import 'util/macros.html' as macros with context -%}
-{%- import 'html_head.html' as html_head with context -%}
 <!DOCTYPE html>
 <html lang="en">
 {% if request.path == '/' %}
 	{% set csp=CONTENT_SECURITY_POLICY_HOME %}
 {% endif %}
-<head>
-	{{html_head.html_head(true, true, true, csp, SITE_NAME, true)}}
-	{% block head_final %}{% endblock %}
- </head>
-
-
- <body id="{% if request.path != '/comments' %}{% block pagetype %}frontpage{% endblock %}{% endif %}" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="{% if path != '/formatting' %}overflow-x: hidden; {% endif %} background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background){% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>
+{%- include 'html_head.html' -%}
+<body id="{% if request.path != '/comments' %}{% block pagetype %}frontpage{% endblock %}{% endif %}" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="{% if path != '/formatting' %}overflow-x: hidden; {% endif %} background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background){% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>
 
 {% block Banner %}
 	{% include "modals/expanded_image.html" %}

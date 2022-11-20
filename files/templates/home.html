@@ -1,8 +1,6 @@
 {% extends "default.html" %}
-
 {% block title %}
 	{% if sub %}
-
 		{% if sub.bannerurl %}
 			{% set preview = sub.bannerurl %}
 		{% elif sub.sidebarurl %}
@@ -35,9 +33,7 @@
 		{{super()}}
 	{% endif %}
 {% endblock %}
-
 {% block desktopBanner %}
-
 <div class="row" style="overflow: visible;padding-top:5px;">
 	<div class="col">
 		<a class="btn btn-primary btn-block mt-3" href="{% if sub %}/h/{{sub}}{% endif %}/submit"><i class="fas fa-feather-alt mr-2"></i>Create Post</a>

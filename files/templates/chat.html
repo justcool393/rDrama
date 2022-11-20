@@ -1,5 +1,4 @@
 {%- import 'util/macros.html' as macros with context -%}
-{%- import 'html_head.html' as html_head with context -%}
 <!DOCTYPE html>
 <html lang="en">
 {% if SITE == 'localhost' %}
@@ -7,7 +6,8 @@
 {% else %}
 	{% set csp=none %}
 {% endif %}
-{{html_head.html_head(true, true, true, csp, "Chat", false)}}
+{% block pagetitle %}Chat{% endblock %}
+{%- include 'html_head.html' -%}
 <body>
 	{% include "header.html" %}
 	{% include "modals/expanded_image.html" %}

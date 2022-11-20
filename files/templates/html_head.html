@@ -1,15 +1,21 @@
-{% macro html_head(js, include_seo, include_user_css, csp, title, include_2fa_verify) %}
+{% block setvars %}
+{% set js = true %}
+{% set include_user_css = true %}
+{% set include_seo = true %}
+{% set include_cf_2fa_verify = false %}
+{% endblock %}
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="Content-Security-Policy" content="{{csp | default(CONTENT_SECURITY_POLICY_DEFAULT, true) | safe}}">
-	{{ page_meta(title) }}
-	{{ stylesheets(include_user_css) }}
-	{{ javascript() if js}}
-	{{ seo() if include_seo }}
-	{{ cf_2fa_verify() if include_2fa_verify }}
+	{% block title %}<title>{% block pagetitle %}{% endblock %} - {{SITE_NAME}}</title>{% endblock %}
+	{% set page_title = self.pagetitle() %}
+	{{page_meta(page_title or none)}}
+	{{javascript() if js}}
+	{{stylesheets(include_user_css)}}
+	{{seo() if include_seo}}
+	{{cf_2fa_verify() if include_2fa_verify}}
+	{% block head_final %}{% endblock %}
 </head>
-{% endmacro %}
-
 {% macro cf_2fa_verify() %}
 	{% if SITE == 'rdrama.net' %}
 		<meta name="cf-2fa-verify" content="4f40ca1ca249313">
@@ -26,7 +32,6 @@
 {% endmacro %}
 
 {% macro page_meta(title=none) %}
-
 	{% if 'post/' in request.path and p %}
 		{% set title = [p.plaintitle(v), ' - ', title] | join %}
 
@@ -71,18 +76,11 @@
 				- {{u.bio}}
 			{% endif %}"
 		{% endset %}
-
 	{% elif sub %}
 		{% set title, description =
 		'/h/'+sub.name, sub.sidebar if sub.sidebar %}
 	{% endif %}
 
-	{% if not title or title == SITE_NAME %}
-		<title>{% block pagetitle %}{% endblock %} - {{SITE_NAME}}</title>
-		{% set title = self.pagetitle() %}
-	{% else %}
-		<title>{{[title, ' - ', SITE_NAME] | join}}</title>
-	{% endif %}
 	<link rel="icon" type="image/webp" href="{{'icon.webp' | asset_siteimg}}">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="thumbnail" content="{{'site_preview.webp' | asset_siteimg}}">

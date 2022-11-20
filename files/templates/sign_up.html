@@ -1,26 +1,23 @@
 {%- import 'util/macros.html' as macros with context -%}
-{%- import 'html_head.html' as html_head with context -%}
 <!DOCTYPE html>
 <html lang="en">
+{% block pagetitle %}
 {% if ref_user %}
 	{% set title= ref_user.username + "invites you to " + SITE_NAME %}
 {% else %}
 	{% set title="Sign Up" %}
 {% endif %}
-{{html_head.html_head(true, false, false, none, title, false)}}
+{{title}}
+{% endblock %}
+{%- include 'html_head.html' -%}
+{# {{html_head.html_head(true, false, false, none, title, false)}} #}
 <body id="login">
-
 <div class="container-fluid position-absolute h-100 p-0 overflow-auto">
 	<div class="row no-gutters h-100">
-
 		<div class="col-12 col-md-6 my-auto p-3">
-
 			<div class="row justify-content-center">
-
 				<div class="col-10 col-md-7">
-
 					<div id="register-form">
-
 						{% if ref_user %}
 						<h2>@{{ref_user.username}} has invited you!</h2>
 						<p class="text-muted mb-md-2">Looks like someone wants you to join {{SITE_NAME}}.</p>
@@ -110,15 +107,10 @@
 							Already have an account? <a href="/login{{'?redirect='+redirect if redirect else ''}}" class="font-weight-bold toggle-login">Log in</a>
 						</div>
 						</form>
-
 					</div>
-
 				</div>
-
 			</div>
-
 		</div>
-
 		<div class="col-12 col-md-6 d-mob-none">
 			<div class="splash-wrapper">
 				<div class="splash-overlay"></div>
@@ -127,13 +119,9 @@
 		</div>
 	</div>
 </div>
-
 <script defer src="{{'js/signup.js' | asset}}"></script>
-
 {% if turnstile != DEFAULT_CONFIG_VALUE %}
 	<script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
 {% endif %}
-
 </body>
-
 </html>
