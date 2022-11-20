@@ -14,16 +14,21 @@
 	{% set root_scope.include_seo = false %}
 	{% set root_scope.include_cf_2fa_verify = false %}
 {% endblock %}
+{% set login_namespace = namespace() %}
 {% if ref_user %}
-	{% block authtitle %}@{{ref_user.username}} has invited you!{% endblock %}
-	{% block authtext %}Looks like someone wants you to join {{SITE_NAME}}.{% endblock %}
+	{% set login_namespace.authtitle = ['@', ref_user.username, ' has invited you!'] | join %}
+	{% set login_namespace.authtext = ['Looks like someone wants you to join ', SITE_NAME, '.'] | join %}
 {% elif not site_settings['login_required'] %}
-	{% block authtitle %}Create your account.{% endblock %}
-	{% block authtext %}No email address required.{% endblock %}
+	{% set login_namespace.authtitle = "Create your account." %}
+	{% set login_namespace.authtext = "No email address required." %}
+{% endif %}
+{% if ref_user or not site_settings['login_required'] %}
+	{% block authtitle %}{{login_namespace.authtitle}}{% endblock %}
+	{% block authtext %}{{login_namespace.authtext}}{% endblock %}
 {% endif %}
 {% block content %}
 <div id="register-form">
-	{% if SITE_NAME == 'rDrama' and site_settings['login_required'] %}
+	{% if not ref_user and SITE_NAME == 'rDrama' and site_settings['login_required'] %}
 	<p class="text-muted text-justify mb-3" style="line-height: 1.2em">
 		Hiiiiii it’s your favorite user Carp! We’re currently on <span style="font-variant-caps: small-caps;">Login Required</span> mode for one of a few reasons:
 	</p>
@@ -41,7 +46,7 @@
 		<em>xoxo carp</em> 💋
 	</p>
 	<hr>
-	{% elif SITE_NAME == 'WPD' and site_settings['login_required'] %}
+	{% elif not ref_user and SITE_NAME == 'WPD' and site_settings['login_required'] %}
 	<p class="text-muted text-justify mb-1" style="line-height: 1.2em">
 		<strong>Hi you!</strong> &mdash; <span style="font-variant-caps: small-caps;">watchpeopledie.tv</span> is currently doing our monthly 24(ish) hours of "everyone needs to have an account" &mdash; sorry about that! But making an account is actually super easy. <strong>You don't even need an email address!</strong> Literally just pick a username, set a password, and that's that. Bam, done, like 8 seconds, tops.<br>
 	</p>
