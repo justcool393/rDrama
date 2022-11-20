@@ -204,19 +204,19 @@ def roulette_player_placed_bet(v):
 	if v.rehab:
 		abort(403, "You are under Rehab award effect!")
 
+	bet = request.values.get("bet")
+	which = request.values.get("which", None, int)
+	amount = request.values.get("wager", None, int)
+	currency = request.values.get("currency")
+
+	if bet not in ("STRAIGHT_UP_BET", "LINE_BET", "COLUMN_BET", "DOZEN_BET", 
+					"EVEN_ODD_BET", "RED_BLACK_BET", "HIGH_LOW_BET"): abort(400, "Invalid bet type")
+	if not amount or amount < 5: abort(400, f"Minimum bet is 5 {currency}.")
+	if not which or which < 0 or which > 37: abort(400, "Not a valid roulette number")
+
 	try:
-		bet = request.values.get("bet")
-		which = request.values.get("which")
-		amount = int(request.values.get("wager"))
-		currency = request.values.get("currency")
-
-		if amount < 5:
-			abort(400, f"Minimum bet is 5 {currency}.")
-
 		gambler_placed_roulette_bet(v, bet, which, amount, currency)
-
 		bets = get_roulette_bets()
-
 		return {"success": True, "bets": bets, "gambler": {"coins": v.coins, "procoins": v.procoins}}
 	except:
 		abort(400, "Unable to place a bet.")
