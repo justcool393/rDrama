@@ -1,6 +1,4 @@
-{%- import 'util/macros.html' as macros with context -%}
-<!DOCTYPE html>
-<html lang="en">
+{%- extends 'root.html' -%}
 {% if SITE == 'localhost' %}
 	{% set csp="script-src 'self' 'unsafe-inline' rdrama.net; connect-src 'self'; object-src 'none';" %}
 {% else %}
