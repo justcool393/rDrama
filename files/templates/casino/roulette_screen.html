@@ -79,7 +79,7 @@
 
 		// First Column
 		html += "<div class=\"roulette-table-row\">";
-		html += `<div id="STRAIGHT_UP_BET#37" onclick="placeChip('STRAIGHT_UP_BET', '37') class="roulette-table-number roulette-table-number__green">00</div>`
+		html += `<div id="STRAIGHT_UP_BET#37" onclick="placeChip('STRAIGHT_UP_BET', '37')" class="roulette-table-number roulette-table-number__green">00</div>`
 		for (let i = 1; i < 13; i++) {
 			const correctNumber = CELL_TO_NUMBER_LOOKUP[i];
 			const isRed = reds.includes(correctNumber);
@@ -97,6 +97,7 @@
 
 		// Second Column
 		html += "<div class=\"roulette-table-row\">";
+		html += `<div id="roulette-spacer-left-middle" class="roulette-table-number roulette-table-number__green"></div>`
 		for (let i = 13; i < 25; i++) {
 			const correctNumber = CELL_TO_NUMBER_LOOKUP[i];
 			const isRed = reds.includes(correctNumber);
@@ -114,7 +115,7 @@
 
 		// Third Column
 		html += "<div class=\"roulette-table-row\">";
-		html += `<div id="STRAIGHT_UP_BET#0" onclick="placeChip('STRAIGHT_UP_BET', '0') class="roulette-table-number roulette-table-number__green">0</div>`
+		html += `<div id="STRAIGHT_UP_BET#0" onclick="placeChip('STRAIGHT_UP_BET', '0')" class="roulette-table-number roulette-table-number__green">0</div>`
 		for (let i = 25; i < 37; i++) {
 			const correctNumber = CELL_TO_NUMBER_LOOKUP[i];
 			const isRed = reds.includes(correctNumber);
