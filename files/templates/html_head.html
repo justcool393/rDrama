@@ -76,7 +76,7 @@
 		{% set title, description =
 		'/h/'+sub.name, sub.sidebar if sub.sidebar %}
 	{% else %}
-		{% set page_title = pagetitle() %}
+		{% set page_title = self.pagetitle() %}
 		{% set title, description = page_title, page_title %}
 	{% endif %}
 
