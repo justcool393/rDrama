@@ -1,5 +1,5 @@
-{% block pagetitle %}Poll Votes{% endblock %}
 {% extends "default.html" %}
+{% block pagetitle %}Poll Votes{% endblock %}
 {% block content %}
 {% if thing %}
 <h3 class="mt-5">{{thing.body_html | safe}} - {{ups | length}} {% if thing.exclusive == 2 %}bets{% else %}votes{% endif %}</h3>
