@@ -52,9 +52,9 @@
 			'@'+u.username,
 			u.created_date,
 			u.url,
-			[u.username, "'s profile - ", SITE_NAME] | join,
+			[u.username, "'s profile"] | join,
 			u.banner_url,
-			[u.username, "'s profile - ", SITE_NAME] | join %}
+			[u.username, "'s profile"] | join %}
 
 		{% set description %}
 			"{{u.coins}} coins - Joined {{u.created_date}} -
@@ -75,9 +75,12 @@
 	{% elif sub %}
 		{% set title, description =
 		'/h/'+sub.name, sub.sidebar if sub.sidebar %}
+	{% else %}
+		{% set page_title = pagetitle() %}
+		{% set title, description = page_title, page_title %}
 	{% endif %}
 
-	<title>{{title}}</title>
+	<title>{{[title, ' - ', SITE_NAME] | join}}</title>
 	<link rel="icon" type="image/webp" href="{{'icon.webp' | asset_siteimg}}">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="thumbnail" content="{{'site_preview.webp' | asset_siteimg}}">
