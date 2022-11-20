@@ -238,6 +238,12 @@ def determine_roulette_winners(number, bets):
 		if int(bet['which']) == number:
 			add_to_winnings(bet)
 
+	if number == 0 or number == 37:
+		return winners, payouts, rewards_by_game_id
+	
+	is_even = lambda x:x % 2 == 0 and x != 0
+	is_high = lambda x:x > 18 and x != 37
+
 	# Line Bet
 	line = -1
 	for i in range(1, 7):
@@ -269,7 +275,7 @@ def determine_roulette_winners(number, bets):
 			add_to_winnings(bet)
 
 	# Even/Odd Bet
-	even_odd = RouletteEvenOdd.EVEN if number % 2 == 0 else RouletteEvenOdd.ODD
+	even_odd = RouletteEvenOdd.EVEN if is_even(number) else RouletteEvenOdd.ODD
 
 	for bet in bets[RouletteAction.EVEN_ODD_BET]:
 		if bet['which'] == even_odd:
@@ -283,7 +289,7 @@ def determine_roulette_winners(number, bets):
 			add_to_winnings(bet)
 
 	# High/Low Bet
-	high_low = RouletteHighLow.HIGH if number > 18 else RouletteHighLow.LOW
+	high_low = RouletteHighLow.HIGH if is_high(number) else RouletteHighLow.LOW
 
 	for bet in bets[RouletteAction.HIGH_LOW_BET]:
 		if bet['which'] == high_low:
