@@ -25,7 +25,7 @@
 	<script defer src="{{'js/core.js' | asset}}"></script>
 {% endmacro %}
 
-{% macro page_meta(title=SITE_NAME) %}
+{% macro page_meta(title=none) %}
 
 	{% if 'post/' in request.path and p %}
 		{% set title = [p.plaintitle(v), ' - ', title] | join %}
@@ -75,12 +75,14 @@
 	{% elif sub %}
 		{% set title, description =
 		'/h/'+sub.name, sub.sidebar if sub.sidebar %}
-	{% else %}
-		{% set page_title = pagetitle() %}
-		{% set title, description = page_title, page_title %}
 	{% endif %}
 
-	<title>{{[title, ' - ', SITE_NAME] | join}}</title>
+	{% if not title or title == SITE_NAME %}
+		<title>{% block pagetitle %}{% endblock %} - {{SITE_NAME}}</title>
+		{% set title = self.pagetitle() %}
+	{% else %}
+		<title>{{[title, ' - ', SITE_NAME] | join}}</title>
+	{% endif %}
 	<link rel="icon" type="image/webp" href="{{'icon.webp' | asset_siteimg}}">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="thumbnail" content="{{'site_preview.webp' | asset_siteimg}}">
