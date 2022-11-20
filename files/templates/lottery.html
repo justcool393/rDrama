@@ -1,4 +1,6 @@
-{% extends "default.html" %} 
+{% extends "default.html" %}
+{% block pagetype %}lottery{% endblock %}
+{% block pagename %}Lottershe{% endblock %}
 {% block content %}
 <div style="margin-top: 5rem">
 	<div class="lottery-page--wrapper">
@@ -186,8 +188,6 @@
 		</div>
 	</div>
 	</div>
-
 	<script defer src="{{'js/lottery.js' | asset}}"></script>
 </div>
-
 {% endblock %}

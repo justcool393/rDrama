@@ -6,6 +6,7 @@
 	{{p.plaintitle(v)}}
 {% endif %}
 {% endblock %}
+{% block pagetype %}thread{% endblock %}
 {% set ups=p.upvotes %}
 {% set downs=p.downvotes %}
 {% set score=ups-downs %}
@@ -32,9 +33,6 @@
 	{% include "awards_PCM.html" %}
 {% endif %}
 {% endblock %}
-
-{% block pagetype %}thread{% endblock %}
-
 {% block actionsModal %}
 
 {% if v %}
