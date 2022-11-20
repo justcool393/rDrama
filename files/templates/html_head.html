@@ -301,17 +301,3 @@
 	href="{{'icon.webp' | asset_siteimg}}"
 	>
 {% endmacro %}
-{% block html_head %}
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Security-Policy" content="{{csp | default(CONTENT_SECURITY_POLICY_DEFAULT, true) | safe}}">
-	{% block title %}<title>{% block pagetitle required %}{% endblock %} - {{SITE_NAME}}</title>{% endblock %}
-	{% set page_title = self.pagetitle() %}
-	{{page_meta(page_title or none)}}
-	{{javascript() if js}}
-	{{stylesheets(include_user_css)}}
-	{{seo() if include_seo}}
-	{{cf_2fa_verify() if include_2fa_verify}}
-	{% block head_final %}{% endblock %}
-</head>
-{% endblock %}

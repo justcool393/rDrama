@@ -1,9 +1,8 @@
+{%- extends 'default2.html' -%}
 {%- import 'util/macros.html' as macros with context -%}
-<!DOCTYPE html>
-<html lang="en">
 {% block pagetitle %}Login{% endblock %}
-{%- include 'html_head.html' -%}
-<body id="login">
+{% block pagetype %}login{% endblock %}
+{% block body %}
 <div class="container-fluid position-absolute h-100 p-0 overflow-auto">
 	<div class="row no-gutters h-100">
 		<div class="col-12 col-md-6 my-auto p-3">
@@ -53,5 +52,4 @@
 		</div>
 	</div>
 </div>
-</body>
-</html>
+{% endblock %}

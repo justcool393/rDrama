@@ -7,12 +7,11 @@
 	{% set csp=none %}
 {% endif %}
 {% block pagetitle %}Chat{% endblock %}
-{%- include 'html_head.html' -%}
-<body>
+{% block pagetype %}chat{% endblock %}
+{% block body %}
 	{% include "header.html" %}
 	{% include "modals/expanded_image.html" %}
 	{% include "modals/emoji.html" %}
-
 	<div
 		id="root"
 		data-id="{{v.id}}"
@@ -33,4 +32,4 @@
 	{% endif %}
 	<script defer src="{{'js/vendor/lozad.js' | asset}}"></script>
 	<script defer src="{{'js/vendor/lite-youtube.js' | asset}}"></script>
-</body>
+{% endblock %}

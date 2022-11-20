@@ -1,0 +1,25 @@
+{%- import 'util/macros.html' as macros with context -%}
+{%- import 'html_head.html' as html_head with context -%}
+{%- if request.path == '/' -%}
+	{%- set csp=CONTENT_SECURITY_POLICY_HOME -%}
+{%- endif -%}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	{% block head %}
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Security-Policy" content="{{csp | default(CONTENT_SECURITY_POLICY_DEFAULT, true) | safe}}">
+		{% block title %}<title>{% block pagetitle required %}{% endblock %} - {{SITE_NAME}}</title>{% endblock %}
+		{% set page_title = self.pagetitle() %}
+		{{html_head.page_meta(page_title or none)}}
+		{{html_head.javascript() if js}}
+		{{html_head.stylesheets(include_user_css)}}
+		{{html_head.seo() if include_seo}}
+		{{html_head.cf_2fa_verify() if include_2fa_verify}}
+		{% block head_final %}{% endblock %}
+	{% endblock %}
+	</head>
+	<body {% block body_attributes %}id="{%block pagetype %}{% endblock %}"{% endblock %}>		
+		{% block body required %}{% endblock %}
+	</body>
+</html>

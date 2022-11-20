@@ -1,6 +1,4 @@
-{%- import 'util/macros.html' as macros with context -%}
-<!DOCTYPE html>
-<html lang="en">
+{%- extends 'default2.html' -%}
 {% block pagetitle %}
 {% if ref_user %}
 	{% set title= ref_user.username + "invites you to " + SITE_NAME %}
@@ -9,9 +7,9 @@
 {% endif %}
 {{title}}
 {% endblock %}
-{%- include 'html_head.html' -%}
+{% block pagetype %}login{% endblock %}
 {# {{html_head.html_head(true, false, false, none, title, false)}} #}
-<body id="login">
+{% block body %}
 <div class="container-fluid position-absolute h-100 p-0 overflow-auto">
 	<div class="row no-gutters h-100">
 		<div class="col-12 col-md-6 my-auto p-3">
@@ -123,5 +121,4 @@
 {% if turnstile != DEFAULT_CONFIG_VALUE %}
 	<script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
 {% endif %}
-</body>
-</html>
+{% endblock %}

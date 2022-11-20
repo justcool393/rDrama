@@ -1,11 +1,9 @@
-{%- import 'util/macros.html' as macros with context -%}
-<!DOCTYPE html>
-<html lang="en">
-{% pagetitle %}Create a Post{% endblock %}
-{%- include 'html_head.html' -%}
+{%- extends 'default2.html' -%}
+{% block pagetitle %}Create a Post{% endblock %}
+{% block body_attributes %}id="submit" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="overflow-x: hidden; background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background)display: block{% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>{% endblock %}
 {# {{html_head.html_head(true, false, true, none, "Create a Post", false)}} #}
-<body id="submit" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="overflow-x: hidden; background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background)display: block{% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}>
-				{% include "header.html" %}
+{% block body %}
+		{% include "header.html" %}
 		{% block form %}
 		<div class="submit-grid-view">
 			<form id="submitform" action="{% if sub %}/h/{{sub}}{% endif %}/submit" method="post" enctype="multipart/form-data" style="grid-column: 2">
@@ -119,5 +117,4 @@
 		<script defer src="{{'js/submit.js' | asset}}"></script>
 		{% include "modals/emoji.html" %}
 		{% include "modals/gif.html" %}
-</body>
-</html>
+{% endblock %}
