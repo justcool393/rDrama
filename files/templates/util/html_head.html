@@ -45,15 +45,15 @@
 
 		{% set description %}
 			{{u.coins}} coins - Joined {{u.created_date}} -
-			{% if u.stored_subscriber_count >=1 and not u.is_private %}
+			{%- if u.stored_subscriber_count >=1 and not u.is_private -%}
 				{{u.stored_subscriber_count}} Followers -
-			{% endif %}
-			{% if not u.is_private %}
+			{%- endif -%}
+			{%- if not u.is_private -%}
 				{{0 if u.shadowbanned else u.post_count}}
 					Posts -
 				{{0 if u.shadowbanned else u.comment_count}}
 					Comments
-			{% endif %}
+			{%- endif -%}
 			{% if u.bio %}
 				- {{u.bio}}
 			{% endif %}
