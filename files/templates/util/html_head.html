@@ -78,8 +78,8 @@
 
 	{% if not comment_info %}
 		<meta property="og:image" content="{{image | default('site_preview.webp' | asset_siteimg)}}">
-		<meta property="og:video" content="{{video}}">
-		<meta property="og:audio" content="{{audio}}">
+		{% if video %}<meta property="og:video" content="{{video}}">{% endif %}
+		{% if audio %}<meta property="og:audio" content="{{audio}}">{% endif %}
 		<meta name="twitter:image" content="{{image | default('site_preview.webp' | asset_siteimg)}}">
 	{% endif %}
 
