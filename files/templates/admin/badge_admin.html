@@ -1,5 +1,5 @@
 {% extends "default.html" %}
-{%- block pagetitle -%}{{"Badge Grant" if grant else "Badge Remove"}}{%- endblock -%}
+{% block pagetitle %}{{"Badge Grant" if grant else "Badge Remove"}}{% endblock %}
 {% block pagetype %}message{% endblock %}
 {% block content %}
 		{% if error %}
