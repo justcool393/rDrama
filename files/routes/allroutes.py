@@ -16,6 +16,8 @@ def before_request():
 	ua = g.agent or ''
 	ua = ua.lower()
 
+	g.pwa = request.values.get("pwa", False, bool)
+
 	if request.host != SITE:
 		return {"error": "Unauthorized host provided"}, 403
 
