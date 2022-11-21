@@ -241,8 +241,9 @@ def determine_roulette_winners(number, bets):
 	if number == 0 or number == 37:
 		return winners, payouts, rewards_by_game_id
 	
-	is_even = lambda x:x % 2 == 0 and x != 0
-	is_high = lambda x:x > 18 and x != 37
+	def is_green(bet):
+		val = int(bet['which'])
+		return val == 0 or val == 37
 
 	# Line Bet
 	line = -1
@@ -251,6 +252,7 @@ def determine_roulette_winners(number, bets):
 			line = i
 
 	for bet in bets[RouletteAction.LINE_BET]:
+		if is_green(bet): continue
 		if int(bet['which']) == line:
 			add_to_winnings(bet)
 
@@ -261,6 +263,7 @@ def determine_roulette_winners(number, bets):
 			column = i
 
 	for bet in bets[RouletteAction.COLUMN_BET]:
+		if is_green(bet): continue
 		if int(bet['which']) == column:
 			add_to_winnings(bet)
 
@@ -271,13 +274,15 @@ def determine_roulette_winners(number, bets):
 			dozen = i
 
 	for bet in bets[RouletteAction.DOZEN_BET]:
+		if is_green(bet): continue
 		if int(bet['which']) == dozen:
 			add_to_winnings(bet)
 
 	# Even/Odd Bet
-	even_odd = RouletteEvenOdd.EVEN if is_even(number) else RouletteEvenOdd.ODD
+	even_odd = RouletteEvenOdd.EVEN if number % 2 == 0 else RouletteEvenOdd.ODD
 
 	for bet in bets[RouletteAction.EVEN_ODD_BET]:
+		if is_green(bet): continue
 		if bet['which'] == even_odd:
 			add_to_winnings(bet)
 
@@ -285,13 +290,15 @@ def determine_roulette_winners(number, bets):
 	red_black = RouletteRedBlack.RED if number in REDS else RouletteRedBlack.BLACK
 
 	for bet in bets[RouletteAction.RED_BLACK_BET]:
+		if is_green(bet): continue
 		if bet['which'] == red_black:
 			add_to_winnings(bet)
 
 	# High/Low Bet
-	high_low = RouletteHighLow.HIGH if is_high(number) else RouletteHighLow.LOW
+	high_low = RouletteHighLow.HIGH if number > 18 else RouletteHighLow.LOW
 
 	for bet in bets[RouletteAction.HIGH_LOW_BET]:
+		if is_green(bet): continue
 		if bet['which'] == high_low:
 			add_to_winnings(bet)
 
