@@ -82,7 +82,7 @@ def vote_post_comment(target_id, new, v, cls, vote_cls):
 	if existing and existing.vote_type == new: return "", 204
 	if existing:
 		if existing.vote_type == 0 and new != 0:
-			target.author.coins += coin_value
+			target.author.pay_account('coins', coin_value)
 			target.author.truescore += coin_delta
 			g.db.add(target.author)
 			existing.vote_type = new
@@ -97,7 +97,7 @@ def vote_post_comment(target_id, new, v, cls, vote_cls):
 			existing.vote_type = new
 			g.db.add(existing)
 	elif new != 0:
-		target.author.coins += coin_value
+		target.author.pay_account('coins', coin_value)
 		target.author.truescore += coin_delta
 		g.db.add(target.author)
 
@@ -147,16 +147,16 @@ def vote_post_comment(target_id, new, v, cls, vote_cls):
 		mul = 1
 		if target.author.progressivestack or target.author.id in BOOSTED_USERS:
 			mul = 2
-		elif cls == Submission and target.author.id not in BOOSTED_USERS_EXCLUDED:
+		elif cls == Submission:
 			if target.domain.endswith('.win') or target.domain in BOOSTED_SITES or target.sub in BOOSTED_HOLES:
 				mul = 2
-			elif target.sub and target.sub not in BOOSTED_HOLES_UNNERFED:
+			elif target.sub and target.sub not in UNNERFED_HOLES:
 				mul = 0.7
-			elif not target.sub and target.body_html:
+			elif not target.sub and target.body_html and target.author.id not in BOOSTED_USERS_EXCLUDED:
 				x = target.body_html.count('" target="_blank" rel="nofollow noopener">')
 				x += target.body_html.count('<a href="/images/')
-				target.realupvotes += min(x, 10)
-				mul = 1 + x/20
+				target.realupvotes += min(x*2, 20)
+				mul = 1 + x/10
 
 		mul = min(mul, 2)
 		target.realupvotes *= mul

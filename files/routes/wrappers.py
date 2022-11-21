@@ -1,4 +1,5 @@
 import time
+import secrets
 
 import user_agents
 from flask import g, request, session
@@ -15,6 +16,11 @@ def calc_users(v):
 	loggedin = cache.get(f'{SITE}_loggedin') or {}
 	loggedout = cache.get(f'{SITE}_loggedout') or {}
 	timestamp = int(time.time())
+
+	if not session.get("session_id"):
+		session.permanent = True
+		session["session_id"] = secrets.token_hex(49)
+
 	if v:
 		if session["session_id"] in loggedout: del loggedout[session["session_id"]]
 		loggedin[v.id] = timestamp

@@ -1,4 +1,3 @@
-import secrets
 from files.helpers.const import *
 from files.helpers.settings import get_setting
 from files.helpers.cloudflare import CLOUDFLARE_AVAILABLE
@@ -25,16 +24,23 @@ def before_request():
 	if not get_setting('Bots') and request.headers.get("Authorization"): abort(403)
 
 	g.db = db_session()
-	g.inferior_browser = 'iphone' in ua or 'ipad' in ua or 'ipod' in ua or 'mac os' in ua or ' firefox/' in ua
+
+	if ' firefox/' in ua:
+		g.type = 'firefox'
+		g.inferior_browser = True
+	elif 'iphone' in ua or 'ipad' in ua or 'ipod' in ua or 'mac os' in ua:
+		g.type = 'apple'
+		g.inferior_browser = True
+	else:
+		g.type = 'chromium'
+		g.inferior_browser = False
+
 	g.is_tor = request.headers.get("cf-ipcountry") == "T1"
 
 	request.path = request.path.rstrip('/')
 	if not request.path: request.path = '/'
 	request.full_path = request.full_path.rstrip('?').rstrip('/')
 	if not request.full_path: request.full_path = '/'
-	if not session.get("session_id"):
-		session.permanent = True
-		session["session_id"] = secrets.token_hex(49)
 
 @app.after_request
 def after_request(response):

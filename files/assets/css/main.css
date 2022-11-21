@@ -5264,8 +5264,8 @@ li > .sidebar {
 }
 
 .navsettings {
-	padding-left: 0.9rem !important;
-	padding-right: 0.9rem !important;
+	padding-left: 1.2rem !important;
+	padding-right: 1.2rem !important;
 }
 
 @media (max-width: 768px) {
@@ -6343,7 +6343,7 @@ div.markdown {
 	margin-bottom: 10px !important;
 }
 #desktop-expanded-image {
-	max-height:90vh;
+	max-height:80vh;
 	border:5px white solid;
 	-o-object-fit: contain;
 	object-fit: contain;
