@@ -209,27 +209,17 @@ def roulette_player_placed_bet(v):
 	amount = request.values.get("wager", None, int)
 	currency = request.values.get("currency")
 
-	try: which_int = int(which) # type: ignore
+	try: bet_type = RouletteAction(bet)
+	except: abort(400, "Not a valid roulette bet type")
+
+	if not amount or amount < 5: abort(400, f"Minimum bet is 5 {currency}.")
+	if not which: abort(400, "Not a valid roulette bet")
+
+	try: which_int = int(which)
 	except: which_int = None
 
-	if bet not in [x.value for x in RouletteAction]: abort(400, "Invalid bet type")
-	if not amount or amount < 5: abort(400, f"Minimum bet is 5 {currency}.")
-	if not which: 
-		abort(400, "Not a valid roulette bet")
-	elif bet == RouletteAction.STRAIGHT_UP_BET.value and (not which_int or which_int < 0 or which_int > 37):
-		abort(400, "Not a valid roulette number")
-	elif bet == RouletteAction.EVEN_ODD_BET.value and not which not in [x.value for x in RouletteEvenOdd]:
-		abort(400, "Can only bet on EVEN or ODD when doing an even or odd bet")
-	elif bet == RouletteAction.RED_BLACK_BET.value and not which in [x.value for x in RouletteRedBlack]:
-		abort(400, "Can only bet on RED or BLACK when doing a red or black bet")
-	elif bet == RouletteAction.HIGH_LOW_BET.value and not which in [x.value for x in RouletteHighLow]:
-		abort(400, "Can only bet on HIGH or LOW when doing a high or low bet")
-	elif bet == RouletteAction.LINE_BET.value and (not which_int or which_int < 1 or which_int > len(LINES)):
-		abort(400, f"Can only bet on lines 1 through {len(LINES)}")
-	elif bet == RouletteAction.COLUMN_BET.value and (not which_int or which_int < 1 or which_int > len(COLUMNS)):
-		abort(400, f"Can only bet on columns 1 through {len(COLUMNS)}")
-	elif bet == RouletteAction.DOZEN_BET.value and (not which_int or which_int < 1 or which_int > len(DOZENS)):
-		abort(400, f"Can only bet on dozens 1 through {len(DOZENS)}")
+	if not bet_type.value[1](which_int or which):
+		abort(400, f"Not a valid roulette bet for bet type {bet_type.value[0]}")
 
 	try:
 		gambler_placed_roulette_bet(v, bet, which, amount, currency)

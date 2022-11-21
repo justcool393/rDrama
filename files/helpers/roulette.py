@@ -10,13 +10,13 @@ from files.helpers.alerts import *
 from files.helpers.get import get_account
 
 class RouletteAction(str, Enum):
-	STRAIGHT_UP_BET = "STRAIGHT_UP_BET"
-	LINE_BET = "LINE_BET"
-	COLUMN_BET = "COLUMN_BET"
-	DOZEN_BET = "DOZEN_BET"
-	EVEN_ODD_BET = "EVEN_ODD_BET"
-	RED_BLACK_BET = "RED_BLACK_BET"
-	HIGH_LOW_BET = "HIGH_LOW_BET"
+	STRAIGHT_UP_BET = "STRAIGHT_UP_BET", lambda x:x and x >= 0 and x <= 37
+	LINE_BET = "LINE_BET", lambda x:x in LINES
+	COLUMN_BET = "COLUMN_BET", lambda x:x in COLUMNS
+	DOZEN_BET = "DOZEN_BET", lambda x:x in DOZENS
+	EVEN_ODD_BET = "EVEN_ODD_BET", lambda x:x in [y.value for y in RouletteEvenOdd]
+	RED_BLACK_BET = "RED_BLACK_BET", lambda x:x in [y.value for y in RouletteRedBlack]
+	HIGH_LOW_BET = "HIGH_LOW_BET", lambda x:x in [y.value for y in RouletteHighLow]
 
 
 class RouletteEvenOdd(str, Enum):
