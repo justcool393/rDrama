@@ -1,15 +1,11 @@
 {%- extends 'root.html' -%}
-{% if request.path == '/' %}
-	{# {% block title %}<title>{{SITE_NAME}}</title>{% endblock %} #}
-	{% set csp=CONTENT_SECURITY_POLICY_HOME %}
-{% endif %}
+{% set csp = CONTENT_SECURITY_POLICY_HOME if request.path == '/' else CONTENT_SECURITY_POLICY_DEFAULT %}
 {% block body_attributes %}id="{% if request.path != '/comments' %}{% block pagetype %}frontpage{% endblock %}{% endif %}" {% if SITE_NAME == 'rDrama' and v and (v.is_banned or v.agendaposter) %}style="overflow-x: hidden;background:url(/assets/images/backgrounds/anime/1.webp?v=3) center center fixed; background-color: var(--background)"{% elif v and v.background %}style="{% if path != '/formatting' %}overflow-x: hidden; {% endif %} background:url(/assets/images/backgrounds/{{v.background}}?v=3) center center fixed; background-color: var(--background){% if 'anime' not in v.background %};background-size: cover{% endif %}"{% endif %}{% endblock %}
 {% block body %}
 {% block Banner %}
 	{% include "modals/expanded_image.html" %}
 
 	{% if '@' not in request.path %}
-
 		{% if sub and SITE_NAME != WPD %}
 			{% set src = sub.banner_url %}
 			{% set alt = ['/h/', sub, 'banner']|join %}
@@ -18,8 +14,7 @@
 			{% set href = "https://secure.transequality.org/site/Donation2?df_id=1480" %}
 			{% set expand = false %}
 		{% endif %}
-
-		{{ macros.banner(src, href, alt, expand, class) }}
+		{{macros.banner(src, href, alt, expand, class)}}
 	{% endif %}
 {% endblock %}
 
@@ -64,7 +59,7 @@
 </div>
 <script defer src="{{'js/vendor/lozad.js' | asset}}"></script>
 <script defer src="{{'js/vendor/lite-youtube.js' | asset}}"></script>
-{% if v and v.spider %}
+{% if not err and v and v.spider %}
 	<script defer src="{{'js/vendor/critters.js' | asset}}"></script>
 	<script defer src="{{'js/spider.js' | asset}}"></script>
 {% endif %}
