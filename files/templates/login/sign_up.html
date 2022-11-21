@@ -1,7 +1,7 @@
 {%- extends 'login/authforms.html' -%}
-{% block pagetitle %}
+{% block pagetitle -%}
 {{ref_user.username + " invites you to " + SITE_NAME if ref_user else "Sign Up"}}
-{% endblock %}
+{%- endblock %}
 {% block pagetype %}login{% endblock %}
 
 {% block template_config %}
