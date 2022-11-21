@@ -7,20 +7,7 @@
 {% endif %}
 {% endblock %}
 {% block pagetype %}thread{% endblock %}
-{% set ups=p.upvotes %}
-{% set downs=p.downvotes %}
-{% set score=ups-downs %}
-
-{% if v %}
-	{% set voted=p.voted if p.voted else 0 %}
-{% else %}
-	{% set voted=-2 %}
-{% endif %}
-
-{% set v_forbid_deleted = (p.deleted_utc != 0) and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']) and not (v and v.id == p.author_id) %}
-
-{% block title %}
-
+{% block head_final %}
 <style>
 	body > .container {
 		padding-left: 20px !important;
@@ -33,6 +20,17 @@
 	{% include "awards_PCM.html" %}
 {% endif %}
 {% endblock %}
+{% set ups=p.upvotes %}
+{% set downs=p.downvotes %}
+{% set score=ups-downs %}
+
+{% if v %}
+	{% set voted=p.voted if p.voted else 0 %}
+{% else %}
+	{% set voted=-2 %}
+{% endif %}
+
+{% set v_forbid_deleted = (p.deleted_utc != 0) and not (v and v.admin_level >= PERMS['POST_COMMENT_MODERATION']) and not (v and v.id == p.author_id) %}
 {% block actionsModal %}
 
 {% if v %}
