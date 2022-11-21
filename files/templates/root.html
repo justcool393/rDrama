@@ -6,7 +6,7 @@
 	{% set root_scope.include_cf_2fa_verify = false %}
 {% endblock %}
 {%- import 'util/macros.html' as macros with context -%}
-{%- import 'html_head.html' as html_head with context -%}
+{%- import 'util/html_head.html' as html_head with context -%}
 {%- if request.path == '/' -%}
 	{%- set csp=CONTENT_SECURITY_POLICY_HOME -%}
 {%- endif -%}
