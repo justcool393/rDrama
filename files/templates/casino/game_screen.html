@@ -366,6 +366,12 @@
 			</div>
 		</div>
 		<div class="col">
+			{% set stats_alert_class = 'success' if v_stats[0] >= v_stats[1] else 'danger' %}
+			<div id="casinoGameStats" class="alert alert-{{stats_alert_class}}" role="alert">
+				{{v_stats[0]}} wins{% if v_stats[1] %} {{v_stats[1]}} ties{% endif %} {{v_stats[2]}} losses
+			</div>
+		</div>
+		<div class="col">
 			<div class="row row-cols-2">
 				<div class="col">
 					<div class="game_screen-title">
