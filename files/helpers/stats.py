@@ -124,7 +124,7 @@ def stats(site=None):
 	print(timeit.timeit(lambda:"{:,}".format(g.db.query(CommentVote).count()), number=1))
 	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Vote).filter_by(vote_type=1).count() + g.db.query(CommentVote).filter_by(vote_type=1).count()), number=1))
 	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Vote).filter_by(vote_type=-1).count() + g.db.query(CommentVote).filter_by(vote_type=-1).count()), number=1))
-	print(timeit.timeit(lambda:"{:,}".format(g.db.query(AwardRelationship).count()),))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(AwardRelationship).count()), number=1))
 	print(timeit.timeit(lambda:"{:,}".format(g.db.query(AwardRelationship).filter(or_(AwardRelationship.submission_id != None, AwardRelationship.comment_id != None)).count()), number=1))
 	print(timeit.timeit(lambda:"{:,}".format(len(active_users)), number=1))
 	print(timeit.timeit(lambda:"{:,}".format(g.db.query(User).filter(User.last_active > week).count()), number=1))
