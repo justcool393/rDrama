@@ -42,9 +42,12 @@ def cron(every_5m, every_1h, every_1d, every_1mo):
 	if every_1d:
 		stats.generate_charts_task(SITE)
 		_sub_inactive_purge_task()
-		print(f"has cache? {cache.has(route_static.stats_cached)}")
+		key = route_static.stats_cached.make_cache_key(route_static.stats_cached)
+		print(key)
+		# cache._memoize_make_cache_key(route_static.stats_cached, timeout_obj, False, hashlib.md5, False, None)
+		print(f"has cache? {cache.has(key)}")
 		cache.delete_memoized(route_static.stats_cached)
-		print(f"has cache 2? {cache.has(route_static.stats_cached)}")
+		print(f"has cache 2? {cache.has(key)}")
 		route_static.stats_cached()
 
 	if every_1mo:
