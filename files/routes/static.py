@@ -13,7 +13,7 @@ from files.helpers.actions import *
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.routes.wrappers import *
-from files.__main__ import app, cache, limiter
+from files.__main__ import app, cache, limiter, r
 
 
 @app.get("/r/drama/comments/<id>/<title>")
@@ -92,7 +92,6 @@ def participation_stats(v):
 @admin_level_required(3)
 def redis_test(v):
 	s = "<html><head></head><body><table>"
-	from files.__main__ import r
 	for key in r.scan_iter():
 		s = f"<tr><td>{key}</td><td>{r.get(key)}</td>"
 	s += "</table></body></html>"
