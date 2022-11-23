@@ -93,7 +93,6 @@ def stats(site=None):
 	now = time.time()
 	day = int(now) - 86400
 	week = int(now) - 604800
-	timeit.time()
 	posters = g.db.query(Submission.author_id).distinct(Submission.author_id).filter(Submission.created_utc > week).all()
 	commenters = g.db.query(Comment.author_id).distinct(Comment.author_id).filter(Comment.created_utc > week).all()
 	voters = g.db.query(Vote.user_id).distinct(Vote.user_id).filter(Vote.created_utc > week).all()
