@@ -98,6 +98,37 @@ def stats(site=None):
 	voters = g.db.query(Vote.user_id).distinct(Vote.user_id).filter(Vote.created_utc > week).all()
 	commentvoters = g.db.query(CommentVote.user_id).distinct(CommentVote.user_id).filter(CommentVote.created_utc > week).all()
 	active_users = set(posters) | set(commenters) | set(voters) | set(commentvoters)
+	import timeit
+	print(timeit.timeit(lambda:str(time.strftime("%d/%B/%Y %H:%M:%S UTC", time.gmtime(now)))))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Marsey).filter(Marsey.submitter_id==None).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(User).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(User).filter_by(is_private=True).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(User).filter(User.is_banned > 0).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(User).filter_by(is_activated=True).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(func.sum(User.coins)).scalar())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(func.sum(User.coins_spent)).scalar())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(User).filter(User.created_utc > day).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Submission).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Submission.author_id).distinct().count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Submission).filter_by(is_banned=False).filter(Submission.deleted_utc == 0).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Submission).filter_by(is_banned=True).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Submission).filter_by(is_banned=True).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Submission).filter(Submission.created_utc > day).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Comment).filter(Comment.author_id != AUTOJANNY_ID).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Comment.author_id).distinct().count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Comment).filter_by(is_banned=True).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Comment).filter(Comment.deleted_utc > 0).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Comment).filter(Comment.created_utc > day, Comment.author_id != AUTOJANNY_ID).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Vote).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(CommentVote).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Vote).filter_by(vote_type=1).count() + g.db.query(CommentVote).filter_by(vote_type=1).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(Vote).filter_by(vote_type=-1).count() + g.db.query(CommentVote).filter_by(vote_type=-1).count())))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(AwardRelationship).count()),))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(AwardRelationship).filter(or_(AwardRelationship.submission_id != None, AwardRelationship.comment_id != None)).count())))
+	print(timeit.timeit(lambda:"{:,}".format(len(active_users))))
+	print(timeit.timeit(lambda:"{:,}".format(g.db.query(User).filter(User.last_active > week).count())))
+	raise Exception("Finished")
+
 
 	stats = {
 			"time": str(time.strftime("%d/%B/%Y %H:%M:%S UTC", time.gmtime(now))),
@@ -113,7 +144,7 @@ def stats(site=None):
 			"posting users": "{:,}".format(g.db.query(Submission.author_id).distinct().count()),
 			"listed posts": "{:,}".format(g.db.query(Submission).filter_by(is_banned=False).filter(Submission.deleted_utc == 0).count()),
 			"removed posts (by admins)": "{:,}".format(g.db.query(Submission).filter_by(is_banned=True).count()),
-			"deleted posts (by author)": "{:,}".format(g.db.query(Submission).filter(Submission.deleted_utc > 0).count()),
+			"deleted posts (by author)": "{:,}".format(g.db.query(Submission).filter_by(is_banned=True).count()),
 			"posts last 24h": "{:,}".format(g.db.query(Submission).filter(Submission.created_utc > day).count()),
 			"total comments": "{:,}".format(g.db.query(Comment).filter(Comment.author_id != AUTOJANNY_ID).count()),
 			"commenting users": "{:,}".format(g.db.query(Comment.author_id).distinct().count()),
