@@ -88,6 +88,16 @@ def participation_stats(v):
 	if v.client: return stats_cached()
 	return render_template("stats.html", v=v, title="Content Statistics", data=stats_cached())
 
+@app.get('/redis-test')
+@admin_level_required(3)
+def redis_test(v):
+	s = "<html><head></head><body><table>"
+	from files.__main__ import r
+	for key in r.scan_iter():
+		s = f"<tr><td>{key}</td><td>{r.get(key)}</td>"
+	s += "</table></body></html>"
+	return s
+
 @cache.memoize(timeout=86400)
 def stats_cached():
 	return statshelper.stats(SITE_NAME)
