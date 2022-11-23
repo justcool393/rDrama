@@ -13,7 +13,7 @@ from files.helpers.actions import *
 from files.helpers.alerts import *
 from files.helpers.const import *
 from files.routes.wrappers import *
-from files.__main__ import app, cache, limiter, r
+from files.__main__ import app, cache, limiter
 
 
 @app.get("/r/drama/comments/<id>/<title>")
@@ -91,9 +91,11 @@ def participation_stats(v):
 @app.get('/redis-test')
 @admin_level_required(3)
 def redis_test(v):
+	import redis
+	r2 =redis.Redis(host=environ.get("REDIS_URL").strip(), decode_responses=True, ssl_cert_reqs=None)
 	s = "<html><head></head><body><table>"
-	for key in r.scan_iter():
-		s = f"<tr><td>{key}</td><td>{r.get(key)}</td>"
+	for key in r2.scan_iter():
+		s = f"<tr><td>{key}</td><td>{r2.get(key)}</td>"
 	s += "</table></body></html>"
 	return s
 
