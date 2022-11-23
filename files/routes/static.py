@@ -92,7 +92,7 @@ def participation_stats(v):
 @admin_level_required(3)
 def redis_test(v):
 	import redis
-	r2 =redis.Redis("localhost", 6379, 0, decode_responses=True, ssl_cert_reqs=None)
+	r2 =redis.Redis("localhost", 6379, 0, ssl_cert_reqs=None)
 	s = "<html><head></head><body><table>"
 	for key in r2.scan_iter():
 		s = f"<tr><td>{key}</td><td>{r2.get(key)}</td>"
