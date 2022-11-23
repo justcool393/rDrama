@@ -81,6 +81,7 @@ def sidebar(v):
 @app.get("/stats")
 @auth_required
 def participation_stats(v):
+	print(f"has cache (request)? {cache.has(stats_cached)}")
 	if v.client: return stats_cached()
 	return render_template("stats.html", v=v, title="Content Statistics", data=stats_cached())
 

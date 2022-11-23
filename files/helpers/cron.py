@@ -42,7 +42,9 @@ def cron(every_5m, every_1h, every_1d, every_1mo):
 	if every_1d:
 		stats.generate_charts_task(SITE)
 		_sub_inactive_purge_task()
+		print(f"has cache? {cache.has(route_static.stats_cached)}")
 		cache.delete_memoized(route_static.stats_cached)
+		print(f"has cache 2? {cache.has(route_static.stats_cached)}")
 		route_static.stats_cached()
 
 	if every_1mo:
