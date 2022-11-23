@@ -93,9 +93,9 @@ def participation_stats(v):
 def redis_test(v):
 	import redis
 	r2 =redis.Redis("localhost", 6379, 0, ssl_cert_reqs=None)
-	s = "<html><head></head><body><table>"
+	s = "<!DOCTYPE html><html><head></head><body><table>"
 	for key in r2.scan_iter():
-		s = f"<tr><td>{key}</td><td>{r2.get(key)}</td>"
+		s += f"<tr><td>{key}</td><td>{r2.get(key)}</td></tr>"
 	s += "</table></body></html>"
 	return s
 
